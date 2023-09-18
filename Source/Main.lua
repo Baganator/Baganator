@@ -3,24 +3,7 @@ Baganator.CallbackRegistry:OnLoad()
 Baganator.CallbackRegistry:GenerateCallbackEvents(Baganator.Constants.Events)
 
 local function AddToTooltip(tooltip, summaries, itemLink)
-  if itemLink == nil then
-    return
-  end
-
-  local key = Baganator.Utilities.GetItemKey(itemLink)
-
-  local tooltipInfo = summaries:GetTooltipInfo(key)
-
-  table.sort(tooltipInfo, function(a, b)
-    return a.character < b.character
-  end)
-
-  if #tooltipInfo > 0 then
-    tooltip:AddLine("Sources:")
-    for _, s in ipairs(tooltipInfo) do
-      tooltip:AddDoubleLine(s.character, "bank: " .. s.bank .. " bag: " .. s.bags)
-    end
-  end
+  Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
 end
 
 local cache, summaries

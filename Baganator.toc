@@ -13,6 +13,7 @@ Source\Config.lua
 Source\SlashCmd.lua
 Source\Utilities.lua
 Source\Components.lua
+Source\Tooltips.lua
 Source\Cache.lua
 Source\Summaries.lua
 Source\CustomiseDialog.lua
