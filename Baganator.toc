@@ -1,0 +1,25 @@
+## Interface: 100107
+## Interface-Wrath: 30402
+## Interface-Classic: 11404
+## Title: Baganator
+## Version: @project-version@
+## Author: plusmouse
+## OptionalDeps: Masque
+## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA, BAGANATOR_SUMMARIES
+
+Source\Objects.lua
+Source\Constants.lua
+Source\Config.lua
+Source\SlashCmd.lua
+Source\Utilities.lua
+Source\Components.lua
+Source\Cache.lua
+Source\Summaries.lua
+Source\CustomiseDialog.lua
+Source\ItemButton.lua
+Source\View.lua
+Source\Main.lua
+
+Source\CustomiseDialog.xml
+Source\ItemButton.xml
+Source\View.xml

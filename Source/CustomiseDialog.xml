@@ -1,0 +1,153 @@
+<Ui>
+  <Frame name="BaganatorCheckBoxTemplate" virtual="true" mixin="BaganatorCheckBoxMixin">
+    <Size y="22"/>
+    <Frames>
+      <CheckButton parentKey="CheckBox" inherits="UICheckButtonTemplate">
+        <Anchors>
+          <Anchor point="RIGHT"/>
+        </Anchors>
+        <ButtonText inherits="GameFontHighlight" justifyH="LEFT">
+          <Anchors>
+            <Anchor point="RIGHT" relativePoint="LEFT" x="-10"/>
+          </Anchors>
+        </ButtonText>
+      </CheckButton>
+    </Frames>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
+      <OnMouseUp method="OnMouseUp"/>
+    </Scripts>
+  </Frame>
+
+  <Frame name="BaganatorSliderTemplate" virtual="true" mixin="BaganatorSliderMixin">
+    <Frames>
+      <Slider parentKey="Slider" inherits="UISliderTemplate">
+        <Size y="20"/>
+        <Anchors>
+          <Anchor point="RIGHT" x="-30"/>
+          <Anchor point="LEFT" x="30"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight">
+              <Anchors>
+                <Anchor point="BOTTOM" relativePoint="TOP"/>
+              </Anchors>
+            </FontString>
+            <FontString name="$parentLow" parentKey="Low" inherits="GameFontHighlightSmall" text="LOW">
+              <Anchors>
+                <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-4" y="3"/>
+              </Anchors>
+            </FontString>
+            <FontString name="$parentHigh" parentKey="High" inherits="GameFontHighlightSmall" text="HIGH">
+              <Anchors>
+                <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="3"/>
+              </Anchors>
+            </FontString>
+          </Layer>
+        </Layers>
+      </Slider>
+    </Frames>
+    <Anchors>
+      <Anchor point="RIGHT" x="-30"/>
+      <Anchor point="LEFT" x="30"/>
+    </Anchors>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnMouseWheel method="OnMouseWheel"/>
+    </Scripts>
+  </Frame>
+
+  <Frame name="BaganatorCustomiseDialogTemplate" hidden="true" virtual="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorCustomiseDialogMixin">
+    <Size x="500" y="320"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+    </Scripts>
+    <Frames>
+      <Button parentKey="ResetFramePositions" text="Reset Positions" inherits="UIPanelDynamicResizeButtonTemplate">
+          <Anchors>
+            <Anchor point="TOPRIGHT" x="-20" y="-30"/>
+          </Anchors>
+      </Button>
+      <Frame parentKey="LockFrames" inherits="BaganatorCheckBoxTemplate">
+          <KeyValues>
+            <KeyValue key="text" value="Lock Bags/Bank frames" type="string"/>
+            <KeyValue key="option" value="lock_frames" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativeKey="$parent.ResetFramePositions"/>
+            <Anchor point="RIGHT" relativeKey="$parent.ResetFramePositions" relativePoint="LEFT" x="-20"/>
+            <Anchor point="LEFT" x="40"/>
+          </Anchors>
+      </Frame>
+      <Frame parentKey="NoFrameBorders" inherits="BaganatorCheckBoxTemplate">
+          <KeyValues>
+            <KeyValue key="text" value="Remove borders from Bags/Bank frames" type="string"/>
+            <KeyValue key="option" value="no_frame_borders" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativeKey="$parent.LockFrames" relativePoint="BOTTOM" y="-20"/>
+            <Anchor point="LEFT" x="40"/>
+          </Anchors>
+      </Frame>
+      <Frame parentKey="EmptySlotBackground" inherits="BaganatorCheckBoxTemplate">
+          <KeyValues>
+            <KeyValue key="text" value="Hide empty slots background" type="string"/>
+            <KeyValue key="option" value="empty_slot_background" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativeKey="$parent.NoFrameBorders" relativePoint="BOTTOM" y="-20"/>
+            <Anchor point="LEFT" x="40"/>
+          </Anchors>
+      </Frame>
+      <Frame parentKey="AlphaSlider" inherits="BaganatorSliderTemplate">
+          <KeyValues>
+            <KeyValue key="option" value="view_alpha" type="string"/>
+            <KeyValue key="min" value="1" type="number"/>
+            <KeyValue key="max" value="100" type="number"/>
+            <KeyValue key="scale" value="100" type="number"/>
+            <KeyValue key="highText" value="100%" type="string"/>
+            <KeyValue key="lowText" value="0%" type="string"/>
+            <KeyValue key="valuePattern" value="%s%% Transparency" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativePoint="BOTTOM" relativeKey="$parent.EmptySlotBackground" y="-30"/>
+          </Anchors>
+      </Frame>
+      <Frame parentKey="BagWidthSlider" inherits="BaganatorSliderTemplate">
+          <KeyValues>
+            <KeyValue key="option" value="bag_view_width" type="string"/>
+            <KeyValue key="min" value="1" type="number"/>
+            <KeyValue key="max" value="24" type="number"/>
+            <KeyValue key="highText" value="24" type="string"/>
+            <KeyValue key="lowText" value="1" type="string"/>
+            <KeyValue key="valuePattern" value="%s Bag Columns" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.AlphaSlider" y="-50"/>
+          </Anchors>
+      </Frame>
+      <Frame parentKey="BankWidthSlider" inherits="BaganatorSliderTemplate">
+          <KeyValues>
+            <KeyValue key="option" value="bank_view_width" type="string"/>
+            <KeyValue key="min" value="1" type="number"/>
+            <KeyValue key="max" value="42" type="number"/>
+            <KeyValue key="highText" value="42" type="string"/>
+            <KeyValue key="lowText" value="1" type="string"/>
+            <KeyValue key="valuePattern" value="%s Bank Columns" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.BagWidthSlider" y="-50"/>
+          </Anchors>
+      </Frame>
+    </Frames>
+  </Frame>
+</Ui>

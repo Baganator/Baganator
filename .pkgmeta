@@ -1,0 +1,8 @@
+ignore:
+  - README.md
+  - tmp
+  - scripts
+plain-copy:
+  - Source
+optional-dependencies:
+  - masque

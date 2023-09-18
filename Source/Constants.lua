@@ -1,0 +1,45 @@
+-- Retail bag indexes. Will need changing for classic.
+Baganator.Constants = {
+  AllBagIndexes = {
+    Enum.BagIndex.Backpack,
+    Enum.BagIndex.Bag_1,
+    Enum.BagIndex.Bag_2,
+    Enum.BagIndex.Bag_3,
+    Enum.BagIndex.Bag_4,
+  },
+  AllBankIndexes = {
+    Enum.BagIndex.Bank,
+    Enum.BagIndex.BankBag_1,
+    Enum.BagIndex.BankBag_2,
+    Enum.BagIndex.BankBag_3,
+    Enum.BagIndex.BankBag_4,
+    Enum.BagIndex.BankBag_5,
+    Enum.BagIndex.BankBag_6,
+    Enum.BagIndex.BankBag_7,
+    Enum.BagIndex.Reagentbank,
+  },
+  IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
+  IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
+  IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
+}
+
+-- Not currently included as the keyring bag presents as quite large in the bag
+-- view
+--[[if Baganator.Constants.IsClassic then
+  table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.Keyring)
+end]]
+if Baganator.Constants.IsRetail then
+  table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.ReagentBag)
+end
+
+Baganator.Constants.Events = {
+  "SettingChanged",
+  "CacheUpdate",
+  "SearchTextChanged",
+  "ShowCustomise",
+  "ResetFramePositions",
+  "BagShow",
+  "BagHide",
+  "ReagentOnEnter",
+  "ReagentOnLeave",
+}

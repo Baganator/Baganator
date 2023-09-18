@@ -1,0 +1,8 @@
+*.DS_Store
+Changelog*
+.vscode/*
+*.swp
+tmp
+.release
+Journalator/Embeds/**
+Journalator_Display/Libs/**
