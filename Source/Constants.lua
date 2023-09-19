@@ -34,6 +34,7 @@ end
 
 Baganator.Constants.Events = {
   "SettingChanged",
+  "CharacterDeleted",
   "CacheUpdate",
   "SearchTextChanged",
   "ShowCustomise",

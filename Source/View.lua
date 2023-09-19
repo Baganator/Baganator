@@ -545,7 +545,7 @@ end
 function BaganatorCachedBagLayoutMixin:CompareButtonIndexes(indexes, indexesToUse, newBags)
   for index in pairs(indexesToUse) do
     local bagID = indexes[index]
-    if not self.buttonsByBag[bagID] or #self.buttonsByBag[bagID] ~= #newBags[index] then
+    if not self.buttonsByBag[bagID] or not newBags[index] or #self.buttonsByBag[bagID] ~= #newBags[index] then
       return true
     end
   end

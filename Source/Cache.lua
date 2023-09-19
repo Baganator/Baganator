@@ -38,6 +38,12 @@ function BaganatorCacheMixin:OnLoad()
 
   self:SetupCache()
   self:SetupPending()
+
+  Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, name)
+    if name == self.currentCharacter then
+      self:InitCurrentPlayer()
+    end
+  end)
 end
 
 function BaganatorCacheMixin:SetupCache()
@@ -58,31 +64,35 @@ function BaganatorCacheMixin:QueueCaching()
   end
 end
 
+function BaganatorCacheMixin:InitCurrentPlayer()
+  local characterName, realm = UnitFullName("player")
+  self.currentCharacter = characterName .. "-" .. realm
+
+  if BAGANATOR_DATA.Characters[self.currentCharacter] == nil then
+    BAGANATOR_DATA.Characters[self.currentCharacter] = {
+      bags = {},
+      bank = {},
+      money = 0,
+      details = {
+        realmNormalized = realm,
+        realm = GetRealmName(),
+        character = characterName,
+      }
+    }
+  end
+
+  BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
+  BAGANATOR_DATA.Characters[self.currentCharacter].details.class = select(3, UnitClass("player"))
+
+  for bagID in pairs(bagBags) do
+    self.pending.bags[bagID] = true
+  end
+  self:QueueCaching()
+end
+
 function BaganatorCacheMixin:OnEvent(eventName, ...)
   if eventName == "PLAYER_LOGIN" then
-    local characterName, realm = UnitFullName("player")
-    self.currentCharacter = characterName .. "-" .. realm
-
-    if BAGANATOR_DATA.Characters[self.currentCharacter] == nil then
-      BAGANATOR_DATA.Characters[self.currentCharacter] = {
-        bags = {},
-        bank = {},
-        money = 0,
-        details = {
-          realmNormalized = realm,
-          realm = GetRealmName(),
-          character = characterName,
-        }
-      }
-    end
-
-    BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
-    BAGANATOR_DATA.Characters[self.currentCharacter].details.class = select(3, UnitClass("player"))
-
-    for bagID in pairs(bagBags) do
-      self.pending.bags[bagID] = true
-    end
-    self:QueueCaching()
+    self:InitCurrentPlayer()
 
   elseif eventName == "BAG_UPDATE" then
     local bagID = ...
