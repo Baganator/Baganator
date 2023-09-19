@@ -5,7 +5,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
 
-  self:SetTitle("Customise Baganator")
+  self:SetTitle(BAGANATOR_L_CUSTOMISE_BAGANATOR)
 
   self.ResetFramePositions:SetScript("OnClick", function()
     Baganator.CallbackRegistry:TriggerEvent("ResetFramePositions")

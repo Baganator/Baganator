@@ -8,6 +8,7 @@
 ## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA, BAGANATOR_SUMMARIES
 
 Source\Objects.lua
+Source\Locales.lua
 Source\Constants.lua
 Source\Config.lua
 Source\SlashCmd.lua

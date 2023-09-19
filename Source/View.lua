@@ -218,9 +218,9 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.isLive = isLive
 
   if self.viewBankShown then
-    self:SetTitle(character .. "'s Bank and Bags")
+    self:SetTitle(BAGANATOR_L_XS_BANK_AND_BAGS:format(character))
   else
-    self:SetTitle(character .. "'s Bags")
+    self:SetTitle(BAGANATOR_L_XS_BAGS:format(character))
   end
 
   local showReagents = Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS)
@@ -491,7 +491,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     self.BankLive:GetHeight() + reagentBankHeight + 55
   )
 
-  self:SetTitle(character .. "'s Bank")
+  self:SetTitle(BAGANATOR_L_XS_BANK:format(character))
 end
 
 function BaganatorBankOnlyViewMixin:NotifyBagUpdate(updatedBags)

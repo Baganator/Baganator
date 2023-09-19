@@ -66,14 +66,14 @@
       <OnLoad method="OnLoad"/>
     </Scripts>
     <Frames>
-      <Button parentKey="ResetFramePositions" text="Reset Positions" inherits="UIPanelDynamicResizeButtonTemplate">
+      <Button parentKey="ResetFramePositions" text="BAGANATOR_L_RESET_POSITIONS" inherits="UIPanelDynamicResizeButtonTemplate">
           <Anchors>
             <Anchor point="TOPRIGHT" x="-20" y="-30"/>
           </Anchors>
       </Button>
       <Frame parentKey="LockFrames" inherits="BaganatorCheckBoxTemplate">
           <KeyValues>
-            <KeyValue key="text" value="Lock Bags/Bank frames" type="string"/>
+            <KeyValue key="text" value="BAGANATOR_L_LOCK_BAGS_BANKS_FRAMES" type="global"/>
             <KeyValue key="option" value="lock_frames" type="string"/>
           </KeyValues>
           <Size y="22"/>
@@ -85,7 +85,7 @@
       </Frame>
       <Frame parentKey="NoFrameBorders" inherits="BaganatorCheckBoxTemplate">
           <KeyValues>
-            <KeyValue key="text" value="Remove borders from Bags/Bank frames" type="string"/>
+            <KeyValue key="text" value="BAGANATOR_L_CUSTOMISE_REMOVE_BORDERS" type="global"/>
             <KeyValue key="option" value="no_frame_borders" type="string"/>
           </KeyValues>
           <Size y="22"/>
@@ -96,7 +96,7 @@
       </Frame>
       <Frame parentKey="EmptySlotBackground" inherits="BaganatorCheckBoxTemplate">
           <KeyValues>
-            <KeyValue key="text" value="Hide empty slots background" type="string"/>
+            <KeyValue key="text" value="BAGANATOR_L_CUSTOMISE_EMPTY_SLOTS" type="global"/>
             <KeyValue key="option" value="empty_slot_background" type="string"/>
           </KeyValues>
           <Size y="22"/>
@@ -113,7 +113,7 @@
             <KeyValue key="scale" value="100" type="number"/>
             <KeyValue key="highText" value="100%" type="string"/>
             <KeyValue key="lowText" value="0%" type="string"/>
-            <KeyValue key="valuePattern" value="%s%% Transparency" type="string"/>
+            <KeyValue key="valuePattern" value="BAGANATOR_L_X_TRANSPARENCY" type="global"/>
           </KeyValues>
           <Size y="22"/>
           <Anchors>
@@ -127,7 +127,7 @@
             <KeyValue key="max" value="24" type="number"/>
             <KeyValue key="highText" value="24" type="string"/>
             <KeyValue key="lowText" value="1" type="string"/>
-            <KeyValue key="valuePattern" value="%s Bag Columns" type="string"/>
+            <KeyValue key="valuePattern" value="BAGANATOR_L_X_BAG_COLUMNS" type="global"/>
           </KeyValues>
           <Size y="22"/>
           <Anchors>
@@ -141,7 +141,7 @@
             <KeyValue key="max" value="42" type="number"/>
             <KeyValue key="highText" value="42" type="string"/>
             <KeyValue key="lowText" value="1" type="string"/>
-            <KeyValue key="valuePattern" value="%s Bank Columns" type="string"/>
+            <KeyValue key="valuePattern" value="BAGANATOR_L_X_BANK_COLUMNS" type="global"/>
           </KeyValues>
           <Size y="22"/>
           <Anchors>
