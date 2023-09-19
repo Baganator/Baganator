@@ -425,7 +425,9 @@ end
 function BaganatorBankOnlyViewMixin:OnEvent(eventName)
   if eventName == "BANKFRAME_OPENED" then
     self:Show()
-    self:UpdateForCharacter(self.liveCharacter)
+    if self.liveCharacter then
+      self:UpdateForCharacter(self.liveCharacter)
+    end
   else
     self:Hide()
   end
