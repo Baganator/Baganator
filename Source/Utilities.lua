@@ -31,7 +31,7 @@ local function KeyPartsItemLink(itemLink)
     parts[i] = nil
   end
 
-  return Auctionator.Utilities.StringJoin(parts, ":")
+  return strjoin(":", unpack(parts))
 end
 
 local function KeyPartsPetLink(itemLink)
@@ -39,9 +39,11 @@ local function KeyPartsPetLink(itemLink)
 
   local parts = { strsplit(":", hyperlink) }
 
-  local wantedBits = Auctionator.Utilities.Slice(parts, 1, 5)
+  for i = 6, #parts do
+    parts[i] = nil
+  end
 
-  return Auctionator.Utilities.StringJoin(wantedBits, ":")
+  return strjoin(":", unpack(parts))
 end
 
 function Baganator.Utilities.IsEquipment(itemLink)
