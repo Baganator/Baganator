@@ -488,6 +488,7 @@ function BaganatorBackpackViewMixin:RefreshTabs()
     if sameConnected[details.realmNormalized] then
       local tabButton = self.tabsPool:Acquire()
       tabButton:SetText(details.character)
+      tabButton:SetText(Baganator.Constants.KioskCharacters[index])
       tabButton:SetScript("OnClick", function()
         Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", char)
       end)
@@ -563,7 +564,7 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
   if not characterData then
     self:SetTitle("")
   else
-    self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
+    self:SetTitle(BAGANATOR_L_XS_BAGS:format(Baganator.Constants.KioskCharacters[1]))
   end
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)

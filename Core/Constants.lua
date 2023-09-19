@@ -168,3 +168,12 @@ Baganator.Constants.AccountBoundTooltipLines = {
   ITEM_BIND_TO_ACCOUNT,
   ITEM_ACCOUNTBOUND,
 }
+
+Baganator.Constants.KioskCharacters = {
+  "Martin",
+  "Eleanor",
+  "Owen",
+  "Patricia",
+  "Janet",
+  "Ivan",
+}

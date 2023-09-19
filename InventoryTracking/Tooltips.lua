@@ -128,7 +128,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if s.auctions > 0 then
       table.insert(entries, BAGANATOR_L_AUCTIONS_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.auctions)))
     end
-    local character = s.character
+    local character = Baganator.Constants.KioskCharacters[index]
     if appendRealm then
       character = character .. "-" .. s.realmNormalized
     end
@@ -211,7 +211,7 @@ function Baganator.Tooltips.AddCurrencyLines(tooltip, currencyID)
   tooltip:AddLine(BAGANATOR_L_ALL_CHARACTERS_COLON .. " " .. WHITE_FONT_COLOR:WrapTextInColorCode(FormatLargeNumber(quantity)))
   for index = 1, math.min(#summary, Baganator.Config.Get("tooltips_character_limit")) do
     local s = summary[index]
-    local character = s.character
+    local character = Baganator.Constants.KioskCharacters[index]
     if appendRealm then
       character = character .. "-" .. s.realmNormalized
     end
