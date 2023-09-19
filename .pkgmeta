@@ -6,3 +6,4 @@ plain-copy:
   - Source
 optional-dependencies:
   - masque
+enable-toc-creation: yes
