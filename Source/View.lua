@@ -797,7 +797,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
 
   for bagID in pairs(self.waitingUpdate) do
     local bagIndex = tIndexOf(indexes, bagID)
-    if bagIndex ~= nil and indexesToUse[bagIndex] then
+    if bagIndex ~= nil and sectionData[bagIndex] and indexesToUse[bagIndex] then
       local bag = self.buttonsByBag[bagID]
       for index, cacheData in ipairs(sectionData[bagIndex]) do
         local button = bag[index]
