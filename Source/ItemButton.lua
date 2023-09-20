@@ -146,10 +146,9 @@ function BaganatorRetailCachedItemButtonMixin:OnLeave()
   end
 end
 
-BaganatorRetailLiveItemButtonMixin = CreateFromMixins(ContainerFrameItemButtonMixin or {})
+BaganatorRetailLiveItemButtonMixin = {}
 
-function BaganatorRetailLiveItemButtonMixin:OnLoad()
-  ContainerFrameItemButtonMixin.OnLoad(self)
+function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
   -- Automatically use the reagent bank when at the bank transferring crafting
   -- reagents
   self:HookScript("OnEnter", function()

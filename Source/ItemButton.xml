@@ -12,9 +12,12 @@
     </Layers>
   </ItemButton>
 
-  <ItemButton name="BaganatorRetailLiveItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate" mixin="BaganatorRetailLiveItemButtonMixin">
+  <ItemButton name="BaganatorRetailLiveItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate">
     <Scripts>
-      <OnLoad method="OnLoad" inherit="append"/>
+      <OnLoad inherit="prepend">
+        Mixin(self, BaganatorRetailLiveItemButtonMixin)
+        self:MyOnLoad()
+      </OnLoad>
     </Scripts>
     <Layers>
       <Layer level="OVERLAY">
@@ -36,7 +39,12 @@
     </Layers>
   </Button>
 
-  <Button name="BaganatorClassicLiveItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate" mixin="BaganatorClassicLiveItemButtonMixin">
+  <Button name="BaganatorClassicLiveItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate">
+    <Scripts>
+      <OnLoad inherit="prepend">
+        Mixin(self, BaganatorClassicLiveItemButtonMixin)
+      </OnLoad>
+    </Scripts>
     <Layers>
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
