@@ -217,10 +217,13 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.lastCharacter = character
   self.isLive = isLive
 
-  if self.viewBankShown then
-    self:SetTitle(BAGANATOR_L_XS_BANK_AND_BAGS:format(character))
+  local characterData = BAGANATOR_DATA.Characters[character]
+  if not characterData then
+    self:SetTitle("")
+  elseif self.viewBankShown then
+    self:SetTitle(BAGANATOR_L_XS_BANK_AND_BAGS:format(characterData.details.character))
   else
-    self:SetTitle(BAGANATOR_L_XS_BAGS:format(character))
+    self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
   end
 
   self.SortButton:SetShown(isLive and Baganator.Constants.IsRetail)
@@ -495,7 +498,12 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     self.BankLive:GetHeight() + reagentBankHeight + 55
   )
 
-  self:SetTitle(BAGANATOR_L_XS_BANK:format(character))
+  local characterData = BAGANATOR_DATA.Characters[character]
+  if not characterData then
+    self:SetTitle("")
+  else
+    self:SetTitle(BAGANATOR_L_XS_BANK:format(characterData.details.character))
+  end
 end
 
 function BaganatorBankOnlyViewMixin:NotifyBagUpdate(updatedBags)
