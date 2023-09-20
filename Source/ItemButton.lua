@@ -184,6 +184,12 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   local tooltipOwner = GameTooltip:GetOwner()
 
   local info = C_Container.GetContainerItemInfo(self:GetBagID(), self:GetID())
+
+  -- Keep cache and display in sync
+  if info and not cacheData.itemLink then
+    info = nil
+  end
+
   local texture = info and info.iconFileID;
   local itemCount = info and info.stackCount;
   local locked = info and info.isLocked;
@@ -351,6 +357,12 @@ function BaganatorClassicLiveItemButtonMixin:UpdateTextures(size)
 end
 
 function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
+  local info = C_Container.GetContainerItemInfo(self:GetParent():GetID(), self:GetID())
+
+  if cacheData.itemLink == nil then
+    info = nil
+  end
+
   self.itemLink = cacheData.itemLink
   self.itemName = ""
   self.itemNameLower = nil
@@ -362,8 +374,6 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()
-
-  local info = C_Container.GetContainerItemInfo(self:GetParent():GetID(), self:GetID())
   
   texture = info and info.iconFileID;
   itemCount = info and info.stackCount;

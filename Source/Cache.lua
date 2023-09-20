@@ -34,8 +34,6 @@ function BaganatorCacheMixin:OnLoad()
     self:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED")
   end
 
-  self.syncCount = 0
-
   self:SetupCache()
   self:SetupPending()
 
@@ -143,9 +141,6 @@ function BaganatorCacheMixin:OnUpdate()
 
   local start = debugprofilestop()
 
-  self.syncCount = self.syncCount + 1
-  local syncCount = self.syncCount
-
   local pendingCopy = CopyTable(self.pending)
 
   local function FireBagChange()
@@ -170,6 +165,7 @@ function BaganatorCacheMixin:OnUpdate()
     for slotID = 1, C_Container.GetContainerNumSlots(bagID) do
       local location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
       local itemID = C_Item.DoesItemExist(location) and C_Item.GetItemID(location)
+      bag[slotID] = {}
       if itemID then
         if C_Item.IsItemDataCachedByID(itemID) then
           local slotInfo = C_Container.GetContainerItemInfo(bagID, slotID)
@@ -178,18 +174,16 @@ function BaganatorCacheMixin:OnUpdate()
           waiting = waiting + 1
           local item = Item:CreateFromItemID(itemID)
           item:ContinueOnItemLoad(function()
-            if syncCount == self.syncCount then
-              local slotInfo = C_Container.GetContainerItemInfo(bagID, slotID)
+            local slotInfo = C_Container.GetContainerItemInfo(bagID, slotID)
+            if slotInfo and slotInfo.itemID == itemID then
               bag[slotID] = GetInfo(slotInfo)
-              waiting = waiting - 1
-              if loopsFinished and waiting == 0 then
-                FireBagChange()
-              end
+            end
+            waiting = waiting - 1
+            if loopsFinished and waiting == 0 then
+              FireBagChange()
             end
           end)
         end
-      else
-        bag[slotID] = {}
       end
     end
   end
