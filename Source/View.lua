@@ -41,7 +41,7 @@ function BaganatorMainViewMixin:OnLoad()
 
   self.SearchBox:HookScript("OnTextChanged", function()
     local text = self.SearchBox:GetText()
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text)
+    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CacheUpdate",  function(_, character, updatedBags)
@@ -370,7 +370,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
 
   self.SearchBox:HookScript("OnTextChanged", function()
     local text = self.SearchBox:GetText()
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text)
+    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CacheUpdate",  function(_, character, updatedBags)
