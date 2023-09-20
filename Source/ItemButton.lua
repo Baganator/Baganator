@@ -44,6 +44,18 @@ local function GetExtraInfo(frame, itemID, itemLink)
   end
 end
 
+local function SearchCheck(self, text)
+  if self.itemInfoWaiting then
+    self.pendingSearch = text
+    return
+  end
+  self.pendingSearch = nil
+  if text ~= "" then
+    self.itemNameLower = self.itemNameLower or self.itemName:lower()
+  end
+  return text == "" or not not self.itemNameLower:match(text)
+end
+
 -- Fix anchors and item sizes when resizing the item buttons
 local function AdjustRetailButton(button, size)
   button.IconBorder:SetSize(size, size)
@@ -90,10 +102,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
 end
 
 function BaganatorRetailCachedItemButtonMixin:SetItemFiltered(text)
-  if text ~= "" then
-    self.itemNameLower = self.itemNameLower or self.itemName:lower()
-  end
-  self:SetMatchesSearch(text == "" or not not self.itemNameLower:match(text))
+  self:SetMatchesSearch(SearchCheck(self, text))
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnClick(button)
@@ -205,15 +214,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
 end
 
 function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
-  if self.itemInfoWaiting then
-    self.pendingSearch = text
-    return
-  end
-  self.pendingSearch = nil
-  if text ~= "" then
-    self.itemNameLower = self.itemNameLower or self.itemName:lower()
-  end
-  self:SetMatchesSearch(text == "" or not not self.itemNameLower:match(text))
+  self:SetMatchesSearch(SearchCheck(self, text))
 end
 
 BaganatorClassicCachedItemButtonMixin = {}
@@ -238,10 +239,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
 end
 
 function BaganatorClassicCachedItemButtonMixin:SetItemFiltered(text)
-  if text ~= "" then
-    self.itemNameLower = self.itemNameLower or self.itemName:lower()
-  end
-  self.searchOverlay:SetShown(text ~= "" and not self.itemNameLower:match(text));
+  self.searchOverlay:SetShown(not SearchCheck(self, text))
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnClick(button)
@@ -364,8 +362,5 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
 end
 
 function BaganatorClassicLiveItemButtonMixin:SetItemFiltered(text)
-  if text ~= "" then
-    self.itemNameLower = self.itemNameLower or self.itemName:lower()
-  end
-  self.searchOverlay:SetShown(text ~= "" and not self.itemNameLower:match(text));
+  self.searchOverlay:SetShown(not SearchCheck(self, text))
 end
