@@ -43,6 +43,7 @@
     <Scripts>
       <OnLoad inherit="prepend">
         Mixin(self, BaganatorClassicLiveItemButtonMixin)
+        self:MyOnLoad()
       </OnLoad>
     </Scripts>
     <Layers>

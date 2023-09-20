@@ -300,6 +300,36 @@ end
 
 BaganatorClassicLiveItemButtonMixin = {}
 
+-- Alter the item button so that the tooltip works both on bag items and bank
+-- items
+function BaganatorClassicLiveItemButtonMixin:MyOnLoad()
+  self:SetScript("OnEnter", self.OnEnter)
+  self:SetScript("OnLeave", self.OnLeave)
+  self.UpdateTooltip = self.OnEnter
+end
+
+function BaganatorClassicLiveItemButtonMixin:GetInventorySlot()
+  return BankButtonIDToInvSlotID(self:GetID())
+end
+
+function BaganatorClassicLiveItemButtonMixin:OnEnter()
+  if self:GetParent():GetID() == -1 then
+    BankFrameItemButton_OnEnter(self)
+  else
+    ContainerFrameItemButton_OnEnter(self)
+  end
+end
+
+function BaganatorClassicLiveItemButtonMixin:OnLeave()
+  if self:GetParent():GetID() == -1 then
+    GameTooltip_Hide()
+    ResetCursor()
+  else
+    ContainerFrameItemButton_OnLeave(self)
+  end
+end
+-- end alterations
+
 function BaganatorClassicLiveItemButtonMixin:UpdateTextures(size)
   AdjustClassicButton(self, size)
 end
