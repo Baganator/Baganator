@@ -74,6 +74,11 @@ local function AdjustRetailButton(button, size)
   else
     button.emptyBackgroundAtlas = "bags-item-slot64"
   end
+
+  if button.IconQuestTexture then
+    button.IconQuestTexture:SetSize(size, size)
+    button.ExtendedSlot:SetSize(s2, s2)
+  end
 end
 
 -- Fix anchors and item sizes when resizing the item buttons
@@ -84,6 +89,12 @@ local function AdjustClassicButton(button, size)
   _G[button:GetName() .. "NormalTexture"]:SetSize(s2, s2)
 
   button.ItemLevel:SetPoint("TOPLEFT", 3, -5)
+
+  if button.ExtendedOverlay then
+    _G[button:GetName() .. "IconQuestTexture"]:SetSize(size, size+1)
+    button.ExtendedOverlay:SetSize(size, size)
+    button.ExtendedOverlay2:SetSize(size, size)
+  end
 end
 
 BaganatorRetailCachedItemButtonMixin = {}
