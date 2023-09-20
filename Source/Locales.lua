@@ -29,6 +29,10 @@ L["X_TRANSPARENCY"] = "%s%% Transparency"
 L["X_BAG_COLUMNS"] = "%s Bag Columns"
 L["X_BANK_COLUMNS"] = "%s Bank Columns"
 
+L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
+L["BAGS_X_BANKS_X"] = "Bags: %s, Banks: %s"
+L["BAGS_X_BANK_X"] = "Bags: %s, Bank: %s"
+
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 

@@ -25,11 +25,11 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
     bankCount = bankCount + s.bank
   end
 
-  tooltip:AddLine("Inventory Totals: " .. WHITE_FONT_COLOR:WrapTextInColorCode("Bags " .. bagCount .. ", Banks " .. bankCount))
+  tooltip:AddLine(BAGANATOR_L_INVENTORY_TOTALS_COLON .. " " .. WHITE_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_BAGS_X_BANKS_X:format(bagCount, bankCount)))
 
   for index = 1, math.min(#tooltipInfo, 4) do
     local s = tooltipInfo[index]
-    tooltip:AddDoubleLine("  " .. s.character, WHITE_FONT_COLOR:WrapTextInColorCode("Bags: " .. s.bags .. ", Bank: " .. s.bank))
+    tooltip:AddDoubleLine("  " .. s.character, WHITE_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_BAGS_X_BANK_X:format(s.bags, s.bank)))
   end
   if #tooltipInfo > 4 then
     tooltip:AddLine("  ...")
