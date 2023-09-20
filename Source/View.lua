@@ -513,6 +513,10 @@ end
 
 local masqueGroup
 local function MasqueRegistration(button)
+  if not LibStub then
+    return
+  end
+
   if masqueGroup == nil then
     -- Establish a reference to Masque.
     local Masque, MSQ_Version = LibStub("Masque", true)
