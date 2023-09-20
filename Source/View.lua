@@ -223,6 +223,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     self:SetTitle(BAGANATOR_L_XS_BAGS:format(character))
   end
 
+  self.SortButton:SetShown(isLive and Baganator.Constants.IsRetail)
+
   local showReagents = Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS)
 
   self.BagLive:SetShown(isLive)
@@ -462,6 +464,8 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
       [9] = true
     }
   end
+
+  self.SortButton:SetShown(Baganator.Constants.IsRetail)
 
   self:NotifyBagUpdate(updatedBags)
 

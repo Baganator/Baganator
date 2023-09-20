@@ -93,6 +93,16 @@
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
         </Anchors>
       </Button>
+      <Button parentKey="SortButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_SORT" frameLevel="700" hidden="true">
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            C_Container.SortBags()
+          </OnClick>
+        </Scripts>
+      </Button>
       <Button parentKey="ToggleBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_BANK" frameLevel="700">
         <Scripts>
           <OnClick>
@@ -186,6 +196,19 @@
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
         </Anchors>
+      </Button>
+      <Button parentKey="SortButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_SORT" frameLevel="700" hidden="true">
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            C_Container.SortBankBags()
+            C_Timer.After(1, function()
+              C_Container.SortReagentBankBags()
+            end)
+          </OnClick>
+        </Scripts>
       </Button>
       <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate">
         <Anchors>
