@@ -53,6 +53,12 @@ local function SearchCheck(self, text)
     self.pendingSearch = text
     return
   end
+
+  if not self.itemName then
+    print("missing", self:GetID(), self:GetParent():GetID())
+    return
+  end
+
   self.pendingSearch = nil
   if text ~= "" then
     self.itemNameLower = self.itemNameLower or self.itemName:lower()
