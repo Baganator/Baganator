@@ -58,6 +58,9 @@ function Baganator.Utilities.GetItemKey(itemLink)
   -- Battle pets
   if itemLink:match("battlepet:") then
     return "p:" .. KeyPartsPetLink(itemLink)
+  -- Keystone
+  elseif itemLink:match("keystone:") then
+    return (select(2, SplitLink(itemLink)))
   -- Equipment
   elseif IsEquipment(itemLink) then
     return "g:" .. KeyPartsItemLink(itemLink)

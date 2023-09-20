@@ -2,6 +2,10 @@ local IsEquipment = Baganator.Utilities.IsEquipment
 
 -- Load item data late
 local function GetExtraInfo(frame, itemID, itemLink)
+  if itemLink:match("keystone:") then
+    itemLink = "item:" .. itemID
+  end
+
   if itemLink:match("battlepet:") then
     frame.itemInfoWaiting = false
     local petID = tonumber(itemLink:match("battlepet:(%d+)"))
