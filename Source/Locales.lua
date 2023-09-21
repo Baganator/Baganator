@@ -28,6 +28,7 @@ L["CUSTOMISE_EMPTY_SLOTS"] = "Hide empty slots background"
 L["X_TRANSPARENCY"] = "%s%% Transparency"
 L["X_BAG_COLUMNS"] = "%s Bag Columns"
 L["X_BANK_COLUMNS"] = "%s Bank Columns"
+L["X_ICON_SIZE"] = "%spx Icon Size"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X_BANKS_X"] = "Bags: %s, Banks: %s"

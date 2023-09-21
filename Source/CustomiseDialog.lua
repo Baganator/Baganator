@@ -19,4 +19,5 @@ function BaganatorCustomiseDialogMixin:RefreshOptions()
   self.AlphaSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.VIEW_ALPHA) * 100)
   self.BagWidthSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.BAG_VIEW_WIDTH))
   self.BankWidthSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.BANK_VIEW_WIDTH))
+  self.IconSizeSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE))
 end

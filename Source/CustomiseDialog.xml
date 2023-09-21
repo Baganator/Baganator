@@ -61,7 +61,7 @@
   </Frame>
 
   <Frame name="BaganatorCustomiseDialogTemplate" hidden="true" virtual="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorCustomiseDialogMixin">
-    <Size x="500" y="320"/>
+    <Size x="500" y="370"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
     </Scripts>
@@ -146,6 +146,20 @@
           <Size y="22"/>
           <Anchors>
             <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.BagWidthSlider" y="-50"/>
+          </Anchors>
+      </Frame>
+      <Frame parentKey="IconSizeSlider" inherits="BaganatorSliderTemplate">
+          <KeyValues>
+            <KeyValue key="option" value="bag_icon_size" type="string"/>
+            <KeyValue key="min" value="10" type="number"/>
+            <KeyValue key="max" value="70" type="number"/>
+            <KeyValue key="highText" value="70" type="string"/>
+            <KeyValue key="lowText" value="10" type="string"/>
+            <KeyValue key="valuePattern" value="BAGANATOR_L_X_ICON_SIZE" type="global"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.BankWidthSlider" y="-50"/>
           </Anchors>
       </Frame>
     </Frames>
