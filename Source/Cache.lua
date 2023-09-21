@@ -157,6 +157,7 @@ function BaganatorCacheMixin:OnUpdate()
       iconTexture = slotInfo.iconFileID,
       itemLink = slotInfo.hyperlink,
       quality = slotInfo.quality,
+      isBound = slotInfo.isBound,
     }
   end
 

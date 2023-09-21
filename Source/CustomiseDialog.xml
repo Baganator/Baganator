@@ -61,7 +61,7 @@
   </Frame>
 
   <Frame name="BaganatorCustomiseDialogTemplate" hidden="true" virtual="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorCustomiseDialogMixin">
-    <Size x="500" y="370"/>
+    <Size x="500" y="470"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
     </Scripts>
@@ -105,6 +105,28 @@
             <Anchor point="LEFT" x="40"/>
           </Anchors>
       </Frame>
+      <Frame parentKey="ShowItemLevel" inherits="BaganatorCheckBoxTemplate">
+          <KeyValues>
+            <KeyValue key="text" value="BAGANATOR_L_SHOW_ITEM_LEVEL" type="global"/>
+            <KeyValue key="option" value="show_item_level" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativeKey="$parent.EmptySlotBackground" relativePoint="BOTTOM" y="-20"/>
+            <Anchor point="LEFT" x="40"/>
+          </Anchors>
+      </Frame>
+      <Frame parentKey="ShowBoEStatus" inherits="BaganatorCheckBoxTemplate">
+          <KeyValues>
+            <KeyValue key="text" value="BAGANATOR_L_SHOW_BOE_STATUS" type="global"/>
+            <KeyValue key="option" value="show_boe_status" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativeKey="$parent.ShowItemLevel" relativePoint="BOTTOM" y="-20"/>
+            <Anchor point="LEFT" x="40"/>
+          </Anchors>
+      </Frame>
       <Frame parentKey="AlphaSlider" inherits="BaganatorSliderTemplate">
           <KeyValues>
             <KeyValue key="option" value="view_alpha" type="string"/>
@@ -117,7 +139,7 @@
           </KeyValues>
           <Size y="22"/>
           <Anchors>
-            <Anchor point="TOP" relativePoint="BOTTOM" relativeKey="$parent.EmptySlotBackground" y="-30"/>
+            <Anchor point="TOP" relativePoint="BOTTOM" relativeKey="$parent.ShowBoEStatus" y="-30"/>
           </Anchors>
       </Frame>
       <Frame parentKey="BagWidthSlider" inherits="BaganatorSliderTemplate">

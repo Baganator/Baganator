@@ -1,50 +1,60 @@
 local IsEquipment = Baganator.Utilities.IsEquipment
 
 -- Load item data late
-local function GetExtraInfo(frame, itemID, itemLink)
+local function GetExtraInfo(self, itemID, itemLink)
+  self.ItemLevel:SetText("")
   if itemLink:match("keystone:") then
     itemLink = "item:" .. itemID
   end
 
   if itemLink:match("battlepet:") then
-    frame.itemInfoWaiting = false
+    self.itemInfoWaiting = false
     local petID = tonumber(itemLink:match("battlepet:(%d+)"))
-    frame.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
-    frame.isCraftingReagent = false
+    self.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
+    self.isCraftingReagent = false
 
   elseif C_Item.IsItemDataCachedByID(itemID) then
-    frame.itemInfoWaiting = false
+    self.itemInfoWaiting = false
     local itemInfo = {GetItemInfo(itemLink)}
-    frame.itemName = itemInfo[1]
-    frame.isCraftingReagent = itemInfo[17]
-    if frame.pendingSearch then
-      frame:SetItemFiltered(frame.pendingSearch)
+    self.itemName = itemInfo[1]
+    self.isCraftingReagent = itemInfo[17]
+    if self.pendingSearch then
+      self:SetItemFiltered(self.pendingSearch)
     end
 
     if IsEquipment(itemLink) then
       local itemLevel = GetDetailedItemLevelInfo(itemLink)
-      frame.ItemLevel:SetText(itemLevel)
-      frame.ItemLevel:Show()
+      self.ItemLevel:SetText(itemLevel)
     end
 
   else
     local item = Item:CreateFromItemLink(itemLink)
-    frame.itemInfoWaiting = true
+    self.itemInfoWaiting = true
     item:ContinueOnItemLoad(function()
-      frame.itemInfoWaiting = false
+      self.itemInfoWaiting = false
       local itemInfo = {GetItemInfo(itemLink)}
-      frame.itemName = itemInfo[1]
-      frame.isCraftingReagent = itemInfo[17]
-      if frame.pendingSearch then
-        frame:SetItemFiltered(frame.pendingSearch)
+      self.itemName = itemInfo[1]
+      self.isCraftingReagent = itemInfo[17]
+      if self.pendingSearch then
+        self:SetItemFiltered(self.pendingSearch)
       end
 
       if IsEquipment(itemLink) then
         local itemLevel = GetDetailedItemLevelInfo(itemLink)
-        frame.ItemLevel:SetText(itemLevel)
-        frame.ItemLevel:Show()
+        self.ItemLevel:SetText(itemLevel)
       end
     end)
+  end
+end
+
+local function SetStaticInfo(self, details)
+  self.BindingText:SetText("")
+  if not details.itemLink then
+    return
+  end
+
+  if IsEquipment(details.itemLink) and details.isBound == false then
+    self.BindingText:SetText(BAGANATOR_L_BOE)
   end
 end
 
@@ -65,6 +75,14 @@ local function SearchCheck(self, text)
   return text == "" or not not self.itemNameLower:match(text)
 end
 
+local function ApplyItemDetailSettings(button)
+  button.ItemLevel:SetPoint("TOPLEFT", 3, -5)
+  button.BindingText:SetPoint("BOTTOMLEFT", 3, 5)
+
+  button.ItemLevel:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_ITEM_LEVEL))
+  button.BindingText:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_BOE_STATUS))
+end
+
 -- Fix anchors and item sizes when resizing the item buttons
 local function AdjustRetailButton(button, size)
   button.IconBorder:SetSize(size, size)
@@ -73,12 +91,20 @@ local function AdjustRetailButton(button, size)
   local s2 = 64/37 * size
   button.NormalTexture:SetSize(s2, s2)
 
-  button.ItemLevel:SetPoint("TOPLEFT", 3, -5)
   if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
     button.emptyBackgroundAtlas = nil
+    if button.icon:GetAtlas() ~= nil then
+      button.icon:SetAtlas(nil)
+      button.icon:Hide()
+    end
   else
     button.emptyBackgroundAtlas = "bags-item-slot64"
+    if not button.icon:IsShown() then
+      button.icon:Show()
+      button.icon:SetAtlas(button.emptyBackgroundAtlas)
+    end
   end
+  ApplyItemDetailSettings(button)
 end
 
 -- Fix anchors and item sizes when resizing the item buttons
@@ -88,7 +114,7 @@ local function AdjustClassicButton(button, size)
   local s2 = 64/37 * size
   _G[button:GetName() .. "NormalTexture"]:SetSize(s2, s2)
 
-  button.ItemLevel:SetPoint("TOPLEFT", 3, -5)
+  ApplyItemDetailSettings(button)
 end
 
 BaganatorRetailCachedItemButtonMixin = {}
@@ -103,8 +129,8 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self:SetItemButtonCount(details.itemCount)
   self.itemLink = details.itemLink
   self.itemName = ""
-  self.ItemLevel:Hide()
 
+  SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
     GetExtraInfo(self, details.itemID, self.itemLink)
   end
@@ -226,8 +252,8 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
 
   self.itemName = ""
   self.itemNameLower = nil
-  self.ItemLevel:Hide()
 
+  SetStaticInfo(self, cacheData)
   if texture ~= nil then
     GetExtraInfo(self, itemID, cacheData.itemLink)
   end
@@ -251,8 +277,8 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   SetItemButtonTexture(self, details.iconTexture);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
   SetItemButtonCount(self, details.itemCount);
-  self.ItemLevel:Hide()
 
+  SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
     GetExtraInfo(self, details.itemID, details.itemLink)
   end
@@ -365,8 +391,8 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   self.itemLink = cacheData.itemLink
   self.itemName = ""
   self.itemNameLower = nil
-  self.ItemLevel:Hide()
 
+  SetStaticInfo(self, cacheData)
   if cacheData.iconTexture ~= nil then
     GetExtraInfo(self, cacheData.itemID, cacheData.itemLink)
   end

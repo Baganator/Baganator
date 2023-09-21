@@ -10,9 +10,14 @@ Baganator.Config.Options = {
   EMPTY_SLOT_BACKGROUND = "empty_slot_background",
   SHOW_REAGENTS = "show_reagents",
   SHOW_SORT_BUTTON = "show_sort_button",
-  INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
+
+  INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
+
+  SHOW_ITEM_LEVEL = "show_item_level",
+  SHOW_BOE_STATUS = "show_boe_status",
+
 
   DEBUG = "debug",
 }
@@ -28,6 +33,9 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_SORT_BUTTON] = true,
   [Baganator.Config.Options.INVERTED_BAG_SHORTCUTS] = false,
   [Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW] = {},
+  [Baganator.Config.Options.SHOW_ITEM_LEVEL] = true,
+  [Baganator.Config.Options.SHOW_BOE_STATUS] = false,
+
   [Baganator.Config.Options.DEBUG] = false,
 }
 
@@ -43,6 +51,8 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.BANK_VIEW_WIDTH,
   Baganator.Config.Options.SHOW_REAGENTS,
   Baganator.Config.Options.SHOW_SORT_BUTTON,
+  Baganator.Config.Options.SHOW_ITEM_LEVEL,
+  Baganator.Config.Options.SHOW_BOE_STATUS,
 }
 
 function Baganator.Config.IsValidOption(name)

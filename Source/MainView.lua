@@ -55,6 +55,9 @@ function BaganatorMainViewMixin:OnLoad()
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       Baganator.Utilities.ApplyVisuals(self)
     elseif tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+      for _, layout in ipairs(self.Layouts) do
+        layout:InformSettingChanged(settingName)
+      end
       if self.lastCharacter then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end

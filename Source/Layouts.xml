@@ -1,11 +1,11 @@
 <Ui>
-  <Frame name="BaganatorCachedBagLayoutTemplate" virtual="true" mixin="BaganatorCachedBagLayoutMixin">
+  <Frame name="BaganatorCachedBagLayoutTemplate" virtual="true" mixin="BaganatorCachedBagLayoutMixin" parentArray="Layouts">
     <Scripts>
       <OnLoad method="OnLoad"/>
     </Scripts>
   </Frame>
 
-  <Frame name="BaganatorLiveBagLayoutTemplate" virtual="true" mixin="BaganatorLiveBagLayoutMixin">
+  <Frame name="BaganatorLiveBagLayoutTemplate" virtual="true" mixin="BaganatorLiveBagLayoutMixin" parentArray="Layouts">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnEvent method="OnEvent"/>

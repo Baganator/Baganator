@@ -31,10 +31,14 @@ L["X_BAG_COLUMNS"] = "%s Bag Columns"
 L["X_BANK_COLUMNS"] = "%s Bank Columns"
 L["X_ICON_SIZE"] = "%spx Icon Size"
 L["SHOW_SORT_BUTTON"] = "Show Sort Button"
+L["SHOW_ITEM_LEVEL"] = "Show equipment item levels"
+L["SHOW_BOE_STATUS"] = "Show equipment BoE status"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X_BANKS_X"] = "Bags: %s, Banks: %s"
 L["BAGS_X_BANK_X"] = "Bags: %s, Bank: %s"
+
+L["BOE"] = "BoE"
 
 L["SORT"] = "Sort"
 

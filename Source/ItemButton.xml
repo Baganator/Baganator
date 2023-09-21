@@ -8,6 +8,7 @@
     <Layers>
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
+        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
       </Layer>
     </Layers>
   </ItemButton>
@@ -22,6 +23,7 @@
     <Layers>
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
+        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
       </Layer>
     </Layers>
   </ItemButton>
@@ -35,6 +37,7 @@
     <Layers>
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
+        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
       </Layer>
     </Layers>
   </Button>
@@ -49,6 +52,7 @@
     <Layers>
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
+        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
       </Layer>
     </Layers>
   </Button>

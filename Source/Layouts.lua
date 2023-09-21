@@ -28,6 +28,13 @@ local iconPadding = 2
 
 BaganatorCachedBagLayoutMixin = {}
 
+local ReflowSettings = {
+  Baganator.Config.Options.BAG_ICON_SIZE,
+  Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
+  Baganator.Config.Options.SHOW_ITEM_LEVEL,
+  Baganator.Config.Options.SHOW_BOE_STATUS,
+}
+
 local classicCachedObjectCounter = 0
 
 function BaganatorCachedBagLayoutMixin:OnLoad()
@@ -43,6 +50,12 @@ function BaganatorCachedBagLayoutMixin:OnLoad()
   self.prevState = {}
   self.buttonsByBag = {}
   self.waitingUpdate = {}
+end
+
+function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
+  if tIndexOf(ReflowSettings, setting) ~= nil then
+    self.reflow = true
+  end
 end
 
 function BaganatorCachedBagLayoutMixin:CompareButtonIndexes(indexes, indexesToUse, newBags)
@@ -97,7 +110,6 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
 
   self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding * 2 + iconSize) * ((cols > 0 and (rows + 1) or rows)))
   self.oldRowWidth = rowWidth
-  self.oldIconSize = iconSize
 end
 
 function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes, indexesToUse, rowWidth)
@@ -120,7 +132,8 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
 
   if self.prevState.character ~= character or self.prevState.section ~= section or
       self:CompareButtonIndexes(indexes, indexesToUse, sectionData) or rowWidth ~= self.oldRowWidth or
-      iconSize ~= self.oldIconSize or emptySlotBackground ~= self.oldEmptySlotBackground then
+      self.reflow then
+    self.reflow = false
     self:RebuildLayout(sectionData, indexes, indexesToUse, rowWidth)
     self.waitingUpdate = {}
     for index in pairs(indexesToUse) do
@@ -185,6 +198,12 @@ function BaganatorLiveBagLayoutMixin:OnEvent(eventName, ...)
   end
 end
 
+function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)
+  if tIndexOf(ReflowSettings, setting) ~= nil then
+    self.reflow = true
+  end
+end
+
 function BaganatorLiveBagLayoutMixin:UpdateLockForItem(bagID, slotID)
   if not self.buttonsByBag[bagID] then
     return
@@ -216,7 +235,6 @@ function BaganatorLiveBagLayoutMixin:FlowButtons(rowWidth)
 
   self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding * 2 + iconSize) * ((cols > 0 and (rows + 1) or rows)))
   self.oldRowWidth = rowWidth
-  self.oldIconSize = iconSize
 end
 
 function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWidth)
@@ -278,17 +296,15 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
   local emptySlotBackground = Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND)
 
-  if not InCombatLockdown() then
-    if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.character ~= character or self.prevState.section ~= section or
-          emptySlotBackground ~= self.oldEmptySlotBackground then
-      self:RebuildLayout(indexes, indexesToUse, rowWidth)
-      self.waitingUpdate = {}
-      for _, bagID in ipairs(indexes) do
-        self.waitingUpdate[bagID] = true
-      end
-    elseif rowWidth ~= self.oldRowWidth or iconSize ~= self.oldIconSize then
-      self:FlowButtons(rowWidth)
+  if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.character ~= character or self.prevState.section ~= section then
+    self:RebuildLayout(indexes, indexesToUse, rowWidth)
+    self.waitingUpdate = {}
+    for _, bagID in ipairs(indexes) do
+      self.waitingUpdate[bagID] = true
     end
+  elseif self.reflow or rowWidth ~= self.oldRowWidth then
+    self.reflow = false
+    self:FlowButtons(rowWidth)
   end
 
   local indexesReversed = {}
@@ -314,7 +330,6 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
     section = section,
   }
   self.waitingUpdate = {}
-  self.oldEmptySlotBackground = emptySlotBackground
 end
 
 function BaganatorLiveBagLayoutMixin:ApplySearch(text)
