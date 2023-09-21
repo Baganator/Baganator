@@ -31,6 +31,20 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.DEBUG] = false,
 }
 
+Baganator.Config.VisualsFrameOnlySettings = {
+  Baganator.Config.Options.VIEW_ALPHA,
+  Baganator.Config.Options.NO_FRAME_BORDERS,
+}
+
+Baganator.Config.ItemButtonsRelayoutSettings = {
+  Baganator.Config.Options.BAG_ICON_SIZE,
+  Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
+  Baganator.Config.Options.BAG_VIEW_WIDTH,
+  Baganator.Config.Options.BANK_VIEW_WIDTH,
+  Baganator.Config.Options.SHOW_REAGENTS,
+  Baganator.Config.Options.SHOW_SORT_BUTTON,
+}
+
 function Baganator.Config.IsValidOption(name)
   for _, option in pairs(Baganator.Config.Options) do
     if option == name then

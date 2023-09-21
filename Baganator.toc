@@ -13,18 +13,23 @@ Source\Constants.lua
 Source\Config.lua
 Source\SlashCmd.lua
 Source\Utilities.lua
-Source\Components.lua
 Source\Tooltips.lua
 Source\Cache.lua
 Source\Summaries.lua
 
+Source\Components.lua
+Source\Layouts.lua
 Source\CustomiseDialog.lua
 Source\CharacterSelect.lua
 Source\ItemButton.lua
-Source\View.lua
+Source\MainView.lua
+Source\BankView.lua
 Source\Main.lua
 
+Source\Components.xml
+Source\Layouts.xml
 Source\CustomiseDialog.xml
 Source\CharacterSelect.xml
 Source\ItemButton.xml
-Source\View.xml
+Source\MainView.xml
+Source\BankView.xml

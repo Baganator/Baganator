@@ -1,0 +1,39 @@
+<Ui>
+  <Button name="BaganatorRetailTabButtonTemplate" virtual="true" inherits="PanelTabButtonTemplate">
+    <Scripts>
+      <OnShow>
+        PanelTemplates_TabResize(self, 30, nil, 20)
+        PanelTemplates_DeselectTab(self)
+      </OnShow>
+    </Scripts>
+  </Button>
+
+  <Button name="BaganatorClassicTabButtonTemplate" virtual="true" inherits="CharacterFrameTabButtonTemplate">
+    <Scripts>
+      <OnShow>
+        PanelTemplates_TabResize(self, 30, nil, 20)
+        PanelTemplates_DeselectTab(self)
+      </OnShow>
+    </Scripts>
+  </Button>
+
+  <Button name="BaganatorCustomiseButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
+    <Size x="32" y="22"/>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture file="Interface\WorldMap\Gear_64">
+          <TexCoords left="0.5" top="0" right="0" bottom="0.5"/>
+          <Size x="19" y="19"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnClick>
+        Baganator.CallbackRegistry:TriggerEvent("ShowCustomise")
+      </OnClick>
+    </Scripts>
+  </Button>
+</Ui>
