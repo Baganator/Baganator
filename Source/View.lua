@@ -80,6 +80,10 @@ function BaganatorMainViewMixin:OnLoad()
       self:ApplySearch(text)
     end
   end)
+
+  Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
+    self:UpdateForCharacter(character, self.liveCharacter == character)
+  end)
 end
 
 function BaganatorMainViewMixin:ApplySearch(text)
@@ -143,6 +147,10 @@ function BaganatorMainViewMixin:ToggleReagents()
   Baganator.Config.Set(Baganator.Config.Options.SHOW_REAGENTS, not Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS))
 end
 
+function BaganatorMainViewMixin:ToggleCharacterSidebar()
+  self.CharacterSelect:SetShown(not self.CharacterSelect:IsShown())
+end
+
 function BaganatorMainViewMixin:SelectTab(character)
   for index, tab in ipairs(self.Tabs) do
     if tab.details.character == character then
@@ -178,8 +186,7 @@ function BaganatorMainViewMixin:SetupTabs()
     local tabButton = self.tabsPool:Acquire()
     tabButton:SetText(char.nameOnly)
     tabButton:SetScript("OnClick", function()
-      self:UpdateForCharacter(char.character, char.isLive) 
-      PanelTemplates_SetTab(self, index)
+      Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", char.character)
     end)
     if not lastTab then
       tabButton:SetPoint("BOTTOM", 0, -30)
@@ -215,8 +222,13 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self:SetupTabs()
   self:SelectTab(character)
 
+  local oldLast = self.lastCharacter
   self.lastCharacter = character
   self.isLive = isLive
+
+  if oldLast ~= character then
+    Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", character)
+  end
 
   local characterData = BAGANATOR_DATA.Characters[character]
   if not characterData then
@@ -353,6 +365,10 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     self.ToggleReagentsBankButton:ClearAllPoints()
     self.ToggleReagentsBankButton:SetPoint("TOPLEFT", activeBank, "BOTTOMLEFT", -2, -5)
   end
+
+  self.ToggleAllCharacters:ClearAllPoints()
+  self.ToggleAllCharacters:SetPoint("CENTER", activeBag)
+  self.ToggleAllCharacters:SetPoint("BOTTOM", 0, 2)
 
   self.Money:SetText(GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))
 end

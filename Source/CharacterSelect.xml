@@ -1,0 +1,30 @@
+<Ui>
+  <Frame name="BaganatorCharacterSelectSidebarTemplate" virtual="true" mixin="CharacterSelectSidebarMixin" inherits="DefaultPanelFlatTemplate">
+    <Size x="280" y="400"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+    </Scripts>
+    <Frames>
+      <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate">
+        <Size y="22"/>
+        <Anchors>
+          <Anchor point="TOPRIGHT" x="-20" y="-22"/>
+          <Anchor point="TOPLEFT" x="20" y="-22"/>
+        </Anchors>
+      </EditBox>
+      <EventFrame parentKey="ScrollBar" inherits="WowTrimScrollBar">
+        <Anchors>
+          <Anchor point="TOPRIGHT" y="-50"/>
+          <Anchor point="BOTTOMRIGHT"/>
+        </Anchors>
+      </EventFrame>
+      <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
+        <Anchors>
+          <Anchor point="TOPLEFT" y="-50"/>
+          <Anchor point="BOTTOMRIGHT" relativeKey="$parent.ScrollBar"/>
+        </Anchors>
+      </Frame>
+    </Frames>
+  </Frame>
+</Ui>

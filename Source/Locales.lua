@@ -19,6 +19,7 @@ L["REAGENTS"] = "Reagents"
 L["XS_BANK_AND_BAGS"] = "%s's Bank and Bags"
 L["XS_BAGS"] = "%s's Bags"
 L["XS_BANK"] = "%s's Bank"
+L["ALL_CHARACTERS"] = "All Characters"
 
 L["CUSTOMISE_BAGANATOR"] = "Customise Baganator"
 L["RESET_POSITIONS"] = "Reset Positions"

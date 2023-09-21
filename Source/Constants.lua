@@ -34,13 +34,19 @@ end
 
 Baganator.Constants.Events = {
   "SettingChanged",
+
   "CharacterDeleted",
+
   "CacheUpdate",
+
   "SearchTextChanged",
-  "ShowCustomise",
-  "ResetFramePositions",
   "BagShow",
   "BagHide",
+  "CharacterSelect",
+
+  "ShowCustomise",
+  "ResetFramePositions",
+
   "ReagentOnEnter",
   "ReagentOnLeave",
 }

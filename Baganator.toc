@@ -17,11 +17,14 @@ Source\Components.lua
 Source\Tooltips.lua
 Source\Cache.lua
 Source\Summaries.lua
+
 Source\CustomiseDialog.lua
+Source\CharacterSelect.lua
 Source\ItemButton.lua
 Source\View.lua
 Source\Main.lua
 
 Source\CustomiseDialog.xml
+Source\CharacterSelect.xml
 Source\ItemButton.xml
 Source\View.xml
