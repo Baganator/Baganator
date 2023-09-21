@@ -53,12 +53,14 @@ local function SetupView()
     customiseDialog:Raise()
   end)
 
-  hooksecurefunc("ToggleAllBags", function()
-    mainView:SetShown(not mainView:IsShown())
-    if mainView:IsVisible() then
-      mainView:UpdateForCharacter(cache.currentCharacter, true)
-    end
-  end)
+  if not Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
+    hooksecurefunc("ToggleAllBags", function()
+      mainView:SetShown(not mainView:IsShown())
+      if mainView:IsVisible() then
+        mainView:UpdateForCharacter(cache.currentCharacter, true)
+      end
+    end)
+  end
 
   hooksecurefunc("OpenAllBags", function()
     mainView:Show()
@@ -69,7 +71,7 @@ local function SetupView()
     mainView:Hide()
   end)
 
-  if Baganator.Constants.IsEra then
+  if Baganator.Constants.IsEra or Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
     hooksecurefunc("ToggleBackpack", function()
       mainView:SetShown(not mainView:IsShown())
       if mainView:IsVisible() then
