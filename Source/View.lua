@@ -82,6 +82,7 @@ function BaganatorMainViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
+    self:AddNewRecent(character)
     self:UpdateForCharacter(character, self.liveCharacter == character)
   end)
 end
@@ -160,25 +161,68 @@ function BaganatorMainViewMixin:SelectTab(character)
   end
 end
 
-function BaganatorMainViewMixin:SetupTabs()
-  if tabsSetup then
-    return
+local maxRecents = 5
+local function DeDuplicateRecents()
+  local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
+  local newRecents = {}
+  local seen = {}
+  for _, char in ipairs(recents) do
+    if not seen[char.character] and #newRecents < Baganator.Constants.MaxRecents then
+      table.insert(newRecents, char)
+    end
+    seen[char.character] = true
   end
+  Baganator.Config.Set(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW, newRecents)
+end
 
-  self.tabsPool:ReleaseAll()
-
+function BaganatorMainViewMixin:FillRecents(characters)
   local characters = {}
   for char, data in pairs(BAGANATOR_DATA.Characters) do
     if char ~= self.liveCharacter  then
-      table.insert(characters, {character = char, nameOnly = data.details.character, isLive = false})
+      table.insert(characters, {character = char, nameOnly = data.details.character})
     end
   end
+
   table.sort(characters, function(a, b) return a.character < b.character end)
   for char, data in pairs(BAGANATOR_DATA.Characters) do
     if char == self.liveCharacter  then
-      table.insert(characters, 1, {character = char, nameOnly = data.details.character, isLive = true})
+      table.insert(characters, 1, {character = char, nameOnly = data.details.character})
     end
   end
+
+  local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
+
+  table.insert(recents, 1, characters[1])
+  for _, char in ipairs(characters) do
+    table.insert(recents, char)
+  end
+
+  DeDuplicateRecents()
+
+  self:RefreshTabs()
+end
+
+function BaganatorMainViewMixin:AddNewRecent(character)
+  local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
+  local data = BAGANATOR_DATA.Characters[character]
+  if not data then
+    return
+  end
+  local char = {
+    character = character,
+    nameOnly = data.details.character,
+  }
+  table.insert(recents, 2, char)
+
+  DeDuplicateRecents()
+
+  self:RefreshTabs()
+end
+
+function BaganatorMainViewMixin:RefreshTabs()
+  self.tabsPool:ReleaseAll()
+
+  local characters = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
 
   local lastTab
   tabs = {}
@@ -202,6 +246,14 @@ function BaganatorMainViewMixin:SetupTabs()
   self.Tabs = tabs
 
   PanelTemplates_SetNumTabs(self, #characters)
+end
+
+function BaganatorMainViewMixin:SetupTabs()
+  if tabsSetup then
+    return
+  end
+
+  self:FillRecents(characters)
 
   self.tabsSetup = self.liveCharacter ~= nil
 end

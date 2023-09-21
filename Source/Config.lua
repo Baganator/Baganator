@@ -12,6 +12,8 @@ Baganator.Config.Options = {
   SHOW_SORT_BUTTON = "show_sort_button",
   INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
 
+  RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
+
   DEBUG = "debug",
 }
 
@@ -25,6 +27,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_REAGENTS] = true,
   [Baganator.Config.Options.SHOW_SORT_BUTTON] = true,
   [Baganator.Config.Options.INVERTED_BAG_SHORTCUTS] = false,
+  [Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW] = {},
   [Baganator.Config.Options.DEBUG] = false,
 }
 

@@ -21,6 +21,8 @@ Baganator.Constants = {
   IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
+
+  MaxRecents = 5,
 }
 
 -- Not currently included as the keyring bag presents as quite large in the bag
