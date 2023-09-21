@@ -55,7 +55,6 @@ local function SearchCheck(self, text)
   end
 
   if not self.itemName then
-    print("missing", self:GetID(), self:GetParent():GetID())
     return
   end
 
