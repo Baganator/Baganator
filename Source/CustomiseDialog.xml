@@ -23,31 +23,12 @@
 
   <Frame name="BaganatorSliderTemplate" virtual="true" mixin="BaganatorSliderMixin">
     <Frames>
-      <Slider parentKey="Slider" inherits="UISliderTemplate">
+      <Slider parentKey="Slider" inherits="OptionsSliderTemplate">
         <Size y="20"/>
         <Anchors>
           <Anchor point="RIGHT" x="-30"/>
           <Anchor point="LEFT" x="30"/>
         </Anchors>
-        <Layers>
-          <Layer level="ARTWORK">
-            <FontString name="$parentText" parentKey="Text" inherits="GameFontHighlight">
-              <Anchors>
-                <Anchor point="BOTTOM" relativePoint="TOP"/>
-              </Anchors>
-            </FontString>
-            <FontString name="$parentLow" parentKey="Low" inherits="GameFontHighlightSmall" text="LOW">
-              <Anchors>
-                <Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" x="-4" y="3"/>
-              </Anchors>
-            </FontString>
-            <FontString name="$parentHigh" parentKey="High" inherits="GameFontHighlightSmall" text="HIGH">
-              <Anchors>
-                <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="4" y="3"/>
-              </Anchors>
-            </FontString>
-          </Layer>
-        </Layers>
       </Slider>
     </Frames>
     <Anchors>
