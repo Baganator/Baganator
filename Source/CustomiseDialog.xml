@@ -61,7 +61,7 @@
   </Frame>
 
   <Frame name="BaganatorCustomiseDialogTemplate" hidden="true" virtual="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorCustomiseDialogMixin">
-    <Size x="500" y="470"/>
+    <Size x="550" y="520"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
     </Scripts>
@@ -94,6 +94,17 @@
             <Anchor point="LEFT" x="40"/>
           </Anchors>
       </Frame>
+      <Frame parentKey="ShowSortButton" inherits="BaganatorCheckBoxTemplate">
+          <KeyValues>
+            <KeyValue key="text" value="BAGANATOR_L_SHOW_SORT_BUTTON" type="global"/>
+            <KeyValue key="option" value="show_sort_button" type="string"/>
+          </KeyValues>
+          <Size y="22"/>
+          <Anchors>
+            <Anchor point="TOP" relativeKey="$parent.NoFrameBorders" relativePoint="BOTTOM" y="-20"/>
+            <Anchor point="LEFT" x="40"/>
+          </Anchors>
+      </Frame>
       <Frame parentKey="EmptySlotBackground" inherits="BaganatorCheckBoxTemplate">
           <KeyValues>
             <KeyValue key="text" value="BAGANATOR_L_CUSTOMISE_EMPTY_SLOTS" type="global"/>
@@ -101,7 +112,7 @@
           </KeyValues>
           <Size y="22"/>
           <Anchors>
-            <Anchor point="TOP" relativeKey="$parent.NoFrameBorders" relativePoint="BOTTOM" y="-20"/>
+            <Anchor point="TOP" relativeKey="$parent.ShowSortButton" relativePoint="BOTTOM" y="-20"/>
             <Anchor point="LEFT" x="40"/>
           </Anchors>
       </Frame>

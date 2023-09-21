@@ -15,6 +15,7 @@ end
 function BaganatorCustomiseDialogMixin:RefreshOptions()
   self.LockFrames.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES))
   self.NoFrameBorders.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.NO_FRAME_BORDERS))
+  self.ShowSortButton.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON))
   self.EmptySlotBackground.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND))
   self.ShowItemLevel.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.SHOW_ITEM_LEVEL))
   self.ShowBoEStatus.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.SHOW_BOE_STATUS))
