@@ -13,6 +13,7 @@ local ITEM_BUTTON_SETTINGS = {
   Baganator.Config.Options.BAG_VIEW_WIDTH,
   Baganator.Config.Options.BANK_VIEW_WIDTH,
   Baganator.Config.Options.SHOW_REAGENTS,
+  Baganator.Config.Options.SHOW_SORT_BUTTON,
 }
 
 function BaganatorMainViewMixin:OnLoad()
@@ -226,7 +227,9 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
   end
 
-  self.SortButton:SetShown(isLive and Baganator.Constants.IsRetail)
+  local showSortButton = Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
+
+  self.SortButton:SetShown(showSortButton and isLive and Baganator.Constants.IsRetail)
 
   local showReagents = Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS)
 
@@ -468,7 +471,9 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     }
   end
 
-  self.SortButton:SetShown(Baganator.Constants.IsRetail)
+  local showSortButton = Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
+
+  self.SortButton:SetShown(showSortButton and Baganator.Constants.IsRetail)
 
   self:NotifyBagUpdate(updatedBags)
 

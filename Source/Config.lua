@@ -9,6 +9,7 @@ Baganator.Config.Options = {
   NO_FRAME_BORDERS = "no_frame_borders",
   EMPTY_SLOT_BACKGROUND = "empty_slot_background",
   SHOW_REAGENTS = "show_reagents",
+  SHOW_SORT_BUTTON = "show_sort_button",
 
   DEBUG = "debug",
 }
@@ -21,6 +22,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.LOCK_FRAMES] = true,
   [Baganator.Config.Options.EMPTY_SLOT_BACKGROUND] = true,
   [Baganator.Config.Options.SHOW_REAGENTS] = true,
+  [Baganator.Config.Options.SHOW_SORT_BUTTON] = true,
   [Baganator.Config.Options.DEBUG] = false,
 }
 
