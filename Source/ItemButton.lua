@@ -49,6 +49,7 @@ end
 
 local function SetStaticInfo(self, details)
   self.BindingText:SetText("")
+  self.ItemLevel:SetText("")
   if not details.itemLink then
     return
   end
