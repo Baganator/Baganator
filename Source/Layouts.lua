@@ -119,6 +119,9 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
       indexesToUse[index] = true
     end
   end
+
+  local start = debugprofilestop()
+
   local characterData = BAGANATOR_DATA.Characters[character]
 
   if not characterData then
@@ -150,6 +153,14 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
         button:SetItemDetails(slotInfo)
       end
     end
+  end
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    local c = 0
+    for _ in pairs(indexesToUse) do
+      c = c+ 1
+    end
+    print("cached layout took", c, section, debugprofilestop() - start)
   end
 
   self.waitingUpdate = {}
@@ -260,7 +271,7 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
 
         self.buttonsByBag[bagID][slotIndex] = b
       end
-      table.insert(self.bagSizesUsed, size)
+      self.bagSizesUsed[index] = size
     end
   end
 
@@ -291,12 +302,17 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
     end
   end
 
+  local start = debugprofilestop()
+
   local characterData = BAGANATOR_DATA.Characters[character]
 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
   local emptySlotBackground = Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND)
 
   if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.character ~= character or self.prevState.section ~= section then
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("rebuild")
+    end
     self:RebuildLayout(indexes, indexesToUse, rowWidth)
     self.waitingUpdate = {}
     for _, bagID in ipairs(indexes) do
@@ -323,6 +339,14 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
         button:SetItemDetails(cacheData)
       end
     end
+  end
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    local c = 0
+    for _ in pairs(indexesToUse) do
+      c = c+ 1
+    end
+    print("live layout took", c, section, debugprofilestop() - start)
   end
 
   self.prevState = {

@@ -144,6 +144,9 @@ function BaganatorCacheMixin:OnUpdate()
   local pendingCopy = CopyTable(self.pending)
 
   local function FireBagChange()
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("caching took", debugprofilestop() - start)
+    end
     Baganator.CallbackRegistry:TriggerEvent("CacheUpdate", self.currentCharacter, pendingCopy)
   end
 

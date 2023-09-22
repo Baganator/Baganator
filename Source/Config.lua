@@ -20,6 +20,7 @@ Baganator.Config.Options = {
   SHOW_BOE_STATUS = "show_boe_status",
 
   DEBUG = "debug",
+  DEBUG_TIMERS = "debug_timers",
 }
 
 Baganator.Config.Defaults = {
@@ -39,6 +40,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
 
   [Baganator.Config.Options.DEBUG] = false,
+  [Baganator.Config.Options.DEBUG_TIMERS] = false,
 }
 
 Baganator.Config.VisualsFrameOnlySettings = {

@@ -58,9 +58,13 @@ end
 
 function BaganatorSummariesMixin:GetTooltipInfo(key)
   if next(self.SV.Pending) then
+    local start = debugprofilestop()
     for character in pairs(self.SV.Pending) do
       self.SV.Pending[character] = nil
       self:GenerateSummary(character)
+    end
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("summaries", debugprofilestop() - start)
     end
   end
 

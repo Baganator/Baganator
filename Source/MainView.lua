@@ -256,11 +256,15 @@ end
 
 function BaganatorMainViewMixin:NotifyBagUpdate(updatedBags)
   self.BagLive:MarkBagsPending("bags", updatedBags)
+  self.ReagentBagLive:MarkBagsPending("bags", updatedBags)
   self.BankLive:MarkBagsPending("bank", updatedBags)
+  self.ReagentBankLive:MarkBagsPending("bank", updatedBags)
 
   if self.isLive == nil or self.isLive == true then
     self.BagCached:MarkBagsPending("bags", updatedBags)
+    self.ReagentBagCached:MarkBagsPending("bags", updatedBags)
     self.BankCached:MarkBagsPending("bank", updatedBags)
+    self.ReagentBankCached:MarkBagsPending("bank", updatedBags)
   end
 end
 
