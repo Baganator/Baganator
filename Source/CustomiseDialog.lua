@@ -13,11 +13,13 @@ local OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_SORT_BUTTON,
     option = "show_sort_button",
+    isRetailOnly = true,
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_CUSTOMISE_EMPTY_SLOTS,
     option = "empty_slot_background",
+    isRetailOnly = true,
   },
   {
     type = "checkbox",
@@ -84,17 +86,19 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   local lastFrame = nil
   self.allFrames = {}
   for _, option in ipairs(OPTIONS) do
-    if option.type == "checkbox" then
-      frame = CreateFrame("Frame", nil, self, "BaganatorCheckBoxTemplate")
-      frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
-      frame:SetPoint("LEFT", self, 40, 0)
-    elseif option.type == "slider" then
-      frame = CreateFrame("Frame", nil, self, "BaganatorSliderTemplate")
-      frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
+    if not option.isRetailOnly or Baganator.Constants.IsRetail then
+      if option.type == "checkbox" then
+        frame = CreateFrame("Frame", nil, self, "BaganatorCheckBoxTemplate")
+        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
+        frame:SetPoint("LEFT", self, 40, 0)
+      elseif option.type == "slider" then
+        frame = CreateFrame("Frame", nil, self, "BaganatorSliderTemplate")
+        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
+      end
+      frame:Init(option)
+      table.insert(self.allFrames, frame)
+      lastFrame = frame
     end
-    frame:Init(option)
-    table.insert(self.allFrames, frame)
-    lastFrame = frame
   end
   self.allFrames[1]:ClearAllPoints()
   self.allFrames[1]:SetPoint("TOP", self.ResetFramePositions)
@@ -106,4 +110,5 @@ function BaganatorCustomiseDialogMixin:RefreshOptions()
   for index, frame in ipairs(self.allFrames) do
     frame:SetValue(Baganator.Config.Get(frame.option))
   end
+  self:SetHeight(self:GetTop() - self.allFrames[#self.allFrames]:GetBottom() + 20)
 end
