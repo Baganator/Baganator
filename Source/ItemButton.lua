@@ -78,8 +78,8 @@ end
 
 local function ApplyItemDetailSettings(button, size)
   local scale = size / 42
-  button.ItemLevel:SetPoint("TOPLEFT", 3 * scale, -5 * scale)
-  button.BindingText:SetPoint("BOTTOMLEFT", 3 * scale, 5 * scale)
+  button.ItemLevel:SetPoint("TOPLEFT", 3 * scale, -3 * scale)
+  button.BindingText:SetPoint("BOTTOMLEFT", 3 * scale, 3 * scale)
 
   button.ItemLevel:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_ITEM_LEVEL))
   button.BindingText:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_BOE_STATUS))
