@@ -408,7 +408,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
 
   SetStaticInfo(self, cacheData)
   if cacheData.iconTexture ~= nil then
-    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink)
+    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData.quality)
   end
 
   -- Copied code from Blizzard Container Frame logic
