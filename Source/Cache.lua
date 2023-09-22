@@ -9,6 +9,13 @@ for index, key in ipairs(Baganator.Constants.AllBankIndexes) do
   bankBags[key] = index
 end
 
+local function GetEmptyPending()
+  return {
+    bags = {},
+    bank = {},
+  }
+end
+
 function BaganatorCacheMixin:OnLoad()
   FrameUtil.RegisterFrameForEvents(self, {
     -- Normalized realm name ready
@@ -115,6 +122,7 @@ function BaganatorCacheMixin:OnEvent(eventName, ...)
     self.bankOpen = false
   elseif eventName == "PLAYER_MONEY" then
     BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
+    Baganator.CallbackRegistry:TriggerEvent("CacheUpdate", self.currentCharacter, GetEmptyPending())
   elseif eventName == "PLAYER_REGEN_ENABLED" then
     self:UnregisterEvent("PLAYER_REGEN_ENABLED")
     self:QueueCaching()
@@ -122,11 +130,7 @@ function BaganatorCacheMixin:OnEvent(eventName, ...)
 end
 
 function BaganatorCacheMixin:SetupPending()
-  self.pending = {
-    any = false,
-    bags = {},
-    bank = {},
-  }
+  self.pending = GetEmptyPending()
 end
 
 function BaganatorCacheMixin:OnUpdate()
