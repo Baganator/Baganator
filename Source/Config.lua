@@ -10,6 +10,7 @@ Baganator.Config.Options = {
   EMPTY_SLOT_BACKGROUND = "empty_slot_background",
   SHOW_REAGENTS = "show_reagents",
   SHOW_SORT_BUTTON = "show_sort_button",
+  SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
@@ -27,7 +28,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.BAG_ICON_SIZE] = 42,
   [Baganator.Config.Options.VIEW_ALPHA] = 1,
   [Baganator.Config.Options.LOCK_FRAMES] = true,
-  [Baganator.Config.Options.NO_FRAME_BORDERS] = true,
+  [Baganator.Config.Options.NO_FRAME_BORDERS] = false,
   [Baganator.Config.Options.EMPTY_SLOT_BACKGROUND] = true,
   [Baganator.Config.Options.SHOW_REAGENTS] = true,
   [Baganator.Config.Options.SHOW_SORT_BUTTON] = true,
@@ -35,6 +36,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW] = {},
   [Baganator.Config.Options.SHOW_ITEM_LEVEL] = true,
   [Baganator.Config.Options.SHOW_BOE_STATUS] = false,
+  [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
 
   [Baganator.Config.Options.DEBUG] = false,
 }

@@ -61,6 +61,11 @@ function BaganatorMainViewMixin:OnLoad()
       if self.lastCharacter then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
+    elseif settingName == Baganator.Config.Options.SHOW_RECENTS_TABS then
+      local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
+      for _, tab in ipairs(self.Tabs) do
+        tab:SetShown(isShown)
+      end
     end
   end)
 
@@ -213,6 +218,8 @@ function BaganatorMainViewMixin:RefreshTabs()
 
   local characters = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
 
+  local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
+
   local lastTab
   tabs = {}
   for index, char in ipairs(characters) do
@@ -228,7 +235,7 @@ function BaganatorMainViewMixin:RefreshTabs()
     end
     tabButton.details = char
     tabButton:SetID(index)
-    tabButton:Show()
+    tabButton:SetShown(isShown)
     lastTab = tabButton
     table.insert(tabs, tabButton)
   end

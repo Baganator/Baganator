@@ -23,6 +23,11 @@ local OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_CUSTOMISE_SHOW_TABS,
+    option = "show_recents_tabs_main_view",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_SHOW_ITEM_LEVEL,
     option = "show_item_level",
   },
