@@ -73,11 +73,15 @@ local function SetupView()
     mainView:Hide()
   end)
 
-  if MainMenuBarBackpackButton then
-    MainMenuBarBackpackButton:SetScript("OnClick", ToggleMainView)
-    for i = 0, 3 do
-      _G["CharacterBag" .. i .. "Slot"]:SetScript("OnClick", ToggleMainView)
-    end
+  MainMenuBarBackpackButton:SetScript("OnClick", ToggleMainView)
+  local maxBag = 3
+  if not Baganator.Constants.IsRetail then
+    maxBag = 2
+  end
+  for i = 0, maxBag do
+    _G["CharacterBag" .. i .. "Slot"]:SetScript("OnClick", ToggleMainView)
+  end
+  if CharacterReagentBag0Slot then
     CharacterReagentBag0Slot:SetScript("OnClick", ToggleMainView)
   end
 
