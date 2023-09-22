@@ -55,11 +55,7 @@ function BaganatorCacheMixin:SetupCache()
 end
 
 function BaganatorCacheMixin:QueueCaching()
-  if InCombatLockdown() then
-    self:RegisterEvent("PLAYER_REGEN_ENABLED")
-  else
-    self:SetScript("OnUpdate", self.OnUpdate)
-  end
+  self:SetScript("OnUpdate", self.OnUpdate)
 end
 
 function BaganatorCacheMixin:InitCurrentPlayer()
