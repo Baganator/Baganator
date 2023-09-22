@@ -57,6 +57,16 @@
           <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" x="-2" y="-5"/>
         </Anchors>
       </Button>
+      <Button parentKey="DepositIntoReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_REAGENTS">
+        <Scripts>
+          <OnClick>
+            DepositReagentBank()
+          </OnClick>
+        </Scripts>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.ToggleReagentsBankButton" relativePoint="TOPRIGHT" x="5" />
+        </Anchors>
+      </Button>
     </Frames>
   </Frame>
 </Ui>
