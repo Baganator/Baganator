@@ -1,7 +1,19 @@
 local IsEquipment = Baganator.Utilities.IsEquipment
 
+local qualityColors = {
+  [0] = CreateColor(157/255, 157/255, 157/255), -- Poor
+  [1] = CreateColor(240/255, 240/255, 240/255), -- Common
+  [2] = CreateColor(30/255, 178/255, 0/255), -- Uncommon
+  [3] = CreateColor(0/255, 112/255, 221/255), -- Rare
+  [4] = CreateColor(163/255, 53/255, 238/255), -- Epic
+  [5] = CreateColor(225/255, 96/255, 0/255), -- Legendary
+  [6] = CreateColor(229/255, 204/255, 127/255), -- Artifact
+  [7] = CreateColor(79/255, 196/255, 225/255), -- Heirloom
+  [8] = CreateColor(79/255, 196/255, 225/255), -- Blizzard
+}
+
 -- Load item data late
-local function GetExtraInfo(self, itemID, itemLink)
+local function GetExtraInfo(self, itemID, itemLink, quality)
   self.ItemLevel:SetText("")
   if itemLink:match("keystone:") then
     itemLink = "item:" .. itemID
@@ -24,7 +36,7 @@ local function GetExtraInfo(self, itemID, itemLink)
 
     if IsEquipment(itemLink) then
       local itemLevel = GetDetailedItemLevelInfo(itemLink)
-      self.ItemLevel:SetText(itemLevel)
+      self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
     end
 
   else
@@ -41,7 +53,7 @@ local function GetExtraInfo(self, itemID, itemLink)
 
       if IsEquipment(itemLink) then
         local itemLevel = GetDetailedItemLevelInfo(itemLink)
-        self.ItemLevel:SetText(itemLevel)
+        self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
       end
     end)
   end
@@ -55,7 +67,7 @@ local function SetStaticInfo(self, details)
   end
 
   if IsEquipment(details.itemLink) and details.isBound == false then
-    self.BindingText:SetText(BAGANATOR_L_BOE)
+    self.BindingText:SetText(qualityColors[details.quality]:WrapTextInColorCode(BAGANATOR_L_BOE))
   end
 end
 
@@ -134,7 +146,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, self.itemLink)
+    GetExtraInfo(self, details.itemID, self.itemLink, self.quality)
   end
 end
 
@@ -257,7 +269,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
-    GetExtraInfo(self, itemID, cacheData.itemLink)
+    GetExtraInfo(self, itemID, cacheData.itemLink, cacheData.quality)
   end
 end
 
@@ -282,7 +294,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, details.itemLink)
+    GetExtraInfo(self, details.itemID, details.itemLink, details.quality)
   end
 end
 
