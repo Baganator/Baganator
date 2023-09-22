@@ -37,6 +37,11 @@ local OPTIONS = {
     option = "show_boe_status",
   },
   {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_INVENTORY_IN_TOOLTIPS,
+    option = "show_inventory_tooltips",
+  },
+  {
     type = "slider",
     min = 1,
     max = 100,

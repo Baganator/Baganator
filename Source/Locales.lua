@@ -35,6 +35,7 @@ L["SHOW_SORT_BUTTON"] = "Show Sort Button"
 L["SHOW_ITEM_LEVEL"] = "Show equipment item levels"
 L["SHOW_BOE_STATUS"] = "Show equipment BoE status"
 L["CUSTOMISE_SHOW_TABS"] = "Show tabs of recent characters"
+L["SHOW_INVENTORY_IN_TOOLTIPS"] = "Show inventory in item tooltips"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X_BANKS_X"] = "Bags: %s, Banks: %s"

@@ -3,7 +3,9 @@ Baganator.CallbackRegistry:OnLoad()
 Baganator.CallbackRegistry:GenerateCallbackEvents(Baganator.Constants.Events)
 
 local function AddToTooltip(tooltip, summaries, itemLink)
-  Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
+  if Baganator.Config.Get(Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS) then
+    Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
+  end
 end
 
 local cache, summaries

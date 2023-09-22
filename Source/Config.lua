@@ -15,6 +15,7 @@ Baganator.Config.Options = {
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
   INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
+  SHOW_INVENTORY_TOOLTIPS = "show_inventory_tooltips",
 
   SHOW_ITEM_LEVEL = "show_item_level",
   SHOW_BOE_STATUS = "show_boe_status",
@@ -38,6 +39,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_ITEM_LEVEL] = true,
   [Baganator.Config.Options.SHOW_BOE_STATUS] = false,
   [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
+  [Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS] = true,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
