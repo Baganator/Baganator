@@ -76,9 +76,10 @@ local function SearchCheck(self, text)
   return text == "" or not not self.itemNameLower:match(text)
 end
 
-local function ApplyItemDetailSettings(button)
-  button.ItemLevel:SetPoint("TOPLEFT", 3, -5)
-  button.BindingText:SetPoint("BOTTOMLEFT", 3, 5)
+local function ApplyItemDetailSettings(button, size)
+  local scale = size / 42
+  button.ItemLevel:SetPoint("TOPLEFT", 3 * scale, -5 * scale)
+  button.BindingText:SetPoint("BOTTOMLEFT", 3 * scale, 5 * scale)
 
   button.ItemLevel:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_ITEM_LEVEL))
   button.BindingText:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_BOE_STATUS))
@@ -89,8 +90,8 @@ local function AdjustRetailButton(button, size)
   button.IconBorder:SetSize(size, size)
   button.IconOverlay:SetSize(size, size)
   button.IconOverlay2:SetSize(size, size)
-  local s2 = 64/37 * size
-  button.NormalTexture:SetSize(s2, s2)
+  local scaleNormal = 64/37 * size
+  button.NormalTexture:SetSize(scaleNormal, scaleNormal)
 
   if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
     button.emptyBackgroundAtlas = nil
@@ -105,17 +106,17 @@ local function AdjustRetailButton(button, size)
       button.icon:SetAtlas(button.emptyBackgroundAtlas)
     end
   end
-  ApplyItemDetailSettings(button)
+  ApplyItemDetailSettings(button, size)
 end
 
 -- Fix anchors and item sizes when resizing the item buttons
 local function AdjustClassicButton(button, size)
   button.IconBorder:SetSize(size, size)
   button.IconOverlay:SetSize(size, size)
-  local s2 = 64/37 * size
-  _G[button:GetName() .. "NormalTexture"]:SetSize(s2, s2)
+  local scaleNormal = 64/37 * size
+  _G[button:GetName() .. "NormalTexture"]:SetSize(scaleNormal, scaleNormal)
 
-  ApplyItemDetailSettings(button)
+  ApplyItemDetailSettings(button, size)
 end
 
 BaganatorRetailCachedItemButtonMixin = {}
