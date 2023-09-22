@@ -1,9 +1,14 @@
 BaganatorCheckBoxMixin = {}
-function BaganatorCheckBoxMixin:OnLoad()
+function BaganatorCheckBoxMixin:Init(details)
+  Mixin(self, details)
   self.CheckBox:SetText(self.text)
   self.CheckBox:SetScript("OnClick", function()
     Baganator.Config.Set(self.option, self.CheckBox:GetChecked())
   end)
+end
+
+function BaganatorCheckBoxMixin:SetValue(value)
+  self.CheckBox:SetChecked(value)
 end
 
 function BaganatorCheckBoxMixin:OnEnter()
@@ -20,7 +25,8 @@ end
 
 BaganatorSliderMixin = {}
 
-function BaganatorSliderMixin:OnLoad()
+function BaganatorSliderMixin:Init(details)
+  Mixin(self, details)
   self.Slider:SetMinMaxValues(self.min, self.max)
   self.Slider.High:SetText(self.highText)
   self.Slider.Low:SetText(self.lowText)
@@ -36,6 +42,10 @@ function BaganatorSliderMixin:OnLoad()
     Baganator.Config.Set(self.option, value)
     self.Slider.Text:SetText(self.valuePattern:format(math.floor(self.Slider:GetValue())))
   end)
+end
+
+function BaganatorSliderMixin:SetValue(value)
+  self.Slider:SetValue(value * (self.scale or 1))
 end
 
 function BaganatorSliderMixin:OnMouseWheel(delta)

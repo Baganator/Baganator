@@ -1,3 +1,73 @@
+local OPTIONS = {
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_LOCK_BAGS_BANKS_FRAMES,
+    option = "lock_frames",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_CUSTOMISE_REMOVE_BORDERS,
+    option = "no_frame_borders",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_SORT_BUTTON,
+    option = "show_sort_button",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_CUSTOMISE_EMPTY_SLOTS,
+    option = "empty_slot_background",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_ITEM_LEVEL,
+    option = "show_item_level",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_BOE_STATUS,
+    option = "show_boe_status",
+  },
+  {
+    type = "slider",
+    min = 1,
+    max = 100,
+    lowText = "0%",
+    highText = "100%",
+    scale = 100,
+    valuePattern = BAGANATOR_L_X_TRANSPARENCY,
+    option = "view_alpha",
+  },
+  {
+    type = "slider",
+    min = 1,
+    max = 24,
+    lowText = "1",
+    highText = "24",
+    valuePattern = BAGANATOR_L_X_BAG_COLUMNS,
+    option = "bag_view_width",
+  },
+  {
+    type = "slider",
+    min = 1,
+    max = 42,
+    lowText = "1",
+    highText = "42",
+    valuePattern = BAGANATOR_L_X_BANK_COLUMNS,
+    option = "bank_view_width",
+  },
+  {
+    type = "slider",
+    min = 1,
+    max = 70,
+    lowText = "10",
+    highText = "70",
+    valuePattern = BAGANATOR_L_X_ICON_SIZE,
+    option = "bag_icon_size",
+  },
+}
+
 BaganatorCustomiseDialogMixin = {}
 
 function BaganatorCustomiseDialogMixin:OnLoad()
@@ -10,17 +80,30 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self.ResetFramePositions:SetScript("OnClick", function()
     Baganator.CallbackRegistry:TriggerEvent("ResetFramePositions")
   end)
+
+  local lastFrame = nil
+  self.allFrames = {}
+  for _, option in ipairs(OPTIONS) do
+    if option.type == "checkbox" then
+      frame = CreateFrame("Frame", nil, self, "BaganatorCheckBoxTemplate")
+      frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
+      frame:SetPoint("LEFT", self, 40, 0)
+    elseif option.type == "slider" then
+      frame = CreateFrame("Frame", nil, self, "BaganatorSliderTemplate")
+      frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
+    end
+    frame:Init(option)
+    table.insert(self.allFrames, frame)
+    lastFrame = frame
+  end
+  self.allFrames[1]:ClearAllPoints()
+  self.allFrames[1]:SetPoint("TOP", self.ResetFramePositions)
+  self.allFrames[1]:SetPoint("RIGHT", self.ResetFramePositions, "LEFT", -20, 0)
+  self.allFrames[1]:SetPoint("LEFT", 40, 0)
 end
 
 function BaganatorCustomiseDialogMixin:RefreshOptions()
-  self.LockFrames.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES))
-  self.NoFrameBorders.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.NO_FRAME_BORDERS))
-  self.ShowSortButton.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON))
-  self.EmptySlotBackground.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND))
-  self.ShowItemLevel.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.SHOW_ITEM_LEVEL))
-  self.ShowBoEStatus.CheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.SHOW_BOE_STATUS))
-  self.AlphaSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.VIEW_ALPHA) * 100)
-  self.BagWidthSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.BAG_VIEW_WIDTH))
-  self.BankWidthSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.BANK_VIEW_WIDTH))
-  self.IconSizeSlider.Slider:SetValue(Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE))
+  for index, frame in ipairs(self.allFrames) do
+    frame:SetValue(Baganator.Config.Get(frame.option))
+  end
 end

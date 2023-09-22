@@ -14,7 +14,6 @@
       </CheckButton>
     </Frames>
     <Scripts>
-      <OnLoad method="OnLoad"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
       <OnMouseUp method="OnMouseUp"/>
@@ -22,6 +21,7 @@
   </Frame>
 
   <Frame name="BaganatorSliderTemplate" virtual="true" mixin="BaganatorSliderMixin">
+    <Size y="30"/>
     <Frames>
       <Slider parentKey="Slider" inherits="OptionsSliderTemplate">
         <Size y="20"/>
@@ -36,7 +36,6 @@
       <Anchor point="LEFT" x="30"/>
     </Anchors>
     <Scripts>
-      <OnLoad method="OnLoad"/>
       <OnMouseWheel method="OnMouseWheel"/>
     </Scripts>
   </Frame>
@@ -52,130 +51,6 @@
             <Anchor point="TOPRIGHT" x="-20" y="-30"/>
           </Anchors>
       </Button>
-      <Frame parentKey="LockFrames" inherits="BaganatorCheckBoxTemplate">
-          <KeyValues>
-            <KeyValue key="text" value="BAGANATOR_L_LOCK_BAGS_BANKS_FRAMES" type="global"/>
-            <KeyValue key="option" value="lock_frames" type="string"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativeKey="$parent.ResetFramePositions"/>
-            <Anchor point="RIGHT" relativeKey="$parent.ResetFramePositions" relativePoint="LEFT" x="-20"/>
-            <Anchor point="LEFT" x="40"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="NoFrameBorders" inherits="BaganatorCheckBoxTemplate">
-          <KeyValues>
-            <KeyValue key="text" value="BAGANATOR_L_CUSTOMISE_REMOVE_BORDERS" type="global"/>
-            <KeyValue key="option" value="no_frame_borders" type="string"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativeKey="$parent.LockFrames" relativePoint="BOTTOM" y="-20"/>
-            <Anchor point="LEFT" x="40"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="ShowSortButton" inherits="BaganatorCheckBoxTemplate">
-          <KeyValues>
-            <KeyValue key="text" value="BAGANATOR_L_SHOW_SORT_BUTTON" type="global"/>
-            <KeyValue key="option" value="show_sort_button" type="string"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativeKey="$parent.NoFrameBorders" relativePoint="BOTTOM" y="-20"/>
-            <Anchor point="LEFT" x="40"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="EmptySlotBackground" inherits="BaganatorCheckBoxTemplate">
-          <KeyValues>
-            <KeyValue key="text" value="BAGANATOR_L_CUSTOMISE_EMPTY_SLOTS" type="global"/>
-            <KeyValue key="option" value="empty_slot_background" type="string"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativeKey="$parent.ShowSortButton" relativePoint="BOTTOM" y="-20"/>
-            <Anchor point="LEFT" x="40"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="ShowItemLevel" inherits="BaganatorCheckBoxTemplate">
-          <KeyValues>
-            <KeyValue key="text" value="BAGANATOR_L_SHOW_ITEM_LEVEL" type="global"/>
-            <KeyValue key="option" value="show_item_level" type="string"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativeKey="$parent.EmptySlotBackground" relativePoint="BOTTOM" y="-20"/>
-            <Anchor point="LEFT" x="40"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="ShowBoEStatus" inherits="BaganatorCheckBoxTemplate">
-          <KeyValues>
-            <KeyValue key="text" value="BAGANATOR_L_SHOW_BOE_STATUS" type="global"/>
-            <KeyValue key="option" value="show_boe_status" type="string"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativeKey="$parent.ShowItemLevel" relativePoint="BOTTOM" y="-20"/>
-            <Anchor point="LEFT" x="40"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="AlphaSlider" inherits="BaganatorSliderTemplate">
-          <KeyValues>
-            <KeyValue key="option" value="view_alpha" type="string"/>
-            <KeyValue key="min" value="1" type="number"/>
-            <KeyValue key="max" value="100" type="number"/>
-            <KeyValue key="scale" value="100" type="number"/>
-            <KeyValue key="highText" value="100%" type="string"/>
-            <KeyValue key="lowText" value="0%" type="string"/>
-            <KeyValue key="valuePattern" value="BAGANATOR_L_X_TRANSPARENCY" type="global"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativePoint="BOTTOM" relativeKey="$parent.ShowBoEStatus" y="-30"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="BagWidthSlider" inherits="BaganatorSliderTemplate">
-          <KeyValues>
-            <KeyValue key="option" value="bag_view_width" type="string"/>
-            <KeyValue key="min" value="1" type="number"/>
-            <KeyValue key="max" value="24" type="number"/>
-            <KeyValue key="highText" value="24" type="string"/>
-            <KeyValue key="lowText" value="1" type="string"/>
-            <KeyValue key="valuePattern" value="BAGANATOR_L_X_BAG_COLUMNS" type="global"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.AlphaSlider" y="-50"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="BankWidthSlider" inherits="BaganatorSliderTemplate">
-          <KeyValues>
-            <KeyValue key="option" value="bank_view_width" type="string"/>
-            <KeyValue key="min" value="1" type="number"/>
-            <KeyValue key="max" value="42" type="number"/>
-            <KeyValue key="highText" value="42" type="string"/>
-            <KeyValue key="lowText" value="1" type="string"/>
-            <KeyValue key="valuePattern" value="BAGANATOR_L_X_BANK_COLUMNS" type="global"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.BagWidthSlider" y="-50"/>
-          </Anchors>
-      </Frame>
-      <Frame parentKey="IconSizeSlider" inherits="BaganatorSliderTemplate">
-          <KeyValues>
-            <KeyValue key="option" value="bag_icon_size" type="string"/>
-            <KeyValue key="min" value="10" type="number"/>
-            <KeyValue key="max" value="70" type="number"/>
-            <KeyValue key="highText" value="70" type="string"/>
-            <KeyValue key="lowText" value="10" type="string"/>
-            <KeyValue key="valuePattern" value="BAGANATOR_L_X_ICON_SIZE" type="global"/>
-          </KeyValues>
-          <Size y="22"/>
-          <Anchors>
-            <Anchor point="TOP" relativePoint="TOP" relativeKey="$parent.BankWidthSlider" y="-50"/>
-          </Anchors>
-      </Frame>
     </Frames>
   </Frame>
 </Ui>

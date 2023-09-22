@@ -18,7 +18,6 @@ Baganator.Config.Options = {
   SHOW_ITEM_LEVEL = "show_item_level",
   SHOW_BOE_STATUS = "show_boe_status",
 
-
   DEBUG = "debug",
 }
 
@@ -28,6 +27,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.BAG_ICON_SIZE] = 42,
   [Baganator.Config.Options.VIEW_ALPHA] = 1,
   [Baganator.Config.Options.LOCK_FRAMES] = true,
+  [Baganator.Config.Options.NO_FRAME_BORDERS] = true,
   [Baganator.Config.Options.EMPTY_SLOT_BACKGROUND] = true,
   [Baganator.Config.Options.SHOW_REAGENTS] = true,
   [Baganator.Config.Options.SHOW_SORT_BUTTON] = true,
