@@ -146,7 +146,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, self.itemLink, self.quality)
+    GetExtraInfo(self, details.itemID, self.itemLink, details.quality)
   end
 end
 
