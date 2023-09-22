@@ -73,16 +73,15 @@ local function SetupView()
     mainView:Hide()
   end)
 
+  -- Backpack button
   MainMenuBarBackpackButton:SetScript("OnClick", ToggleMainView)
-  local maxBag = 3
-  if not Baganator.Constants.IsRetail then
-    maxBag = 2
+  -- Bags 1-4, hookscript so that changing bags remains
+  for i = 0, 3 do
+    _G["CharacterBag" .. i .. "Slot"]:HookScript("OnClick", ToggleMainView)
   end
-  for i = 0, maxBag do
-    _G["CharacterBag" .. i .. "Slot"]:SetScript("OnClick", ToggleMainView)
-  end
+  -- Reagent bas
   if CharacterReagentBag0Slot then
-    CharacterReagentBag0Slot:SetScript("OnClick", ToggleMainView)
+    CharacterReagentBag0Slot:HookScript("OnClick", ToggleMainView)
   end
 
   if Baganator.Constants.IsEra or Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
