@@ -53,13 +53,15 @@ local function SetupView()
     customiseDialog:Raise()
   end)
 
-  if not Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
-    hooksecurefunc("ToggleAllBags", function()
+  local function ToggleMainView()
       mainView:SetShown(not mainView:IsShown())
       if mainView:IsVisible() then
         mainView:UpdateForCharacter(cache.currentCharacter, true)
       end
-    end)
+  end
+
+  if not Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
+    hooksecurefunc("ToggleAllBags", ToggleMainView)
   end
 
   hooksecurefunc("OpenAllBags", function()
@@ -70,6 +72,14 @@ local function SetupView()
   hooksecurefunc("CloseAllBags", function()
     mainView:Hide()
   end)
+
+  if MainMenuBarBackpackButton then
+    MainMenuBarBackpackButton:SetScript("OnClick", ToggleMainView)
+    for i = 0, 3 do
+      _G["CharacterBag" .. i .. "Slot"]:SetScript("OnClick", ToggleMainView)
+    end
+    CharacterReagentBag0Slot:SetScript("OnClick", ToggleMainView)
+  end
 
   if Baganator.Constants.IsEra or Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
     hooksecurefunc("ToggleBackpack", function()
