@@ -173,7 +173,9 @@ function BaganatorCacheMixin:OnUpdate()
       if itemID then
         if C_Item.IsItemDataCachedByID(itemID) then
           local slotInfo = C_Container.GetContainerItemInfo(bagID, slotID)
-          bag[slotID] = GetInfo(slotInfo)
+          if slotInfo then
+            bag[slotID] = GetInfo(slotInfo)
+          end
         else
           waiting = waiting + 1
           local item = Item:CreateFromItemID(itemID)
