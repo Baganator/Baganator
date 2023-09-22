@@ -7,6 +7,8 @@
 ## OptionalDeps: Masque
 ## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA, BAGANATOR_SUMMARIES
 
+Locales.lua
+
 Source\Objects.lua
 Source\Locales.lua
 Source\Constants.lua
