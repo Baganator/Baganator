@@ -40,6 +40,7 @@ local OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_BOA_STATUS,
     option = "show_boa_status",
+    isRetailOnly = true,
   },
   {
     type = "checkbox",

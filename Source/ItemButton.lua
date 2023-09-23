@@ -79,7 +79,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
 end
 
 -- Load item data late
-local function GetExtraInfo(self, itemID, itemLink, quality, data)
+local function GetExtraInfo(self, itemID, itemLink, data)
   if itemLink:find("keystone:", nil, true) then
     itemLink = "item:" .. itemID
   end
@@ -198,7 +198,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, self.itemLink, details.quality, details)
+    GetExtraInfo(self, details.itemID, self.itemLink, details)
   end
 end
 
@@ -321,7 +321,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
-    GetExtraInfo(self, itemID, cacheData.itemLink, cacheData.quality, cacheData)
+    GetExtraInfo(self, itemID, cacheData.itemLink, cacheData)
   end
 end
 
@@ -346,7 +346,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, details.itemLink, details.quality, details)
+    GetExtraInfo(self, details.itemID, details.itemLink, details)
   end
 end
 
@@ -460,7 +460,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
 
   SetStaticInfo(self, cacheData)
   if cacheData.iconTexture ~= nil then
-    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData.quality)
+    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData)
   end
 
   -- Copied code from Blizzard Container Frame logic
