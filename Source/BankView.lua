@@ -27,16 +27,18 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if not self.liveCharacter or not self:IsShown() then
+    if not self.liveCharacter then
       return
     end
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      Baganator.Utilities.ApplyVisuals(self)
+      if self:IsShown() then
+        Baganator.Utilities.ApplyVisuals(self)
+      end
     elseif tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
-      if self.liveCharacter then
+      if self:IsShown() then
         self:UpdateForCharacter(self.liveCharacter)
       end
     end

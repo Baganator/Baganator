@@ -36,8 +36,10 @@ L["X_ICON_SIZE"] = "%spx Icon Size"
 L["SHOW_SORT_BUTTON"] = "Show Sort Button"
 L["SHOW_ITEM_LEVEL"] = "Show equipment item levels"
 L["SHOW_BOE_STATUS"] = "Show equipment BoE status"
+L["SHOW_BOA_STATUS"] = "Show equipment BoA status (slow)"
 L["CUSTOMISE_SHOW_TABS"] = "Show tabs of recent characters"
 L["SHOW_INVENTORY_IN_TOOLTIPS"] = "Show inventory in item tooltips"
+L["USE_ITEM_QUALITY_COLORS_FOR_ICON_TEXT"] = "Color text on icons in item quality colors"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X_BANKS_X"] = "Bags: %s, Banks: %s"
@@ -45,6 +47,7 @@ L["BAGS_X_BANK_X"] = "Bags: %s, Bank: %s"
 L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
 
 L["BOE"] = "BoE"
+L["BOA"] = "BoA"
 
 L["SORT"] = "Sort"
 

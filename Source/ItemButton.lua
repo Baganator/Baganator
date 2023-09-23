@@ -1,3 +1,4 @@
+Baganator.ItemButtonUtil = {}
 local IsEquipment = Baganator.Utilities.IsEquipment
 
 local qualityColors = {
@@ -12,14 +13,78 @@ local qualityColors = {
   [8] = CreateColor(79/255, 196/255, 225/255), -- Blizzard
 }
 
+local function IsBindOnAccount(itemLink)
+  local tooltipInfo = C_TooltipInfo.GetHyperlink(itemLink)
+  if tooltipInfo then
+    for _, row in ipairs(tooltipInfo.lines) do
+      if row.type == Enum.TooltipDataLineType.ItemBinding and row.leftText == ITEM_BIND_TO_BNETACCOUNT then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+local itemCallbacks = {}
+
+local registered = false
+function Baganator.ItemButtonUtil.UpdateSettings()
+  if not registered  then
+    registered = true
+    Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
+      Baganator.ItemButtonUtil.UpdateSettings()
+    end)
+  end
+  itemCallbacks = {}
+
+  local qualityColours = Baganator.Config.Get("icon_text_quality_colors")
+  if Baganator.Config.Get("show_item_level") then
+    table.insert(itemCallbacks, function(self, data)
+      local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
+      self.ItemLevel:SetText(itemLevel)
+      if qualityColours then
+        local color = qualityColors[data.quality]
+        self.ItemLevel:SetTextColor(color.r, color.g, color.b)
+      else
+        self.ItemLevel:SetTextColor(1,1,1)
+      end
+    end)
+  end
+  if Baganator.Config.Get("show_boe_status") then
+    table.insert(itemCallbacks, function(self, data)
+      if IsEquipment(data.itemLink) and not data.isBound then
+        self.BindingText:SetText(BAGANATOR_L_BOE)
+        if qualityColours then
+          local color = qualityColors[data.quality]
+          self.BindingText:SetTextColor(color.r, color.g, color.b)
+        else
+          self.BindingText:SetTextColor(1,1,1)
+        end
+      end
+    end)
+  end
+  if Baganator.Config.Get("show_boa_status") then
+    table.insert(itemCallbacks, function(self, data)
+      if IsBindOnAccount(data.itemLink) then
+        self.BindingText:SetText(BAGANATOR_L_BOA)
+        if qualityColours then
+          local color = qualityColors[data.quality]
+          self.BindingText:SetTextColor(color.r, color.g, color.b)
+        else
+          self.BindingText:SetTextColor(1,1,1)
+        end
+      end
+    end)
+  end
+end
+
 -- Load item data late
-local function GetExtraInfo(self, itemID, itemLink, quality)
-  self.ItemLevel:SetText("")
-  if itemLink:match("keystone:") then
+local function GetExtraInfo(self, itemID, itemLink, quality, data)
+  if itemLink:find("keystone:", nil, true) then
     itemLink = "item:" .. itemID
   end
 
-  if itemLink:match("battlepet:") then
+  if itemLink:find("battlepet:", nil, true) then
     self.itemInfoWaiting = false
     local petID = tonumber(itemLink:match("battlepet:(%d+)"))
     self.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
@@ -33,12 +98,9 @@ local function GetExtraInfo(self, itemID, itemLink, quality)
     if self.pendingSearch then
       self:SetItemFiltered(self.pendingSearch)
     end
-
-    if IsEquipment(itemLink) then
-      local itemLevel = GetDetailedItemLevelInfo(itemLink)
-      self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
+    for _, callback in ipairs(itemCallbacks) do
+      callback(self, data)
     end
-
   else
     local item = Item:CreateFromItemLink(itemLink)
     self.itemInfoWaiting = true
@@ -51,9 +113,8 @@ local function GetExtraInfo(self, itemID, itemLink, quality)
         self:SetItemFiltered(self.pendingSearch)
       end
 
-      if IsEquipment(itemLink) then
-        local itemLevel = GetDetailedItemLevelInfo(itemLink)
-        self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
+      for _, callback in ipairs(itemCallbacks) do
+        callback(self, data)
       end
     end)
   end
@@ -62,13 +123,6 @@ end
 local function SetStaticInfo(self, details)
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
-  if not details.itemLink then
-    return
-  end
-
-  if IsEquipment(details.itemLink) and details.isBound == false then
-    self.BindingText:SetText(qualityColors[details.quality]:WrapTextInColorCode(BAGANATOR_L_BOE))
-  end
 end
 
 local function SearchCheck(self, text)
@@ -77,11 +131,12 @@ local function SearchCheck(self, text)
     return
   end
 
+  self.pendingSearch = nil
+
   if not self.itemName then
     return
   end
 
-  self.pendingSearch = nil
   if text ~= "" then
     self.itemNameLower = self.itemNameLower or self.itemName:lower()
   end
@@ -92,9 +147,6 @@ local function ApplyItemDetailSettings(button, size)
   local scale = size / 42
   button.ItemLevel:SetPoint("TOPLEFT", 3 * scale, -3 * scale)
   button.BindingText:SetPoint("BOTTOMLEFT", 3 * scale, 3 * scale)
-
-  button.ItemLevel:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_ITEM_LEVEL))
-  button.BindingText:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_BOE_STATUS))
 end
 
 -- Fix anchors and item sizes when resizing the item buttons
@@ -146,7 +198,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, self.itemLink, details.quality)
+    GetExtraInfo(self, details.itemID, self.itemLink, details.quality, details)
   end
 end
 
@@ -269,7 +321,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
-    GetExtraInfo(self, itemID, cacheData.itemLink, cacheData.quality)
+    GetExtraInfo(self, itemID, cacheData.itemLink, cacheData.quality, cacheData)
   end
 end
 
@@ -294,7 +346,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, details.itemLink, details.quality)
+    GetExtraInfo(self, details.itemID, details.itemLink, details.quality, details)
   end
 end
 

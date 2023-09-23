@@ -49,16 +49,19 @@ function BaganatorMainViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if not self.lastCharacter or not self:IsShown() then
+    self.settingChanged = true
+    if not self.lastCharacter then
       return
     end
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      Baganator.Utilities.ApplyVisuals(self)
+      if self:IsShown() then
+        Baganator.Utilities.ApplyVisuals(self)
+      end
     elseif tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
-      if self.lastCharacter then
+      if self:IsShown() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == Baganator.Config.Options.SHOW_RECENTS_TABS then
@@ -245,7 +248,7 @@ function BaganatorMainViewMixin:RefreshTabs()
 end
 
 function BaganatorMainViewMixin:SetupTabs()
-  if tabsSetup then
+  if self.tabsSetup then
     return
   end
 

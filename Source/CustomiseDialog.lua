@@ -38,6 +38,16 @@ local OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_SHOW_BOA_STATUS,
+    option = "show_boa_status",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_USE_ITEM_QUALITY_COLORS_FOR_ICON_TEXT,
+    option = "icon_text_quality_colors",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_SHOW_INVENTORY_IN_TOOLTIPS,
     option = "show_inventory_tooltips",
   },

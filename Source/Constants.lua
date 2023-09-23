@@ -35,6 +35,7 @@ if Baganator.Constants.IsRetail then
 end
 
 Baganator.Constants.Events = {
+  "SettingChangedEarly",
   "SettingChanged",
 
   "CharacterDeleted",
