@@ -329,6 +329,19 @@ function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
   self:SetMatchesSearch(SearchCheck(self, text))
 end
 
+local function ApplyQualityBorderClassic(self, quality)
+	if quality then
+		if quality >= LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality] then
+			self.IconBorder:Show();
+			self.IconBorder:SetVertexColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b);
+		else
+			self.IconBorder:Hide();
+		end
+	else
+		self.IconBorder:Hide();
+	end
+end
+
 BaganatorClassicCachedItemButtonMixin = {}
 
 function BaganatorClassicCachedItemButtonMixin:UpdateTextures(size)
@@ -342,6 +355,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   
   SetItemButtonTexture(self, details.iconTexture);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
+  ApplyQualityBorderClassic(self, details.quality)
   SetItemButtonCount(self, details.itemCount);
 
   SetStaticInfo(self, details)
@@ -477,6 +491,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   
   SetItemButtonTexture(self, texture);
   SetItemButtonQuality(self, quality, itemID);
+  ApplyQualityBorderClassic(self, quality)
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
   
