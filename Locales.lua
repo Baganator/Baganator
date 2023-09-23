@@ -51,6 +51,14 @@ L["BOA"] = "BoA"
 
 L["SORT"] = "Sort"
 
+L["KEYWORD_REAGENT"] = "reagent"
+L["KEYWORD_PET"] = "pet"
+L["KEYWORD_BATTLE_PET"] = "battle pet"
+L["KEYWORD_SOULBOUND"] = "soulbound"
+L["KEYWORD_FOOD"] = "food"
+L["KEYWORD_DRINK"] = "drink"
+L["KEYWORD_POTION"] = "potion"
+
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 

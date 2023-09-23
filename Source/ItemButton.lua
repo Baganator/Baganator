@@ -88,31 +88,37 @@ local function GetExtraInfo(self, itemID, itemLink, data)
 
   if itemLink:find("battlepet:", nil, true) then
     self.itemInfoWaiting = false
+    self.BGR.itemInfoWaiting = false
     local petID = tonumber(itemLink:match("battlepet:(%d+)"))
-    self.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
-    self.isCraftingReagent = false
+    self.BGR.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
+    self.BGR.isCraftingReagent = false
+    self.BGR.classID = Enum.ItemClass.Battlepet
 
   elseif C_Item.IsItemDataCachedByID(itemID) then
-    self.itemInfoWaiting = false
+    self.BGR.itemInfoWaiting = false
     local itemInfo = {GetItemInfo(itemLink)}
-    self.itemName = itemInfo[1]
-    self.isCraftingReagent = itemInfo[17]
-    if self.pendingSearch then
-      self:SetItemFiltered(self.pendingSearch)
+    self.BGR.itemName = itemInfo[1]
+    self.BGR.isCraftingReagent = itemInfo[17]
+    self.BGR.classID = itemInfo[12]
+    self.BGR.subClassID = itemInfo[13]
+    if self.BGR.pendingSearch then
+      self:SetItemFiltered(self.BGR.pendingSearch)
     end
     for _, callback in ipairs(itemCallbacks) do
       callback(self, data)
     end
   else
     local item = Item:CreateFromItemLink(itemLink)
-    self.itemInfoWaiting = true
+    self.BGR.itemInfoWaiting = true
     item:ContinueOnItemLoad(function()
-      self.itemInfoWaiting = false
+      self.BGR.itemInfoWaiting = false
       local itemInfo = {GetItemInfo(itemLink)}
-      self.itemName = itemInfo[1]
-      self.isCraftingReagent = itemInfo[17]
-      if self.pendingSearch then
-        self:SetItemFiltered(self.pendingSearch)
+      self.BGR.itemName = itemInfo[1]
+      self.BGR.isCraftingReagent = itemInfo[17]
+      self.BGR.classID = itemInfo[12]
+      self.BGR.subClassID = itemInfo[13]
+      if self.BGR.pendingSearch then
+        self:SetItemFiltered(self.BGR.pendingSearch)
       end
 
       for _, callback in ipairs(itemCallbacks) do
@@ -123,26 +129,32 @@ local function GetExtraInfo(self, itemID, itemLink, data)
 end
 
 local function SetStaticInfo(self, details)
+  self.BGR.isBound = details.isBound
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
 end
 
 local function SearchCheck(self, text)
-  if self.itemInfoWaiting then
-    self.pendingSearch = text
+  if self.BGR.itemInfoWaiting then
+    self.BGR.pendingSearch = text
     return
   end
 
-  self.pendingSearch = nil
+  self.BGR.pendingSearch = nil
 
-  if not self.itemName then
+  if text == "" then
+    return true
+  end
+
+  if not self.BGR.itemName then
     return
   end
 
   if text ~= "" then
-    self.itemNameLower = self.itemNameLower or self.itemName:lower()
+    self.BGR.itemNameLower = self.BGR.itemNameLower or self.BGR.itemName:lower()
   end
-  return text == "" or not not self.itemNameLower:match(text)
+  local currentBGR = self.BGR
+  return Baganator.Search.CheckItem(self.BGR, text)
 end
 
 local function ApplyItemDetailSettings(button, size)
@@ -192,15 +204,17 @@ function BaganatorRetailCachedItemButtonMixin:UpdateTextures(size)
 end
 
 function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
+  self.BGR = {}
+
   self:SetItemButtonTexture(details.iconTexture)
   self:SetItemButtonQuality(details.quality)
   self:SetItemButtonCount(details.itemCount)
-  self.itemLink = details.itemLink
-  self.itemName = ""
+  self.BGR.itemLink = details.itemLink
+  self.BGR.itemName = ""
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, self.itemLink, details)
+    GetExtraInfo(self, details.itemID, self.BGR.itemLink, details)
   end
 end
 
@@ -210,12 +224,12 @@ end
 
 function BaganatorRetailCachedItemButtonMixin:OnClick(button)
   if IsModifiedClick("CHATLINK") then
-    ChatEdit_InsertLink(self.itemLink)
+    ChatEdit_InsertLink(self.BGR.itemLink)
   end
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnEnter()
-  local itemLink = self.itemLink
+  local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
     return
@@ -232,7 +246,7 @@ function BaganatorRetailCachedItemButtonMixin:OnEnter()
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnLeave()
-  local itemLink = self.itemLink
+  local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
     return
@@ -251,12 +265,12 @@ function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
   -- Automatically use the reagent bank when at the bank transferring crafting
   -- reagents
   self:HookScript("OnEnter", function()
-    if BankFrame:IsShown() and self.isCraftingReagent then
+    if BankFrame:IsShown() and self.BGR.isCraftingReagent then
       BankFrame.selectedTab = 2
     end
   end)
   self:HookScript("OnLeave", function()
-    if BankFrame:IsShown() and self.isCraftingReagent then
+    if BankFrame:IsShown() and self.BGR.isCraftingReagent then
       BankFrame.selectedTab = 1
     end
   end)
@@ -318,8 +332,10 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self:CheckUpdateTooltip(tooltipOwner);
   self:SetMatchesSearch(true)
 
-  self.itemName = ""
-  self.itemNameLower = nil
+  self.BGR = {}
+  self.BGR.itemName = ""
+  self.BGR.itemLink = cacheData.itemLink
+  self.BGR.itemNameLower = nil
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
@@ -351,9 +367,10 @@ function BaganatorClassicCachedItemButtonMixin:UpdateTextures(size)
 end
 
 function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
-  self.itemLink = details.itemLink
-  self.itemName = ""
-  self.itemNameLower = nil
+  self.BGR = {}
+  self.BGR.itemLink = details.itemLink
+  self.BGR.itemName = ""
+  self.BGR.itemNameLower = nil
   
   SetItemButtonTexture(self, details.iconTexture);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
@@ -372,12 +389,12 @@ end
 
 function BaganatorClassicCachedItemButtonMixin:OnClick(button)
   if IsModifiedClick("CHATLINK") then
-    ChatEdit_InsertLink(self.itemLink)
+    ChatEdit_InsertLink(self.BGR.itemLink)
   end
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnEnter()
-  local itemLink = self.itemLink
+  local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
     return
@@ -389,7 +406,7 @@ function BaganatorClassicCachedItemButtonMixin:OnEnter()
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnLeave()
-  local itemLink = self.itemLink
+  local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
     return
@@ -464,15 +481,16 @@ function BaganatorClassicLiveItemButtonMixin:UpdateTextures(size)
 end
 
 function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
+  self.BGR = {}
   local info = C_Container.GetContainerItemInfo(self:GetParent():GetID(), self:GetID())
 
   if cacheData.itemLink == nil then
     info = nil
   end
 
-  self.itemLink = cacheData.itemLink
-  self.itemName = ""
-  self.itemNameLower = nil
+  self.BGR.itemLink = cacheData.itemLink
+  self.BGR.itemName = ""
+  self.BGR.itemNameLower = nil
 
   SetStaticInfo(self, cacheData)
   if cacheData.iconTexture ~= nil then

@@ -180,8 +180,12 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
 end
 
 function BaganatorCachedBagLayoutMixin:ApplySearch(text)
+  local start = debugprofilestop()
   for _, itemButton in ipairs(self.buttons) do
     itemButton:SetItemFiltered(text)
+  end
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("cache search", debugprofilestop() - start)
   end
 end
 
@@ -374,7 +378,11 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
 end
 
 function BaganatorLiveBagLayoutMixin:ApplySearch(text)
+  local start = debugprofilestop()
   for _, itemButton in ipairs(self.buttons) do
     itemButton:SetItemFiltered(text)
+  end
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("live search", debugprofilestop() - start)
   end
 end

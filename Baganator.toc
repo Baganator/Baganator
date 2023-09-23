@@ -19,6 +19,7 @@ Source\Utilities.lua
 Source\Tooltips.lua
 Source\Cache.lua
 Source\Summaries.lua
+Source\Search.lua
 
 Source\Components.lua
 Source\Layouts.lua

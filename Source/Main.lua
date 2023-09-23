@@ -87,12 +87,7 @@ local function SetupView()
   end
 
   if Baganator.Constants.IsEra or Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
-    hooksecurefunc("ToggleBackpack", function()
-      mainView:SetShown(not mainView:IsShown())
-      if mainView:IsVisible() then
-        mainView:UpdateForCharacter(cache.currentCharacter, true)
-      end
-    end)
+    hooksecurefunc("ToggleBackpack", ToggleMainView)
   end
 end
 
@@ -121,6 +116,7 @@ end
 EventUtil.ContinueOnAddOnLoaded("Baganator", function()
   Baganator.Config.InitializeData()
   Baganator.SlashCmd.Initialize()
+  Baganator.Search.Initialize()
 
   SetupDataProcessing()
   SetupView()

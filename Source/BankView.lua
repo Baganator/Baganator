@@ -45,10 +45,13 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
-    if self:IsShown() then
-      self:ApplySearch(text)
-    end
+    self:ApplySearch(text)
   end)
+end
+
+function BaganatorBankOnlyViewMixin:OnHide()
+  Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  Baganator.Search.ClearCache()
 end
 
 function BaganatorBankOnlyViewMixin:OnDragStart()

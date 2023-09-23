@@ -73,15 +73,18 @@ function BaganatorMainViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
-    if self:IsShown() then
-      self:ApplySearch(text)
-    end
+    self:ApplySearch(text)
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
     self:AddNewRecent(character)
     self:UpdateForCharacter(character, self.liveCharacter == character)
   end)
+end
+
+function BaganatorMainViewMixin:OnHide()
+  Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  Baganator.Search.ClearCache()
 end
 
 function BaganatorMainViewMixin:ApplySearch(text)
