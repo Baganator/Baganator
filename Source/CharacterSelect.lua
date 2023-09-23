@@ -42,13 +42,23 @@ end
 function CharacterSelectSidebarMixin:UpdateList()
   local characters = {}
   local searchText = self.SearchBox:GetText():lower()
-  for char in pairs(BAGANATOR_DATA.Characters) do
+  for char, info in pairs(BAGANATOR_DATA.Characters) do
     if searchText == "" or char:lower():find(searchText, nil, true) then
-      table.insert(characters, char)
+      table.insert(characters, {fullName = char, name = info.details.character, realm = info.details.realmNormalized})
     end
   end
-  table.sort(characters)
-  self.ScrollBox:SetDataProvider(CreateDataProvider(characters))
+  table.sort(characters, function(a, b)
+    if a.realm == b.realm then
+      return a.name < b.name
+    else
+      return a.realm < b.realm
+    end
+  end)
+  local justNames = {}
+  for _, details in ipairs(characters) do
+    table.insert(justNames, details.fullName)
+  end
+  self.ScrollBox:SetDataProvider(CreateDataProvider(justNames))
 end
 
 function CharacterSelectSidebarMixin:OnShow()
