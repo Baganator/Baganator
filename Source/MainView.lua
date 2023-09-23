@@ -86,6 +86,7 @@ function BaganatorMainViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.Search.ClearCache()
   Baganator.Utilities.ClearNewItemState(Baganator.Constants.AllBagIndexes)
+  self.CharacterSelect:Hide()
 end
 
 function BaganatorMainViewMixin:ApplySearch(text)
