@@ -40,13 +40,15 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   local qualityColours = Baganator.Config.Get("icon_text_quality_colors")
   if Baganator.Config.Get("show_item_level") then
     table.insert(itemCallbacks, function(self, data)
-      local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
-      self.ItemLevel:SetText(itemLevel)
-      if qualityColours then
-        local color = qualityColors[data.quality]
-        self.ItemLevel:SetTextColor(color.r, color.g, color.b)
-      else
-        self.ItemLevel:SetTextColor(1,1,1)
+      if IsEquipment(data.itemLink) then
+        local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
+        self.ItemLevel:SetText(itemLevel)
+        if qualityColours then
+          local color = qualityColors[data.quality]
+          self.ItemLevel:SetTextColor(color.r, color.g, color.b)
+        else
+          self.ItemLevel:SetTextColor(1,1,1)
+        end
       end
     end)
   end
