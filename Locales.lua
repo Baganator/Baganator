@@ -46,6 +46,7 @@ L["BAGS_X_BANK_X"] = "Bags: %s, Bank: %s"
 L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
 
 L["BOE"] = "BoE"
+L["BOA"] = "BoA"
 
 L["SORT"] = "Sort"
 

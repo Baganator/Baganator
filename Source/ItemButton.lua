@@ -27,6 +27,19 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   settings.show_item_level = Baganator.Config.Get("show_item_level")
   settings.show_boe_status = Baganator.Config.Get("show_boe_status")
   settings.icon_text_quality_colors = Baganator.Config.Get("icon_text_quality_colors")
+  settings.show_boa_status = Baganator.Config.Get("show_boa_status")
+end
+
+local function IsBindOnAccount(itemLink)
+  local tooltipInfo = C_TooltipInfo.GetHyperlink(itemLink)
+  if tooltipInfo then
+    for _, row in ipairs(tooltipInfo.lines) do
+      if row.type == Enum.TooltipDataLineType.ItemBinding and row.leftText == ITEM_BIND_TO_BNETACCOUNT then
+        return true
+      end
+    end
+  end
+  return false
 end
 
 -- Load item data late
@@ -59,6 +72,14 @@ local function GetExtraInfo(self, itemID, itemLink, quality)
       end
     end
 
+    if settings.show_boa_status and IsBindOnAccount(itemLink) then
+      if settings.icon_text_quality_colors then
+        self.BindingText:SetText(qualityColors[quality]:WrapTextInColorCode(BAGANATOR_L_BOA))
+      else
+        self.BindingText:SetText(BAGANATOR_L_BOA)
+      end
+    end
+
   else
     local item = Item:CreateFromItemLink(itemLink)
     self.itemInfoWaiting = true
@@ -77,6 +98,14 @@ local function GetExtraInfo(self, itemID, itemLink, quality)
           self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
         else
           self.ItemLevel:SetText(itemLevel)
+        end
+      end
+
+      if settings.show_boa_status and IsBindOnAccount(itemLink) then
+        if settings.icon_text_quality_colors then
+          self.BindingText:SetText(qualityColors[quality]:WrapTextInColorCode(BAGANATOR_L_BOA))
+        else
+          self.BindingText:SetText(BAGANATOR_L_BOA)
         end
       end
     end)
