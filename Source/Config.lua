@@ -19,6 +19,7 @@ Baganator.Config.Options = {
 
   SHOW_ITEM_LEVEL = "show_item_level",
   SHOW_BOE_STATUS = "show_boe_status",
+  ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
@@ -40,6 +41,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_BOE_STATUS] = false,
   [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
   [Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS] = true,
+  [Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
@@ -59,6 +61,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.SHOW_SORT_BUTTON,
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
   Baganator.Config.Options.SHOW_BOE_STATUS,
+  Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
 }
 
 function Baganator.Config.IsValidOption(name)

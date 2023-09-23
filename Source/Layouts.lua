@@ -31,8 +31,12 @@ BaganatorCachedBagLayoutMixin = {}
 local ReflowSettings = {
   Baganator.Config.Options.BAG_ICON_SIZE,
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
+}
+
+local RefreshContentSettings = {
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
   Baganator.Config.Options.SHOW_BOE_STATUS,
+  Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
 }
 
 local classicCachedObjectCounter = 0
@@ -55,6 +59,8 @@ end
 function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
+  elseif tIndexOf(RefreshContentSettings, setting) ~= nil then
+    self.refreshContent = true
   end
 end
 
@@ -135,7 +141,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
 
   if self.prevState.character ~= character or self.prevState.section ~= section or
       self:CompareButtonIndexes(indexes, indexesToUse, sectionData) or rowWidth ~= self.oldRowWidth or
-      self.reflow then
+      self.reflow or self.refreshContent then
     self.reflow = false
     self:RebuildLayout(sectionData, indexes, indexesToUse, rowWidth)
     self.waitingUpdate = {}
@@ -212,6 +218,8 @@ end
 function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
+  elseif tIndexOf(RefreshContentSettings, setting) ~= nil then
+    self.refreshContent = true
   end
 end
 
@@ -321,6 +329,12 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
     self:FlowButtons(rowWidth)
+  end
+
+  if self.refreshContent then
+    for _, bagID in ipairs(indexes) do
+      self.waitingUpdate[bagID] = true
+    end
   end
 
   local indexesReversed = {}
