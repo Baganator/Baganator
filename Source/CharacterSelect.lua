@@ -6,10 +6,10 @@ function CharacterSelectSidebarMixin:OnLoad()
   local function UpdateForSelection(frame)
     if frame:GetText() ~= self.selectedCharacter then
       frame:Enable()
-      frame:SetAlpha(1)
+      frame:GetFontString():SetTextColor(1, 1, 1)
     else
       frame:Disable()
-      frame:SetAlpha(0.5)
+      frame:GetFontString():SetTextColor(0, 1, 0)
     end
   end
 
