@@ -1,4 +1,3 @@
-Baganator.ItemButtonUtil = {}
 local IsEquipment = Baganator.Utilities.IsEquipment
 
 local qualityColors = {
@@ -13,42 +12,14 @@ local qualityColors = {
   [8] = CreateColor(79/255, 196/255, 225/255), -- Blizzard
 }
 
--- Speed up accessing settings for icons, as it happens a lot of times and the
--- indirection caused by accessing the config via the normal route
-local settings = {
-}
-
-function Baganator.ItemButtonUtil.UpdateSettings()
-  if next(settings) == nil then
-    Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function()
-      Baganator.ItemButtonUtil.UpdateSettings()
-    end)
-  end
-  settings.show_item_level = Baganator.Config.Get("show_item_level")
-  settings.show_boe_status = Baganator.Config.Get("show_boe_status")
-  settings.icon_text_quality_colors = Baganator.Config.Get("icon_text_quality_colors")
-  settings.show_boa_status = Baganator.Config.Get("show_boa_status")
-end
-
-local function IsBindOnAccount(itemLink)
-  local tooltipInfo = C_TooltipInfo.GetHyperlink(itemLink)
-  if tooltipInfo then
-    for _, row in ipairs(tooltipInfo.lines) do
-      if row.type == Enum.TooltipDataLineType.ItemBinding and row.leftText == ITEM_BIND_TO_BNETACCOUNT then
-        return true
-      end
-    end
-  end
-  return false
-end
-
 -- Load item data late
 local function GetExtraInfo(self, itemID, itemLink, quality)
-  if itemLink:find("keystone:", nil, true) then
+  self.ItemLevel:SetText("")
+  if itemLink:match("keystone:") then
     itemLink = "item:" .. itemID
   end
 
-  if itemLink:find("battlepet:", nil, true) then
+  if itemLink:match("battlepet:") then
     self.itemInfoWaiting = false
     local petID = tonumber(itemLink:match("battlepet:(%d+)"))
     self.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
@@ -63,21 +34,9 @@ local function GetExtraInfo(self, itemID, itemLink, quality)
       self:SetItemFiltered(self.pendingSearch)
     end
 
-    if settings.show_item_level and IsEquipment(itemLink) then
+    if IsEquipment(itemLink) then
       local itemLevel = GetDetailedItemLevelInfo(itemLink)
-      if settings.icon_text_quality_colors then
-        self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
-      else
-        self.ItemLevel:SetText(itemLevel)
-      end
-    end
-
-    if settings.show_boa_status and IsBindOnAccount(itemLink) then
-      if settings.icon_text_quality_colors then
-        self.BindingText:SetText(qualityColors[quality]:WrapTextInColorCode(BAGANATOR_L_BOA))
-      else
-        self.BindingText:SetText(BAGANATOR_L_BOA)
-      end
+      self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
     end
 
   else
@@ -92,21 +51,9 @@ local function GetExtraInfo(self, itemID, itemLink, quality)
         self:SetItemFiltered(self.pendingSearch)
       end
 
-      if settings.show_item_level and IsEquipment(itemLink) then
+      if IsEquipment(itemLink) then
         local itemLevel = GetDetailedItemLevelInfo(itemLink)
-        if settings.icon_text_quality_colors then
-          self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
-        else
-          self.ItemLevel:SetText(itemLevel)
-        end
-      end
-
-      if settings.show_boa_status and IsBindOnAccount(itemLink) then
-        if settings.icon_text_quality_colors then
-          self.BindingText:SetText(qualityColors[quality]:WrapTextInColorCode(BAGANATOR_L_BOA))
-        else
-          self.BindingText:SetText(BAGANATOR_L_BOA)
-        end
+        self.ItemLevel:SetText(qualityColors[quality]:WrapTextInColorCode(itemLevel))
       end
     end)
   end
@@ -119,12 +66,8 @@ local function SetStaticInfo(self, details)
     return
   end
 
-  if settings.show_boe_status and IsEquipment(details.itemLink) and details.isBound == false then
-    if settings.icon_text_quality_colors then
-      self.BindingText:SetText(qualityColors[details.quality]:WrapTextInColorCode(BAGANATOR_L_BOE))
-    else
-      self.BindingText:SetText(BAGANATOR_L_BOE)
-    end
+  if IsEquipment(details.itemLink) and details.isBound == false then
+    self.BindingText:SetText(qualityColors[details.quality]:WrapTextInColorCode(BAGANATOR_L_BOE))
   end
 end
 
@@ -149,6 +92,9 @@ local function ApplyItemDetailSettings(button, size)
   local scale = size / 42
   button.ItemLevel:SetPoint("TOPLEFT", 3 * scale, -3 * scale)
   button.BindingText:SetPoint("BOTTOMLEFT", 3 * scale, 3 * scale)
+
+  button.ItemLevel:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_ITEM_LEVEL))
+  button.BindingText:SetShown(Baganator.Config.Get(Baganator.Config.Options.SHOW_BOE_STATUS))
 end
 
 -- Fix anchors and item sizes when resizing the item buttons

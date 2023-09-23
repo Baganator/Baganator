@@ -126,8 +126,6 @@ EventUtil.ContinueOnAddOnLoaded("Baganator", function()
   SetupView()
   HideDefaultBags()
 
-  Baganator.ItemButtonUtil.UpdateSettings()
-
   if TooltipDataProcessor then
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
       if tooltip == GameTooltip or tooltip == ItemRefTooltip then
