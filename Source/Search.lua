@@ -102,5 +102,4 @@ function Baganator.Search.Initialize()
     table.insert(sortedKeywords, key)
   end
   table.sort(sortedKeywords)
-  DevTools_Dump(sortedKeywords)
 end
