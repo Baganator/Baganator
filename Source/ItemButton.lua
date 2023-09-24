@@ -136,16 +136,20 @@ local function SetStaticInfo(self, details)
 end
 
 local function SearchCheck(self, text)
+  if text == "" then
+    return true
+  end
+
+  if self.BGR == nil then
+    return false
+  end
+
   if self.BGR.itemInfoWaiting then
     self.BGR.pendingSearch = text
     return
   end
 
   self.BGR.pendingSearch = nil
-
-  if text == "" then
-    return true
-  end
 
   if not self.BGR.itemName then
     return
