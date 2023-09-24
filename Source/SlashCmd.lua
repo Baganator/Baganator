@@ -72,12 +72,17 @@ function Baganator.SlashCmd.RemoveCharacter(characterName)
   Baganator.Utilities.Message("Character '" .. characterName .. "' removed. Close any open bags to complete.")
 end
 
+function Baganator.SlashCmd.CustomiseUI()
+  Baganator.CallbackRegistry:TriggerEvent("ShowCustomise")
+end
+
 local COMMANDS = {
   ["c"] = Baganator.SlashCmd.Config,
   ["config"] = Baganator.SlashCmd.Config,
   ["d"] = Baganator.SlashCmd.Debug,
   ["debug"] = Baganator.SlashCmd.Debug,
   ["remove"] = Baganator.SlashCmd.RemoveCharacter,
+  [""] = Baganator.SlashCmd.CustomiseUI,
 }
 function Baganator.SlashCmd.Handler(input)
   local split = {strsplit("\a", (input:gsub("%s+","\a")))}
