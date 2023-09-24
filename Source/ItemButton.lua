@@ -133,6 +133,12 @@ local function SetStaticInfo(self, details)
   self.BGR.quality = details.quality
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
+
+  if self.ProfessionQualityOverlay then
+    local scale = self:GetWidth() / 42
+    self.ProfessionQualityOverlay:SetPoint("TOPLEFT", -3 * scale, 2 * scale);
+    self.ProfessionQualityOverlay:SetScale(scale);
+  end
 end
 
 local function SearchCheck(self, text)
@@ -165,7 +171,11 @@ end
 local function ApplyItemDetailSettings(button, size)
   local scale = size / 42
   button.ItemLevel:SetPoint("BOTTOMLEFT", 3 * scale, 3 * scale)
-  button.BindingText:SetPoint("TOPRIGHT", -3 * scale, -3 * scale)
+  button.ItemLevel:SetScale(scale)
+  button.BindingText:SetPoint("TOPRIGHT", -2 * scale, -3 * scale)
+  button.BindingText:SetScale(scale)
+  button.Count:SetPoint("BOTTOMRIGHT", -2 * scale, 3 * scale)
+  button.Count:SetScale(scale)
 end
 
 -- Fix anchors and item sizes when resizing the item buttons
@@ -214,6 +224,8 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self:SetItemButtonTexture(details.iconTexture)
   self:SetItemButtonQuality(details.quality)
   self:SetItemButtonCount(details.itemCount)
+  SetItemCraftingQualityOverlay(self, details.itemLink)
+
   self.BGR.itemLink = details.itemLink
   self.BGR.itemName = ""
 
