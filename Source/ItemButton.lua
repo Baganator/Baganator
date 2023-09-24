@@ -78,6 +78,13 @@ function Baganator.ItemButtonUtil.UpdateSettings()
       end
     end)
   end
+  if Baganator.Config.Get("show_pawn_arrow") and PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
+    table.insert(itemCallbacks, function(self, data)
+      if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted(data.itemLink) then
+        self.UpgradeArrow:Show()
+      end
+    end)
+  end
 end
 
 -- Load item data late
@@ -134,10 +141,16 @@ local function SetStaticInfo(self, details)
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
 
+  self.UpgradeArrow:Hide()
+
   if self.ProfessionQualityOverlay then
     local scale = self:GetWidth() / 42
     self.ProfessionQualityOverlay:SetPoint("TOPLEFT", -3 * scale, 2 * scale);
     self.ProfessionQualityOverlay:SetScale(scale);
+  end
+  if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
+    self.UpgradeArrow:SetTexture("Interface\\AddOns\\Pawn\\Textures\\UpgradeArrow")
+    self.UpgradeArrow:Hide()
   end
 end
 
@@ -176,6 +189,10 @@ local function ApplyItemDetailSettings(button, size)
   button.BindingText:SetScale(scale)
   button.Count:SetPoint("BOTTOMRIGHT", -2 * scale, 3 * scale)
   button.Count:SetScale(scale)
+
+  button.UpgradeArrow:ClearAllPoints()
+  button.UpgradeArrow:SetSize(15 * scale, 15 * scale)
+  button.UpgradeArrow:SetPoint("TOPLEFT", 2 * scale, -2 * scale)
 end
 
 -- Fix anchors and item sizes when resizing the item buttons

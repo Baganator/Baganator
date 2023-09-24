@@ -9,6 +9,7 @@
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
         <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
+        <Texture parentKey="UpgradeArrow"/>
       </Layer>
     </Layers>
   </ItemButton>
@@ -24,6 +25,7 @@
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
         <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
+        <Texture parentKey="UpgradeArrow"/>
       </Layer>
     </Layers>
   </ItemButton>
@@ -38,6 +40,7 @@
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
         <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
+        <Texture parentKey="UpgradeArrow"/>
       </Layer>
     </Layers>
   </Button>
@@ -53,6 +56,7 @@
       <Layer level="OVERLAY">
         <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
         <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
+        <Texture parentKey="UpgradeArrow"/>
       </Layer>
     </Layers>
   </Button>

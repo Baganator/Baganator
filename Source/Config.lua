@@ -21,6 +21,7 @@ Baganator.Config.Options = {
   SHOW_BOE_STATUS = "show_boe_status",
   SHOW_BOA_STATUS = "show_boa_status",
   ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
+  SHOW_PAWN_ARROW = "show_pawn_arrow",
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
@@ -44,6 +45,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
   [Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS] = true,
   [Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
+  [Baganator.Config.Options.SHOW_PAWN_ARROW] = true,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
