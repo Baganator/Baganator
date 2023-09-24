@@ -8,6 +8,7 @@
   <Frame name="BaganatorLiveBagLayoutTemplate" virtual="true" mixin="BaganatorLiveBagLayoutMixin" parentArray="Layouts">
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnHide method="OnHide"/>
       <OnEvent method="OnEvent"/>
     </Scripts>
   </Frame>

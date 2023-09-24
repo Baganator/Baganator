@@ -113,11 +113,3 @@ function Baganator.Utilities.ApplyVisuals(frame)
     end
   end
 end
-
-function Baganator.Utilities.ClearNewItemState(indexes)
-  for _, bagID in ipairs(indexes) do
-    for slotID = 1, C_Container.GetContainerNumSlots(bagID) do
-      C_NewItems.RemoveNewItem(bagID, slotID)
-    end
-  end
-end

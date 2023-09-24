@@ -130,6 +130,7 @@ end
 
 local function SetStaticInfo(self, details)
   self.BGR.isBound = details.isBound
+  self.BGR.quality = details.quality
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
 end
@@ -332,6 +333,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self:CheckUpdateTooltip(tooltipOwner);
   self:SetMatchesSearch(true)
 
+  -- Baganator specific stuff
   self.BGR = {}
   self.BGR.itemName = ""
   self.BGR.itemLink = cacheData.itemLink
@@ -345,6 +347,16 @@ end
 
 function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
   self:SetMatchesSearch(SearchCheck(self, text))
+end
+
+function BaganatorRetailLiveItemButtonMixin:ClearNewItem()
+  -- Copied code from Blizzard Container Frame
+  self.BattlepayItemTexture:Hide();
+  self.NewItemTexture:Hide();
+  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
+    self.flashAnim:Stop();
+    self.newitemglowAnim:Stop();
+  end
 end
 
 local function ApplyQualityBorderClassic(self, quality)
@@ -544,6 +556,9 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   end
   
   self.searchOverlay:SetShown(false);
+end
+
+function BaganatorClassicLiveItemButtonMixin:ClearNewItem()
 end
 
 function BaganatorClassicLiveItemButtonMixin:SetItemFiltered(text)
