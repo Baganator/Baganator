@@ -85,6 +85,25 @@ function Baganator.ItemButtonUtil.UpdateSettings()
       end
     end)
   end
+  if Baganator.Config.Get("show_cimi_icon") and CIMI_AddToFrame then
+    table.insert(itemCallbacks, function(self, data)
+      local function CIMI_Update(self)
+        if not self or not self:GetParent() then return end
+        if not CIMI_CheckOverlayIconEnabled(self) then
+            self.CIMIIconTexture:SetShown(false)
+            self:SetScript("OnUpdate", nil)
+            return
+        end
+
+        CIMI_SetIcon(self, CIMI_Update, CanIMogIt:GetTooltipText(data.itemLink))
+      end
+      if not self.CanIMogItOverlay then
+        CIMI_AddToFrame(self, CIMI_Update)
+      end
+      self.CanIMogItOverlay:Show()
+      CIMI_SetIcon(self.CanIMogItOverlay, CIMI_Update, CanIMogIt:GetTooltipText(data.itemLink))
+    end)
+  end
 end
 
 -- Load item data late
@@ -141,16 +160,19 @@ local function SetStaticInfo(self, details)
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
 
-  self.UpgradeArrow:Hide()
-
   if self.ProfessionQualityOverlay then
     local scale = self:GetWidth() / 42
     self.ProfessionQualityOverlay:SetPoint("TOPLEFT", -3 * scale, 2 * scale);
     self.ProfessionQualityOverlay:SetScale(scale);
   end
+
   if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
     self.UpgradeArrow:SetTexture("Interface\\AddOns\\Pawn\\Textures\\UpgradeArrow")
     self.UpgradeArrow:Hide()
+  end
+
+  if self.CanIMogItOverlay then
+    self.CanIMogItOverlay:Hide()
   end
 end
 
@@ -183,9 +205,9 @@ end
 
 local function ApplyItemDetailSettings(button, size)
   local scale = size / 42
-  button.ItemLevel:SetPoint("BOTTOMLEFT", 3 * scale, 3 * scale)
+  button.ItemLevel:SetPoint("TOPLEFT", 2 * scale, -3 * scale)
   button.ItemLevel:SetScale(scale)
-  button.BindingText:SetPoint("TOPRIGHT", -2 * scale, -3 * scale)
+  button.BindingText:SetPoint("BOTTOMLEFT", 2 * scale, 3 * scale)
   button.BindingText:SetScale(scale)
   button.Count:SetPoint("BOTTOMRIGHT", -2 * scale, 3 * scale)
   button.Count:SetScale(scale)

@@ -22,6 +22,7 @@ Baganator.Config.Options = {
   SHOW_BOA_STATUS = "show_boa_status",
   ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
   SHOW_PAWN_ARROW = "show_pawn_arrow",
+  SHOW_CIMI_ICON = "show_cimi_icon",
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
@@ -46,6 +47,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS] = true,
   [Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
   [Baganator.Config.Options.SHOW_PAWN_ARROW] = true,
+  [Baganator.Config.Options.SHOW_CIMI_ICON] = false,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
@@ -66,6 +68,8 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
   Baganator.Config.Options.SHOW_BOE_STATUS,
   Baganator.Config.Options.SHOW_BOA_STATUS,
+  Baganator.Config.Options.SHOW_PAWN_ARROW,
+  Baganator.Config.Options.SHOW_CIMI_ICON,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
 }
 

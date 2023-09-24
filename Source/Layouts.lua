@@ -37,6 +37,8 @@ local RefreshContentSettings = {
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
   Baganator.Config.Options.SHOW_BOE_STATUS,
   Baganator.Config.Options.SHOW_BOA_STATUS,
+  Baganator.Config.Options.SHOW_PAWN_ARROW,
+  Baganator.Config.Options.SHOW_CIMI_ICON,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
 }
 
