@@ -160,8 +160,8 @@ end
 
 local function ApplyItemDetailSettings(button, size)
   local scale = size / 42
-  button.ItemLevel:SetPoint("TOPLEFT", 3 * scale, -3 * scale)
-  button.BindingText:SetPoint("BOTTOMLEFT", 3 * scale, 3 * scale)
+  button.ItemLevel:SetPoint("BOTTOMLEFT", 3 * scale, 3 * scale)
+  button.BindingText:SetPoint("TOPRIGHT", -3 * scale, -3 * scale)
 end
 
 -- Fix anchors and item sizes when resizing the item buttons
