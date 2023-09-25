@@ -226,8 +226,6 @@ end
 function BaganatorLiveBagLayoutMixin:OnHide()
   local start = debugprofilestop()
   for _, button in ipairs(self.buttons) do
-    -- Note that do not call C_NewItems.RemoveNewItem(bagID, slotID) because
-    -- this is already called by the Blizzard bags when they close.
     button:ClearNewItem()
   end
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then

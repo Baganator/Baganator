@@ -409,6 +409,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
 end
 
 function BaganatorRetailLiveItemButtonMixin:ClearNewItem()
+  C_NewItems.RemoveNewItem(self:GetParent():GetID(), self:GetID())
   -- Copied code from Blizzard Container Frame
   self.BattlepayItemTexture:Hide();
   self.NewItemTexture:Hide();
