@@ -16,6 +16,7 @@ Baganator.Config.Options = {
 
   INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
   SHOW_INVENTORY_TOOLTIPS = "show_inventory_tooltips",
+  SHOW_TOOLTIPS_ON_SHIFT = "show_tooltips_on_shift",
 
   SHOW_ITEM_LEVEL = "show_item_level",
   SHOW_BOE_STATUS = "show_boe_status",
@@ -56,6 +57,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_CIMI_ICON] = false,
   [Baganator.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
   [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
+  [Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT] = false,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,

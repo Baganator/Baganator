@@ -1,5 +1,5 @@
 local function AddToTooltip(tooltip, summaries, itemLink)
-  if Baganator.Config.Get(Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS) then
+  if Baganator.Config.Get(Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS) and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT) or IsShiftKeyDown()) then
     Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
   end
 end

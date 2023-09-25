@@ -44,13 +44,7 @@
     <Size x="550" y="520"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
     </Scripts>
-    <Frames>
-      <Button parentKey="ResetFramePositions" text="BAGANATOR_L_RESET_POSITIONS" inherits="UIPanelDynamicResizeButtonTemplate">
-          <Anchors>
-            <Anchor point="TOPRIGHT" x="-20" y="-30"/>
-          </Anchors>
-      </Button>
-    </Frames>
   </Frame>
 </Ui>

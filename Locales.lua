@@ -59,6 +59,13 @@ L["KEYWORD_FOOD"] = "food"
 L["KEYWORD_DRINK"] = "drink"
 L["KEYWORD_POTION"] = "potion"
 
+L["WINDOWS"] = "Windows"
+L["ICONS"] = "Icons"
+L["TOOLTIPS"] = "Tooltips"
+L["SHOW_CAN_I_MOG_IT_ICON"] = "Show Can I Mog It icon when addon enabled"
+L["SHOW_PAWN_UPGRADE_ARROW"] = "Show Pawn upgrade arrow when addon enabled"
+L["PRESS_SHIFT_TO_SHOW_TOOLTIPS"] = "Press shift to display info in tooltips"
+
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 
