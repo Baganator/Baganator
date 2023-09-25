@@ -35,6 +35,7 @@ UnifiedBags\Layouts.lua
 UnifiedBags\Layouts.xml
 UnifiedBags\BankView.lua
 UnifiedBags\BankView.xml
+UnifiedBags\MoneyDisplay.lua
 UnifiedBags\CharacterSelect.lua
 UnifiedBags\CharacterSelect.xml
 UnifiedBags\MainView.lua

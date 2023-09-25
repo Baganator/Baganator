@@ -66,6 +66,10 @@ L["SHOW_CAN_I_MOG_IT_ICON"] = "Show Can I Mog It icon when addon enabled"
 L["SHOW_PAWN_UPGRADE_ARROW"] = "Show Pawn upgrade arrow when addon enabled"
 L["PRESS_SHIFT_TO_SHOW_TOOLTIPS"] = "Press shift to display info in tooltips"
 
+L["REALM_WIDE_GOLD_X"] = "Realm-wide gold: %s"
+L["ACCOUNT_GOLD_X"] = "Account gold: %s"
+L["REALM_X_X_X"] = "%s (x%s)"
+
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 

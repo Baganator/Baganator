@@ -40,20 +40,7 @@ function CharacterSelectSidebarMixin:OnLoad()
 end
 
 function CharacterSelectSidebarMixin:UpdateList()
-  local characters = {}
-  local searchText = self.SearchBox:GetText():lower()
-  for char, info in pairs(BAGANATOR_DATA.Characters) do
-    if searchText == "" or char:lower():find(searchText, nil, true) then
-      table.insert(characters, {fullName = char, name = info.details.character, realm = info.details.realmNormalized})
-    end
-  end
-  table.sort(characters, function(a, b)
-    if a.realm == b.realm then
-      return a.name < b.name
-    else
-      return a.realm < b.realm
-    end
-  end)
+  local character = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
   local justNames = {}
   for _, details in ipairs(characters) do
     table.insert(justNames, details.fullName)

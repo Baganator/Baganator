@@ -1,0 +1,66 @@
+function Baganator.ShowGoldSummaryRealm(anchor, point)
+  GameTooltip:SetOwner(anchor, point)
+
+  local connectedRealms = GetAutoCompleteRealms()
+  if #connectedRealms == 0 then
+    connectedRealms = {GetNormalizedRealmName()}
+  end
+  local realmsToInclude = {}
+  for _, r in ipairs(connectedRealms) do
+    realmsToInclude[r] = true
+  end
+
+  local lines = {}
+  local total = 0
+  for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
+    if realmsToInclude[characterInfo.realmNormalized] then
+      local money = BAGANATOR_DATA.Characters[characterInfo.fullName].money
+      local characterName = characterInfo.name
+      if #connectedRealms > 1 then
+        characterName = characterInfo.fullName
+      end
+      table.insert(lines, {left = characterName, right = GetMoneyString(money, true)})
+      total = total + money
+    end
+  end
+
+  GameTooltip:SetText(BAGANATOR_L_REALM_WIDE_GOLD_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true))))
+  for _, line in ipairs(lines) do
+    GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
+  end
+  GameTooltip:Show()
+end
+
+function Baganator.ShowGoldSummaryAccount(anchor, point)
+  GameTooltip:SetOwner(anchor, point)
+
+  local lines = {}
+  local function AddRealm(realmName, realmCount, realmTotal)
+    table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = GetMoneyString(realmTotal, true)})
+  end
+  local total = 0
+  local realmTotal = 0
+  local realmCount = 0
+  local currentRealm
+  for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
+    if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
+      AddRealm(currentRealm, realmCount, realmTotal)
+      realmTotal = 0
+      realmCount = 0
+    end
+    currentRealm = characterInfo.realm
+    realmCount = realmCount + 1
+
+    local money = BAGANATOR_DATA.Characters[characterInfo.fullName].money
+
+    total = total + money
+    realmTotal = realmTotal + money
+  end
+  AddRealm(currentRealm, realmCount, realmTotal)
+
+  GameTooltip:SetText(BAGANATOR_L_ACCOUNT_GOLD_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true))))
+  for _, line in ipairs(lines) do
+    GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
+  end
+  GameTooltip:Show()
+end

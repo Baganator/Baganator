@@ -82,6 +82,25 @@ function BaganatorMainViewMixin:OnLoad()
     self:AddNewRecent(character)
     self:UpdateForCharacter(character, self.liveCharacter == character)
   end)
+
+  local frame = CreateFrame("Frame")
+  local function UpdateMoneyDisplay()
+    if IsShiftKeyDown() then
+      Baganator.ShowGoldSummaryAccount(self.Money, "ANCHOR_TOP")
+    else
+      Baganator.ShowGoldSummaryRealm(self.Money, "ANCHOR_TOP")
+    end
+  end
+  self.Money:SetScript("OnEnter", function()
+    UpdateMoneyDisplay()
+    frame:RegisterEvent("MODIFIER_STATE_CHANGED")
+    frame:SetScript("OnEvent", UpdateMoneyDisplay)
+  end)
+
+  self.Money:SetScript("OnLeave", function()
+    frame:UnregisterEvent("MODIFIER_STATE_CHANGED")
+    GameTooltip:Hide()
+  end)
 end
 
 function BaganatorMainViewMixin:OnHide()

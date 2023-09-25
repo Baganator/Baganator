@@ -108,7 +108,7 @@
     </Frames>
     <Layers>
       <Layer level="BACKGROUND">
-        <FontString parentKey="Money" inherits="NumberFontNormal">
+        <FontString parentKey="Money" inherits="NumberFontNormal" enableMouse="true">
           <Anchors>
             <Anchor point="BOTTOMRIGHT" x="-15" y="6"/>
           </Anchors>
