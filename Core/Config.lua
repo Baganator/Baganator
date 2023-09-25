@@ -24,6 +24,12 @@ Baganator.Config.Options = {
   SHOW_PAWN_ARROW = "show_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
 
+  SHOW_PAWN_ARROW = "show_pawn_arrow",
+  SHOW_CIMI_ICON = "show_cimi_icon",
+
+  MAIN_VIEW_POSITION = "main_view_position",
+  BANK_ONLY_VIEW_POSITION = "bank_only_view_position",
+
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
 }
@@ -48,6 +54,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
   [Baganator.Config.Options.SHOW_PAWN_ARROW] = true,
   [Baganator.Config.Options.SHOW_CIMI_ICON] = false,
+  [Baganator.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
+  [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
@@ -102,6 +110,10 @@ function Baganator.Config.Set(name, value)
     Baganator.CallbackRegistry:TriggerEvent("SettingChangedEarly", name)
     Baganator.CallbackRegistry:TriggerEvent("SettingChanged", name)
   end
+end
+
+function Baganator.Config.ResetOne(name)
+  Baganator.Config.Set(name, CopyTable(Baganator.Config.Defaults[name]))
 end
 
 function Baganator.Config.Reset()

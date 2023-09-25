@@ -1,15 +1,18 @@
 local function SetupView()
   local mainView = CreateFrame("Frame", "BaganatorMainViewFrame", UIParent, "BaganatorMainViewTemplate")
   mainView:SetClampedToScreen(true)
+  mainView:SetUserPlaced(false)
 
   local bankOnlyView = CreateFrame("Frame", "BaganatorBankOnlyViewFrame", UIParent, "BaganatorBankOnlyViewTemplate")
   bankOnlyView:SetClampedToScreen(true)
+  bankOnlyView:SetUserPlaced(false)
 
   local function SetPositions()
     mainView:ClearAllPoints()
-    mainView:SetPoint("RIGHT", -20, 0)
+    mainView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
+    print(mainView:GetPoint(1))
     bankOnlyView:ClearAllPoints()
-    bankOnlyView:SetPoint("LEFT", 20, 0)
+    bankOnlyView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)))
   end
 
   SetPositions()
@@ -22,6 +25,8 @@ local function SetupView()
   table.insert(UISpecialFrames, customiseDialog:GetName())
 
   Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
+    Baganator.Config.ResetOne(Baganator.Config.Options.MAIN_VIEW_POSITION)
+    Baganator.Config.ResetOne(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)
     SetPositions()
   end)
 

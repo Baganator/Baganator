@@ -59,11 +59,14 @@ end
 function BaganatorBankOnlyViewMixin:OnDragStart()
   if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
+    self:SetUserPlaced(false)
   end
 end
 
 function BaganatorBankOnlyViewMixin:OnDragStop()
   self:StopMovingOrSizing()
+  local point, _, x, y = self:GetPoint(1)
+  Baganator.Config.Set(Baganator.Config.Options.MAIN_VIEW_POSITION, {point, x, y})
 end
 
 function BaganatorBankOnlyViewMixin:ToggleReagents()
