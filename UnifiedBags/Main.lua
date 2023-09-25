@@ -1,27 +1,3 @@
-Baganator.CallbackRegistry = CreateFromMixins(CallbackRegistryMixin)
-Baganator.CallbackRegistry:OnLoad()
-Baganator.CallbackRegistry:GenerateCallbackEvents(Baganator.Constants.Events)
-
-local function AddToTooltip(tooltip, summaries, itemLink)
-  if Baganator.Config.Get(Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS) then
-    Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
-  end
-end
-
-local cache, summaries
-
-local function SetupDataProcessing()
-  cache = CreateFrame("Frame")
-  Mixin(cache, BaganatorCacheMixin)
-  cache:OnLoad()
-  cache:SetScript("OnEvent", cache.OnEvent)
-  cache:SetScript("OnUpdate", cache.OnUpdate)
-
-  summaries = CreateFrame("Frame")
-  Mixin(summaries, BaganatorSummariesMixin)
-  summaries:OnLoad()
-end
-
 local function SetupView()
   local mainView = CreateFrame("Frame", "BaganatorMainViewFrame", UIParent, "BaganatorMainViewTemplate")
   mainView:SetClampedToScreen(true)
@@ -58,7 +34,7 @@ local function SetupView()
   local function ToggleMainView()
       mainView:SetShown(not mainView:IsShown())
       if mainView:IsVisible() then
-        mainView:UpdateForCharacter(cache.currentCharacter, true)
+        mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
       end
   end
 
@@ -68,7 +44,7 @@ local function SetupView()
 
   hooksecurefunc("OpenAllBags", function()
     mainView:Show()
-    mainView:UpdateForCharacter(cache.currentCharacter, true)
+    mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
   end)
 
   hooksecurefunc("CloseAllBags", function()
@@ -113,32 +89,11 @@ local function HideDefaultBags()
   BankFrame:SetScript("OnEvent", nil)
 end
 
-EventUtil.ContinueOnAddOnLoaded("Baganator", function()
-  Baganator.Config.InitializeData()
-  Baganator.SlashCmd.Initialize()
+function Baganator.InitializeUnifiedBags()
   Baganator.Search.Initialize()
 
-  SetupDataProcessing()
   SetupView()
   HideDefaultBags()
 
   Baganator.ItemButtonUtil.UpdateSettings()
-
-  if TooltipDataProcessor then
-    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
-      if tooltip == GameTooltip or tooltip == ItemRefTooltip then
-        local itemName, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
-        AddToTooltip(tooltip, summaries, itemLink)
-      end
-    end)
-  else
-    GameTooltip:HookScript("OnTooltipSetItem", function(tooltip)
-      local _, itemLink = tooltip:GetItem()
-      AddToTooltip(tooltip, summaries, itemLink)
-    end)
-    ItemRefTooltip:HookScript("OnTooltipSetItem", function(tooltip)
-      local _, itemLink = tooltip:GetItem()
-      AddToTooltip(tooltip, summaries, itemLink)
-    end)
-  end
-end)
+end
