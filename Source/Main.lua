@@ -31,9 +31,9 @@ local function SetupView()
 
   local function SetPositions()
     mainView:ClearAllPoints()
-    mainView:SetPoint("RIGHT", -20, -20)
+    mainView:SetPoint("RIGHT", -20, 0)
     bankOnlyView:ClearAllPoints()
-    bankOnlyView:SetPoint("LEFT", 20, -20)
+    bankOnlyView:SetPoint("LEFT", 20, 0)
   end
 
   SetPositions()
