@@ -26,9 +26,11 @@ function BaganatorMainViewMixin:OnLoad()
     end, FramePool_HideAndClearAnchors)
   end
 
-  self.SearchBox:HookScript("OnTextChanged", function()
-    local text = self.SearchBox:GetText()
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
+  self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
+    if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
+      local text = self.SearchBox:GetText()
+      Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
+    end
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CacheUpdate",  function(_, character, updatedBags)
