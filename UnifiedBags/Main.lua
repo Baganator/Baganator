@@ -31,7 +31,7 @@ local function SetupView()
 
   Baganator.CallbackRegistry:RegisterCallback("ShowCustomise", function()
     customiseDialog:RefreshOptions()
-    customiseDialog:Show()
+    customiseDialog:SetShown(not customiseDialog:IsShown())
     customiseDialog:Raise()
   end)
 
