@@ -10,7 +10,6 @@ local function SetupView()
   local function SetPositions()
     mainView:ClearAllPoints()
     mainView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
-    print(mainView:GetPoint(1))
     bankOnlyView:ClearAllPoints()
     bankOnlyView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)))
   end

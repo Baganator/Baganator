@@ -135,6 +135,7 @@ end
 function BaganatorMainViewMixin:OnDragStart()
   if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
+    self:SetUserPlaced(false)
   end
 end
 

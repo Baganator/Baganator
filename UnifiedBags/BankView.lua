@@ -65,6 +65,7 @@ end
 
 function BaganatorBankOnlyViewMixin:OnDragStop()
   self:StopMovingOrSizing()
+  self:SetUserPlaced(false)
   local point, _, x, y = self:GetPoint(1)
   Baganator.Config.Set(Baganator.Config.Options.MAIN_VIEW_POSITION, {point, x, y})
 end
