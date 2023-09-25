@@ -321,7 +321,7 @@ function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
   -- Automatically use the reagent bank when at the bank transferring crafting
   -- reagents
   self:HookScript("OnEnter", function()
-    if BankFrame:IsShown() and self.BGR.isCraftingReagent then
+    if BankFrame:IsShown() and self.BGR.isCraftingReagent and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 then
       BankFrame.selectedTab = 2
     end
   end)
