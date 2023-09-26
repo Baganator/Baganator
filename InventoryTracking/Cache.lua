@@ -125,11 +125,13 @@ function BaganatorCacheMixin:OnEvent(eventName, ...)
       end
     end
 
-    local bank = BAGANATOR_DATA.Characters[self.currentCharacter].bank
-    for index, bagID in ipairs(Baganator.Constants.AllBankIndexes) do
-      local numSlots = C_Container.GetContainerNumSlots(bagID)
-      if (bank[index] and numSlots ~= #bank[index]) or (bank[index] == nil and numSlots > 0) then
-        self.pending.bank[bagID] = true
+    if self.bankOpen then
+      local bank = BAGANATOR_DATA.Characters[self.currentCharacter].bank
+      for index, bagID in ipairs(Baganator.Constants.AllBankIndexes) do
+        local numSlots = C_Container.GetContainerNumSlots(bagID)
+        if (bank[index] and numSlots ~= #bank[index]) or (bank[index] == nil and numSlots > 0) then
+          self.pending.bank[bagID] = true
+        end
       end
     end
     self:QueueCaching()
