@@ -24,7 +24,8 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
     end
   end
 
-  GameTooltip:SetText(BAGANATOR_L_REALM_WIDE_GOLD_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true))))
+  GameTooltip:AddDoubleLine(BAGANATOR_L_REALM_WIDE_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true)))
+  GameTooltip:AddLine(" ")
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
@@ -58,7 +59,8 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
   end
   AddRealm(currentRealm, realmCount, realmTotal)
 
-  GameTooltip:SetText(BAGANATOR_L_ACCOUNT_GOLD_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true))))
+  GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true)))
+  GameTooltip:AddLine(" ")
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
