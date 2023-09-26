@@ -90,6 +90,11 @@ local function HideDefaultBags()
     for i = 1, 6 do
       _G["ContainerFrame" .. i]:SetParent(hidden)
     end
+    -- Prevent glitchy tutorial popups that cannot be closed from showing
+    -- These would ordinarily be attached to the Blizzard bag frames
+    SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_HUD_REVAMP_BAG_CHANGES, true)
+    SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_BAG_SLOTS_AUTHENTICATOR, true)
+    GetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_MOUNT_EQUIPMENT_SLOT_FRAME, true)
   else
     for i = 1, 5 do
       _G["ContainerFrame" .. i]:SetParent(hidden)
