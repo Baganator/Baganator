@@ -158,9 +158,12 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
     local bagIndex = tIndexOf(indexes, bagID)
     if bagIndex ~= nil and sectionData[bagIndex] and indexesToUse[bagIndex] then
       local bag = self.buttonsByBag[bagID]
-      for index, slotInfo in ipairs(sectionData[bagIndex]) do
-        local button = bag[index]
-        button:SetItemDetails(slotInfo)
+      -- bag may be nil due to past caching error (now fixed)
+      if bag ~= nil then
+        for index, slotInfo in ipairs(sectionData[bagIndex]) do
+          local button = bag[index]
+          button:SetItemDetails(slotInfo)
+        end
       end
     end
   end
