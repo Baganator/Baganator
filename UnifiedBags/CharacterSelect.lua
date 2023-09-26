@@ -40,7 +40,7 @@ function CharacterSelectSidebarMixin:OnLoad()
 end
 
 function CharacterSelectSidebarMixin:UpdateList()
-  local character = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
+  local characters = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
   local justNames = {}
   for _, details in ipairs(characters) do
     table.insert(justNames, details.fullName)
