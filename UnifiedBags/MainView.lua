@@ -42,14 +42,6 @@ function BaganatorMainViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
-    self:Show()
-  end)
-
-  Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_, ...)
-    self:Hide()
-  end)
-
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     self.settingChanged = true
     if not self.lastCharacter then

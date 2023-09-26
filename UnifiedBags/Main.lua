@@ -46,6 +46,15 @@ local function SetupView()
     hooksecurefunc("ToggleAllBags", ToggleMainView)
   end
 
+  Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
+    mainView:Show()
+    mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_, ...)
+    mainView:Hide()
+  end)
+
   hooksecurefunc("OpenAllBags", function()
     mainView:Show()
     mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
