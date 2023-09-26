@@ -112,6 +112,28 @@ function BaganatorCacheMixin:OnEvent(eventName, ...)
     self.pending.bank[Enum.BagIndex.Reagentbank] = true
     self:QueueCaching()
 
+  elseif eventName == "BAG_CONTAINER_UPDATE" then
+    if not self.currentCharacter then
+      return
+    end
+
+    local bags = BAGANATOR_DATA.Characters[self.currentCharacter].bags
+    for index, bagID in ipairs(Baganator.Constants.AllBagIndexes) do
+      local numSlots = C_Container.GetContainerNumSlots(bagID)
+      if (bags[index] and numSlots ~= #bags[index]) or (bags[index] == nil and numSlots > 0) then
+        self.pending.bags[bagID] = true
+      end
+    end
+
+    local bank = BAGANATOR_DATA.Characters[self.currentCharacter].bank
+    for index, bagID in ipairs(Baganator.Constants.AllBankIndexes) do
+      local numSlots = C_Container.GetContainerNumSlots(bagID)
+      if (bank[index] and numSlots ~= #bank[index]) or (bank[index] == nil and numSlots > 0) then
+        self.pending.bank[bagID] = true
+      end
+    end
+    self:QueueCaching()
+
   elseif eventName == "BANKFRAME_OPENED" then
     self.bankOpen = true
     for bagID in pairs(bankBags) do
