@@ -231,7 +231,9 @@ function BaganatorCacheMixin:OnUpdate()
   for bagID in pairs(self.pending.bank) do
     local bagIndex = bankBags[bagID]
     bank[bagIndex] = {}
-    DoBag(bagID, bank[bagIndex])
+    if bagID ~= Enum.BagIndex.Reagentbank or IsReagentBankUnlocked() then
+      DoBag(bagID, bank[bagIndex])
+    end
   end
 
   loopsFinished = true

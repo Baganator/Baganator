@@ -349,7 +349,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     [1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true, [7] = true, [8] = true
   }
   local reagentBankIndexesToUse = {}
-  if Baganator.Constants.IsRetail then
+  if Baganator.Constants.IsRetail and (not isLive or IsReagentBankUnlocked()) then
     reagentBankIndexesToUse = {
       [9] = true
     }

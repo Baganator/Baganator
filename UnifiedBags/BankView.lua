@@ -120,7 +120,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     [1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true, [7] = true, [8] = true
   }
   local reagentBankIndexesToUse = {}
-  if Baganator.Constants.IsRetail then
+  if Baganator.Constants.IsRetail and IsReagentBankUnlocked() then
     reagentBankIndexesToUse = {
       [9] = true
     }
@@ -144,6 +144,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   self.ReagentBankLive:SetShown(self.ReagentBankLive:GetHeight() > 0 and showReagents)
 
   self.ToggleReagentsBankButton:SetShown(self.ReagentBankLive:GetHeight() > 0)
+  self.DepositIntoReagentsBankButton:SetShown(self.ReagentBankLive:GetHeight() > 0)
   local reagentBankHeight = self.ReagentBankLive:GetHeight()
   if reagentBankHeight > 0 then
     if self.ReagentBankLive:IsShown() then

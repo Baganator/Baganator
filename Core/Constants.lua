@@ -16,7 +16,6 @@ Baganator.Constants = {
     Enum.BagIndex.BankBag_5,
     Enum.BagIndex.BankBag_6,
     Enum.BagIndex.BankBag_7,
-    Enum.BagIndex.Reagentbank,
   },
   IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
@@ -32,6 +31,7 @@ Baganator.Constants = {
 end]]
 if Baganator.Constants.IsRetail then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.ReagentBag)
+  table.insert(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)
 end
 
 Baganator.Constants.Events = {
