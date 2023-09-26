@@ -25,8 +25,8 @@ local function IsBindOnAccount(itemLink)
   return false
 end
 
-local function IsCosmetic(data)
-  return data.classID == Enum.ItemClass.Armor and data.subClassID == Enum.ItemArmorSubclass.Cosmetic
+local function IsCosmetic(bgr)
+  return bgr.classID == Enum.ItemClass.Armor and bgr.subClassID == Enum.ItemArmorSubclass.Cosmetic
 end
 
 local itemCallbacks = {}
@@ -44,7 +44,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   local qualityColours = Baganator.Config.Get("icon_text_quality_colors")
   if Baganator.Config.Get("show_item_level") then
     table.insert(itemCallbacks, function(self, data)
-      if IsEquipment(data.itemLink) and not IsCosmetic(data) then
+      if IsEquipment(data.itemLink) and not IsCosmetic(self.BGR) then
         local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
         self.ItemLevel:SetText(itemLevel)
         if qualityColours then
