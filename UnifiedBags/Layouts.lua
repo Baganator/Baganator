@@ -212,18 +212,32 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
   self:RegisterEvent("ITEM_LOCK_CHANGED")
 end
 
+function BaganatorLiveBagLayoutMixin:UpdateCooldowns()
+  for _, button in ipairs(self.buttons) do
+    button:BGRUpdateCooldown(button.BGR.itemLink ~= nil)
+  end
+end
+
 function BaganatorLiveBagLayoutMixin:OnEvent(eventName, ...)
   if eventName == "ITEM_LOCK_CHANGED" then
     local bagID, slotID = ...
     self:UpdateLockForItem(bagID, slotID)
-  elseif event == "BAG_UPDATE_COOLDOWN" then
-    for _, button in ipairs(self.buttons) do
-      button:UpdateCooldown(button.itemLink ~= nil)
-    end
+  elseif eventName == "BAG_UPDATE_COOLDOWN" then
+    self:UpdateCooldowns()
+  end
+end
+
+function BaganatorLiveBagLayoutMixin:OnShow()
+  self:RegisterEvent("BAG_UPDATE_COOLDOWN")
+  local start = debugprofilestop()
+  self:UpdateCooldowns()
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("update cooldowns show", debugprofilestop() - start)
   end
 end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
+  self:UnregisterEvent("BAG_UPDATE_COOLDOWN")
   local start = debugprofilestop()
   for _, button in ipairs(self.buttons) do
     button:ClearNewItem()

@@ -404,6 +404,14 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   end
 end
 
+function BaganatorRetailLiveItemButtonMixin:BGRUpdateCooldown()
+  self:UpdateCooldown(self.BGR.itemLink);
+end
+
+function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
+  self:SetMatchesSearch(SearchCheck(self, text))
+end
+
 function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
   self:SetMatchesSearch(SearchCheck(self, text))
 end
@@ -534,6 +542,15 @@ function BaganatorClassicLiveItemButtonMixin:OnEnter()
   end
 end
 
+function BaganatorClassicLiveItemButtonMixin:BGRUpdateCooldown(size)
+  if self.BGR.itemLink then
+    print("hit")
+    ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
+  else
+    _G[self:GetName().."Cooldown"]:Hide();
+  end
+end
+
 function BaganatorClassicLiveItemButtonMixin:OnLeave()
   if self:GetParent():GetID() == -1 then
     GameTooltip_Hide()
@@ -599,7 +616,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   self.JunkIcon:SetShown(false);
 
   if ( texture ) then
-    ContainerFrame_UpdateCooldown(self:GetID(), self);
+    ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
     self.hasItem = 1;
   else
     _G[self:GetName().."Cooldown"]:Hide();
