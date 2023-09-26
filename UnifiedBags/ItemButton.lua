@@ -544,7 +544,6 @@ end
 
 function BaganatorClassicLiveItemButtonMixin:BGRUpdateCooldown(size)
   if self.BGR.itemLink then
-    print("hit")
     ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
   else
     _G[self:GetName().."Cooldown"]:Hide();
