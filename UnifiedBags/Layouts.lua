@@ -373,11 +373,6 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
     end
   end
 
-  local indexesReversed = {}
-  for index, bagID in ipairs(indexes) do
-    indexesReversed[bagID] = index
-  end
-
   local sectionData = characterData[section]
 
   for bagID in pairs(self.waitingUpdate) do
