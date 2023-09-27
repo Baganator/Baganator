@@ -99,22 +99,31 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
       self.buttonsByBag[indexes[bagIndex]] = bagButtons
       for slotIndex = 1, #newBags[bagIndex] do
         local button = self.buttonPool:Acquire()
-        button:SetPoint("TOPLEFT", cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding * 2))
         button:SetSize(iconSize, iconSize)
-        button:UpdateTextures(iconSize)
         button:Show()
 
         table.insert(self.buttons, button)
         bagButtons[slotIndex] = button
-
-        MasqueRegistration(button)
-
-        cols = cols + 1
-        if cols >= rowWidth then
-          cols = 0
-          rows = rows + 1
-        end
       end
+    end
+  end
+
+  self:FlowButtons(rowWidth)
+end
+
+function BaganatorCachedBagLayoutMixin:FlowButtons(rowWidth)
+  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  local rows, cols = 0, 0
+  for _, button in ipairs(self.buttons) do
+    button:SetPoint("TOPLEFT", self, cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding * 2))
+    button:SetSize(iconSize, iconSize)
+    button:UpdateTextures(iconSize)
+    MasqueRegistration(button)
+    cols = cols + 1
+    if cols >= rowWidth then
+      cols = 0
+      rows = rows + 1
     end
   end
 
@@ -144,11 +153,19 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
   local emptySlotBackground = Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND)
 
   if self.prevState.character ~= character or self.prevState.section ~= section or
-      self:CompareButtonIndexes(indexes, indexesToUse, sectionData) or rowWidth ~= self.oldRowWidth or
-      self.reflow or self.refreshContent then
-    self.reflow = false
-    self.refreshContent = false
+      self:CompareButtonIndexes(indexes, indexesToUse, sectionData) then
     self:RebuildLayout(sectionData, indexes, indexesToUse, rowWidth)
+    self.waitingUpdate = {}
+    for _, bagID in ipairs(indexes) do
+      self.waitingUpdate[bagID] = true
+    end
+  elseif self.reflow or rowWidth ~= self.oldRowWidth then
+    self.reflow = false
+    self:FlowButtons(rowWidth)
+  end
+
+  if self.refreshContent then
+    self.refreshContent = false
     self.waitingUpdate = {}
     for index in pairs(indexesToUse) do
       self.waitingUpdate[indexes[index]] = true
