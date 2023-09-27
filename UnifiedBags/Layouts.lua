@@ -31,6 +31,7 @@ BaganatorCachedBagLayoutMixin = {}
 local ReflowSettings = {
   Baganator.Config.Options.BAG_ICON_SIZE,
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
+  Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
 }
 
 local RefreshContentSettings = {

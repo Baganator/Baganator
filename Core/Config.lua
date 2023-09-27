@@ -22,6 +22,7 @@ Baganator.Config.Options = {
   SHOW_BOE_STATUS = "show_boe_status",
   SHOW_BOA_STATUS = "show_boa_status",
   ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
+  ICON_TEXT_FONT_SIZE = "icon_text_font_size",
   SHOW_PAWN_ARROW = "show_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
 
@@ -58,6 +59,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
   [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
   [Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT] = false,
+  [Baganator.Config.Options.ICON_TEXT_FONT_SIZE] = 14,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
@@ -81,6 +83,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.SHOW_PAWN_ARROW,
   Baganator.Config.Options.SHOW_CIMI_ICON,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
+  Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
 }
 
 function Baganator.Config.IsValidOption(name)

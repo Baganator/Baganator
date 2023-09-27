@@ -97,6 +97,15 @@ local ICON_OPTIONS = {
     valuePattern = BAGANATOR_L_X_ICON_SIZE,
     option = "bag_icon_size",
   },
+  {
+    type = "slider",
+    min = 5,
+    max = 40,
+    lowText = "5",
+    highText = "40",
+    valuePattern = BAGANATOR_L_X_ICON_TEXT_FONT_SIZE,
+    option = "icon_text_font_size",
+  },
 }
 
 local TOOLTIP_OPTIONS = {

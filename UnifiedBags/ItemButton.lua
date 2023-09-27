@@ -208,13 +208,19 @@ local function SearchCheck(self, text)
 end
 
 local function ApplyItemDetailSettings(button, size)
+  local font, originalSize, fontFlags = button.ItemLevel:GetFont()
+  local newSize = Baganator.Config.Get("icon_text_font_size")
+
   local scale = size / 42
   button.ItemLevel:SetPoint("TOPLEFT", 2 * scale, -3 * scale)
   button.ItemLevel:SetScale(scale)
+  button.ItemLevel:SetFont(font, newSize, fontFlags)
   button.BindingText:SetPoint("BOTTOMLEFT", 2 * scale, 3 * scale)
   button.BindingText:SetScale(scale)
+  button.BindingText:SetFont(font, newSize, fontFlags)
   button.Count:SetPoint("BOTTOMRIGHT", -2 * scale, 3 * scale)
   button.Count:SetScale(scale)
+  button.Count:SetFont(font, newSize, fontFlags)
 
   button.UpgradeArrow:ClearAllPoints()
   button.UpgradeArrow:SetSize(15 * scale, 15 * scale)

@@ -40,6 +40,7 @@ L["SHOW_BOA_STATUS"] = "Show equipment BoA status (slow)"
 L["CUSTOMISE_SHOW_TABS"] = "Show tabs of recent characters"
 L["SHOW_INVENTORY_IN_TOOLTIPS"] = "Show inventory in item tooltips"
 L["USE_ITEM_QUALITY_COLORS_FOR_ICON_TEXT"] = "Color text on icons in item quality colors"
+L["X_ICON_TEXT_FONT_SIZE"] = "%spt Icon Font Size"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X_BANKS_X"] = "Bags: %s, Banks: %s"
