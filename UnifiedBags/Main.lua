@@ -43,11 +43,16 @@ local function SetupView()
     customiseDialog:Raise()
   end)
 
+  local lastToggleTime = 0
   local function ToggleMainView()
-      mainView:SetShown(not mainView:IsShown())
-      if mainView:IsVisible() then
-        mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
-      end
+    if GetTime() == lastToggleTime then
+      return
+    end
+    mainView:SetShown(not mainView:IsShown())
+    if mainView:IsVisible() then
+      mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
+    end
+    lastToggleTime = GetTime()
   end
 
   if not Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
@@ -83,9 +88,7 @@ local function SetupView()
     CharacterReagentBag0Slot:HookScript("OnClick", ToggleMainView)
   end
 
-  if Baganator.Constants.IsEra or Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
-    hooksecurefunc("ToggleBackpack", ToggleMainView)
-  end
+  hooksecurefunc("ToggleBackpack", ToggleMainView)
 end
 
 local function HideDefaultBags()
