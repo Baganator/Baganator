@@ -8,4 +8,5 @@ EventUtil.ContinueOnAddOnLoaded("Baganator", function()
 
   Baganator.InitializeInventoryTracking()
   Baganator.InitializeUnifiedBags()
+  Baganator.InitializeCustomiseDialog()
 end)

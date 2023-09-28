@@ -63,16 +63,6 @@ local ICON_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SHOW_ITEM_LEVEL,
-    option = "show_item_level",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_SHOW_BOE_STATUS,
-    option = "show_boe_status",
-  },
-  {
-    type = "checkbox",
     text = BAGANATOR_L_SHOW_BOA_STATUS,
     option = "show_boa_status",
     check = IsRetailCheck,
@@ -81,16 +71,6 @@ local ICON_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_USE_ITEM_QUALITY_COLORS_FOR_ICON_TEXT,
     option = "icon_text_quality_colors",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_SHOW_PAWN_UPGRADE_ARROW,
-    option = "show_pawn_arrow",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_SHOW_CAN_I_MOG_IT_ICON,
-    option = "show_cimi_icon",
   },
   {
     type = "slider",
@@ -109,6 +89,11 @@ local ICON_OPTIONS = {
     highText = "40",
     valuePattern = BAGANATOR_L_X_ICON_TEXT_FONT_SIZE,
     option = "icon_text_font_size",
+  },
+  {
+    type = "header",
+    text = BAGANATOR_L_ICON_CORNERS,
+    level = 2,
   },
 }
 
@@ -137,6 +122,12 @@ local function GenerateFrames(options, parent)
         frame:SetPoint("RIGHT", parent, -40, 0)
       elseif option.type == "slider" then
         frame = CreateFrame("Frame", nil, parent, "BaganatorSliderTemplate")
+        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0)
+      elseif option.type == "dropdown" then
+        frame = CreateFrame("Frame", nil, parent, "BaganatorDropDownTemplate")
+        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0)
+      elseif option.type == "header" then
+        frame = CreateFrame("Frame", nil, parent, "BaganatorHeaderTemplate")
         frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0)
       end
       frame:Init(option)
@@ -259,6 +250,118 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
     for index, frame in ipairs(allFrames) do
       frame:SetValue(Baganator.Config.Get(frame.option))
     end
+  end)
+
+  local itemButton
+  if Baganator.Constants.IsRetail then
+    itemButton = CreateFrame("ItemButton", nil, frame)
+  else
+    itemButton = CreateFrame("Button", nil, frame, "ItemButtonTemplate")
+  end
+  itemButton:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -35)
+
+  local iconCornerOptions = {
+    entries = {
+      NONE,
+      BAGANATOR_L_ITEM_LEVEL,
+      BAGANATOR_L_BINDING_TYPE,
+      BAGANATOR_L_QUANTITY,
+    },
+    values = {
+      "none",
+      "item_level",
+      "binding_type",
+      "quantity",
+    },
+  }
+  if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
+    table.insert(iconCornerOptions.entries, BAGANATOR_L_PAWN)
+    table.insert(iconCornerOptions.values, "pawn")
+  end
+  if CIMI_AddToFrame then
+    table.insert(iconCornerOptions.entries, BAGANATOR_L_CAN_I_MOG_IT)
+    table.insert(iconCornerOptions.values, "can_i_mog_it")
+  end
+
+  local valuesToConfig = {
+    ["item_level"] = "show_item_level",
+    ["binding_type"] = "show_boe_status",
+    ["pawn"] = "show_pawn_arrow",
+    ["can_i_mog_it"] = "show_cimi_icon",
+  }
+
+  local configs = {
+    ["icon_top_left_corner"] = true,
+    ["icon_top_right_corner"] = true,
+    ["icon_bottom_left_corner"] = true,
+    ["icon_bottom_right_corner"] = true,
+  }
+
+  local corners = {}
+  local topLeft = CreateFrame("Frame", nil, itemButton, "BaganatorDropDownTemplate")
+  iconCornerOptions.option = "icon_top_left_corner"
+  topLeft:Init(iconCornerOptions)
+  topLeft:ClearAllPoints()
+  topLeft:SetPoint("BOTTOMRIGHT", itemButton, "TOPLEFT", 0, -10)
+  topLeft:SetSize(250, 38)
+  table.insert(allFrames, topLeft)
+  table.insert(corners, topLeft)
+
+  local topRight = CreateFrame("Frame", nil, itemButton, "BaganatorDropDownTemplate")
+  iconCornerOptions.option = "icon_top_right_corner"
+  topRight:ClearAllPoints()
+  topRight:Init(iconCornerOptions)
+  topRight:SetPoint("BOTTOMLEFT", itemButton, "TOPRIGHT", 0, -10)
+  topRight:SetSize(250, 38)
+  table.insert(allFrames, topRight)
+  table.insert(corners, topRight)
+
+  local bottomLeft = CreateFrame("Frame", nil, itemButton, "BaganatorDropDownTemplate")
+  iconCornerOptions.option = "icon_bottom_left_corner"
+  bottomLeft:ClearAllPoints()
+  bottomLeft:Init(iconCornerOptions)
+  bottomLeft:SetPoint("TOPRIGHT", itemButton, "BOTTOMLEFT", 0, 10)
+  bottomLeft:SetSize(250, 38)
+  table.insert(allFrames, bottomLeft)
+  table.insert(corners, bottomLeft)
+
+  local bottomRight = CreateFrame("Frame", nil, itemButton, "BaganatorDropDownTemplate")
+  iconCornerOptions.option = "icon_bottom_right_corner"
+  bottomRight:ClearAllPoints()
+  bottomRight:Init(iconCornerOptions)
+  bottomRight:SetPoint("TOPLEFT", itemButton, "BOTTOMRIGHT", 0, 10)
+  bottomRight:SetSize(250, 38)
+  table.insert(allFrames, bottomRight)
+  table.insert(corners, bottomRight)
+
+  frame:SetScript("OnShow", function()
+    for index, frame in ipairs(allFrames) do
+      frame:SetValue(Baganator.Config.Get(frame.option))
+    end
+    Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+      if not configs[settingName] then
+        return
+      end
+      local newValue = Baganator.Config.Get(settingName)
+      local unusedValues = CopyTable(valuesToConfig)
+      for _, corner in ipairs(corners) do
+        local value = Baganator.Config.Get(corner.option)
+        if corner.option ~= settingName and value == newValue then
+          corner:SetValue("none")
+        end
+        unusedValues[value] = nil
+      end
+      for value, config in pairs(valuesToConfig) do
+        if unusedValues[value] then
+          Baganator.Config.Set(config, false)
+        else
+          Baganator.Config.Set(config, true)
+        end
+      end
+    end, frame)
+  end)
+  frame:SetScript("OnHide", function()
+    Baganator.CallbackRegistry:UnregisterCallback("SettingChanged", frame)
   end)
 
   table.insert(self.lowestFrames, allFrames[#allFrames])

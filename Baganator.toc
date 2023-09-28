@@ -27,10 +27,7 @@ InventoryTracking\Main.lua
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua
 UnifiedBags\ItemButton.xml
-UnifiedBags\Components.lua
 UnifiedBags\Components.xml
-UnifiedBags\CustomiseDialog.lua
-UnifiedBags\CustomiseDialog.xml
 UnifiedBags\Layouts.lua
 UnifiedBags\Layouts.xml
 UnifiedBags\BankView.lua
@@ -42,3 +39,8 @@ UnifiedBags\MainView.lua
 UnifiedBags\MainView.xml
 UnifiedBags\Search.lua
 UnifiedBags\Main.lua
+
+CustomiseDialog\Components.lua
+CustomiseDialog\Main.lua
+CustomiseDialog\Main.xml
+CustomiseDialog\Initialize.lua

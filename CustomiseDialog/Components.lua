@@ -51,3 +51,33 @@ end
 function BaganatorSliderMixin:OnMouseWheel(delta)
   self.Slider:SetValue(self.Slider:GetValue() + delta)
 end
+
+BaganatorDropDownMixin = {}
+
+function BaganatorDropDownMixin:Init(details)
+  Mixin(self, details)
+  local function GetOptions()
+    local container = Settings.CreateControlTextContainer();
+    for index, option in ipairs(self.entries) do
+      container:Add(self.values[index], option);
+    end
+    return container:GetData();
+  end
+  self.DropDown:SetupSelections(GetOptions(), 1)
+  self.OnEntrySelected = function(_, option)
+    Baganator.Config.Set(self.option, option.value)
+  end
+end
+
+function BaganatorDropDownMixin:SetValue(value)
+  self.DropDown:SetSelectedIndex(tIndexOf(self.values, value))
+end
+
+BaganatorHeaderMixin = {}
+
+function BaganatorHeaderMixin:Init(details)
+  self.Label:SetText(details.text);
+end
+
+function BaganatorHeaderMixin:SetValue(value)
+end

@@ -32,6 +32,10 @@ local ReflowSettings = {
   Baganator.Config.Options.BAG_ICON_SIZE,
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
   Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
+  Baganator.Config.Options.ICON_TOP_LEFT_CORNER,
+  Baganator.Config.Options.ICON_TOP_RIGHT_CORNER,
+  Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER,
+  Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER,
 }
 
 local RefreshContentSettings = {
@@ -150,7 +154,6 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
   local sectionData = characterData[section]
 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
-  local emptySlotBackground = Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND)
 
   if self.prevState.character ~= character or self.prevState.section ~= section or
       self:CompareButtonIndexes(indexes, indexesToUse, sectionData) then
@@ -199,7 +202,6 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
     character = character,
     section = section,
   }
-  self.oldEmptySlotBackground = emptySlotBackground
 end
 
 function BaganatorCachedBagLayoutMixin:ApplySearch(text)
@@ -368,7 +370,6 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
   local characterData = BAGANATOR_DATA.Characters[character]
 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
-  local emptySlotBackground = Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND)
 
   if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.character ~= character or self.prevState.section ~= section then
     if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then

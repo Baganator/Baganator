@@ -102,7 +102,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
         CIMI_SetIcon(self, CIMI_Update, CanIMogIt:GetTooltipText(data.itemLink))
       end
       if not self.CanIMogItOverlay then
-        CIMI_AddToFrame(self, CIMI_Update)
+        return
       end
       self.CanIMogItOverlay:Show()
       CIMI_SetIcon(self.CanIMogItOverlay, CIMI_Update, CanIMogIt:GetTooltipText(data.itemLink))
@@ -207,24 +207,67 @@ local function SearchCheck(self, text)
   return Baganator.Search.CheckItem(self.BGR, text)
 end
 
+local hidden = CreateFrame("Frame")
+hidden:Hide()
+
 local function ApplyItemDetailSettings(button, size)
   local font, originalSize, fontFlags = button.ItemLevel:GetFont()
   local newSize = Baganator.Config.Get("icon_text_font_size")
-
   local scale = size / 42
-  button.ItemLevel:SetPoint("TOPLEFT", 2 * scale, -3 * scale)
-  button.ItemLevel:SetScale(scale)
-  button.ItemLevel:SetFont(font, newSize, fontFlags)
-  button.BindingText:SetPoint("BOTTOMLEFT", 2 * scale, 3 * scale)
-  button.BindingText:SetScale(scale)
-  button.BindingText:SetFont(font, newSize, fontFlags)
-  button.Count:SetPoint("BOTTOMRIGHT", -2 * scale, 3 * scale)
-  button.Count:SetScale(scale)
-  button.Count:SetFont(font, newSize, fontFlags)
 
-  button.UpgradeArrow:ClearAllPoints()
-  button.UpgradeArrow:SetSize(15 * scale, 15 * scale)
-  button.UpgradeArrow:SetPoint("TOPLEFT", 2 * scale, -2 * scale)
+  local positions = {
+    ["icon_top_left_corner"] = {"TOPLEFT", 2 * scale, -2 * scale},
+    ["icon_top_right_corner"] = {"TOPRIGHT", -2 * scale, -2 * scale},
+    ["icon_bottom_left_corner"] = {"BOTTOMLEFT", 2 * scale, 2 * scale},
+    ["icon_bottom_right_corner"] = {"BOTTOMRIGHT", -2 * scale, 2 * scale},
+  }
+  local toHide = {
+    ["item_level"] = button.ItemLevel,
+    ["binding_type"] = button.BindingText,
+    ["quantity"] = button.Count,
+    ["pawn"] = button.UpgradeArrow,
+    ["can_i_mog_it"] = button.CanIMogItOverlay,
+  }
+
+  for config, anchor in pairs(positions) do
+    local cornerType = Baganator.Config.Get(config)
+    if cornerType == "item_level" then
+      button.ItemLevel:SetParent(button)
+      button.ItemLevel:ClearAllPoints()
+      button.ItemLevel:SetPoint(unpack(anchor))
+      button.ItemLevel:SetScale(scale)
+      button.ItemLevel:SetFont(font, newSize, fontFlags)
+    elseif cornerType == "binding_type" then
+      button.BindingText:SetParent(button)
+      button.BindingText:ClearAllPoints()
+      button.BindingText:SetPoint(unpack(anchor))
+      button.BindingText:SetScale(scale)
+      button.BindingText:SetFont(font, newSize, fontFlags)
+    elseif cornerType == "quantity" then
+      button.Count:SetParent(button)
+      button.Count:ClearAllPoints()
+      button.Count:SetPoint(unpack(anchor))
+      button.Count:SetScale(scale)
+      button.Count:SetFont(font, newSize, fontFlags)
+    elseif cornerType == "pawn" then
+      button.UpgradeArrow:SetParent(button)
+      button.UpgradeArrow:ClearAllPoints()
+      button.UpgradeArrow:SetSize(15 * scale, 15 * scale)
+      button.UpgradeArrow:SetPoint(unpack(anchor))
+    elseif cornerType == "can_i_mog_it" and CIMI_AddToFrame then
+      CIMI_AddToFrame(button, function() end)
+      local overlay = button.CanIMogItOverlay 
+      if overlay and overlay.CIMIIconTexture then
+        overlay:SetParent(button)
+        overlay.CIMIIconTexture:ClearAllPoints()
+        overlay.CIMIIconTexture:SetPoint(unpack(anchor))
+      end
+    end
+    toHide[cornerType] = nil
+  end
+  for key, f in pairs(toHide) do
+    f:SetParent(hidden)
+  end
 end
 
 -- Fix anchors and item sizes when resizing the item buttons

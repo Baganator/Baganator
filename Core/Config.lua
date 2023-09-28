@@ -25,6 +25,10 @@ Baganator.Config.Options = {
   ICON_TEXT_FONT_SIZE = "icon_text_font_size",
   SHOW_PAWN_ARROW = "show_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
+  ICON_TOP_LEFT_CORNER = "icon_top_left_corner",
+  ICON_TOP_RIGHT_CORNER = "icon_top_right_corner",
+  ICON_BOTTOM_LEFT_CORNER = "icon_bottom_left_corner",
+  ICON_BOTTOM_RIGHT_CORNER = "icon_bottom_right_corner",
 
   SHOW_PAWN_ARROW = "show_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
@@ -60,6 +64,10 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
   [Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT] = false,
   [Baganator.Config.Options.ICON_TEXT_FONT_SIZE] = 14,
+  [Baganator.Config.Options.ICON_TOP_LEFT_CORNER] = "item_level",
+  [Baganator.Config.Options.ICON_TOP_RIGHT_CORNER] = "none",
+  [Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER] = "none",
+  [Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER] = "quantity",
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
@@ -84,6 +92,10 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.SHOW_CIMI_ICON,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
   Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
+  Baganator.Config.Options.ICON_TOP_LEFT_CORNER,
+  Baganator.Config.Options.ICON_TOP_RIGHT_CORNER,
+  Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER,
+  Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER,
 }
 
 function Baganator.Config.IsValidOption(name)
@@ -111,9 +123,12 @@ function Baganator.Config.Set(name, value)
   elseif not Baganator.Config.IsValidOption(name) then
     error("Invalid option '" .. name .. "'")
   else
+    local oldValue = BAGANATOR_CONFIG[name]
     BAGANATOR_CONFIG[name] = value
-    Baganator.CallbackRegistry:TriggerEvent("SettingChangedEarly", name)
-    Baganator.CallbackRegistry:TriggerEvent("SettingChanged", name)
+    if value ~= oldValue then
+      Baganator.CallbackRegistry:TriggerEvent("SettingChangedEarly", name)
+      Baganator.CallbackRegistry:TriggerEvent("SettingChanged", name)
+    end
   end
 end
 
