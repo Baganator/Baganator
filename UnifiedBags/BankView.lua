@@ -126,9 +126,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     }
   end
 
-  local showSortButton = Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
-
-  self.SortButton:SetShown(showSortButton and Baganator.Constants.IsRetail)
+  self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton())
 
   self:NotifyBagUpdate(updatedBags)
 

@@ -315,9 +315,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
   end
 
-  local showSortButton = Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
-
-  self.SortButton:SetShown(showSortButton and isLive and Baganator.Constants.IsRetail)
+  self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
 
   local showReagents = Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS)
 

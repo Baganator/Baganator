@@ -24,7 +24,7 @@
         </Anchors>
         <Scripts>
           <OnClick>
-            C_Container.SortBags()
+            Baganator.Utilities.SortBags()
           </OnClick>
         </Scripts>
       </Button>

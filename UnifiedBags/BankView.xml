@@ -20,10 +20,7 @@
         </Anchors>
         <Scripts>
           <OnClick>
-            C_Container.SortBankBags()
-            C_Timer.After(1, function()
-              C_Container.SortReagentBankBags()
-            end)
+            Baganator.Utilities.SortBank()
           </OnClick>
         </Scripts>
       </Button>

@@ -1,3 +1,7 @@
+local IsRetailCheck = function()
+  return Baganator.Constants.IsRetail
+end
+
 local WINDOW_OPTIONS = {
   {
     type = "checkbox",
@@ -13,7 +17,7 @@ local WINDOW_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_SORT_BUTTON,
     option = "show_sort_button",
-    isRetailOnly = true,
+    check = function() return Baganator.Constants.IsRetail or IsAddOnLoaded("SortBags") end,
   },
   {
     type = "checkbox",
@@ -55,7 +59,7 @@ local ICON_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_CUSTOMISE_EMPTY_SLOTS,
     option = "empty_slot_background",
-    isRetailOnly = true,
+    check = IsRetailCheck,
   },
   {
     type = "checkbox",
@@ -71,7 +75,7 @@ local ICON_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_BOA_STATUS,
     option = "show_boa_status",
-    isRetailOnly = true,
+    check = IsRetailCheck,
   },
   {
     type = "checkbox",
@@ -125,7 +129,7 @@ local function GenerateFrames(options, parent)
   local lastFrame = nil
   local allFrames = {}
   for _, option in ipairs(options) do
-    if not option.isRetailOnly or Baganator.Constants.IsRetail then
+    if not option.check or option.check() then
       if option.type == "checkbox" then
         frame = CreateFrame("Frame", nil, parent, "BaganatorCheckBoxTemplate")
         frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0)

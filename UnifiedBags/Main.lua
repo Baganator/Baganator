@@ -25,19 +25,21 @@ local function SetupView()
     ResetPositions()
   end
 
-
-  local customiseDialog = CreateFrame("Frame", "BaganatorCustomiseDialogFrame", UIParent, "BaganatorCustomiseDialogTemplate")
-  customiseDialog:SetPoint("CENTER")
-
   table.insert(UISpecialFrames, mainView:GetName())
   table.insert(UISpecialFrames, bankOnlyView:GetName())
-  table.insert(UISpecialFrames, customiseDialog:GetName())
 
   Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
   end)
 
+  local customiseDialog
+
   Baganator.CallbackRegistry:RegisterCallback("ShowCustomise", function()
+    if not customiseDialog then
+      customiseDialog = CreateFrame("Frame", "BaganatorCustomiseDialogFrame", UIParent, "BaganatorCustomiseDialogTemplate")
+      customiseDialog:SetPoint("CENTER")
+      table.insert(UISpecialFrames, customiseDialog:GetName())
+    end
     customiseDialog:RefreshOptions()
     customiseDialog:SetShown(not customiseDialog:IsShown())
     customiseDialog:Raise()
