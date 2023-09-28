@@ -215,6 +215,12 @@ local function ApplyItemDetailSettings(button, size)
   local newSize = Baganator.Config.Get("icon_text_font_size")
   local scale = size / 37
 
+  local positions_no_scale = {
+    ["icon_top_left_corner"] = {"TOPLEFT", 2, -2},
+    ["icon_top_right_corner"] = {"TOPRIGHT", -2, -2},
+    ["icon_bottom_left_corner"] = {"BOTTOMLEFT", 2, 2},
+    ["icon_bottom_right_corner"] = {"BOTTOMRIGHT", -2, 2},
+  }
   local positions = {
     ["icon_top_left_corner"] = {"TOPLEFT", 2 * scale, -2 * scale},
     ["icon_top_right_corner"] = {"TOPRIGHT", -2 * scale, -2 * scale},
@@ -259,7 +265,14 @@ local function ApplyItemDetailSettings(button, size)
       local overlay = button.CanIMogItOverlay 
       if overlay and overlay.CIMIIconTexture then
         overlay:SetParent(button)
-        overlay:SetScale(math.max(1, scale))
+        overlay.CIMIIconTexture:ClearAllPoints()
+        local shift = math.max(1, scale)
+        if shift > 1  then
+          overlay.CIMIIconTexture:SetPoint(unpack(positions[config]))
+        else
+          overlay.CIMIIconTexture:SetPoint(unpack(positions_no_scale[config]))
+        end
+        overlay.CIMIIconTexture:SetSize(13 * shift, 13 * shift)
       end
     end
     toHide[cornerType] = nil
