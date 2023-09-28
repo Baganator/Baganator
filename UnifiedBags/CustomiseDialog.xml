@@ -1,10 +1,10 @@
 <Ui>
   <Frame name="BaganatorCheckBoxTemplate" virtual="true" mixin="BaganatorCheckBoxMixin">
-    <Size y="22"/>
+    <Size y="40"/>
     <Frames>
-      <CheckButton parentKey="CheckBox" inherits="UICheckButtonTemplate">
+      <CheckButton parentKey="CheckBox" inherits="SettingsCheckBoxTemplate">
         <Anchors>
-          <Anchor point="RIGHT"/>
+          <Anchor point="TOPRIGHT" x="-130" y="-5"/>
         </Anchors>
         <ButtonText inherits="GameFontHighlight" justifyH="LEFT">
           <Anchors>
@@ -21,13 +21,13 @@
   </Frame>
 
   <Frame name="BaganatorSliderTemplate" virtual="true" mixin="BaganatorSliderMixin">
-    <Size y="30"/>
+    <Size y="50"/>
     <Frames>
       <Slider parentKey="Slider" inherits="OptionsSliderTemplate">
         <Size y="20"/>
         <Anchors>
-          <Anchor point="RIGHT" x="-30"/>
-          <Anchor point="LEFT" x="30"/>
+          <Anchor point="RIGHT" x="-30" y="-10"/>
+          <Anchor point="LEFT" x="30" y="-10"/>
         </Anchors>
       </Slider>
     </Frames>

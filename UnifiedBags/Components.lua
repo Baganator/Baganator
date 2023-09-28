@@ -12,11 +12,11 @@ function BaganatorCheckBoxMixin:SetValue(value)
 end
 
 function BaganatorCheckBoxMixin:OnEnter()
-  self.CheckBox:LockHighlight()
+  self.CheckBox:OnEnter()
 end
 
 function BaganatorCheckBoxMixin:OnLeave()
-  self.CheckBox:UnlockHighlight()
+  self.CheckBox:OnLeave()
 end
 
 function BaganatorCheckBoxMixin:OnMouseUp()

@@ -128,11 +128,12 @@ local function GenerateFrames(options, parent)
     if not option.isRetailOnly or Baganator.Constants.IsRetail then
       if option.type == "checkbox" then
         frame = CreateFrame("Frame", nil, parent, "BaganatorCheckBoxTemplate")
-        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
+        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0)
         frame:SetPoint("LEFT", parent, 40, 0)
+        frame:SetPoint("RIGHT", parent, -40, 0)
       elseif option.type == "slider" then
         frame = CreateFrame("Frame", nil, parent, "BaganatorSliderTemplate")
-        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, -20)
+        frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0)
       end
       frame:Init(option)
       table.insert(allFrames, frame)
@@ -142,8 +143,8 @@ local function GenerateFrames(options, parent)
 
   allFrames[1]:ClearAllPoints()
   allFrames[1]:SetPoint("TOP", parent)
-  allFrames[1]:SetPoint("RIGHT", parent, -170, 0)
-  allFrames[1]:SetPoint("LEFT", 40, 0)
+  allFrames[1]:SetPoint("LEFT", parent, 40, 0)
+  allFrames[1]:SetPoint("RIGHT", parent, -40, 0)
 
   return allFrames
 end
