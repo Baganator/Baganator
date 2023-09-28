@@ -165,7 +165,7 @@ local function SetStaticInfo(self, details)
   self.ItemLevel:SetText("")
 
   if self.ProfessionQualityOverlay then
-    local scale = self:GetWidth() / 42
+    local scale = self:GetWidth() / 37
     self.ProfessionQualityOverlay:SetPoint("TOPLEFT", -3 * scale, 2 * scale);
     self.ProfessionQualityOverlay:SetScale(scale);
   end
@@ -213,7 +213,7 @@ hidden:Hide()
 local function ApplyItemDetailSettings(button, size)
   local font, originalSize, fontFlags = button.ItemLevel:GetFont()
   local newSize = Baganator.Config.Get("icon_text_font_size")
-  local scale = size / 42
+  local scale = size / 37
 
   local positions = {
     ["icon_top_left_corner"] = {"TOPLEFT", 2 * scale, -2 * scale},
@@ -235,20 +235,20 @@ local function ApplyItemDetailSettings(button, size)
       button.ItemLevel:SetParent(button)
       button.ItemLevel:ClearAllPoints()
       button.ItemLevel:SetPoint(unpack(anchor))
-      button.ItemLevel:SetScale(scale)
       button.ItemLevel:SetFont(font, newSize, fontFlags)
+      button.ItemLevel:SetScale(scale)
     elseif cornerType == "binding_type" then
       button.BindingText:SetParent(button)
       button.BindingText:ClearAllPoints()
       button.BindingText:SetPoint(unpack(anchor))
-      button.BindingText:SetScale(scale)
       button.BindingText:SetFont(font, newSize, fontFlags)
+      button.BindingText:SetScale(scale)
     elseif cornerType == "quantity" then
       button.Count:SetParent(button)
       button.Count:ClearAllPoints()
       button.Count:SetPoint(unpack(anchor))
-      button.Count:SetScale(scale)
       button.Count:SetFont(font, newSize, fontFlags)
+      button.Count:SetScale(scale)
     elseif cornerType == "pawn" then
       button.UpgradeArrow:SetParent(button)
       button.UpgradeArrow:ClearAllPoints()
@@ -259,8 +259,7 @@ local function ApplyItemDetailSettings(button, size)
       local overlay = button.CanIMogItOverlay 
       if overlay and overlay.CIMIIconTexture then
         overlay:SetParent(button)
-        overlay.CIMIIconTexture:ClearAllPoints()
-        overlay.CIMIIconTexture:SetPoint(unpack(anchor))
+        overlay:SetScale(math.max(1, scale))
       end
     end
     toHide[cornerType] = nil
@@ -272,11 +271,13 @@ end
 
 -- Fix anchors and item sizes when resizing the item buttons
 local function AdjustRetailButton(button, size)
+  local scale = size / 37
   button.IconBorder:SetSize(size, size)
   button.IconOverlay:SetSize(size, size)
   button.IconOverlay2:SetSize(size, size)
-  local scaleNormal = 64/37 * size
-  button.NormalTexture:SetSize(scaleNormal, scaleNormal)
+  button.NormalTexture:SetSize(64 * scale, 64 * scale)
+  button.NormalTexture:ClearAllPoints()
+  button.NormalTexture:SetPoint("CENTER", 0, -1 * scale)
 
   if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
     button.emptyBackgroundAtlas = nil
@@ -291,6 +292,13 @@ local function AdjustRetailButton(button, size)
       button.icon:SetAtlas(button.emptyBackgroundAtlas)
     end
   end
+
+  if button.ProfessionQualityOverlay then
+    local scale = size / 37
+    button.ProfessionQualityOverlay:SetPoint("TOPLEFT", -2 * scale, 2 * scale);
+    button.ProfessionQualityOverlay:SetScale(scale);
+  end
+
   ApplyItemDetailSettings(button, size)
 end
 
