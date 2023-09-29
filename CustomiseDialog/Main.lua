@@ -220,7 +220,7 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
   local frame = GetWrapperFrame(self)
 
   frame.ResetFramePositions = CreateFrame("Button", nil, frame, "UIPanelDynamicResizeButtonTemplate")
-  frame.ResetFramePositions:SetPoint("TOPRIGHT", frame, -20, 0)
+  frame.ResetFramePositions:SetPoint("TOPRIGHT", frame, -20, -6)
   frame.ResetFramePositions:SetText(BAGANATOR_L_RESET_POSITIONS)
   DynamicResizeButton_Resize(frame.ResetFramePositions)
   frame.ResetFramePositions:SetScript("OnClick", function()
@@ -228,6 +228,8 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
   end)
 
   local allFrames = GenerateFrames(WINDOW_OPTIONS, frame)
+
+  allFrames[1].CheckBox.HoverBackground:SetPoint("RIGHT", frame.ResetFramePositions, "LEFT")
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
