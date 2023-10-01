@@ -57,14 +57,15 @@ local function SetupView()
     mainView:Hide()
   end)
 
-  hooksecurefunc("OpenAllBags", function()
+  --Handled by OpenClose.lua
+  --[[hooksecurefunc("OpenAllBags", function()
     mainView:Show()
     mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
   end)
 
   hooksecurefunc("CloseAllBags", function()
     mainView:Hide()
-  end)
+  end)]]
 
   -- Backpack button
   MainMenuBarBackpackButton:SetScript("OnClick", ToggleMainView)
@@ -77,7 +78,15 @@ local function SetupView()
     CharacterReagentBag0Slot:HookScript("OnClick", ToggleMainView)
   end
 
-  hooksecurefunc("ToggleBackpack", ToggleMainView)
+  hooksecurefunc("ToggleBackpack", function()
+    local stack = debugstack()
+    -- Check to ensure we're not opening when OpenClose.lua will handle the
+    -- auto-open and auto-close
+    if stack:match("OpenAllBags") or stack:match("CloseAllBags") then
+      return
+    end
+    ToggleMainView()
+  end)
 end
 
 local function HideDefaultBags()
@@ -117,6 +126,8 @@ function Baganator.InitializeUnifiedBags()
 
   SetupView()
   HideDefaultBags()
+
+  Baganator.InitializeOpenClose()
 
   Baganator.ItemButtonUtil.UpdateSettings()
 end

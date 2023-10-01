@@ -97,11 +97,9 @@ function BaganatorBankOnlyViewMixin:OnEvent(eventName)
 end
 
 function BaganatorBankOnlyViewMixin:OnShow()
-  Baganator.CallbackRegistry:TriggerEvent("BagShow", "bankOnly")
 end
 
 function BaganatorBankOnlyViewMixin:OnHide(eventName)
-  Baganator.CallbackRegistry:TriggerEvent("BagHide", "bankOnly")
   CloseBankFrame()
 end
 

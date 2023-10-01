@@ -110,6 +110,63 @@ local TOOLTIP_OPTIONS = {
   },
 }
 
+local OPEN_CLOSE_OPTIONS = {
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_BANK,
+    option = "bank",
+    root = "auto_open",
+  },
+  {
+    type = "checkbox",
+    text = GUILD_BANK,
+    option = "guild_bank",
+    root = "auto_open",
+    check = function() return not Baganator.Constants.IsEra end,
+  },
+  {
+    type = "checkbox",
+    text = TRADE,
+    option = "trade_partner",
+    root = "auto_open",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_CRAFTING_WINDOW,
+    option = "tradeskill",
+    root = "auto_open",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_AUCTION_HOUSE,
+    option = "auction_house",
+    root = "auto_open",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_VOID_STORAGE,
+    option = "void_storage",
+    root = "auto_open",
+    check = IsRetailCheck,
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_MAIL,
+    option = "mail",
+    root = "auto_open",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_VENDOR,
+    option = "merchant",
+    root = "auto_open",
+  },
+}
+
+table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
+  return a.text < b.text
+end)
+
 local function GenerateFrames(options, parent)
   local lastFrame = nil
   local allFrames = {}
@@ -200,6 +257,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:SetupWindow()
   self:SetupIcon()
   self:SetupTooltip()
+  self:SetupOpenClose()
 
   PanelTemplates_SetNumTabs(self, #self.Tabs)
 end
@@ -380,6 +438,23 @@ function BaganatorCustomiseDialogMixin:SetupTooltip()
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       frame:SetValue(Baganator.Config.Get(frame.option))
+    end
+  end)
+
+  table.insert(self.lowestFrames, allFrames[#allFrames])
+end
+
+function BaganatorCustomiseDialogMixin:SetupOpenClose()
+  local tab = GetTab(self)
+  tab:SetText(BAGANATOR_L_AUTO_OPEN_CLOSE)
+
+  local frame = GetWrapperFrame(self)
+
+  local allFrames = GenerateFrames(OPEN_CLOSE_OPTIONS, frame)
+
+  frame:SetScript("OnShow", function()
+    for index, frame in ipairs(allFrames) do
+      frame:SetValue(Baganator.Config.Get(Baganator.Config.Options.AUTO_OPEN)[frame.option])
     end
   end)
 

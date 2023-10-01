@@ -77,6 +77,15 @@ L["REALM_WIDE_GOLD_X"] = "Realm-wide gold: %s"
 L["ACCOUNT_GOLD_X"] = "Account gold: %s"
 L["REALM_X_X_X"] = "%s (x%s)"
 
+L["CRAFTING_WINDOW"] = "Crafting Window"
+L["AUCTION_HOUSE"] = "Auction House"
+L["VOID_STORAGE"] = "Void Storage"
+L["MAIL"] = "Mail"
+L["VENDOR"] = "Vendor"
+L["AUTO_OPEN_CLOSE"] = "Auto Open/Close"
+L["TRADE"] = "Trade"
+L["GUILD_BANK"] = "Guild Bank"
+
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 

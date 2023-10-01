@@ -38,6 +38,8 @@ Baganator.Config.Options = {
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
+
+  AUTO_OPEN = "auto_open",
 }
 
 Baganator.Config.Defaults = {
@@ -68,6 +70,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_TOP_RIGHT_CORNER] = "none",
   [Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER] = "none",
   [Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER] = "quantity",
+  [Baganator.Config.Options.AUTO_OPEN] = {},
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,

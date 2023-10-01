@@ -2,9 +2,15 @@ BaganatorCheckBoxMixin = {}
 function BaganatorCheckBoxMixin:Init(details)
   Mixin(self, details)
   self.CheckBox:SetText(self.text)
-  self.CheckBox:SetScript("OnClick", function()
-    Baganator.Config.Set(self.option, self.CheckBox:GetChecked())
-  end)
+  if self.root then
+    self.CheckBox:SetScript("OnClick", function()
+      Baganator.Config.Get(self.root)[self.option] = self.CheckBox:GetChecked()
+    end)
+  else
+    self.CheckBox:SetScript("OnClick", function()
+      Baganator.Config.Set(self.option, self.CheckBox:GetChecked())
+    end)
+  end
 end
 
 function BaganatorCheckBoxMixin:SetValue(value)

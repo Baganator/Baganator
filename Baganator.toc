@@ -38,6 +38,7 @@ UnifiedBags\CharacterSelect.xml
 UnifiedBags\MainView.lua
 UnifiedBags\MainView.xml
 UnifiedBags\Search.lua
+UnifiedBags\OpenClose.lua
 UnifiedBags\Main.lua
 
 CustomiseDialog\Components.lua
