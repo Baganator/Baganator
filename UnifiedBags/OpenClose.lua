@@ -56,7 +56,6 @@ function BaganatorOpenCloseMixin:OnEvent(eventName, ...)
     if not CheckOption(details.option) then
       return
     end
-    print("pass")
     if eventName == "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" then
       Baganator.CallbackRegistry:TriggerEvent("BagShow")
     else
