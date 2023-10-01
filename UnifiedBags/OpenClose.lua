@@ -3,13 +3,13 @@ local IT = Enum.PlayerInteractionType
 local event_drivers = {
   BANKFRAME_OPENED = { option = "bank", isOpen = true, default = true },
   BANKFRAME_CLOSED = { option = "bank", isOpen = false, default = true },
-  TRADE_SKILL_SHOW = { option = "tradeskill", isOpen = true, default = true },
-  TRADE_SKILL_CLOSE = { option = "tradeskill", isOpen = false, default = true },
+  TRADE_SKILL_SHOW = { option = "tradeskill", isOpen = true, default = Baganator.Constants.IsRetail },
+  TRADE_SKILL_CLOSE = { option = "tradeskill", isOpen = false, default = Baganator.Constants.IsRetail },
 }
 local interactions = {
   [IT.GuildBanker] = { option = "guild_bank", default = false },
   [IT.VoidStorageBanker] = {option = "void_storage", default = false },
-  [IT.Auctioneer] = {option = "auction_house", default = true },
+  [IT.Auctioneer] = {option = "auction_house", default = Baganator.Constants.IsRetail },
   [IT.MailInfo] = {option = "mail", default = false },
   [IT.Merchant] = {option = "merchant", default = true },
   [IT.TradePartner] = {option = "trade_partner", default = false },
