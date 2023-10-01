@@ -20,14 +20,6 @@ local function PotionCheck(details)
   return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3
 end
 
-local function PotionCheck(details)
-  return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3
-end
-
-local function InvTypeCheck(details)
-  return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3
-end
-
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
