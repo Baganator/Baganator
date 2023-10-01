@@ -22,6 +22,7 @@ Baganator.Constants = {
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
 
   MaxRecents = 5,
+  BattlePetCageID = 82800,
 }
 
 -- Not currently included as the keyring bag presents as quite large in the bag
@@ -40,7 +41,8 @@ Baganator.Constants.Events = {
 
   "CharacterDeleted",
 
-  "CacheUpdate",
+  "BagCacheUpdate",
+  "MailCacheUpdate",
 
   "SearchTextChanged",
   "BagShow",

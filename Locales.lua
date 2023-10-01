@@ -50,7 +50,8 @@ L["CAN_I_MOG_IT"] = "Can I Mog It"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X_BANKS_X"] = "Bags: %s, Banks: %s"
-L["BAGS_X_BANK_X"] = "Bags: %s, Bank: %s"
+L["BAGS_X_BANKS_X_MAIL_X"] = "Bags: %s, Banks: %s, Mails: %s"
+L["BAGS_X_BANK_X_MAIL_X"] = "Bags: %s, Bank: %s, Mail: %s"
 L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
 
 L["BOE"] = "BoE"

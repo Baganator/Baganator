@@ -1,4 +1,4 @@
-BaganatorCacheMixin = {}
+BaganatorBagCacheMixin = {}
 
 local bankBags = {}
 local bagBags = {}
@@ -16,11 +16,9 @@ local function GetEmptyPending()
   }
 end
 
-function BaganatorCacheMixin:OnLoad()
+-- Assumed to run after PLAYER_LOGIN
+function BaganatorBagCacheMixin:OnLoad()
   FrameUtil.RegisterFrameForEvents(self, {
-    -- Normalized realm name ready
-    "PLAYER_LOGIN",
-
     -- Regular bag items updating
     "BAG_UPDATE",
     -- Bag replaced
@@ -41,49 +39,12 @@ function BaganatorCacheMixin:OnLoad()
     self:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED")
   end
 
-  self:SetupCache()
-  self:SetupPending()
-
-  Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, name)
-    if name == self.currentCharacter then
-      self:InitCurrentPlayer()
-    end
-  end)
-end
-
-function BaganatorCacheMixin:SetupCache()
-  if BAGANATOR_DATA == nil then
-    BAGANATOR_DATA = {
-      Version = 1,
-      Characters = {},
-      Guilds = {},
-    }
-  end
-end
-
-function BaganatorCacheMixin:QueueCaching()
-  self:SetScript("OnUpdate", self.OnUpdate)
-end
-
-function BaganatorCacheMixin:InitCurrentPlayer()
   local characterName, realm = UnitFullName("player")
   self.currentCharacter = characterName .. "-" .. realm
 
-  if BAGANATOR_DATA.Characters[self.currentCharacter] == nil then
-    BAGANATOR_DATA.Characters[self.currentCharacter] = {
-      bags = {},
-      bank = {},
-      money = 0,
-      details = {
-        realmNormalized = realm,
-        realm = GetRealmName(),
-        character = characterName,
-      }
-    }
-  end
-
   BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
-  BAGANATOR_DATA.Characters[self.currentCharacter].details.class = select(3, UnitClass("player"))
+
+  self:SetupPending()
 
   for bagID in pairs(bagBags) do
     self.pending.bags[bagID] = true
@@ -91,11 +52,12 @@ function BaganatorCacheMixin:InitCurrentPlayer()
   self:QueueCaching()
 end
 
-function BaganatorCacheMixin:OnEvent(eventName, ...)
-  if eventName == "PLAYER_LOGIN" then
-    self:InitCurrentPlayer()
+function BaganatorBagCacheMixin:QueueCaching()
+  self:SetScript("OnUpdate", self.OnUpdate)
+end
 
-  elseif eventName == "BAG_UPDATE" then
+function BaganatorBagCacheMixin:OnEvent(eventName, ...)
+  if eventName == "BAG_UPDATE" then
     local bagID = ...
     if bagBags[bagID] then
       self.pending.bags[bagID] = true
@@ -146,18 +108,18 @@ function BaganatorCacheMixin:OnEvent(eventName, ...)
     self.bankOpen = false
   elseif eventName == "PLAYER_MONEY" then
     BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
-    Baganator.CallbackRegistry:TriggerEvent("CacheUpdate", self.currentCharacter, GetEmptyPending())
+    Baganator.CallbackRegistry:TriggerEvent("BagCacheUpdate", self.currentCharacter, GetEmptyPending())
   elseif eventName == "PLAYER_REGEN_ENABLED" then
     self:UnregisterEvent("PLAYER_REGEN_ENABLED")
     self:QueueCaching()
   end
 end
 
-function BaganatorCacheMixin:SetupPending()
+function BaganatorBagCacheMixin:SetupPending()
   self.pending = GetEmptyPending()
 end
 
-function BaganatorCacheMixin:OnUpdate()
+function BaganatorBagCacheMixin:OnUpdate()
   self:SetScript("OnUpdate", nil)
   if self.currentCharacter == nil then
     return
@@ -171,7 +133,7 @@ function BaganatorCacheMixin:OnUpdate()
     if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
       print("caching took", debugprofilestop() - start)
     end
-    Baganator.CallbackRegistry:TriggerEvent("CacheUpdate", self.currentCharacter, pendingCopy)
+    Baganator.CallbackRegistry:TriggerEvent("BagCacheUpdate", self.currentCharacter, pendingCopy)
   end
 
   local waiting = 0

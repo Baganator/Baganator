@@ -19,7 +19,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("CacheUpdate",  function(_, character, updatedBags)
+  Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
     if self:IsShown() then
       self:UpdateForCharacter(character, updatedBags)

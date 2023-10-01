@@ -19,7 +19,8 @@ Core\SlashCmd.lua
 Core\Main.lua
 
 InventoryTracking\Utilities.lua
-InventoryTracking\Cache.lua
+InventoryTracking\BagCache.lua
+InventoryTracking\MailCache.lua
 InventoryTracking\Summaries.lua
 InventoryTracking\Tooltips.lua
 InventoryTracking\Main.lua

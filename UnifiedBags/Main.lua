@@ -39,7 +39,7 @@ local function SetupView()
     end
     mainView:SetShown(not mainView:IsShown())
     if mainView:IsVisible() then
-      mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
+      mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
     end
     lastToggleTime = GetTime()
   end
@@ -50,7 +50,7 @@ local function SetupView()
 
   Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
     mainView:Show()
-    mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
+    mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_, ...)
@@ -60,7 +60,7 @@ local function SetupView()
   --Handled by OpenClose.lua
   --[[hooksecurefunc("OpenAllBags", function()
     mainView:Show()
-    mainView:UpdateForCharacter(Baganator.Cache.currentCharacter, true)
+    mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
   end)
 
   hooksecurefunc("CloseAllBags", function()

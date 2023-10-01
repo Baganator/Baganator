@@ -9,7 +9,8 @@ function BaganatorSummariesMixin:OnLoad()
     }
   end
   self.SV = BAGANATOR_SUMMARIES
-  Baganator.CallbackRegistry:RegisterCallback("CacheUpdate", self.CacheUpdate, self)
+  Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate", self.CacheUpdate, self)
+  Baganator.CallbackRegistry:RegisterCallback("MailCacheUpdate", self.CacheUpdate, self)
 end
 
 function BaganatorSummariesMixin:CacheUpdate(characterName)
@@ -28,6 +29,7 @@ function BaganatorSummariesMixin:GenerateSummary(characterName)
           summary[key] = {
             bags = 0,
             bank = 0,
+            mail = 0,
           }
         end
         summary[key].bags = summary[key].bags + item.itemCount
@@ -43,10 +45,25 @@ function BaganatorSummariesMixin:GenerateSummary(characterName)
           summary[key] = {
             bags = 0,
             bank = 0,
+            mail = 0,
           }
         end
         summary[key].bank = summary[key].bank + item.itemCount
       end
+    end
+  end
+
+  for _, item in pairs(details.mail) do
+    if item.itemLink then
+      local key = Baganator.Utilities.GetItemKey(item.itemLink)
+      if not summary[key] then
+        summary[key] = {
+          bags = 0,
+          bank = 0,
+          mail = 0,
+        }
+      end
+      summary[key].mail = summary[key].mail + item.itemCount
     end
   end
 
@@ -84,8 +101,9 @@ function BaganatorSummariesMixin:GetTooltipInfo(key)
           table.insert(result, {
             character = char,
             realmNormalized = r,
-            bags = byKey.bags, 
-            bank = byKey.bank, 
+            bags = byKey.bags or 0, 
+            bank = byKey.bank or 0, 
+            mail = byKey.mail or 0, 
           })
         end
       end
