@@ -17,7 +17,15 @@ local function FoodCheck(details)
 end
 
 local function PotionCheck(details)
-  return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3 
+  return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3
+end
+
+local function PotionCheck(details)
+  return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3
+end
+
+local function InvTypeCheck(details)
+  return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3
 end
 
 local KEYWORDS_TO_CHECK = {
@@ -29,6 +37,45 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
   [BAGANATOR_L_KEYWORD_POTION] = PotionCheck,
 }
+
+local inventorySlots = {
+  "INVTYPE_HEAD",
+  "INVTYPE_NECK",
+  "INVTYPE_SHOULDER",
+  "INVTYPE_BODY",
+  "INVTYPE_CHEST",
+  "INVTYPE_WAIST",
+  "INVTYPE_LEGS",
+  "INVTYPE_FEET",
+  "INVTYPE_WRIST",
+  "INVTYPE_HAND",
+  "INVTYPE_FINGER",
+  "INVTYPE_TRINKET",
+  "INVTYPE_WEAPON",
+  "INVTYPE_SHIELD",
+  "INVTYPE_RANGED",
+  "INVTYPE_CLOAK",
+  "INVTYPE_2HWEAPON",
+  "INVTYPE_BAG",
+  "INVTYPE_TABARD",
+  "INVTYPE_ROBE",
+  "INVTYPE_WEAPONMAINHAND",
+  "INVTYPE_WEAPONOFFHAND",
+  "INVTYPE_HOLDABLE",
+  "INVTYPE_AMMO",
+  "INVTYPE_THROWN",
+  "INVTYPE_RANGEDRIGHT",
+  "INVTYPE_QUIVER",
+  "INVTYPE_RELIC",
+  "INVTYPE_PROFESSION_TOOL",
+  "INVTYPE_PROFESSION_GEAR",
+}
+for _, slot in ipairs(inventorySlots) do
+  local text = _G[slot]
+  if text ~= nil then
+    KEYWORDS_TO_CHECK[text:lower()] = function(details) return details.invType == slot end
+  end
+end
 
 -- Sorted in initialize function later
 local sortedKeywords = {}

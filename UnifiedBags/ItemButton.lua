@@ -131,6 +131,7 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     self.BGR.isCraftingReagent = itemInfo[17]
     self.BGR.classID = itemInfo[12]
     self.BGR.subClassID = itemInfo[13]
+    self.BGR.invType = itemInfo[9]
     if self.BGR.pendingSearch then
       self:SetItemFiltered(self.BGR.pendingSearch)
     end
@@ -147,6 +148,7 @@ local function GetExtraInfo(self, itemID, itemLink, data)
       self.BGR.isCraftingReagent = itemInfo[17]
       self.BGR.classID = itemInfo[12]
       self.BGR.subClassID = itemInfo[13]
+      self.BGR.invType = itemInfo[9]
       if self.BGR.pendingSearch then
         self:SetItemFiltered(self.BGR.pendingSearch)
       end
