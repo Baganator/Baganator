@@ -161,6 +161,13 @@ local OPEN_CLOSE_OPTIONS = {
     option = "merchant",
     root = "auto_open",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SOCKET_INTERFACE,
+    option = "sockets",
+    root = "auto_open",
+    check = function() return not Baganator.Constants.IsEra end,
+  },
 }
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)

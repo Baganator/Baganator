@@ -5,6 +5,8 @@ local event_drivers = {
   BANKFRAME_CLOSED = { option = "bank", isOpen = false, default = true },
   TRADE_SKILL_SHOW = { option = "tradeskill", isOpen = true, default = false },
   TRADE_SKILL_CLOSE = { option = "tradeskill", isOpen = false, default = false },
+  SOCKET_INFO_UPDATE = { option = "sockets", isOpen = true, default = false },
+  SOCKET_INFO_CLOSE = { option = "sockets", isOpen = false, default = false },
 }
 local interactions = {
   [IT.GuildBanker] = { option = "guild_bank", default = false },
