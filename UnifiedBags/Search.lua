@@ -17,7 +17,7 @@ local function FoodCheck(details)
 end
 
 local function PotionCheck(details)
-  return details.classID == Enum.ItemClass.Consumable and details.subClassID >= 0 and details.subClassID <= 3
+  return details.classID == Enum.ItemClass.Consumable and (details.subClassID == 1 or details.subClassID == 2)
 end
 
 local KEYWORDS_TO_CHECK = {
