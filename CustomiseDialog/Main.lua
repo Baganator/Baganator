@@ -267,6 +267,20 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:SetupOpenClose()
 
   PanelTemplates_SetNumTabs(self, #self.Tabs)
+
+  self:RegisterForDrag("LeftButton")
+  self:SetMovable(true)
+  self:SetClampedToScreen(true)
+end
+
+function BaganatorCustomiseDialogMixin:OnDragStart()
+  self:StartMoving()
+  self:SetUserPlaced(false)
+end
+
+function BaganatorCustomiseDialogMixin:OnDragStop()
+  self:StopMovingOrSizing()
+  self:SetUserPlaced(false)
 end
 
 function BaganatorCustomiseDialogMixin:SetIndex(index)

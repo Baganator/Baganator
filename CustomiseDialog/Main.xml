@@ -91,6 +91,8 @@
     <Size x="550" y="520"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnDragStop method="OnDragStop"/>
       <OnShow method="OnShow"/>
     </Scripts>
   </Frame>
