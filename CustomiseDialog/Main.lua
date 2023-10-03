@@ -59,7 +59,6 @@ local ICON_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_CUSTOMISE_EMPTY_SLOTS,
     option = "empty_slot_background",
-    check = IsRetailCheck,
   },
   {
     type = "checkbox",

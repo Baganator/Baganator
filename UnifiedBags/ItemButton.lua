@@ -296,13 +296,13 @@ local function AdjustRetailButton(button, size)
 
   if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
     button.emptyBackgroundAtlas = nil
-    if button.icon:GetAtlas() ~= nil then
+    if not button.BGR or button.BGR.itemLink == nil then
       button.icon:SetAtlas(nil)
       button.icon:Hide()
     end
   else
     button.emptyBackgroundAtlas = "bags-item-slot64"
-    if not button.icon:IsShown() then
+    if not button.BGR or button.BGR.itemLink == nil then
       button.icon:Show()
       button.icon:SetAtlas(button.emptyBackgroundAtlas)
     end
@@ -323,6 +323,20 @@ local function AdjustClassicButton(button, size)
   button.IconOverlay:SetSize(size, size)
   local scaleNormal = 64/37 * size
   _G[button:GetName() .. "NormalTexture"]:SetSize(scaleNormal, scaleNormal)
+
+  if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
+    if not button.BGR or button.BGR.itemLink == nil then
+      button.icon:SetTexture(nil)
+      button.icon:Hide()
+    end
+    button.emptySlotFilepath = nil
+  else
+    button.emptySlotFilepath = "Interface\\AddOns\\Baganator\\Assets\\classic-bag-slot"
+    if not button.BGR or button.BGR.itemLink == nil then
+      button.icon:Show()
+      button.icon:SetTexture(button.emptySlotFilepath)
+    end
+  end
 
   ApplyItemDetailSettings(button, size)
 end
@@ -524,7 +538,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
   
-  SetItemButtonTexture(self, details.iconTexture);
+  SetItemButtonTexture(self, details.iconTexture or self.emptySlotFilepath);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
   ApplyQualityBorderClassic(self, details.quality)
   SetItemButtonCount(self, details.itemCount);
@@ -669,7 +683,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   noValue = info and info.hasNoValue;
   itemID = info and info.itemID;
   
-  SetItemButtonTexture(self, texture);
+  SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonQuality(self, quality, itemID);
   ApplyQualityBorderClassic(self, quality)
   SetItemButtonCount(self, itemCount);
