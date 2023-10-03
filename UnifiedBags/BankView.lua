@@ -154,6 +154,8 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     self.BankLive:GetWidth() + 30,
     self.BankLive:GetHeight() + reagentBankHeight + 55
   )
+  -- 300 is the default searchbox width
+  self.SearchBox:SetWidth(math.min(300, self.BankLive:GetWidth() - 5))
 
   local characterData = BAGANATOR_DATA.Characters[character]
   if not characterData then
