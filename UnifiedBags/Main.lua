@@ -96,7 +96,8 @@ local function HideDefaultBags()
   if Baganator.Constants.IsRetail then
     ContainerFrameCombinedBags:SetParent(hidden)
 
-    for i = 1, 6 do
+    -- 1-6 are regular bags and 7-13 are bank bags
+    for i = 1, 13 do
       _G["ContainerFrame" .. i]:SetParent(hidden)
     end
     local frame = CreateFrame("Frame")
@@ -110,7 +111,11 @@ local function HideDefaultBags()
       SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_UPGRADEABLE_ITEM_IN_SLOT, true)
     end)
   else
-    for i = 1, 5 do
+    for i = 1, 5 do -- regular bag frames
+      _G["ContainerFrame" .. i]:SetParent(hidden)
+    end
+    -- skip over keyring bag (6)
+    for i = 7, 13 do -- bank bag frames
       _G["ContainerFrame" .. i]:SetParent(hidden)
     end
   end
