@@ -33,7 +33,8 @@ local function InitCurrentCharacter()
   end
 
   local characterData = BAGANATOR_DATA.Characters[currentCharacter]
-  characterData.details.class = select(3, UnitClass("player"))
+  characterData.details.className, characterData.details.class = select(2, UnitClass("player"))
+  characterData.details.faction = UnitFactionGroup("player")
   characterData.mail = characterData.mail or {}
 end
 
