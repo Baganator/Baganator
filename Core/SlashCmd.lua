@@ -61,6 +61,7 @@ function Baganator.SlashCmd.RemoveCharacter(characterName)
   local characterData = BAGANATOR_DATA.Characters[characterName or ""]
   if not characterData then
     Baganator.Utilities.Message("Unrecognised character")
+    return
   end
 
   BAGANATOR_DATA.Characters[characterName] = nil
