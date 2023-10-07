@@ -107,6 +107,16 @@ local TOOLTIP_OPTIONS = {
     text = BAGANATOR_L_PRESS_SHIFT_TO_SHOW_TOOLTIPS,
     option = "show_tooltips_on_shift",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_ONLY_USE_SAME_CONNECTED_REALMS,
+    option = "tooltips_connected_realms_only",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_ONLY_USE_SAME_FACTION_CHARACTERS,
+    option = "tooltips_faction_only",
+  },
 }
 
 local OPEN_CLOSE_OPTIONS = {

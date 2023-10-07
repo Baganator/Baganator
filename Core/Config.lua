@@ -17,6 +17,8 @@ Baganator.Config.Options = {
   INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
   SHOW_INVENTORY_TOOLTIPS = "show_inventory_tooltips",
   SHOW_TOOLTIPS_ON_SHIFT = "show_tooltips_on_shift",
+  TOOLTIPS_CONNECTED_REALMS_ONLY = "tooltips_connected_realms_only",
+  TOOLTIPS_FACTION_ONLY = "tooltips_faction_only",
 
   SHOW_ITEM_LEVEL = "show_item_level",
   SHOW_BOE_STATUS = "show_boe_status",
@@ -65,6 +67,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
   [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
   [Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT] = false,
+  [Baganator.Config.Options.TOOLTIPS_CONNECTED_REALMS_ONLY] = true,
+  [Baganator.Config.Options.TOOLTIPS_FACTION_ONLY] = false,
   [Baganator.Config.Options.ICON_TEXT_FONT_SIZE] = 14,
   [Baganator.Config.Options.ICON_TOP_LEFT_CORNER] = "item_level",
   [Baganator.Config.Options.ICON_TOP_RIGHT_CORNER] = "none",

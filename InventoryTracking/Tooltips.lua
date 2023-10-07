@@ -7,7 +7,7 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
 
   local key = Baganator.Utilities.GetItemKey(itemLink)
 
-  local tooltipInfo = summaries:GetTooltipInfo(key)
+  local tooltipInfo = summaries:GetTooltipInfo(key, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
   table.sort(tooltipInfo, function(a, b)
     return a.bags + a.bank + a.mail > b.bags + b.bank + b.mail
@@ -19,11 +19,21 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
 
   local result = "  "
   local bagCount, bankCount, mailCount = 0, 0, 0
+  local seenRealms = {}
 
   for index, s in ipairs(tooltipInfo) do
     bagCount = bagCount + s.bags
     bankCount = bankCount + s.bank
     mailCount = mailCount + s.mail
+    seenRealms[s.realmNormalized] = true
+  end
+  local realmCount = 0
+  for realm in pairs(seenRealms) do
+    realmCount = realmCount + 1
+  end
+  local appendRealm = false
+  if realmCount > 1 then
+    appendRealm = true
   end
 
   local entries = {}
@@ -50,7 +60,11 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
     if s.mail > 0 then
       table.insert(entries, BAGANATOR_L_MAIL_X:format(s.mail))
     end
-    tooltip:AddDoubleLine("  " .. s.character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
+    local character = s.character
+    if appendRealm then
+      character = character .. "-" .. s.realmNormalized
+    end
+    tooltip:AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
   end
   if #tooltipInfo > 4 then
     tooltip:AddLine("  ...")
