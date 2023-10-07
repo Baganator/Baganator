@@ -64,6 +64,9 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
     if appendRealm then
       character = character .. "-" .. s.realmNormalized
     end
+    if s.className then
+      character = RAID_CLASS_COLORS[s.className]:WrapTextInColorCode(character)
+    end
     tooltip:AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
   end
   if #tooltipInfo > 4 then

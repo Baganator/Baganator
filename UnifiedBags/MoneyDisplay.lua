@@ -19,6 +19,9 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
       if #connectedRealms > 1 then
         characterName = characterInfo.fullName
       end
+      if characterInfo.className then
+        characterName = RAID_CLASS_COLORS[characterInfo.className]:WrapTextInColorCode(characterName)
+      end
       table.insert(lines, {left = characterName, right = GetMoneyString(money, true)})
       total = total + money
     end

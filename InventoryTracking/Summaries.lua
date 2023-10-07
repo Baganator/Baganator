@@ -73,10 +73,6 @@ function BaganatorSummariesMixin:GenerateSummary(characterName)
   self.SV.ByRealm[details.details.realmNormalized][details.details.character] = summary
 end
 
-local function GetCharacterFaction(characterName)
-  return BAGANATOR_DATA.Characters[characterName].details.faction
-end
-
 function BaganatorSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sameFaction)
   if next(self.SV.Pending) then
     local start = debugprofilestop()
@@ -111,10 +107,12 @@ function BaganatorSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sameFac
     if byRealm then
       for char, summary in pairs(byRealm) do
         local byKey = summary[key]
-        if byKey ~= nil and (not sameFaction or GetCharacterFaction(char .. "-" .. r) == currentFaction) then
+        local characterDetails = BAGANATOR_DATA.Characters[char .. "-" .. r].details
+        if byKey ~= nil and (not sameFaction or characterDetails.faction == currentFaction) then
           table.insert(result, {
             character = char,
             realmNormalized = r,
+            className = characterDetails.className,
             bags = byKey.bags or 0, 
             bank = byKey.bank or 0, 
             mail = byKey.mail or 0, 
