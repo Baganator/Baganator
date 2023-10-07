@@ -117,6 +117,20 @@ local TOOLTIP_OPTIONS = {
     text = BAGANATOR_L_ONLY_USE_SAME_FACTION_CHARACTERS,
     option = "tooltips_faction_only",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SORT_BY_CHARACTER_NAME,
+    option = "tooltips_sort_by_name",
+  },
+  {
+    type = "slider",
+    min = 1,
+    max = 40,
+    lowText = "1",
+    highText = "40",
+    valuePattern = BAGANATOR_L_X_CHARACTERS_SHOWN,
+    option = "tooltips_character_limit",
+  },
 }
 
 local OPEN_CLOSE_OPTIONS = {

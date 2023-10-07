@@ -77,6 +77,8 @@ L["SHOW_PAWN_UPGRADE_ARROW"] = "Show Pawn upgrade arrow when addon enabled"
 L["PRESS_SHIFT_TO_SHOW_TOOLTIPS"] = "Press shift to display info in tooltips"
 L["ONLY_USE_SAME_CONNECTED_REALMS"] = "Only use same connected realms for inventory"
 L["ONLY_USE_SAME_FACTION_CHARACTERS"] = "Only use same faction characters for inventory"
+L["X_CHARACTERS_SHOWN"] = "%s Characters Shown"
+L["SORT_BY_CHARACTER_NAME"] = "Sort by character name"
 
 L["REALM_WIDE_GOLD_X"] = "Realm-wide gold: %s"
 L["ACCOUNT_GOLD_X"] = "Account gold: %s"

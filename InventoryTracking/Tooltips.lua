@@ -9,9 +9,19 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
 
   local tooltipInfo = summaries:GetTooltipInfo(key, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
-  table.sort(tooltipInfo, function(a, b)
-    return a.bags + a.bank + a.mail > b.bags + b.bank + b.mail
-  end)
+  if Baganator.Config.Get("tooltips_sort_by_name") then
+    table.sort(tooltipInfo, function(a, b)
+      if a.realmNormalized == b.realmNormalized then
+        return a.character < b.character
+      else
+        return a.realmNormalized < b.realmNormalized
+      end
+    end)
+  else
+    table.sort(tooltipInfo, function(a, b)
+      return a.bags + a.bank + a.mail > b.bags + b.bank + b.mail
+    end)
+  end
 
   if #tooltipInfo == 0 then
     return
@@ -48,7 +58,7 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
   end
   tooltip:AddLine(BAGANATOR_L_INVENTORY_TOTALS_COLON .. " " .. WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
 
-  for index = 1, math.min(#tooltipInfo, 4) do
+  for index = 1, math.min(#tooltipInfo, Baganator.Config.Get("tooltips_character_limit")) do
     local s = tooltipInfo[index]
     local entries = {}
     if s.bags > 0 then
@@ -69,7 +79,7 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
     end
     tooltip:AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
   end
-  if #tooltipInfo > 4 then
+  if #tooltipInfo > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
   end
 end
