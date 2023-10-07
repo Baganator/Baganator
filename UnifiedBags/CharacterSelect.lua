@@ -1,7 +1,7 @@
 CharacterSelectSidebarMixin = {}
 
-local arrowRight = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 13, 13, 1, 0, 0, 1, 0, 2)
-local arrowLeft = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 13, 13, 0, 1, 0, 1, 0, 2)
+local arrowRight = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 13, 13, 1, 0, 0, 1)
+local arrowLeft = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 13, 13, 0, 1, 0, 1)
 
 function CharacterSelectSidebarMixin:OnLoad()
   self:SetTitle(BAGANATOR_L_ALL_CHARACTERS)
