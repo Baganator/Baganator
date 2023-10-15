@@ -21,7 +21,7 @@ Baganator.Constants = {
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
 
-  MaxRecents = 5,
+  MaxRecents = 4,
   BattlePetCageID = 82800,
 }
 
