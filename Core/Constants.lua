@@ -23,6 +23,8 @@ Baganator.Constants = {
 
   MaxRecents = 4,
   BattlePetCageID = 82800,
+
+  BankBagsCount = 7,
 }
 
 -- Not currently included as the keyring bag presents as quite large in the bag
@@ -33,6 +35,12 @@ end]]
 if Baganator.Constants.IsRetail then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.ReagentBag)
   table.insert(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)
+end
+if Baganator.Constants.IsClassic then
+  -- Workaround for the enum containing the wrong values for the bank bag slots
+  for i = 1, Baganator.Constants.BankBagsCount do
+    Baganator.Constants.AllBankIndexes[i + 1] = NUM_BAG_SLOTS + i
+  end
 end
 
 Baganator.Constants.Events = {

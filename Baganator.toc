@@ -28,6 +28,8 @@ InventoryTracking\Main.lua
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua
 UnifiedBags\ItemButton.xml
+UnifiedBags\ContainerSlots.lua
+UnifiedBags\ContainerSlots.xml
 UnifiedBags\Components.xml
 UnifiedBags\Layouts.lua
 UnifiedBags\Layouts.xml

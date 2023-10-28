@@ -22,9 +22,10 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
     if self:IsShown() then
+      self:UpdateBagSlots()
       self:UpdateForCharacter(character, updatedBags)
     else
-      self:NotifyBagUpdate(updatedBags, self.isLive)
+      self:NotifyBagUpdate(updatedBags)
     end
   end)
 
@@ -49,6 +50,26 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self:ApplySearch(text)
   end)
+
+  local function GetBankBagButton()
+    if Baganator.Constants.IsRetail then
+      return CreateFrame("ItemButton", nil, self, "BaganatorRetailBankButtonTemplate")
+    else
+      return CreateFrame("Button", nil, self, "BaganatorClassicBankButtonTemplate")
+    end
+  end
+
+  self.bankBagSlots = {}
+  for index = 1, Baganator.Constants.BankBagsCount do
+    local bb = GetBankBagButton()
+    table.insert(self.bankBagSlots, bb)
+    bb:SetID(index)
+    if #self.bankBagSlots == 1 then
+      bb:SetPoint("BOTTOMLEFT", self, "TOPLEFT")
+    else
+      bb:SetPoint("TOPLEFT", self.bankBagSlots[#self.bankBagSlots - 1], "TOPRIGHT")
+    end
+  end
 end
 
 function BaganatorBankOnlyViewMixin:OnHide()
@@ -96,7 +117,14 @@ function BaganatorBankOnlyViewMixin:OnEvent(eventName)
   end
 end
 
+function BaganatorBankOnlyViewMixin:UpdateBagSlots()
+  for _, bb in ipairs(self.bankBagSlots) do
+    bb:Init()
+  end
+end
+
 function BaganatorBankOnlyViewMixin:OnShow()
+  self:UpdateBagSlots()
 end
 
 function BaganatorBankOnlyViewMixin:OnHide(eventName)

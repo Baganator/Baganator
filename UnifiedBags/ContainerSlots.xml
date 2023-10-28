@@ -1,0 +1,23 @@
+<Ui>
+  <ItemButton name="BaganatorRetailBankButtonTemplate" virtual="true" mixin="BaganatorRetailBankButtonMixin">
+    <Size x="37" y="37"/>
+    <Scripts>
+      <OnClick method="OnClick"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnReceiveDrag method="OnReceiveDrag"/>
+    </Scripts>
+  </ItemButton>
+
+  <Button name="BaganatorClassicBankButtonTemplate" virtual="true" mixin="BaganatorClassicBankButtonMixin" inherits="ItemButtonTemplate">
+    <Size x="37" y="37"/>
+    <Scripts>
+      <OnClick method="OnClick"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnReceiveDrag method="OnReceiveDrag"/>
+    </Scripts>
+  </Button>
+</Ui>
