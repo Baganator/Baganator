@@ -64,6 +64,16 @@
           <Anchor point="TOPLEFT" relativeKey="$parent.ToggleReagentsBankButton" relativePoint="TOPRIGHT" x="5" />
         </Anchors>
       </Button>
+      <Button parentKey="BuyReagentBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_BUY_REAGENT_BANK">
+        <Scripts>
+          <OnClick>
+            StaticPopup_Show("CONFIRM_BUY_REAGENTBANK_TAB")
+          </OnClick>
+        </Scripts>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" x="-2" y="-5"/>
+        </Anchors>
+      </Button>
     </Frames>
   </Frame>
 </Ui>

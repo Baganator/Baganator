@@ -169,6 +169,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
 
   self.ToggleReagentsBankButton:SetShown(self.ReagentBankLive:GetHeight() > 0)
   self.DepositIntoReagentsBankButton:SetShown(self.ReagentBankLive:GetHeight() > 0)
+  self.BuyReagentBankButton:SetShown(Baganator.Constants.IsRetail and not IsReagentBankUnlocked())
   local reagentBankHeight = self.ReagentBankLive:GetHeight()
   if reagentBankHeight > 0 then
     if self.ReagentBankLive:IsShown() then
@@ -176,6 +177,8 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     else
       reagentBankHeight = 30
     end
+  elseif self.BuyReagentBankButton:IsShown() then
+    reagentBankHeight = 30
   end
 
   self:SetSize(

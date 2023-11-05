@@ -27,7 +27,6 @@ function BaganatorBagCacheMixin:OnLoad()
     -- Bank open/close (used to determine whether to cache or not)
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
-    -- Reagent bank
     "PLAYERBANKSLOTS_CHANGED",
 
     -- Gold tracking
@@ -37,6 +36,7 @@ function BaganatorBagCacheMixin:OnLoad()
   if not Baganator.Constants.IsClassic then
     -- Bank items reagent bank updating
     self:RegisterEvent("PLAYERREAGENTBANKSLOTS_CHANGED")
+    self:RegisterEvent("REAGENTBANK_UPDATE")
   end
 
   local characterName, realm = UnitFullName("player")
@@ -71,6 +71,10 @@ function BaganatorBagCacheMixin:OnEvent(eventName, ...)
     self:QueueCaching()
 
   elseif eventName == "PLAYERREAGENTBANKSLOTS_CHANGED" then
+    self.pending.bank[Enum.BagIndex.Reagentbank] = true
+    self:QueueCaching()
+
+  elseif eventName == "REAGENTBANK_UPDATE" then
     self.pending.bank[Enum.BagIndex.Reagentbank] = true
     self:QueueCaching()
 

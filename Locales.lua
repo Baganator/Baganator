@@ -55,6 +55,7 @@ L["MAILS_X"] = "Mails: %s"
 L["BANK_X"] = "Bank: %s"
 L["MAIL_X"] = "Mail: %s"
 L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
+L["BUY_REAGENT_BANK"] = "Buy Reagent Bank"
 
 L["BOE"] = "BoE"
 L["BOA"] = "BoA"

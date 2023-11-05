@@ -632,7 +632,7 @@ function BaganatorClassicLiveItemButtonMixin:OnEnter()
   end
 end
 
-function BaganatorClassicLiveItemButtonMixin:BGRUpdateCooldown(size)
+function BaganatorClassicLiveItemButtonMixin:BGRUpdateCooldown()
   if self.BGR.itemLink then
     ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
   else

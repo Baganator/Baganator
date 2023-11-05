@@ -237,7 +237,9 @@ end
 
 function BaganatorLiveBagLayoutMixin:UpdateCooldowns()
   for _, button in ipairs(self.buttons) do
-    button:BGRUpdateCooldown(button.BGR.itemLink ~= nil)
+    if button.BGR ~= nil then
+      button:BGRUpdateCooldown()
+    end
   end
 end
 
@@ -398,9 +400,11 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
     local bagIndex = tIndexOf(indexes, bagID)
     if bagIndex ~= nil and sectionData[bagIndex] and indexesToUse[bagIndex] then
       local bag = self.buttonsByBag[bagID]
-      for index, cacheData in ipairs(sectionData[bagIndex]) do
-        local button = bag[index]
-        button:SetItemDetails(cacheData)
+      if #bag == #sectionData[bagIndex] then
+        for index, cacheData in ipairs(sectionData[bagIndex]) do
+          local button = bag[index]
+          button:SetItemDetails(cacheData)
+        end
       end
     end
   end
