@@ -7,6 +7,8 @@ EventUtil.ContinueOnAddOnLoaded("Baganator", function()
   Baganator.SlashCmd.Initialize()
 
   Baganator.InitializeInventoryTracking()
-  Baganator.InitializeUnifiedBags()
+  if Baganator.Config.Get(Baganator.Config.Options.ENABLE_UNIFIED_BAGS) then
+    Baganator.InitializeUnifiedBags()
+  end
   Baganator.InitializeCustomiseDialog()
 end)

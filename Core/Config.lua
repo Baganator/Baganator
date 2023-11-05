@@ -44,6 +44,8 @@ Baganator.Config.Options = {
   DEBUG_TIMERS = "debug_timers",
 
   AUTO_OPEN = "auto_open",
+
+  ENABLE_UNIFIED_BAGS = "enable_unified_bags",
 }
 
 Baganator.Config.Defaults = {
@@ -82,6 +84,8 @@ Baganator.Config.Defaults = {
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
+
+  [Baganator.Config.Options.ENABLE_UNIFIED_BAGS] = true,
 }
 
 Baganator.Config.VisualsFrameOnlySettings = {
