@@ -483,4 +483,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.ToggleAllCharacters:SetPoint("BOTTOM", 0, 2)
 
   self.Money:SetText(GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))
+
+  if self.ToggleAllCharacters:GetRight() > self.Money:GetLeft() then
+    self.ToggleAllCharacters:SetPoint("RIGHT", self.Money, "LEFT")
+  end
 end
