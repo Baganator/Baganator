@@ -54,4 +54,18 @@
       </OnClick>
     </Scripts>
   </Button>
+
+  <Button name="BaganatorToggleBagSlotsButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
+    <Size x="32" y="22"/>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture atlas="Banker">
+          <Size x="17" y="17"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
 </Ui>

@@ -35,6 +35,16 @@
           </OnClick>
         </Scripts>
       </Button>
+      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.ToggleBankButton" relativePoint="TOPRIGHT"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleBagSlots()
+          </OnClick>
+        </Scripts>
+      </Button>
       <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
         <Size x="300" y="22"/>
         <Anchors>

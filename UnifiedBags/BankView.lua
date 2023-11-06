@@ -22,7 +22,6 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
     if self:IsShown() then
-      self:UpdateBagSlots()
       self:UpdateForCharacter(character, updatedBags)
     else
       self:NotifyBagUpdate(updatedBags)
@@ -44,6 +43,8 @@ function BaganatorBankOnlyViewMixin:OnLoad()
       if self:IsShown() then
         self:UpdateForCharacter(self.liveCharacter)
       end
+    elseif settingName == Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS then
+      self:UpdateBagSlots()
     end
   end)
 
@@ -95,6 +96,10 @@ function BaganatorBankOnlyViewMixin:ToggleReagents()
   Baganator.Config.Set(Baganator.Config.Options.SHOW_REAGENTS, not Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS))
 end
 
+function BaganatorBankOnlyViewMixin:ToggleBagSlots()
+  Baganator.Config.Set(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS, not Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS))
+end
+
 function BaganatorBankOnlyViewMixin:ApplySearch(text)
   self.SearchBox:SetText(text)
 
@@ -118,13 +123,11 @@ function BaganatorBankOnlyViewMixin:OnEvent(eventName)
 end
 
 function BaganatorBankOnlyViewMixin:UpdateBagSlots()
+  local show = Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS)
   for _, bb in ipairs(self.bankBagSlots) do
     bb:Init()
+    bb:SetShown(show)
   end
-end
-
-function BaganatorBankOnlyViewMixin:OnShow()
-  self:UpdateBagSlots()
 end
 
 function BaganatorBankOnlyViewMixin:OnHide(eventName)
@@ -136,6 +139,8 @@ function BaganatorBankOnlyViewMixin:SetLiveCharacter(character)
 end
 
 function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
+  self:UpdateBagSlots()
+
   updatedBags = updatedBags or {bags = {}, bank = {}}
 
   Baganator.Utilities.ApplyVisuals(self)

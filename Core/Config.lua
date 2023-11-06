@@ -38,7 +38,9 @@ Baganator.Config.Options = {
   SHOW_CIMI_ICON = "show_cimi_icon",
 
   MAIN_VIEW_POSITION = "main_view_position",
+  MAIN_VIEW_SHOW_BAG_SLOTS = "main_view_show_bag_slots",
   BANK_ONLY_VIEW_POSITION = "bank_only_view_position",
+  BANK_ONLY_VIEW_SHOW_BAG_SLOTS = "bank_only_view_show_bag_slots",
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
@@ -81,6 +83,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER] = "none",
   [Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER] = "quantity",
   [Baganator.Config.Options.AUTO_OPEN] = {},
+  [Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
+  [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,

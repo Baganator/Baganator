@@ -3,7 +3,6 @@
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnEvent method="OnEvent"/>
-      <OnShow method="OnShow"/>
       <OnHide method="OnHide"/>
       <OnDragStart method="OnDragStart"/>
       <OnDragStop method="OnDragStop"/>
@@ -21,6 +20,16 @@
         <Scripts>
           <OnClick>
             Baganator.Utilities.SortBank()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="5"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleBagSlots()
           </OnClick>
         </Scripts>
       </Button>

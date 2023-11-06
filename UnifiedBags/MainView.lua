@@ -63,6 +63,8 @@ function BaganatorMainViewMixin:OnLoad()
       for _, tab in ipairs(self.Tabs) do
         tab:SetShown(isShown)
       end
+    elseif settingName == Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
+      self:UpdateBagSlots()
     end
   end)
 
@@ -93,6 +95,26 @@ function BaganatorMainViewMixin:OnLoad()
     frame:UnregisterEvent("MODIFIER_STATE_CHANGED")
     GameTooltip:Hide()
   end)
+
+  local function GetBagSlotButton()
+    if Baganator.Constants.IsRetail then
+      return CreateFrame("ItemButton", nil, self, "BaganatorRetailBagSlotButtonTemplate")
+    else
+      return CreateFrame("Button", nil, self, "BaganatorClassicBagSlotButtonTemplate")
+    end
+  end
+
+  self.bagSlots = {}
+  for index = 1, Baganator.Constants.BagSlotsCount do
+    local bb = GetBagSlotButton()
+    table.insert(self.bagSlots, bb)
+    bb:SetID(index)
+    if #self.bagSlots == 1 then
+      bb:SetPoint("BOTTOMLEFT", self, "TOPLEFT")
+    else
+      bb:SetPoint("TOPLEFT", self.bagSlots[#self.bagSlots - 1], "TOPRIGHT")
+    end
+  end
 end
 
 function BaganatorMainViewMixin:OnHide()
@@ -143,6 +165,15 @@ function BaganatorMainViewMixin:OnEvent(eventName)
   end
 end
 
+function BaganatorMainViewMixin:UpdateBagSlots()
+  self.ToggleBagSlotsButton:SetShown(self.isLive)
+  local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
+  for _, bb in ipairs(self.bagSlots) do
+    bb:Init()
+    bb:SetShown(show)
+  end
+end
+
 function BaganatorMainViewMixin:OnDragStart()
   if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
@@ -169,6 +200,11 @@ end
 function BaganatorMainViewMixin:ToggleCharacterSidebar()
   self.CharacterSelect:SetShown(not self.CharacterSelect:IsShown())
 end
+
+function BaganatorMainViewMixin:ToggleBagSlots()
+  Baganator.Config.Set(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS, not Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS))
+end
+
 
 function BaganatorMainViewMixin:SelectTab(character)
   for index, tab in ipairs(self.Tabs) do
@@ -301,6 +337,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   local oldLast = self.lastCharacter
   self.lastCharacter = character
   self.isLive = isLive
+
+  self:UpdateBagSlots()
 
   if oldLast ~= character then
     Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", character)

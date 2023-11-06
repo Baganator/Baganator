@@ -1,3 +1,87 @@
+-- REGULAR BAGS
+BaganatorRetailBagSlotButtonMixin = {}
+
+local function GetBagInventorySlot(button)
+  return C_Container.ContainerIDToInventoryID(button:GetID())
+end
+
+local function OnBagSlotClick(self)
+  if IsModifiedClick("PICKUPITEM") then
+    PickupBagFromSlot(GetBagInventorySlot(self))
+  else
+    PutItemInBag(GetBagInventorySlot(self))
+  end
+end
+
+local function ShowBagSlotTooltip(self)
+  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+  GameTooltip:SetInventoryItem("player", GetBagInventorySlot(self))
+  GameTooltip:Show()
+end
+
+function BaganatorRetailBagSlotButtonMixin:Init()
+  self:RegisterForDrag("LeftButton")
+  local inventorySlot = GetBagInventorySlot(self)
+  self:SetItemButtonTexture(GetInventoryItemTexture("player", inventorySlot))
+  self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
+  self:SetItemButtonCount(1)
+end
+
+function BaganatorRetailBagSlotButtonMixin:OnClick()
+  OnBagSlotClick(self)
+end
+
+function BaganatorRetailBagSlotButtonMixin:OnDragStart()
+  PickupBagFromSlot(GetBagInventorySlot(self))
+end
+
+function BaganatorRetailBagSlotButtonMixin:OnReceiveDrag()
+  PutItemInBag(GetBagInventorySlot(self))
+end
+
+function BaganatorRetailBagSlotButtonMixin:OnEnter()
+  ShowBagSlotTooltip(self)
+end
+
+function BaganatorRetailBagSlotButtonMixin:OnLeave()
+  GameTooltip:Hide()
+end
+
+BaganatorClassicBagSlotButtonMixin = {}
+
+function BaganatorClassicBagSlotButtonMixin:Init()
+  self:RegisterForDrag("LeftButton")
+
+  SetItemButtonCount(self, 1)
+
+  local inventorySlot = GetBagInventorySlot(self)
+
+  SetItemButtonTexture(self, GetInventoryItemTexture("player", inventorySlot))
+  SetItemButtonQuality(self, GetInventoryItemQuality("player", inventorySlot))
+end
+
+function BaganatorClassicBagSlotButtonMixin:OnClick()
+  OnBagSlotClick(self)
+end
+
+function BaganatorClassicBagSlotButtonMixin:OnDragStart()
+  PickupBagFromSlot(GetBagInventorySlot(self))
+end
+
+function BaganatorClassicBagSlotButtonMixin:OnReceiveDrag()
+  PutItemInBag(GetBagInventorySlot(self))
+end
+
+function BaganatorClassicBagSlotButtonMixin:OnEnter()
+  ShowBagSlotTooltip(self)
+end
+
+function BaganatorClassicBagSlotButtonMixin:OnLeave()
+  GameTooltip:Hide()
+end
+
+-- BANK
+
 local function GetBankInventorySlot(button)
   return BankButtonIDToInvSlotID(button:GetID(), 1)
 end
@@ -39,48 +123,6 @@ local function ShowBankSlotTooltip(self)
   end
   GameTooltip:Show()
 end
-
---[[
-BaganatorRetailBagButtonMixin = {}
-
-local function GetBagInventorySlot(button)
-  return C_Container.ContainerIDToInventoryID(button:GetID())
-end
-
-function BaganatorRetailBagButtonMixin:Init()
-  self:RegisterForDrag("LeftButton")
-  local inventorySlot = GetBagInventorySlot(self)
-  self:SetItemButtonTexture(GetInventoryItemTexture("player", inventorySlot))
-  self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
-  self:SetItemButtonCount(1)
-end
-
-function BaganatorRetailBagButtonMixin:OnClick()
-  if IsModifiedClick("PICKUPITEM") then
-    PickupBagFromSlot(GetBagInventorySlot(self))
-  else
-    PutItemInBag(GetBagInventorySlot(self))
-  end
-end
-
-function BaganatorRetailBagButtonMixin:OnDragStart()
-  PickupBagFromSlot(GetBagInventorySlot(self))
-end
-
-function BaganatorRetailBagButtonMixin:OnReceiveDrag()
-  PutItemInBag(GetBagInventorySlot(self))
-end
-
-function BaganatorRetailBagButtonMixin:OnEnter()
-  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-  GameTooltip:SetInventoryItem("player", GetBagInventorySlot(self))
-  GameTooltip:Show()
-end
-
-function BaganatorRetailBagButtonMixin:OnLeave()
-  GameTooltip:Hide()
-end
-]]
 
 BaganatorRetailBankButtonMixin = {}
 
