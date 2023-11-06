@@ -73,7 +73,7 @@ local ICON_OPTIONS = {
   },
   {
     type = "slider",
-    min = 1,
+    min = 10,
     max = 70,
     lowText = "10",
     highText = "70",
