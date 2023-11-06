@@ -110,7 +110,8 @@ function BaganatorMainViewMixin:OnLoad()
     table.insert(self.bagSlots, bb)
     bb:SetID(index)
     if #self.bagSlots == 1 then
-      bb:SetPoint("BOTTOMLEFT", self, "TOPLEFT")
+      bb:SetPoint("BOTTOM", self, "TOP")
+      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -15, 0)
     else
       bb:SetPoint("TOPLEFT", self.bagSlots[#self.bagSlots - 1], "TOPRIGHT")
     end
