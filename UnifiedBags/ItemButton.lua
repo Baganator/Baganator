@@ -25,10 +25,6 @@ local function IsBindOnAccount(itemLink)
   return false
 end
 
-local function IsCosmetic(bgr)
-  return bgr.classID == Enum.ItemClass.Armor and bgr.subClassID == Enum.ItemArmorSubclass.Cosmetic
-end
-
 local itemCallbacks = {}
 
 local registered = false
@@ -44,7 +40,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   local qualityColours = Baganator.Config.Get("icon_text_quality_colors")
   if Baganator.Config.Get("show_item_level") then
     table.insert(itemCallbacks, function(self, data)
-      if IsEquipment(data.itemLink) and not IsCosmetic(self.BGR) then
+      if IsEquipment(data.itemLink) and not self.BGR.isCosmetic then
         local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
         self.ItemLevel:SetText(itemLevel)
         if qualityColours then
@@ -132,6 +128,11 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     self.BGR.classID = itemInfo[12]
     self.BGR.subClassID = itemInfo[13]
     self.BGR.invType = itemInfo[9]
+    self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
+    if self.BGR.isCosmetic then
+      self.IconOverlay:SetAtlas("CosmeticIconFrame")
+      self.IconOverlay:Show();
+    end
     if self.BGR.pendingSearch then
       self:SetItemFiltered(self.BGR.pendingSearch)
     end
@@ -149,6 +150,11 @@ local function GetExtraInfo(self, itemID, itemLink, data)
       self.BGR.classID = itemInfo[12]
       self.BGR.subClassID = itemInfo[13]
       self.BGR.invType = itemInfo[9]
+      self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
+      if self.BGR.isCosmetic then
+        self.IconOverlay:SetAtlas("CosmeticIconFrame")
+        self.IconOverlay:Show();
+      end
       if self.BGR.pendingSearch then
         self:SetItemFiltered(self.BGR.pendingSearch)
       end
