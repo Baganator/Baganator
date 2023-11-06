@@ -66,7 +66,8 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     table.insert(self.bankBagSlots, bb)
     bb:SetID(index)
     if #self.bankBagSlots == 1 then
-      bb:SetPoint("BOTTOMLEFT", self, "TOPLEFT")
+      bb:SetPoint("BOTTOM", self, "TOP")
+      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -12, 0)
     else
       bb:SetPoint("TOPLEFT", self.bankBagSlots[#self.bankBagSlots - 1], "TOPRIGHT")
     end
