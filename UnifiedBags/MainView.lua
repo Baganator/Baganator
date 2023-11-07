@@ -418,12 +418,12 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   activeReagentBag:ShowCharacter(character, "bags", Baganator.Constants.AllBagIndexes, reagentBagIndexesToUse, bagWidth)
   activeReagentBag:ApplySearch(searchText)
 
-  local bagHeight = activeBag:GetHeight()
+  local bagHeight = activeBag:GetHeight() + 6
   if activeReagentBag:GetHeight() > 0 then
     if showReagents then
-      bagHeight = bagHeight + activeReagentBag:GetHeight() + 20
+      bagHeight = bagHeight + activeReagentBag:GetHeight() + 14
     else
-      bagHeight = bagHeight + 6
+      bagHeight = bagHeight
     end
   else
     activeReagentBag:Hide()
@@ -439,12 +439,12 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     activeBank:ApplySearch(searchText)
     activeReagentBank:ApplySearch(searchText)
 
-    local bankHeight = activeBank:GetHeight()
+    local bankHeight = activeBank:GetHeight() + 6
     if activeReagentBank:GetHeight() > 0 then
       if showReagents then
-        bankHeight = bankHeight + activeReagentBank:GetHeight() + 20
+        bankHeight = bankHeight + activeReagentBank:GetHeight() + 14
       else
-        bankHeight = bankHeight + 6
+        bankHeight = bankHeight
       end
     else
       activeReagentBank:Hide()
@@ -472,12 +472,12 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   if self.ToggleReagentsButton:IsShown() then
     self.ToggleReagentsButton:ClearAllPoints()
     self.ToggleReagentsButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
-    self.ToggleReagentsButton:SetPoint("LEFT", self.SearchBox, -15, 0)
+    self.ToggleReagentsButton:SetPoint("LEFT", activeBag, -2, 0)
   end
   self.ToggleReagentsBankButton:SetShown(activeReagentBank and activeReagentBank:GetHeight() > 0)
   if self.ToggleReagentsBankButton:IsShown() then
     self.ToggleReagentsBankButton:ClearAllPoints()
-    self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", -5, 0)
+    self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", 0, 0)
     self.ToggleReagentsBankButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
   end
 
