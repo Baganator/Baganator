@@ -421,9 +421,9 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   local bagHeight = activeBag:GetHeight()
   if activeReagentBag:GetHeight() > 0 then
     if showReagents then
-      bagHeight = bagHeight + activeReagentBag:GetHeight() + 40
+      bagHeight = bagHeight + activeReagentBag:GetHeight() + 20
     else
-      bagHeight = bagHeight + 20
+      bagHeight = bagHeight + 6
     end
   else
     activeReagentBag:Hide()
@@ -442,9 +442,9 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     local bankHeight = activeBank:GetHeight()
     if activeReagentBank:GetHeight() > 0 then
       if showReagents then
-        bankHeight = bankHeight + activeReagentBank:GetHeight() + 40
+        bankHeight = bankHeight + activeReagentBank:GetHeight() + 20
       else
-        bankHeight = bankHeight + 20
+        bankHeight = bankHeight + 6
       end
     else
       activeReagentBank:Hide()
@@ -471,12 +471,14 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.ToggleReagentsButton:SetShown(activeReagentBag:GetHeight() > 0 or activeReagentBag:IsShown())
   if self.ToggleReagentsButton:IsShown() then
     self.ToggleReagentsButton:ClearAllPoints()
-    self.ToggleReagentsButton:SetPoint("TOPLEFT", activeBag, "BOTTOMLEFT", -2, -5)
+    self.ToggleReagentsButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
+    self.ToggleReagentsButton:SetPoint("LEFT", self.SearchBox, -15, 0)
   end
   self.ToggleReagentsBankButton:SetShown(activeReagentBank and activeReagentBank:GetHeight() > 0)
   if self.ToggleReagentsBankButton:IsShown() then
     self.ToggleReagentsBankButton:ClearAllPoints()
-    self.ToggleReagentsBankButton:SetPoint("TOPLEFT", activeBank, "BOTTOMLEFT", -2, -5)
+    self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", -5, 0)
+    self.ToggleReagentsBankButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
   end
 
   self.Money:SetText(GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))

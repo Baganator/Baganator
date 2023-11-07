@@ -110,7 +110,7 @@
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="ReagentBagLive" inherits="BaganatorLiveBagLayoutTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BagLive" relativePoint="BOTTOMLEFT" y="-38"/>
+          <Anchor point="TOPLEFT" relativeKey="$parent.BagLive" relativePoint="BOTTOMLEFT" y="-14"/>
         </Anchors>
         <Frames>
           <Frame inherits="BaganatorBagDividerTemplate"/>
@@ -119,7 +119,7 @@
       <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="ReagentBankLive" inherits="BaganatorLiveBagLayoutTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" y="-38"/>
+          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" y="-14"/>
         </Anchors>
         <Frames>
           <Frame inherits="BaganatorBagDividerTemplate"/>
@@ -130,7 +130,7 @@
 
       <Frame parentKey="ReagentBagCached" inherits="BaganatorCachedBagLayoutTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BagCached" relativePoint="BOTTOMLEFT" y="-38"/>
+          <Anchor point="TOPLEFT" relativeKey="$parent.BagCached" relativePoint="BOTTOMLEFT" y="-14"/>
         </Anchors>
         <Frames>
           <Frame inherits="BaganatorBagDividerTemplate"/>
@@ -140,7 +140,7 @@
       <Frame parentKey="BankCached" inherits="BaganatorCachedBagLayoutTemplate"/>
       <Frame parentKey="ReagentBankCached" inherits="BaganatorCachedBagLayoutTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BankCached" relativePoint="BOTTOMLEFT" y="-38"/>
+          <Anchor point="TOPLEFT" relativeKey="$parent.BankCached" relativePoint="BOTTOMLEFT" y="-14"/>
         </Anchors>
         <Frames>
           <Frame inherits="BaganatorBagDividerTemplate"/>

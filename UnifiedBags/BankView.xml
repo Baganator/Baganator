@@ -40,7 +40,7 @@
       </Frame>
       <Frame parentKey="ReagentBankLive" inherits="BaganatorLiveBagLayoutTemplate">
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" y="-38"/>
+          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" y="-14"/>
         </Anchors>
         <Frames>
           <Frame inherits="BaganatorBagDividerTemplate"/>
@@ -60,7 +60,8 @@
           </OnClick>
         </Scripts>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" x="-2" y="-5"/>
+          <Anchor point="LEFT" relativeKey="$parent.BankLive" x="-5"/>
+          <Anchor point="BOTTOM" y="4"/>
         </Anchors>
       </Button>
       <Button parentKey="DepositIntoReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_REAGENTS">
