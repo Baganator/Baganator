@@ -450,7 +450,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
       activeReagentBank:Hide()
     end
     height = math.max(bankHeight, height)
-    activeBank:SetPoint("TOPLEFT", 13, - (height - bankHeight)/2 - 40)
+    activeBank:SetPoint("TOPLEFT", 13, - (height - bankHeight)/2 - 50)
   end
 
   self.Tabs[1]:SetPoint("LEFT", activeBag, "LEFT")
@@ -477,13 +477,9 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.ToggleReagentsBankButton:SetShown(activeReagentBank and activeReagentBank:GetHeight() > 0)
   if self.ToggleReagentsBankButton:IsShown() then
     self.ToggleReagentsBankButton:ClearAllPoints()
-    self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", 0, 0)
+    self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", -2, 0)
     self.ToggleReagentsBankButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
   end
 
   self.Money:SetText(GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))
-
-  if self.ToggleAllCharacters:GetRight() > self.Money:GetLeft() then
-    self.ToggleAllCharacters:SetPoint("RIGHT", self.Money, "LEFT")
-  end
 end

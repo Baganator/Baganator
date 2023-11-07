@@ -179,12 +179,12 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   local reagentBankHeight = self.ReagentBankLive:GetHeight()
   if reagentBankHeight > 0 then
     if self.ReagentBankLive:IsShown() then
-      reagentBankHeight = reagentBankHeight + 40
+      reagentBankHeight = reagentBankHeight + 34
     else
-      reagentBankHeight = 30
+      reagentBankHeight = 20
     end
   elseif self.BuyReagentBankButton:IsShown() then
-    reagentBankHeight = 30
+    reagentBankHeight = 20
   end
 
   self:SetSize(
