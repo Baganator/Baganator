@@ -81,7 +81,8 @@
           </OnClick>
         </Scripts>
         <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" x="-2" y="-5"/>
+          <Anchor point="LEFT" relativeKey="$parent.BankLive" x="-2"/>
+          <Anchor point="BOTTOM" y="4"/>
         </Anchors>
       </Button>
     </Frames>
