@@ -35,8 +35,10 @@
     </Scripts>
   </Button>
 
-  <Button name="BaganatorCustomiseButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
-    <Size x="32" y="22"/>
+  <Button name="BaganatorCustomiseButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
+    <KeyValues>
+      <KeyValue key="tooltipText" value="BAGANATOR_L_CUSTOMISE_BAGANATOR" type="global"/>
+    </KeyValues>
     <Layers>
       <Layer level="ARTWORK">
         <Texture file="Interface\WorldMap\Gear_64">
@@ -55,8 +57,24 @@
     </Scripts>
   </Button>
 
-  <Button name="BaganatorToggleBagSlotsButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
+  <Button name="BaganatorTooltipIconButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
     <Size x="32" y="22"/>
+    <Scripts>
+      <OnEnter>
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(self.tooltipText)
+        GameTooltip:Show()
+      </OnEnter>
+      <OnLeave>
+        GameTooltip:Hide()
+      </OnLeave>
+    </Scripts>
+  </Button>
+
+  <Button name="BaganatorToggleBagSlotsButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
+    <KeyValues>
+      <KeyValue key="tooltipText" value="BAGANATOR_L_BAG_SLOTS" type="global"/>
+    </KeyValues>
     <Layers>
       <Layer level="ARTWORK">
         <Texture atlas="Banker">
@@ -67,5 +85,28 @@
         </Texture>
       </Layer>
     </Layers>
+  </Button>
+
+  <Button name="BaganatorToggleReagentsButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
+    <KeyValues>
+      <KeyValue key="tooltipText" value="BAGANATOR_L_REAGENTS" type="global"/>
+    </KeyValues>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="icon">
+          <Size x="17" y="17"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnLoad>
+        if Baganator.Constants.IsRetail then
+          self.icon:SetAtlas("Professions_Tracking_Herb")
+        end
+      </OnLoad>
+    </Scripts>
   </Button>
 </Ui>

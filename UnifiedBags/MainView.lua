@@ -479,10 +479,6 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     self.ToggleReagentsBankButton:SetPoint("TOPLEFT", activeBank, "BOTTOMLEFT", -2, -5)
   end
 
-  self.ToggleAllCharacters:ClearAllPoints()
-  self.ToggleAllCharacters:SetPoint("CENTER", activeBag)
-  self.ToggleAllCharacters:SetPoint("BOTTOM", 0, 2)
-
   self.Money:SetText(GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))
 
   if self.ToggleAllCharacters:GetRight() > self.Money:GetLeft() then

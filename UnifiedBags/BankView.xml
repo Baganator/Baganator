@@ -53,7 +53,7 @@
           <Anchor point="BOTTOMLEFT" relativeKey="$parent.BankLive" relativePoint="TOPLEFT" x="5"/>
         </Anchors>
       </EditBox>
-      <Button parentKey="ToggleReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_REAGENTS">
+      <Button parentKey="ToggleReagentsBankButton" inherits="BaganatorToggleReagentsButtonTemplate">
         <Scripts>
           <OnClick>
             self:GetParent():ToggleReagents()

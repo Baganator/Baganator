@@ -28,16 +28,57 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_BANK" frameLevel="700">
+      <Button parentKey="ToggleBankButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700">
+        <KeyValues>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_BANK" type="global"/>
+        </KeyValues>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture parentKey="icon" atlas="VignetteLoot">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
         <Scripts>
+          <OnLoad>
+            if Baganator.Constants.IsClassic then
+              self.icon:SetSize(22, 22)
+            end
+          </OnLoad>
           <OnClick>
             self:GetParent():ToggleBank()
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700">
+      <Button parentKey="ToggleAllCharacters" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700">
+        <KeyValues>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_ALL_CHARACTERS" type="global"/>
+        </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" relativeKey="$parent.ToggleBankButton" relativePoint="TOPRIGHT"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture atlas="socialqueuing-icon-group">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleCharacterSidebar()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.ToggleAllCharacters" relativePoint="TOPRIGHT"/>
         </Anchors>
         <Scripts>
           <OnClick>
@@ -51,27 +92,17 @@
           <Anchor point="RIGHT" x="-13" y="0"/>
         </Anchors>
       </EditBox>
-      <Button parentKey="ToggleReagentsButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_REAGENTS">
+      <Button parentKey="ToggleReagentsButton" inherits="BaganatorToggleReagentsButtonTemplate">
         <Scripts>
           <OnClick>
             self:GetParent():ToggleReagents()
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_REAGENTS">
+      <Button parentKey="ToggleReagentsBankButton" inherits="BaganatorToggleReagentsButtonTemplate">
         <Scripts>
           <OnClick>
             self:GetParent():ToggleReagents()
-          </OnClick>
-        </Scripts>
-      </Button>
-      <Button parentKey="ToggleAllCharacters" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_ALL_CHARACTERS">
-        <Anchors>
-          <Anchor point="BOTTOM" y="2"/>
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleCharacterSidebar()
           </OnClick>
         </Scripts>
       </Button>
