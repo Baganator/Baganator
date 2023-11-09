@@ -70,6 +70,7 @@ L["KEYWORD_SOULBOUND"] = "soulbound"
 L["KEYWORD_FOOD"] = "food"
 L["KEYWORD_DRINK"] = "drink"
 L["KEYWORD_POTION"] = "potion"
+L["KEYWORD_BOE"] = "boe"
 
 L["WINDOWS"] = "Windows"
 L["ICONS"] = "Icons"
