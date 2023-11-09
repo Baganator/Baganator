@@ -27,11 +27,9 @@ Baganator.Constants = {
   BankBagsCount = 7,
 }
 
--- Not currently included as the keyring bag presents as quite large in the bag
--- view
---[[if Baganator.Constants.IsClassic then
+if Baganator.Constants.IsWrath then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.Keyring)
-end]]
+end
 if Baganator.Constants.IsRetail then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.ReagentBag)
   table.insert(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)
