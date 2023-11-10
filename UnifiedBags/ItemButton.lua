@@ -37,13 +37,13 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
   itemCallbacks = {}
 
-  local qualityColours = Baganator.Config.Get("icon_text_quality_colors")
+  local useQualityColors = Baganator.Config.Get("icon_text_quality_colors")
   if Baganator.Config.Get("show_item_level") then
     table.insert(itemCallbacks, function(self, data)
       if IsEquipment(data.itemLink) and not self.BGR.isCosmetic then
         local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
         self.ItemLevel:SetText(itemLevel)
-        if qualityColours then
+        if useQualityColors then
           local color = qualityColors[data.quality]
           self.ItemLevel:SetTextColor(color.r, color.g, color.b)
         else
@@ -56,7 +56,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     table.insert(itemCallbacks, function(self, data)
       if IsEquipment(data.itemLink) and not data.isBound then
         self.BindingText:SetText(BAGANATOR_L_BOE)
-        if qualityColours then
+        if useQualityColors then
           local color = qualityColors[data.quality]
           self.BindingText:SetTextColor(color.r, color.g, color.b)
         else
@@ -69,7 +69,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     table.insert(itemCallbacks, function(self, data)
       if IsBindOnAccount(data.itemLink) then
         self.BindingText:SetText(BAGANATOR_L_BOA)
-        if qualityColours then
+        if useQualityColors then
           local color = qualityColors[data.quality]
           self.BindingText:SetTextColor(color.r, color.g, color.b)
         else
