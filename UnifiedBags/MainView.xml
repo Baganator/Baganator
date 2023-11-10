@@ -18,13 +18,13 @@
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
         </Anchors>
       </Button>
-      <Button parentKey="SortButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_SORT" frameLevel="700" hidden="true">
+      <Button parentKey="SortButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_SORT" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
           <OnClick>
-            Baganator.Utilities.SortBags()
+            Baganator.Utilities.SortBags(button == "RightButton")
           </OnClick>
         </Scripts>
       </Button>
