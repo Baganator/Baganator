@@ -18,6 +18,7 @@ Baganator.Constants = {
     Enum.BagIndex.BankBag_7,
   },
   IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
+  IsWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC,
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
 
