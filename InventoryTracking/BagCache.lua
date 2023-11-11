@@ -113,9 +113,6 @@ function BaganatorBagCacheMixin:OnEvent(eventName, ...)
   elseif eventName == "PLAYER_MONEY" then
     BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
     Baganator.CallbackRegistry:TriggerEvent("BagCacheUpdate", self.currentCharacter, GetEmptyPending())
-  elseif eventName == "PLAYER_REGEN_ENABLED" then
-    self:UnregisterEvent("PLAYER_REGEN_ENABLED")
-    self:QueueCaching()
   end
 end
 
