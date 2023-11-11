@@ -1,4 +1,4 @@
-function Baganator.InitializeCustomiseDialog()
+function Baganator.CustomiseDialog.Initialize()
   local customiseDialog
 
   Baganator.CallbackRegistry:RegisterCallback("ShowCustomise", function()

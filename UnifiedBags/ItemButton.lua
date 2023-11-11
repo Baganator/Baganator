@@ -212,7 +212,7 @@ local function SearchCheck(self, text)
     self.BGR.itemNameLower = self.BGR.itemNameLower or self.BGR.itemName:lower()
   end
   local currentBGR = self.BGR
-  return Baganator.Search.CheckItem(self.BGR, text)
+  return Baganator.UnifiedBags.Search.CheckItem(self.BGR, text)
 end
 
 local hidden = CreateFrame("Frame")

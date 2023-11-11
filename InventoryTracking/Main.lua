@@ -75,7 +75,7 @@ local function SetupItemSummaries()
   Baganator.ItemSummaries = summaries
 end
 
-function Baganator.InitializeInventoryTracking()
+function Baganator.InventoryTracking.Initialize()
   InitializeSavedVariables()
 
   local frame = CreateFrame("Frame")

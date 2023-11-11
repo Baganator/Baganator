@@ -126,8 +126,8 @@ local function HideDefaultBags()
   BankFrame:SetScript("OnEvent", nil)
 end
 
-function Baganator.InitializeUnifiedBags()
-  Baganator.Search.Initialize()
+function Baganator.UnifiedBags.Initialize()
+  Baganator.UnifiedBags.Search.Initialize()
 
   SetupView()
   HideDefaultBags()

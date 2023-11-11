@@ -76,7 +76,7 @@ end
 
 function BaganatorBankOnlyViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
-  Baganator.Search.ClearCache()
+  Baganator.UnifiedBags.Search.ClearCache()
 end
 
 function BaganatorBankOnlyViewMixin:OnDragStart()

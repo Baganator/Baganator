@@ -1,4 +1,4 @@
-Baganator.Search = {}
+Baganator.UnifiedBags.Search = {}
 
 local function PetCheck(details)
   return details.classID == Enum.ItemClass.Battlepet or (details.classID == Enum.ItemClass.Miscellaneous and details.subClassID == Enum.ItemMiscellaneousSubclass.CompanionPet)
@@ -95,7 +95,7 @@ end
 local matches = {}
 local rejects = {}
 
-function Baganator.Search.CheckItem(details, searchString)
+function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
   local itemLink = details.itemLink
   local itemName = details.itemNameLower
 
@@ -124,12 +124,12 @@ function Baganator.Search.CheckItem(details, searchString)
   return false
 end
 
-function Baganator.Search.ClearCache()
+function Baganator.UnifiedBags.Search.ClearCache()
   matches = {}
   rejects = {}
 end
 
-function Baganator.Search.Initialize()
+function Baganator.UnifiedBags.Search.Initialize()
   for i = 0, Enum.ItemClassMeta.NumValues-1 do
     local name = GetItemClassInfo(i)
     if name then
