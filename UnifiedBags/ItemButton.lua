@@ -300,18 +300,16 @@ local function AdjustRetailButton(button, size)
   button.NormalTexture:ClearAllPoints()
   button.NormalTexture:SetPoint("CENTER", 0, -1 * scale)
 
+  if not button.SlotBackground then
+    button.SlotBackground = button:CreateTexture(nil, "BACKGROUND", nil, -1)
+    button.SlotBackground:SetAllPoints(button.icon)
+    button.SlotBackground:SetAtlas("bags-item-slot64")
+  end
+
   if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
-    button.emptyBackgroundAtlas = nil
-    if not button.BGR or button.BGR.itemLink == nil then
-      button.icon:SetAtlas(nil)
-      button.icon:Hide()
-    end
+    button.SlotBackground:Hide()
   else
-    button.emptyBackgroundAtlas = "bags-item-slot64"
-    if not button.BGR or button.BGR.itemLink == nil then
-      button.icon:Show()
-      button.icon:SetAtlas(button.emptyBackgroundAtlas)
-    end
+    button.SlotBackground:Show()
   end
 
   if button.ProfessionQualityOverlay then
