@@ -1,6 +1,6 @@
-BaganatorSummariesMixin = {}
+BaganatorItemSummariesMixin = {}
 
-function BaganatorSummariesMixin:OnLoad()
+function BaganatorItemSummariesMixin:OnLoad()
   if BAGANATOR_SUMMARIES == nil then
     BAGANATOR_SUMMARIES = {
       Version = 1,
@@ -13,13 +13,19 @@ function BaganatorSummariesMixin:OnLoad()
   Baganator.CallbackRegistry:RegisterCallback("MailCacheUpdate", self.CacheUpdate, self)
 end
 
-function BaganatorSummariesMixin:CacheUpdate(characterName)
+function BaganatorItemSummariesMixin:CacheUpdate(characterName)
   self.SV.Pending[characterName] = true
 end
 
-function BaganatorSummariesMixin:GenerateSummary(characterName)
+function BaganatorItemSummariesMixin:GenerateSummary(characterName)
   local summary = {}
   local details = BAGANATOR_DATA.Characters[characterName]
+
+  -- Edge case sometimes removed characters are leftover in the queue, so check
+  -- details exist
+  if details == nil then
+    return
+  end
 
   for _, bag in pairs(details.bags) do
     for _, item in pairs(bag) do
@@ -73,7 +79,7 @@ function BaganatorSummariesMixin:GenerateSummary(characterName)
   self.SV.ByRealm[details.details.realmNormalized][details.details.character] = summary
 end
 
-function BaganatorSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sameFaction)
+function BaganatorItemSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sameFaction)
   if next(self.SV.Pending) then
     local start = debugprofilestop()
     for character in pairs(self.SV.Pending) do

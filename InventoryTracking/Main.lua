@@ -68,11 +68,11 @@ local function SetupDataProcessing()
   Baganator.CurrencyCache = currencyCache
 end
 
-local function SetupSummaries()
+local function SetupItemSummaries()
   local summaries = CreateFrame("Frame")
-  Mixin(summaries, BaganatorSummariesMixin)
+  Mixin(summaries, BaganatorItemSummariesMixin)
   summaries:OnLoad()
-  Baganator.Summaries = summaries
+  Baganator.ItemSummaries = summaries
 end
 
 function Baganator.InitializeInventoryTracking()
@@ -84,7 +84,7 @@ function Baganator.InitializeInventoryTracking()
     InitCurrentCharacter()
     SetupDataProcessing()
   end)
-  SetupSummaries()
+  SetupItemSummaries()
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, name)
     if name == currentCharacter then
@@ -96,7 +96,7 @@ function Baganator.InitializeInventoryTracking()
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
       if tooltip == GameTooltip or tooltip == ItemRefTooltip then
         local itemName, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
-        AddToItemTooltip(tooltip, Baganator.Summaries, itemLink)
+        AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
       end
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
@@ -108,11 +108,11 @@ function Baganator.InitializeInventoryTracking()
   else
     GameTooltip:HookScript("OnTooltipSetItem", function(tooltip)
       local _, itemLink = tooltip:GetItem()
-      AddToItemTooltip(tooltip, Baganator.Summaries, itemLink)
+      AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
     end)
     ItemRefTooltip:HookScript("OnTooltipSetItem", function(tooltip)
       local _, itemLink = tooltip:GetItem()
-      AddToItemTooltip(tooltip, Baganator.Summaries, itemLink)
+      AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
     end)
     local function CurrencyTooltipHandler(tooltip, index)
       local link = C_CurrencyInfo.GetCurrencyListLink(index)
