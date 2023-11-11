@@ -25,6 +25,8 @@ function BaganatorCurrencyCacheMixin:OnEvent(eventName, ...)
       BAGANATOR_DATA.Characters[self.currentCharacter].currencies[currencyID] = quantity
 
       self:SetScript("OnUpdate", self.OnUpdate)
+    else
+      self:ScanAllCurrencies()
     end
   end
 end
