@@ -37,6 +37,8 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     mailCount = mailCount + s.mail
     seenRealms[s.realmNormalized] = true
   end
+  seenRealms[GetNormalizedRealmName() or ""] = true -- ensure realm name is shown for a different realm
+
   local realmCount = 0
   for realm in pairs(seenRealms) do
     realmCount = realmCount + 1
@@ -113,6 +115,8 @@ function Baganator.Tooltips.AddCurrencyLines(tooltip, currencyID)
     quantity = quantity + s.quantity
     seenRealms[s.realmNormalized] = true
   end
+  seenRealms[GetNormalizedRealmName() or ""] = true -- ensure realm name is shown for a different realm
+
   local realmCount = 0
   for realm in pairs(seenRealms) do
     realmCount = realmCount + 1
