@@ -90,12 +90,7 @@ function Baganator.Tooltips.AddCurrencyLines(tooltip, currencyID)
     return
   end
 
-  local summary = {}
-  for character, info in pairs(BAGANATOR_DATA.Characters) do
-    if info.currencies and info.currencies[currencyID] and info.currencies[currencyID] > 0 then
-      table.insert(summary, {character = info.details.character, realmNormalized = info.details.realmNormalized, className = info.details.className, quantity = info.currencies[currencyID]})
-    end
-  end
+  local summary = Baganator.InventoryTracking.GetCurrencyTooltipData(currencyID, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
   if Baganator.Config.Get("tooltips_sort_by_name") then
     table.sort(summary, function(a, b)

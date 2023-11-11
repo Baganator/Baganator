@@ -24,6 +24,7 @@ InventoryTracking\MailCache.lua
 InventoryTracking\CurrencyCache.lua
 InventoryTracking\ItemSummaries.lua
 InventoryTracking\Tooltips.lua
+InventoryTracking\CurrencyTooltipData.lua
 InventoryTracking\Main.lua
 
 UnifiedBags\Utilities.lua
