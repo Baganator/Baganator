@@ -1,6 +1,6 @@
 Baganator.Tooltips = {}
 
-function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
+function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   if itemLink == nil then
     return
   end
@@ -82,4 +82,65 @@ function Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
   if #tooltipInfo > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
   end
+  tooltip:Show()
+end
+
+function Baganator.Tooltips.AddCurrencyLines(tooltip, currencyID)
+  if tIndexOf(Baganator.Constants.SharedCurrencies, currencyID) ~= nil then
+    return
+  end
+
+  local summary = {}
+  for character, info in pairs(BAGANATOR_DATA.Characters) do
+    if info.currencies and info.currencies[currencyID] and info.currencies[currencyID] > 0 then
+      table.insert(summary, {character = info.details.character, realmNormalized = info.details.realmNormalized, className = info.details.className, quantity = info.currencies[currencyID]})
+    end
+  end
+
+  if Baganator.Config.Get("tooltips_sort_by_name") then
+    table.sort(summary, function(a, b)
+      if a.realmNormalized == b.realmNormalized then
+        return a.character < b.character
+      else
+        return a.realmNormalized < b.realmNormalized
+      end
+    end)
+  else
+    table.sort(summary, function(a, b)
+      return a.quantity > b.quantity
+    end)
+  end
+
+  local quantity = 0
+  local seenRealms = {}
+
+  for index, s in ipairs(summary) do
+    quantity = quantity + s.quantity
+    seenRealms[s.realmNormalized] = true
+  end
+  local realmCount = 0
+  for realm in pairs(seenRealms) do
+    realmCount = realmCount + 1
+  end
+  local appendRealm = false
+  if realmCount > 1 then
+    appendRealm = true
+  end
+
+  tooltip:AddLine(BAGANATOR_L_ALL_CHARACTERS_COLON .. " " .. WHITE_FONT_COLOR:WrapTextInColorCode(FormatLargeNumber(quantity)))
+  for index = 1, math.min(#summary, Baganator.Config.Get("tooltips_character_limit")) do
+    local s = summary[index]
+    local character = s.character
+    if appendRealm then
+      character = character .. "-" .. s.realmNormalized
+    end
+    if s.className then
+      character = RAID_CLASS_COLORS[s.className]:WrapTextInColorCode(character)
+    end
+    tooltip:AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(FormatLargeNumber(s.quantity)))
+  end
+  if #summary > Baganator.Config.Get("tooltips_character_limit") then
+    tooltip:AddLine("  ...")
+  end
+  tooltip:Show()
 end

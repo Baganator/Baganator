@@ -1,6 +1,7 @@
 -- TODO Track sent mail to alts
 BaganatorMailCacheMixin = {}
 
+-- Assumed to run after PLAYER_LOGIN
 function BaganatorMailCacheMixin:OnLoad()
   self:RegisterEvent("MAIL_INBOX_UPDATE")
 

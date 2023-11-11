@@ -16,6 +16,7 @@ Baganator.Config.Options = {
 
   INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
   SHOW_INVENTORY_TOOLTIPS = "show_inventory_tooltips",
+  SHOW_CURRENCY_TOOLTIPS = "show_currency_tooltips",
   SHOW_TOOLTIPS_ON_SHIFT = "show_tooltips_on_shift",
   TOOLTIPS_CONNECTED_REALMS_ONLY = "tooltips_connected_realms_only",
   TOOLTIPS_FACTION_ONLY = "tooltips_faction_only",
@@ -67,6 +68,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_BOA_STATUS] = false,
   [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
   [Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS] = true,
+  [Baganator.Config.Options.SHOW_CURRENCY_TOOLTIPS] = true,
   [Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
   [Baganator.Config.Options.SHOW_PAWN_ARROW] = true,
   [Baganator.Config.Options.SHOW_CIMI_ICON] = false,

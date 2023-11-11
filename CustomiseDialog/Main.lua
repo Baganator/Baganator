@@ -104,6 +104,11 @@ local TOOLTIP_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_SHOW_CURRENCY_TOOLTIPS,
+    option = "show_currency_tooltips",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_PRESS_SHIFT_TO_SHOW_TOOLTIPS,
     option = "show_tooltips_on_shift",
   },

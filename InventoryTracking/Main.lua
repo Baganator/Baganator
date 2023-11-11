@@ -1,6 +1,12 @@
-local function AddToTooltip(tooltip, summaries, itemLink)
+local function AddToItemTooltip(tooltip, summaries, itemLink)
   if Baganator.Config.Get(Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS) and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT) or IsShiftKeyDown()) then
-    Baganator.Tooltips.AddLines(tooltip, summaries, itemLink)
+    Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
+  end
+end
+
+local function AddToCurrencyTooltip(tooltip, summaries, itemLink)
+  if Baganator.Config.Get(Baganator.Config.Options.SHOW_CURRENCY_TOOLTIPS) and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT) or IsShiftKeyDown()) then
+    Baganator.Tooltips.AddCurrencyLines(tooltip, summaries, itemLink)
   end
 end
 
@@ -36,6 +42,7 @@ local function InitCurrentCharacter()
   characterData.details.className, characterData.details.class = select(2, UnitClass("player"))
   characterData.details.faction = UnitFactionGroup("player")
   characterData.mail = characterData.mail or {}
+  characterData.currencies = characterData.currencies or {}
 end
 
 local function SetupDataProcessing()
@@ -52,6 +59,13 @@ local function SetupDataProcessing()
   mailCache:SetScript("OnEvent", mailCache.OnEvent)
 
   Baganator.MailCache = mailCache
+
+  local currencyCache = CreateFrame("Frame")
+  Mixin(currencyCache, BaganatorCurrencyCacheMixin)
+  currencyCache:OnLoad()
+  currencyCache:SetScript("OnEvent", currencyCache.OnEvent)
+
+  Baganator.CurrencyCache = currencyCache
 end
 
 local function SetupSummaries()
@@ -82,17 +96,34 @@ function Baganator.InitializeInventoryTracking()
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
       if tooltip == GameTooltip or tooltip == ItemRefTooltip then
         local itemName, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
-        AddToTooltip(tooltip, Baganator.Summaries, itemLink)
+        AddToItemTooltip(tooltip, Baganator.Summaries, itemLink)
+      end
+    end)
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
+      if tooltip == GameTooltip or tooltip == ItemRefTooltip then
+        local data = tooltip:GetPrimaryTooltipData()
+        AddToCurrencyTooltip(tooltip, data.id)
       end
     end)
   else
     GameTooltip:HookScript("OnTooltipSetItem", function(tooltip)
       local _, itemLink = tooltip:GetItem()
-      AddToTooltip(tooltip, Baganator.Summaries, itemLink)
+      AddToItemTooltip(tooltip, Baganator.Summaries, itemLink)
     end)
     ItemRefTooltip:HookScript("OnTooltipSetItem", function(tooltip)
       local _, itemLink = tooltip:GetItem()
-      AddToTooltip(tooltip, Baganator.Summaries, itemLink)
+      AddToItemTooltip(tooltip, Baganator.Summaries, itemLink)
     end)
+    local function CurrencyTooltipHandler(tooltip, index)
+      local link = C_CurrencyInfo.GetCurrencyListLink(index)
+      if link ~= nil then
+        local currencyID = tonumber((link:match("|Hcurrency:(%d+)")))
+        if currencyID ~= nil then
+          AddToCurrencyTooltip(tooltip, currencyID)
+        end
+      end
+    end
+    hooksecurefunc(GameTooltip, "SetCurrencyToken", CurrencyTooltipHandler)
+    hooksecurefunc(ItemRefTooltip, "SetCurrencyToken", CurrencyTooltipHandler)
   end
 end

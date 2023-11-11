@@ -52,6 +52,7 @@ Baganator.Constants.Events = {
 
   "BagCacheUpdate",
   "MailCacheUpdate",
+  "CurrencyCacheUpdate",
 
   "SearchTextChanged",
   "BagShow",
@@ -63,4 +64,9 @@ Baganator.Constants.Events = {
 
   "ReagentOnEnter",
   "ReagentOnLeave",
+}
+
+-- Hidden currencies for all characters tooltips as they are shared between characters
+Baganator.Constants.SharedCurrencies = {
+  2032, -- Trader's Tender
 }
