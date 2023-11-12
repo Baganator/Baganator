@@ -2,25 +2,18 @@ BaganatorCurrencyCacheMixin = {}
 
 -- Assumed to run after PLAYER_LOGIN
 function BaganatorCurrencyCacheMixin:OnLoad()
-  if Baganator.Constants.IsEra then
-    return
-  end
-
-  FrameUtil.RegisterFrameForEvents(self, {
-    "CURRENCY_DISPLAY_UPDATE",
-
-    -- Gold tracking
-    "PLAYER_MONEY",
-  })
+  self:RegisterEvent("PLAYER_MONEY")
 
   local characterName, realm = UnitFullName("player")
   self.currentCharacter = characterName .. "-" .. realm
 
-  self.waiting = {}
-
-  self:ScanAllCurrencies()
-
   BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
+
+  if not Baganator.Constants.IsEra then
+    -- no currencies available on era
+    self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+    self:ScanAllCurrencies()
+  end
 end
 
 function BaganatorCurrencyCacheMixin:OnEvent(eventName, ...)
