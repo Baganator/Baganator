@@ -1,5 +1,13 @@
 Baganator.Tooltips = {}
 
+local function CharacterAndRealmComparator(a, b)
+  if a.realmNormalized == b.realmNormalized then
+    return a.character < b.character
+  else
+    return a.realmNormalized < b.realmNormalized
+  end
+end
+
 function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   if itemLink == nil then
     return
@@ -10,16 +18,16 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   local tooltipInfo = summaries:GetTooltipInfo(key, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
   if Baganator.Config.Get("tooltips_sort_by_name") then
-    table.sort(tooltipInfo, function(a, b)
-      if a.realmNormalized == b.realmNormalized then
-        return a.character < b.character
-      else
-        return a.realmNormalized < b.realmNormalized
-      end
-    end)
+    table.sort(tooltipInfo, CharacterAndRealmComparator)
   else
     table.sort(tooltipInfo, function(a, b)
-      return a.bags + a.bank + a.mail > b.bags + b.bank + b.mail
+      local left = a.bags + a.bank + a.mail
+      local right = b.bags + b.bank + b.mail
+      if left == right then
+        return a.character < b.character
+      else
+        return left > right
+      end
     end)
   end
 
@@ -95,16 +103,14 @@ function Baganator.Tooltips.AddCurrencyLines(tooltip, currencyID)
   local summary = Baganator.InventoryTracking.GetCurrencyTooltipData(currencyID, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
   if Baganator.Config.Get("tooltips_sort_by_name") then
-    table.sort(summary, function(a, b)
-      if a.realmNormalized == b.realmNormalized then
-        return a.character < b.character
-      else
-        return a.realmNormalized < b.realmNormalized
-      end
-    end)
+    table.sort(tooltipInfo, CharacterAndRealmComparator)
   else
     table.sort(summary, function(a, b)
-      return a.quantity > b.quantity
+      if a.quantity == b.quantity then
+        return CharacterAndRealmComparator(a, b)
+      else
+        return a.quantity > b.quantity
+      end
     end)
   end
 
