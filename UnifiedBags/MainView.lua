@@ -43,8 +43,7 @@ function BaganatorMainViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
-    self:SetLiveCharacter(character)
-    if self:IsShown() and self.lastCharacter then
+    if self:IsShown() and self.isLive then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
@@ -328,6 +327,7 @@ function BaganatorMainViewMixin:NotifyBagUpdate(updatedBags)
   self.BankLive:MarkBagsPending("bank", updatedBags)
   self.ReagentBankLive:MarkBagsPending("bank", updatedBags)
 
+  -- Update cached views with current items when bank closed or on login
   if self.isLive == nil or self.isLive == true then
     self.BagCached:MarkBagsPending("bags", updatedBags)
     self.ReagentBagCached:MarkBagsPending("bags", updatedBags)
