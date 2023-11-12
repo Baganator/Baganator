@@ -8,6 +8,9 @@ function BaganatorCurrencyCacheMixin:OnLoad()
 
   FrameUtil.RegisterFrameForEvents(self, {
     "CURRENCY_DISPLAY_UPDATE",
+
+    -- Gold tracking
+    "PLAYER_MONEY",
   })
 
   local characterName, realm = UnitFullName("player")
@@ -16,6 +19,8 @@ function BaganatorCurrencyCacheMixin:OnLoad()
   self.waiting = {}
 
   self:ScanAllCurrencies()
+
+  BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
 end
 
 function BaganatorCurrencyCacheMixin:OnEvent(eventName, ...)
@@ -28,6 +33,9 @@ function BaganatorCurrencyCacheMixin:OnEvent(eventName, ...)
     else
       self:ScanAllCurrencies()
     end
+  elseif eventName == "PLAYER_MONEY" then
+    BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
+    Baganator.CallbackRegistry:TriggerEvent("CurrencyCacheUpdate", self.currentCharacter)
   end
 end
 

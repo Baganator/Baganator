@@ -28,10 +28,6 @@ function BaganatorBagCacheMixin:OnLoad()
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
     "PLAYERBANKSLOTS_CHANGED",
-
-    -- Gold tracking
-    "PLAYER_MONEY",
-
   })
   if not Baganator.Constants.IsClassic then
     -- Bank items reagent bank updating
@@ -41,8 +37,6 @@ function BaganatorBagCacheMixin:OnLoad()
 
   local characterName, realm = UnitFullName("player")
   self.currentCharacter = characterName .. "-" .. realm
-
-  BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
 
   self:SetupPending()
 
@@ -110,9 +104,6 @@ function BaganatorBagCacheMixin:OnEvent(eventName, ...)
     self:QueueCaching()
   elseif eventName == "BANKFRAME_CLOSED" then
     self.bankOpen = false
-  elseif eventName == "PLAYER_MONEY" then
-    BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
-    Baganator.CallbackRegistry:TriggerEvent("BagCacheUpdate", self.currentCharacter, GetEmptyPending())
   end
 end
 

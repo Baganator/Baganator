@@ -42,6 +42,13 @@ function BaganatorMainViewMixin:OnLoad()
     end
   end)
 
+  Baganator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
+    self:SetLiveCharacter(character)
+    if self:IsShown() and self.lastCharacter then
+      self:UpdateForCharacter(self.lastCharacter, self.isLive)
+    end
+  end)
+
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     self.settingChanged = true
     if not self.lastCharacter then
