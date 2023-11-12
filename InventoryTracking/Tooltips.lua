@@ -24,7 +24,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
       local left = a.bags + a.bank + a.mail
       local right = b.bags + b.bank + b.mail
       if left == right then
-        return a.character < b.character
+        return CharacterAndRealmComparator(a, b)
       else
         return left > right
       end
@@ -103,7 +103,7 @@ function Baganator.Tooltips.AddCurrencyLines(tooltip, currencyID)
   local summary = Baganator.InventoryTracking.GetCurrencyTooltipData(currencyID, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
   if Baganator.Config.Get("tooltips_sort_by_name") then
-    table.sort(tooltipInfo, CharacterAndRealmComparator)
+    table.sort(summary, CharacterAndRealmComparator)
   else
     table.sort(summary, function(a, b)
       if a.quantity == b.quantity then
