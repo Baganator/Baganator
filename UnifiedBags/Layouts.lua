@@ -31,6 +31,7 @@ BaganatorCachedBagLayoutMixin = {}
 local ReflowSettings = {
   Baganator.Config.Options.BAG_ICON_SIZE,
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
+  Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
   Baganator.Config.Options.ICON_TOP_LEFT_CORNER,
   Baganator.Config.Options.ICON_TOP_RIGHT_CORNER,
@@ -48,6 +49,32 @@ local RefreshContentSettings = {
 }
 
 local classicCachedObjectCounter = 0
+
+local function FlowButtons(self, rowWidth)
+  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  local rows, cols = 0, 0
+  if Baganator.Config.Get(Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP) then
+    cols = rowWidth - #self.buttons%rowWidth
+    if cols == rowWidth then
+      cols = 0
+    end
+  end
+  for _, button in ipairs(self.buttons) do
+    button:SetPoint("TOPLEFT", self, cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding * 2))
+    button:SetSize(iconSize, iconSize)
+    button:UpdateTextures(iconSize)
+    MasqueRegistration(button)
+    cols = cols + 1
+    if cols >= rowWidth then
+      cols = 0
+      rows = rows + 1
+    end
+  end
+
+  self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding * 2 + iconSize) * ((cols > 0 and (rows + 1) or rows)))
+  self.oldRowWidth = rowWidth
+end
 
 function BaganatorCachedBagLayoutMixin:OnLoad()
   if Baganator.Constants.IsRetail then
@@ -112,27 +139,7 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
     end
   end
 
-  self:FlowButtons(rowWidth)
-end
-
-function BaganatorCachedBagLayoutMixin:FlowButtons(rowWidth)
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
-
-  local rows, cols = 0, 0
-  for _, button in ipairs(self.buttons) do
-    button:SetPoint("TOPLEFT", self, cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding * 2))
-    button:SetSize(iconSize, iconSize)
-    button:UpdateTextures(iconSize)
-    MasqueRegistration(button)
-    cols = cols + 1
-    if cols >= rowWidth then
-      cols = 0
-      rows = rows + 1
-    end
-  end
-
-  self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding * 2 + iconSize) * ((cols > 0 and (rows + 1) or rows)))
-  self.oldRowWidth = rowWidth
+  FlowButtons(self, rowWidth)
 end
 
 function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes, indexesToUse, rowWidth)
@@ -164,7 +171,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
     end
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
-    self:FlowButtons(rowWidth)
+    FlowButtons(self, rowWidth)
   end
 
   if self.refreshContent then
@@ -293,26 +300,6 @@ function BaganatorLiveBagLayoutMixin:UpdateLockForItem(bagID, slotID)
   end
 end
 
-function BaganatorLiveBagLayoutMixin:FlowButtons(rowWidth)
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
-
-  local rows, cols = 0, 0
-  for _, button in ipairs(self.buttons) do
-    button:SetPoint("TOPLEFT", self, cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding * 2))
-    button:SetSize(iconSize, iconSize)
-    button:UpdateTextures(iconSize)
-    MasqueRegistration(button)
-    cols = cols + 1
-    if cols >= rowWidth then
-      cols = 0
-      rows = rows + 1
-    end
-  end
-
-  self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding * 2 + iconSize) * ((cols > 0 and (rows + 1) or rows)))
-  self.oldRowWidth = rowWidth
-end
-
 function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWidth)
   self.buttonPool:ReleaseAll()
   local indexFrames = {}
@@ -340,7 +327,7 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
     end
   end
 
-  self:FlowButtons(rowWidth)
+  FlowButtons(self, rowWidth)
 end
 
 function BaganatorLiveBagLayoutMixin:CompareButtonIndexes(indexes, indexesToUse)
@@ -384,7 +371,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
     end
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
-    self:FlowButtons(rowWidth)
+    FlowButtons(self, rowWidth)
   end
 
   if self.refreshContent then

@@ -25,6 +25,11 @@ local WINDOW_OPTIONS = {
     option = "show_recents_tabs_main_view",
   },
   {
+    type = "checkbox",
+    text = BAGANATOR_L_PLACE_SPACE_EMPTY_OF_SLOTS_AT_TOP,
+    option = "bag_empty_space_at_top",
+  },
+  {
     type = "slider",
     min = 1,
     max = 100,

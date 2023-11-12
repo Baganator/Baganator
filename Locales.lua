@@ -49,6 +49,7 @@ L["QUANTITY"] = "Quantity"
 L["ICON_CORNERS"] = "Icon Corners"
 L["PAWN"] = "Pawn"
 L["CAN_I_MOG_IT"] = "Can I Mog It"
+L["PLACE_SPACE_EMPTY_OF_SLOTS_AT_TOP"] = "Place bag space empty of slots at the top"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X"] = "Bags: %s"

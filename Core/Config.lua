@@ -11,6 +11,7 @@ Baganator.Config.Options = {
   SHOW_REAGENTS = "show_reagents",
   SHOW_SORT_BUTTON = "show_sort_button",
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
+  BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
@@ -87,6 +88,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.AUTO_OPEN] = {},
   [Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
+  [Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = false,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
@@ -117,6 +119,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.ICON_TOP_RIGHT_CORNER,
   Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER,
   Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER,
+  Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
 }
 
 function Baganator.Config.IsValidOption(name)
