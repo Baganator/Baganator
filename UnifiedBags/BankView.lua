@@ -61,7 +61,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   end
 
   self.bankBagSlots = {}
-  for index = 1, Baganator.Constants.BankBagsCount do
+  for index = 1, Baganator.Constants.BankBagSlotsCount do
     local bb = GetBankBagButton()
     table.insert(self.bankBagSlots, bb)
     bb:SetID(index)

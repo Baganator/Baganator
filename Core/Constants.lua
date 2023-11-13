@@ -25,7 +25,7 @@ Baganator.Constants = {
   MaxRecents = 4,
   BattlePetCageID = 82800,
 
-  BankBagsCount = 7,
+  BankBagSlotsCount = 7,
 }
 
 if Baganator.Constants.IsWrath then
@@ -38,7 +38,7 @@ if Baganator.Constants.IsRetail then
 end
 if Baganator.Constants.IsClassic then
   -- Workaround for the enum containing the wrong values for the bank bag slots
-  for i = 1, Baganator.Constants.BankBagsCount do
+  for i = 1, Baganator.Constants.BankBagSlotsCount do
     Baganator.Constants.AllBankIndexes[i + 1] = NUM_BAG_SLOTS + i
   end
   Baganator.Constants.BagSlotsCount = 4
