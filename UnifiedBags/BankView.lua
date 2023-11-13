@@ -18,6 +18,9 @@ function BaganatorBankOnlyViewMixin:OnLoad()
       Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
     end
   end)
+  self.SearchBox.clearButton:SetScript("OnClick", function()
+    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  end)
 
   Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
