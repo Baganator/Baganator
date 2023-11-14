@@ -1,10 +1,7 @@
 function Baganator.ShowGoldSummaryRealm(anchor, point)
   GameTooltip:SetOwner(anchor, point)
 
-  local connectedRealms = GetAutoCompleteRealms()
-  if #connectedRealms == 0 then
-    connectedRealms = {GetNormalizedRealmName()}
-  end
+  local connectedRealms = Baganator.Utilities.GetConnectedRealms()
   local realmsToInclude = {}
   for _, r in ipairs(connectedRealms) do
     realmsToInclude[r] = true

@@ -15,35 +15,12 @@ function BaganatorMailCacheMixin:OnEvent(eventName, ...)
   end
 end
 
-
--- Order of parameters for the battle pet hyperlink string
-local battlePetTooltip = {
-  "battlePetSpeciesID",
-  "battlePetLevel",
-  "battlePetBreedQuality",
-  "battlePetMaxHealth",
-  "battlePetPower",
-  "battlePetSpeed",
-}
 -- Convert an attachment to a battle pet link as by default only the cage item
 -- is supplied on the attachment link, missing all the battle pet stats (retail
 -- only)
 local function ExtractBattlePetLink(mailIndex, attachmentIndex)
   local tooltipInfo = C_TooltipInfo.GetInboxItem(mailIndex, attachmentIndex)
-  if tooltipInfo then
-    TooltipUtil.SurfaceArgs(tooltipInfo)
-
-    local itemString = "battlepet"
-    for _, key in ipairs(battlePetTooltip) do
-      itemString = itemString .. ":" .. tooltipInfo[key]
-    end
-
-    local name = C_PetJournal.GetPetInfoBySpeciesID(tooltipInfo.battlePetSpeciesID)
-    local quality = ITEM_QUALITY_COLORS[tooltipInfo.battlePetBreedQuality].color
-    return quality:WrapTextInColorCode("|H" .. itemString .. "|h[" .. name .. "]|h")
-  else
-    print("miss")
-  end
+  return Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
 end
 
 function BaganatorMailCacheMixin:OnUpdate()

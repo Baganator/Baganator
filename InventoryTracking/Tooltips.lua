@@ -8,6 +8,14 @@ local function CharacterAndRealmComparator(a, b)
   end
 end
 
+local function GuildAndRealmComparator(a, b)
+  if a.realmNormalized == b.realmNormalized then
+    return a.guild < g.cuild
+  else
+    return a.realmNormalized < b.realmNormalized
+  end
+end
+
 function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   if itemLink == nil then
     return
@@ -18,9 +26,10 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   local tooltipInfo = summaries:GetTooltipInfo(key, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
   if Baganator.Config.Get("tooltips_sort_by_name") then
-    table.sort(tooltipInfo, CharacterAndRealmComparator)
+    table.sort(tooltipInfo.characters, CharacterAndRealmComparator)
+    table.sort(tooltipInfo.guilds, GuildAndRealmComparator)
   else
-    table.sort(tooltipInfo, function(a, b)
+    table.sort(tooltipInfo.characters, function(a, b)
       local left = a.bags + a.bank + a.mail
       local right = b.bags + b.bank + b.mail
       if left == right then
@@ -29,20 +38,31 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
         return left > right
       end
     end)
+    table.sort(tooltipInfo.guilds, function(a, b)
+      if a.bank == b.bank then
+        return GuildAndRealmComparator(a, b)
+      else
+        return a.bank > b.bank
+      end
+    end)
   end
 
-  if #tooltipInfo == 0 then
+  if #tooltipInfo.characters == 0 and #tooltipInfo.guilds == 0 then
     return
   end
 
   local result = "  "
-  local bagCount, bankCount, mailCount = 0, 0, 0
+  local bagCount, bankCount, mailCount, guildCount = 0, 0, 0, 0
   local seenRealms = {}
 
-  for index, s in ipairs(tooltipInfo) do
+  for index, s in ipairs(tooltipInfo.characters) do
     bagCount = bagCount + s.bags
     bankCount = bankCount + s.bank
     mailCount = mailCount + s.mail
+    seenRealms[s.realmNormalized] = true
+  end
+  for index, s in ipairs(tooltipInfo.guilds) do
+    guildCount = guildCount + s.bank
     seenRealms[s.realmNormalized] = true
   end
   seenRealms[GetNormalizedRealmName() or ""] = true -- ensure realm name is shown for a different realm
@@ -66,10 +86,13 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   if mailCount > 0 then
     table.insert(entries, BAGANATOR_L_MAILS_X:format(mailCount))
   end
+  if guildCount > 0 then
+    table.insert(entries, BAGANATOR_L_GUILDS_X:format(guildCount))
+  end
   tooltip:AddLine(BAGANATOR_L_INVENTORY_TOTALS_COLON .. " " .. WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
 
-  for index = 1, math.min(#tooltipInfo, Baganator.Config.Get("tooltips_character_limit")) do
-    local s = tooltipInfo[index]
+  for index = 1, math.min(#tooltipInfo.characters, Baganator.Config.Get("tooltips_character_limit")) do
+    local s = tooltipInfo.characters[index]
     local entries = {}
     if s.bags > 0 then
       table.insert(entries, BAGANATOR_L_BAGS_X:format(s.bags))
@@ -90,6 +113,19 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     tooltip:AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
   end
   if #tooltipInfo > Baganator.Config.Get("tooltips_character_limit") then
+    tooltip:AddLine("  ...")
+  end
+
+  for index = 1, math.min(#tooltipInfo.guilds, Baganator.Config.Get("tooltips_character_limit")) do
+    local s = tooltipInfo.guilds[index]
+    local output = BAGANATOR_L_GUILD_X:format(s.bank)
+    local guild = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(s.guild)
+    if appendRealm then
+      guild = guild .. "-" .. s.realmNormalized
+    end
+    tooltip:AddDoubleLine("  " .. guild, WHITE_FONT_COLOR:WrapTextInColorCode(output))
+  end
+  if #tooltipInfo.guilds > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
   end
   tooltip:Show()

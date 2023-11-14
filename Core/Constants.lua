@@ -26,6 +26,8 @@ Baganator.Constants = {
   BattlePetCageID = 82800,
 
   BankBagSlotsCount = 7,
+
+  MaxGuildBankTabItemSlots = 98,
 }
 
 if Baganator.Constants.IsWrath then
@@ -55,6 +57,7 @@ Baganator.Constants.Events = {
   "BagCacheUpdate",
   "MailCacheUpdate",
   "CurrencyCacheUpdate",
+  "GuildCacheUpdate",
 
   "SearchTextChanged",
   "BagShow",

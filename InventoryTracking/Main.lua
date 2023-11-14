@@ -66,6 +66,13 @@ local function SetupDataProcessing()
   currencyCache:SetScript("OnEvent", currencyCache.OnEvent)
 
   Baganator.CurrencyCache = currencyCache
+
+  local guildCache = CreateFrame("Frame")
+  Mixin(guildCache, BaganatorGuildCacheMixin)
+  guildCache:OnLoad()
+  guildCache:SetScript("OnEvent", guildCache.OnEvent)
+
+  Baganator.GuildCache = guildCache
 end
 
 local function SetupItemSummaries()
@@ -96,6 +103,14 @@ function Baganator.InventoryTracking.Initialize()
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
       if tooltip == GameTooltip or tooltip == ItemRefTooltip then
         local itemName, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
+
+        -- Fix to get recipes to show the inventory data for the recipe when
+        -- tooltip shown as via a hyperlink
+        local info = tooltip.processingInfo
+        if info and info.getterName == "GetHyperlink" then
+          itemLink = info.getterArgs[1]
+        end
+
         AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
       end
     end)

@@ -1,11 +1,7 @@
 function Baganator.InventoryTracking.GetCurrencyTooltipData(currencyID, sameConnectedRealm, sameFaction)
   local matchingRealms
   if sameConnectedRealm then
-    local realms = {}
-    realms = GetAutoCompleteRealms()
-    if #realms == 0 then
-      realms = {GetNormalizedRealmName()}
-    end
+    local realms = Baganator.Utilities.GetConnectedRealms()
 
     matchingRealms = {}
     for _, r in ipairs(realms) do

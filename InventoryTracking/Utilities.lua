@@ -67,3 +67,38 @@ function Baganator.Utilities.GetItemKey(itemLink)
     return "i:" .. GetItemInfoInstant(itemLink)
   end
 end
+
+-- Order of parameters for the battle pet hyperlink string
+local battlePetTooltip = {
+  "battlePetSpeciesID",
+  "battlePetLevel",
+  "battlePetBreedQuality",
+  "battlePetMaxHealth",
+  "battlePetPower",
+  "battlePetSpeed",
+}
+
+function Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
+  if not tooltipInfo then
+    print("miss")
+    return
+  end
+
+  local itemString = "battlepet"
+  for _, key in ipairs(battlePetTooltip) do
+    itemString = itemString .. ":" .. tooltipInfo[key]
+  end
+
+  local name = C_PetJournal.GetPetInfoBySpeciesID(tooltipInfo.battlePetSpeciesID)
+  local quality = ITEM_QUALITY_COLORS[tooltipInfo.battlePetBreedQuality].color
+  return quality:WrapTextInColorCode("|H" .. itemString .. "|h[" .. name .. "]|h")
+end
+
+function Baganator.Utilities.GetConnectedRealms()
+  local realms = GetAutoCompleteRealms()
+  if #realms == 0 then
+    realms = {GetNormalizedRealmName()}
+  end
+
+  return realms
+end
