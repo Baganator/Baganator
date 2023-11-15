@@ -430,11 +430,17 @@ end
 function BaganatorRetailLiveItemButtonMixin:UpdateTextures(size)
   AdjustRetailButton(self, size)
 
-  local s2 = 64/37 * size
+  local s2 = 64 * size/37
   if self.IconQuestTexture then
     self.IconQuestTexture:SetSize(size, size)
     self.ExtendedSlot:SetSize(s2, s2)
   end
+
+  -- Uses in-game determined atlas sizes
+  local s3 = 39 * size/37
+  self.NewItemTexture:SetSize(s3, s3)
+  local s4 = 90 * size/37
+  self.flash:SetSize(s4, s4)
 end
 
 function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
