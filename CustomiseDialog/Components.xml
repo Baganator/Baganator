@@ -1,0 +1,19 @@
+<Ui>
+  <Button name="BaganatorRetailTabTopTemplate" virtual="true" inherits="PanelTopTabButtonTemplate">
+    <Scripts>
+      <OnShow>
+        PanelTemplates_TabResize(self, 30, nil, 20)
+        PanelTemplates_DeselectTab(self)
+      </OnShow>
+    </Scripts>
+  </Button>
+
+  <Button name="BaganatorClassicTabTopTemplate" virtual="true" inherits="TabButtonTemplate">
+    <Scripts>
+      <OnShow>
+        PanelTemplates_TabResize(self, 30, nil, 20)
+        PanelTemplates_DeselectTab(self)
+      </OnShow>
+    </Scripts>
+  </Button>
+</Ui>

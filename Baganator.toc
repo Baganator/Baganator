@@ -47,6 +47,7 @@ UnifiedBags\OpenClose.lua
 UnifiedBags\Main.lua
 
 CustomiseDialog\Components.lua
+CustomiseDialog\Components.xml
 CustomiseDialog\Main.lua
 CustomiseDialog\Main.xml
 CustomiseDialog\Initialize.lua
