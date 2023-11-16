@@ -30,11 +30,13 @@ Baganator.Constants = {
 
 if Baganator.Constants.IsWrath then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.Keyring)
+  Baganator.Constants.MaxBagSize = 36
 end
 if Baganator.Constants.IsRetail then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.ReagentBag)
   table.insert(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)
   Baganator.Constants.BagSlotsCount = 5
+  Baganator.Constants.MaxBagSize = 42
 end
 if Baganator.Constants.IsClassic then
   -- Workaround for the enum containing the wrong values for the bank bag slots

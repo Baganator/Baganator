@@ -232,6 +232,7 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
       return CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicLiveItemButtonTemplate")
     end, FramePool_HideAndClearAnchors)
   end
+
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByBag = {}
@@ -240,6 +241,18 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
   self.prevState = {}
 
   self:RegisterEvent("ITEM_LOCK_CHANGED")
+end
+
+function BaganatorLiveBagLayoutMixin:PreallocateButtons(buttonCount)
+  -- Avoid allocating during combat
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LOGIN")
+  frame:SetScript("OnEvent", function()
+    for i = 1, buttonCount do
+      self.buttonPool:Acquire()
+    end
+    self.buttonPool:ReleaseAll()
+  end)
 end
 
 function BaganatorLiveBagLayoutMixin:UpdateCooldowns()
