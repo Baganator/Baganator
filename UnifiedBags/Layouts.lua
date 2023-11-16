@@ -117,6 +117,9 @@ function BaganatorCachedBagLayoutMixin:MarkBagsPending(section, updatedWaiting)
 end
 
 function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesToUse, rowWidth)
+  if self.pendingAllocations then
+    error("Bag buttons not pre-allocated")
+  end
   self.buttons = {}
   self.buttonsByBag = {}
   self.buttonPool:ReleaseAll()
@@ -244,10 +247,12 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
 end
 
 function BaganatorLiveBagLayoutMixin:PreallocateButtons(buttonCount)
+  self.pendingAllocations = true
   -- Avoid allocating during combat
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("PLAYER_LOGIN")
   frame:SetScript("OnEvent", function()
+    self.pendingAllocations = false
     for i = 1, buttonCount do
       self.buttonPool:Acquire()
     end
