@@ -112,15 +112,17 @@ function BaganatorItemSummariesMixin:GenerateGuildSummary(guildName)
   end
 
   for _, tab in pairs(details.bank) do
-    for _, item in pairs(tab.slots) do
-      if item.itemLink then
-        local key = Baganator.Utilities.GetItemKey(item.itemLink)
-        if not summary[key] then
-          summary[key] = {
-            bank = 0,
-          }
+    if tab.fullAccess then
+      for _, item in pairs(tab.slots) do
+        if item.itemLink then
+          local key = Baganator.Utilities.GetItemKey(item.itemLink)
+          if not summary[key] then
+            summary[key] = {
+              bank = 0,
+            }
+          end
+          summary[key].bank = summary[key].bank + item.itemCount
         end
-        summary[key].bank = summary[key].bank + item.itemCount
       end
     end
   end

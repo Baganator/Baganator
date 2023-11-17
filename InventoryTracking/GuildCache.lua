@@ -75,7 +75,7 @@ function BaganatorGuildCacheMixin:ScanBank()
   end
 
   for tabIndex = 1, numTabs do
-    local name, icon, isViewable = GetGuildBankTabInfo(tabIndex)
+    local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals = GetGuildBankTabInfo(tabIndex)
     if data.bank[tabIndex] == nil then
       data.bank[tabIndex] = {
         slots = {}
@@ -85,6 +85,9 @@ function BaganatorGuildCacheMixin:ScanBank()
     tab.isViewable = isViewable
     tab.name = name
     tab.iconTexture = icon
+    -- Used to avoid showing guild bank tab contents in tooltips if you can't
+    -- use it
+    tab.fullAccess = (numWithdrawals == -1 or numWithdrawals >= Baganator.Constants.GuildBankFullAccessWithdrawalsLimit)
   end
 
   local tabIndex = GetCurrentGuildBankTab()

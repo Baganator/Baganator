@@ -28,6 +28,7 @@ Baganator.Constants = {
   BankBagSlotsCount = 7,
 
   MaxGuildBankTabItemSlots = 98,
+  GuildBankFullAccessWithdrawalsLimit = 25000,
 }
 
 if Baganator.Constants.IsWrath then
