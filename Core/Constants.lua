@@ -30,7 +30,6 @@ Baganator.Constants = {
 
 if Baganator.Constants.IsWrath then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.Keyring)
-  Baganator.Constants.MaxBagSize = 36
 end
 if Baganator.Constants.IsRetail then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.ReagentBag)
@@ -44,6 +43,7 @@ if Baganator.Constants.IsClassic then
     Baganator.Constants.AllBankIndexes[i + 1] = NUM_BAG_SLOTS + i
   end
   Baganator.Constants.BagSlotsCount = 4
+  Baganator.Constants.MaxBagSize = 36
 end
 
 Baganator.Constants.Events = {
