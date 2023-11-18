@@ -105,10 +105,13 @@ function Baganator.InventoryTracking.Initialize()
         local itemName, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
 
         -- Fix to get recipes to show the inventory data for the recipe when
-        -- tooltip shown as via a hyperlink
+        -- tooltip shown via a hyperlink
         local info = tooltip.processingInfo
         if info and info.getterName == "GetHyperlink" then
-          itemLink = info.getterArgs[1]
+          local _, newItemLink = GetItemInfo(info.getterArgs[1])
+          if newItemLink ~= nil then
+            itemLink = newItemLink
+          end
         end
 
         AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
