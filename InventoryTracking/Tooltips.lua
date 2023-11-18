@@ -10,7 +10,7 @@ end
 
 local function GuildAndRealmComparator(a, b)
   if a.realmNormalized == b.realmNormalized then
-    return a.guild < g.cuild
+    return a.guild < b.guild
   else
     return a.realmNormalized < b.realmNormalized
   end
