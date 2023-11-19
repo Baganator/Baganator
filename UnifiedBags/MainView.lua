@@ -472,6 +472,10 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     height = math.max(bankHeight, height)
     activeBank:SetPoint("TOPLEFT", 13, - (height - bankHeight)/2 - 50)
   end
+  self.BankMissingHint:SetShown(self.viewBankShown and #activeBank.buttons == 0)
+  if self.BankMissingHint:IsShown() then
+    self.BankMissingHint:SetText(BAGANATOR_L_BANK_DATA_MISSING_HINT:format(characterData.details.character))
+  end
 
   self.Tabs[1]:SetPoint("LEFT", activeBag, "LEFT")
 
