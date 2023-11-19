@@ -84,7 +84,6 @@ function BaganatorCurrencyCacheMixin:ScanAllCurrencies()
 
     if #toCollapse > 0 then
       for index = #toCollapse, 1 do
-        print(toCollapse[index], index)
         ExpandCurrencyList(toCollapse[index], 0)
       end
     end
