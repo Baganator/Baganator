@@ -26,6 +26,7 @@ local function IsBindOnAccount(itemLink)
 end
 
 local itemCallbacks = {}
+local iconSettings = {}
 
 local registered = false
 function Baganator.ItemButtonUtil.UpdateSettings()
@@ -36,6 +37,10 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     end)
   end
   itemCallbacks = {}
+
+  iconSettings = {
+    markJunk = Baganator.Config.Get("icon_grey_junk"),
+  }
 
   local useQualityColors = Baganator.Config.Get("icon_text_quality_colors")
   if Baganator.Config.Get("show_item_level") then
@@ -186,6 +191,9 @@ local function SetStaticInfo(self, details)
   if self.CanIMogItOverlay then
     self.CanIMogItOverlay:Hide()
   end
+
+  self.JunkIcon:SetShown(details.quality == Enum.ItemQuality.Poor)
+  self.icon:SetDesaturated(iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor)
 end
 
 local function SearchCheck(self, text)
@@ -677,11 +685,6 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
 
-  SetStaticInfo(self, cacheData)
-  if cacheData.iconTexture ~= nil then
-    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData)
-  end
-
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()
   
@@ -729,6 +732,12 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   end
   
   self.searchOverlay:SetShown(false);
+
+  -- Back to Baganator stuff:
+  SetStaticInfo(self, cacheData)
+  if cacheData.iconTexture ~= nil then
+    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData)
+  end
 end
 
 function BaganatorClassicLiveItemButtonMixin:ClearNewItem()

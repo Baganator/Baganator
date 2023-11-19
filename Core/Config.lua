@@ -35,6 +35,7 @@ Baganator.Config.Options = {
   ICON_TOP_RIGHT_CORNER = "icon_top_right_corner",
   ICON_BOTTOM_LEFT_CORNER = "icon_bottom_left_corner",
   ICON_BOTTOM_RIGHT_CORNER = "icon_bottom_right_corner",
+  ICON_GREY_JUNK = "icon_grey_junk",
 
   SHOW_PAWN_ARROW = "show_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
@@ -85,6 +86,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_TOP_RIGHT_CORNER] = "none",
   [Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER] = "none",
   [Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER] = "quantity",
+  [Baganator.Config.Options.ICON_GREY_JUNK] = false,
   [Baganator.Config.Options.AUTO_OPEN] = {},
   [Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
@@ -120,6 +122,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER,
   Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER,
   Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
+  Baganator.Config.Options.ICON_GREY_JUNK,
 }
 
 function Baganator.Config.IsValidOption(name)

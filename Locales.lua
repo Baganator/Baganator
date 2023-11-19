@@ -89,6 +89,7 @@ L["ONLY_USE_SAME_CONNECTED_REALMS"] = "Only use same connected realms for invent
 L["ONLY_USE_SAME_FACTION_CHARACTERS"] = "Only use same faction characters for inventory"
 L["X_CHARACTERS_SHOWN"] = "%s Characters Shown"
 L["SORT_BY_CHARACTER_NAME"] = "Sort by character name"
+L["ICON_GREY_JUNK_ITEMS"] = "Mark junk items by greying out the icon"
 
 L["REALM_WIDE_GOLD_X"] = "Realm-wide gold: %s"
 L["ACCOUNT_GOLD_X"] = "Account gold: %s"

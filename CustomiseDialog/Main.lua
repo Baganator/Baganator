@@ -77,6 +77,11 @@ local ICON_OPTIONS = {
     option = "icon_text_quality_colors",
   },
   {
+    type = "checkbox",
+    text = BAGANATOR_L_ICON_GREY_JUNK_ITEMS,
+    option = "icon_grey_junk",
+  },
+  {
     type = "slider",
     min = 10,
     max = 70,
