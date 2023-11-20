@@ -15,12 +15,6 @@ local WINDOW_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SHOW_SORT_BUTTON,
-    option = "show_sort_button",
-    check = function() return Baganator.Constants.IsRetail or IsAddOnLoaded("SortBags") end,
-  },
-  {
-    type = "checkbox",
     text = BAGANATOR_L_CUSTOMISE_SHOW_TABS,
     option = "show_recents_tabs_main_view",
   },
@@ -207,6 +201,13 @@ local OPEN_CLOSE_OPTIONS = {
     check = function() return not Baganator.Constants.IsEra end,
   },
 }
+local SORTING_OPTIONS = {
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_SORT_BUTTON,
+    option = "show_sort_button_2",
+  },
+}
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
   return a.text < b.text
@@ -303,6 +304,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:SetupIcon()
   self:SetupTooltip()
   self:SetupOpenClose()
+  self:SetupSorting()
 
   PanelTemplates_SetNumTabs(self, #self.Tabs)
 
@@ -514,6 +516,48 @@ function BaganatorCustomiseDialogMixin:SetupOpenClose()
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       frame:SetValue(Baganator.Config.Get(Baganator.Config.Options.AUTO_OPEN)[frame.option])
+    end
+  end)
+
+  table.insert(self.lowestFrames, allFrames[#allFrames])
+end
+
+function BaganatorCustomiseDialogMixin:SetupSorting()
+  local tab = GetTab(self)
+  tab:SetText(BAGANATOR_L_SORTING)
+
+  local frame = GetWrapperFrame(self)
+
+  local typeDropDown = {
+    type = "dropdown",
+    option = "sort_method",
+    entries = {
+      BAGANATOR_L_ITEM_TYPE,
+      BAGANATOR_L_ITEM_QUALITY,
+    },
+    values = {
+      "type",
+      "quality",
+    },
+  }
+
+  if Baganator.Constants.IsRetail then
+    table.insert(typeDropDown.entries, BAGANATOR_L_BLIZZARD)
+    table.insert(typeDropDown.values, "blizzard")
+  end
+
+  if IsAddOnLoaded("SortBags") then
+    table.insert(typeDropDown.entries, BAGANATOR_L_SORTBAGS)
+    table.insert(typeDropDown.values, "sortbags")
+  end
+
+  table.insert(SORTING_OPTIONS, typeDropDown)
+
+  local allFrames = GenerateFrames(SORTING_OPTIONS, frame)
+
+  frame:SetScript("OnShow", function()
+    for index, frame in ipairs(allFrames) do
+      frame:SetValue(Baganator.Config.Get(frame.option))
     end
   end)
 

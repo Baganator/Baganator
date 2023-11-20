@@ -17,6 +17,20 @@
     </Scripts>
   </Button>
 
+  <Button name="BaganatorTooltipIconButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
+    <Size x="32" y="22"/>
+    <Scripts>
+      <OnEnter>
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(self.tooltipText)
+        GameTooltip:Show()
+      </OnEnter>
+      <OnLeave>
+        GameTooltip:Hide()
+      </OnLeave>
+    </Scripts>
+  </Button>
+
   <Button name="BaganatorCustomiseButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
     <KeyValues>
       <KeyValue key="tooltipText" value="BAGANATOR_L_CUSTOMISE_BAGANATOR" type="global"/>
@@ -39,20 +53,6 @@
     </Scripts>
   </Button>
 
-  <Button name="BaganatorTooltipIconButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
-    <Size x="32" y="22"/>
-    <Scripts>
-      <OnEnter>
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(self.tooltipText)
-        GameTooltip:Show()
-      </OnEnter>
-      <OnLeave>
-        GameTooltip:Hide()
-      </OnLeave>
-    </Scripts>
-  </Button>
-
   <Button name="BaganatorToggleBagSlotsButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
     <KeyValues>
       <KeyValue key="tooltipText" value="BAGANATOR_L_BAG_SLOTS" type="global"/>
@@ -60,6 +60,29 @@
     <Layers>
       <Layer level="ARTWORK">
         <Texture atlas="Banker">
+          <Size x="17" y="17"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
+
+  <Button name="BaganatorSortButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
+    <KeyValues>
+      <KeyValue key="tooltipText" value="BAGANATOR_L_SORT" type="global"/>
+    </KeyValues>
+    <Scripts>
+      <OnLoad>
+        if Baganator.Constants.IsRetail then
+          self.icon:SetSize(20, 20)
+        end
+      </OnLoad>
+    </Scripts>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="icon" atlas="bags-button-autosort-up">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>

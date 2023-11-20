@@ -28,6 +28,10 @@ InventoryTracking\Tooltips.lua
 InventoryTracking\CurrencyTooltipData.lua
 InventoryTracking\Main.lua
 
+Sorting\Main.lua
+Sorting\Stacks.lua
+Sorting\Plugins.lua
+
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua
 UnifiedBags\ItemButton.xml

@@ -58,30 +58,5 @@ function Baganator.Utilities.GetAllCharacters(searchText)
 end
 
 function Baganator.Utilities.ShouldShowSortButton()
-  return Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON) and (Baganator.Constants.IsRetail or IsAddOnLoaded("SortBags"))
-end
-
-function Baganator.Utilities.SortBags(reverse)
-  assert(Baganator.Utilities.ShouldShowSortButton)
-  if Baganator.Constants.IsRetail then
-    C_Container.SetSortBagsRightToLeft(not reverse)
-    C_Container.SortBags()
-  else
-    SetSortBagsRightToLeft(not reverse)
-    SortBags()
-  end
-end
-
-function Baganator.Utilities.SortBank(reverse)
-  assert(Baganator.Utilities.ShouldShowSortButton)
-  if Baganator.Constants.IsRetail then
-    C_Container.SetSortBagsRightToLeft(not reverse)
-    C_Container.SortBankBags()
-    C_Timer.After(1, function()
-      C_Container.SortReagentBankBags()
-    end)
-  else
-    SetSortBagsRightToLeft(not reverse)
-    SortBankBags()
-  end
+  return Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
 end

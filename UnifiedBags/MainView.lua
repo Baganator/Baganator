@@ -19,6 +19,8 @@ function BaganatorMainViewMixin:OnLoad()
     self.ReagentBagLive:PreallocateButtons(Baganator.Constants.MaxBagSize) -- reagent bag only
   end
 
+  self.sortManager = CreateFrame("Frame", nil, self)
+
   FrameUtil.RegisterFrameForEvents(self, {
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
@@ -141,6 +143,7 @@ function BaganatorMainViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
   self.CharacterSelect:Hide()
+  self.sortManager:SetScript("OnUpdate", nil)
 end
 
 function BaganatorMainViewMixin:ApplySearch(text)
@@ -506,4 +509,67 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   end
 
   self.Money:SetText(GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))
+end
+
+function BaganatorMainViewMixin:CombineStacks(callback)
+  local bagsToSort = {}
+  for index, bagID in ipairs(Baganator.Constants.AllBagIndexes) do
+    bagsToSort[index] = true
+  end
+  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, bagsToSort, function(check)
+    if not check then
+      callback()
+    elseif self:IsVisible() then
+      C_Timer.After(0, function()
+        self:CombineStacks(callback)
+      end)
+    end
+  end)
+end
+
+function BaganatorMainViewMixin:DoSort(isReverse)
+  local bagsToSort = {}
+  for index, bagID in ipairs(Baganator.Constants.AllBagIndexes) do
+    bagsToSort[index] = true
+  end
+  local bagChecks = {}
+  if Baganator.Constants.IsRetail then
+    bagChecks[Enum.BagIndex.ReagentBag] = function(item)
+      return item.itemLink and (select(17, GetItemInfo(item.itemLink)))
+    end
+  elseif Baganator.Constants.IsWrath then
+    bagChecks[Enum.BagIndex.Keyring] = function(item)
+      return item.classID == Enum.ItemClass.Key
+    end
+  end
+
+  for index = 1, Baganator.Constants.BagSlotsCount do
+    local _, family = C_Container.GetContainerNumFreeSlots(index)
+    if family ~= nil and family ~= 0 then
+      bagChecks[index] = function(item)
+        local itemFamily = item.itemLink and GetItemFamily(item.itemLink)
+        return itemFamily and bit.band(itemFamily, family) ~= 0
+      end
+    end
+  end
+  self.sortManager:SetScript("OnUpdate", function()
+    local goAgain = Baganator.Sorting.ApplySort(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, bagsToSort, bagChecks, isReverse)
+    if not goAgain then
+      self.sortManager:SetScript("OnUpdate", nil)
+    end
+  end)
+end
+
+function BaganatorMainViewMixin:CombineStacksAndSort(isReverse)
+  local sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
+
+  if sortMethod == "blizzard" then
+    Baganator.Sorting.BlizzardBagSort(isReverse)
+  elseif sortMethod == "sortbags" then
+    Baganator.Sorting.ExternalSortBags(isReverse)
+  else
+    self:CombineStacks(function()
+      self:DoSort(isReverse)
+    end)
+  end
 end
