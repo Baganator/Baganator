@@ -225,6 +225,23 @@ function BaganatorCachedBagLayoutMixin:ApplySearch(text)
   end
 end
 
+function BaganatorCachedBagLayoutMixin:OnShow()
+  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
+    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
+      return
+    end
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemName == itemName then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
+end
+
+function BaganatorCachedBagLayoutMixin:OnHide()
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+end
+
 BaganatorLiveBagLayoutMixin = {}
 
 function BaganatorLiveBagLayoutMixin:OnLoad()
@@ -285,6 +302,17 @@ function BaganatorLiveBagLayoutMixin:OnShow()
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("update cooldowns show", debugprofilestop() - start)
   end
+
+  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
+    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
+      return
+    end
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemName == itemName then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
 end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
@@ -296,6 +324,8 @@ function BaganatorLiveBagLayoutMixin:OnHide()
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("remove new item", debugprofilestop() - start)
   end
+
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
 end
 
 function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)

@@ -2,6 +2,8 @@
   <Frame name="BaganatorCachedBagLayoutTemplate" virtual="true" mixin="BaganatorCachedBagLayoutMixin" parentArray="Layouts">
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnHide method="OnHide"/>
     </Scripts>
   </Frame>
 

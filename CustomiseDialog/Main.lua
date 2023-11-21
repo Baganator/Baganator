@@ -76,6 +76,11 @@ local ICON_OPTIONS = {
     option = "icon_grey_junk",
   },
   {
+    type = "checkbox",
+    text = BAGANATOR_L_ITEMS_FLASH_ON_ALT_CLICK,
+    option = "icon_flash_similar_alt",
+  },
+  {
     type = "slider",
     min = 10,
     max = 70,

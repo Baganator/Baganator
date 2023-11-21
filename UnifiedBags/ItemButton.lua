@@ -350,6 +350,40 @@ local function AdjustClassicButton(button, size)
   ApplyItemDetailSettings(button, size)
 end
 
+local function FlashItemButton(self)
+  if not self.BaganatorFlashAnim then
+    local flash = self:CreateTexture(nil, "OVERLAY", nil)
+    flash:SetPoint("CENTER", self)
+    flash:SetAllPoints(self.icon)
+    flash:SetAtlas("bags-glow-orange")
+    flash:SetAlpha(0)
+    self.BaganatorFlashAnim = self:CreateAnimationGroup()
+    self.BaganatorFlashAnim:SetLooping("REPEAT")
+    self.BaganatorFlashAnim:SetToFinalAlpha(false)
+    local alpha = self.BaganatorFlashAnim:CreateAnimation("Alpha", nil, nil)
+    alpha:SetDuration(0.3)
+    alpha:SetOrder(1)
+    alpha:SetFromAlpha(1)
+    alpha:SetToAlpha(0)
+    alpha:SetSmoothing("IN_OUT")
+    alpha:SetTarget(flash)
+    local alpha = self.BaganatorFlashAnim:CreateAnimation("Alpha", nil, nil)
+    alpha:SetDuration(0.3)
+    alpha:SetOrder(2)
+    alpha:SetFromAlpha(0)
+    alpha:SetToAlpha(1)
+    alpha:SetSmoothing("IN_OUT")
+    alpha:SetTarget(flash)
+    self:HookScript("OnHide", function()
+      self.BaganatorFlashAnim:Stop()
+    end)
+  end
+  self.BaganatorFlashAnim:Play()
+  C_Timer.NewTimer(2.1, function()
+    self.BaganatorFlashAnim:Stop()
+  end)
+end
+
 BaganatorRetailCachedItemButtonMixin = {}
 
 function BaganatorRetailCachedItemButtonMixin:UpdateTextures(size)
@@ -373,6 +407,10 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   end
 end
 
+function BaganatorRetailCachedItemButtonMixin:BGRStartFlashing()
+  FlashItemButton(self)
+end
+
 function BaganatorRetailCachedItemButtonMixin:SetItemFiltered(text)
   self:SetMatchesSearch(SearchCheck(self, text))
 end
@@ -380,6 +418,8 @@ end
 function BaganatorRetailCachedItemButtonMixin:OnClick(button)
   if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(self.BGR.itemLink)
+  elseif IsAltKeyDown() then
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
   end
 end
 
@@ -417,6 +457,11 @@ end
 BaganatorRetailLiveItemButtonMixin = {}
 
 function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
+  self:HookScript("OnClick", function()
+    if IsAltKeyDown() then
+      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+    end
+  end)
   -- Automatically use the reagent bank when at the bank transferring crafting
   -- reagents
   self:HookScript("OnEnter", function()
@@ -509,6 +554,10 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   end
 end
 
+function BaganatorRetailLiveItemButtonMixin:BGRStartFlashing()
+  FlashItemButton(self)
+end
+
 function BaganatorRetailLiveItemButtonMixin:BGRUpdateCooldown()
   self:UpdateCooldown(self.BGR.itemLink);
 end
@@ -568,6 +617,10 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   end
 end
 
+function BaganatorClassicCachedItemButtonMixin:BGRStartFlashing()
+  FlashItemButton(self)
+end
+
 function BaganatorClassicCachedItemButtonMixin:SetItemFiltered(text)
   self.searchOverlay:SetShown(not SearchCheck(self, text))
 end
@@ -575,6 +628,8 @@ end
 function BaganatorClassicCachedItemButtonMixin:OnClick(button)
   if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(self.BGR.itemLink)
+  elseif IsAltKeyDown() then
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
   end
 end
 
@@ -630,6 +685,12 @@ BaganatorClassicLiveItemButtonMixin = {}
 -- Alter the item button so that the tooltip works both on bag items and bank
 -- items
 function BaganatorClassicLiveItemButtonMixin:MyOnLoad()
+  self:HookScript("OnClick", function()
+    if IsAltKeyDown() then
+      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+    end
+  end)
+
   self:SetScript("OnEnter", self.OnEnter)
   self:SetScript("OnLeave", self.OnLeave)
   self.UpdateTooltip = self.OnEnter
@@ -738,6 +799,10 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   if cacheData.iconTexture ~= nil then
     GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData)
   end
+end
+
+function BaganatorClassicLiveItemButtonMixin:BGRStartFlashing()
+  FlashItemButton(self)
 end
 
 function BaganatorClassicLiveItemButtonMixin:ClearNewItem()

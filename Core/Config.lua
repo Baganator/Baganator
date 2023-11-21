@@ -37,6 +37,7 @@ Baganator.Config.Options = {
   ICON_BOTTOM_LEFT_CORNER = "icon_bottom_left_corner",
   ICON_BOTTOM_RIGHT_CORNER = "icon_bottom_right_corner",
   ICON_GREY_JUNK = "icon_grey_junk",
+  ICON_FLASH_SIMILAR_ALT = "icon_flash_similar_alt",
 
   SHOW_PAWN_ARROW = "show_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
@@ -93,6 +94,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = false,
   [Baganator.Config.Options.SORT_METHOD] = "quality",
+  [Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT] = false,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
