@@ -263,9 +263,11 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
 
   -- Move items that have a blank slot as the target
   for _, move in ipairs(moveQueue0) do
-    C_Container.PickupContainerItem(move[1]:GetBagAndSlot())
-    C_Container.PickupContainerItem(move[2]:GetBagAndSlot())
-    ClearCursor()
+    if not C_Item.IsLocked(move[1]) then
+      C_Container.PickupContainerItem(move[1]:GetBagAndSlot())
+      C_Container.PickupContainerItem(move[2]:GetBagAndSlot())
+      ClearCursor()
+    end
   end
 
   -- Move items that will replace existing items
