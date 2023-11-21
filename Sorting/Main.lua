@@ -44,15 +44,10 @@ local function ConvertToOneList(bags, indexesToUse)
         item.index = #list + 1
         if item.itemLink then
           local linkToCheck = item.itemLink
-          if linkToCheck:match("battlepet:") then
-            item.classID = Enum.ItemClass.Battlepet
-            item.subClassID = 0
-          else
-            if linkToCheck:match("keystone:") then
-              linkToCheck = "item:" .. item.itemID
-            end
-            item.classID, item.subClassID = select(6, GetItemInfoInstant(item.itemLink))
+          if not linkToCheck:match("item:") then
+            linkToCheck = "item:" .. item.itemID
           end
+          item.classID, item.subClassID = select(6, GetItemInfoInstant(linkToCheck))
           item.priority = PriorityMap[item.itemID] and 1 or 1000
         end
         table.insert(list, item)
