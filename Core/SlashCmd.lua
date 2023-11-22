@@ -65,7 +65,7 @@ function Baganator.SlashCmd.RemoveCharacter(characterName)
   end
 
   BAGANATOR_DATA.Characters[characterName] = nil
-  local realmSummary = BAGANATOR_SUMMARIES.ByRealm[characterData.details.realmNormalized]
+  local realmSummary = BAGANATOR_SUMMARIES.Characters.ByRealm[characterData.details.realmNormalized]
   if realmSummary and realmSummary[characterData.details.character] then
     realmSummary[characterData.details.character] = nil
   end

@@ -244,7 +244,7 @@ local function DeDuplicateRecents()
   local newRecents = {}
   local seen = {}
   for _, char in ipairs(recents) do
-    if not seen[char.character] and #newRecents < Baganator.Constants.MaxRecents then
+    if BAGANATOR_DATA.Characters[char.character] and not seen[char.character] and #newRecents < Baganator.Constants.MaxRecents then
       table.insert(newRecents, char)
     end
     seen[char.character] = true
