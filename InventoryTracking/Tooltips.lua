@@ -52,13 +52,14 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   end
 
   local result = "  "
-  local bagCount, bankCount, mailCount, guildCount = 0, 0, 0, 0
+  local bagCount, bankCount, mailCount, equippedCount, guildCount = 0, 0, 0, 0, 0
   local seenRealms = {}
 
   for index, s in ipairs(tooltipInfo.characters) do
     bagCount = bagCount + s.bags
     bankCount = bankCount + s.bank
     mailCount = mailCount + s.mail
+    equippedCount = equippedCount + s.equipped
     seenRealms[s.realmNormalized] = true
   end
   for index, s in ipairs(tooltipInfo.guilds) do
@@ -86,6 +87,9 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   if mailCount > 0 then
     table.insert(entries, BAGANATOR_L_MAILS_X:format(mailCount))
   end
+  if equippedCount > 0 then
+    table.insert(entries, BAGANATOR_L_EQUIPPED_X:format(equippedCount))
+  end
   if guildCount > 0 then
     table.insert(entries, BAGANATOR_L_GUILDS_X:format(guildCount))
   end
@@ -102,6 +106,9 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     end
     if s.mail > 0 then
       table.insert(entries, BAGANATOR_L_MAIL_X:format(s.mail))
+    end
+    if s.equipped > 0 then
+      table.insert(entries, BAGANATOR_L_EQUIPPED_X:format(s.equipped))
     end
     local character = s.character
     if appendRealm then

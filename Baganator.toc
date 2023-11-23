@@ -21,6 +21,7 @@ Core\Main.lua
 InventoryTracking\Utilities.lua
 InventoryTracking\BagCache.lua
 InventoryTracking\MailCache.lua
+InventoryTracking\EquippedCache.lua
 InventoryTracking\CurrencyCache.lua
 InventoryTracking\GuildCache.lua
 InventoryTracking\ItemSummaries.lua

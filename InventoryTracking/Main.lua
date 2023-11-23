@@ -42,6 +42,8 @@ local function InitCurrentCharacter()
   characterData.details.className, characterData.details.class = select(2, UnitClass("player"))
   characterData.details.faction = UnitFactionGroup("player")
   characterData.mail = characterData.mail or {}
+  characterData.equipped = characterData.equipped or {}
+  --characterData.containerInfo = characterData.containerInfo or {}
   characterData.currencies = characterData.currencies or {}
 end
 
@@ -59,6 +61,13 @@ local function SetupDataProcessing()
   mailCache:SetScript("OnEvent", mailCache.OnEvent)
 
   Baganator.MailCache = mailCache
+
+  local equippedCache = CreateFrame("Frame")
+  Mixin(equippedCache, BaganatorEquippedCacheMixin)
+  equippedCache:OnLoad()
+  equippedCache:SetScript("OnEvent", equippedCache.OnEvent)
+
+  Baganator.EquippedCache = equippedCache
 
   local currencyCache = CreateFrame("Frame")
   Mixin(currencyCache, BaganatorCurrencyCacheMixin)

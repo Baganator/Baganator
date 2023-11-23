@@ -29,6 +29,7 @@ function BaganatorItemSummariesMixin:OnLoad()
   Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate", self.CharacterCacheUpdate, self)
   Baganator.CallbackRegistry:RegisterCallback("MailCacheUpdate", self.CharacterCacheUpdate, self)
   Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", self.GuildCacheUpdate, self)
+  Baganator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", self.CharacterCacheUpdate, self)
 end
 
 function BaganatorItemSummariesMixin:CharacterCacheUpdate(characterName)
@@ -58,6 +59,7 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
             bags = 0,
             bank = 0,
             mail = 0,
+            equipped = 0,
           }
         end
         summary[key].bags = summary[key].bags + item.itemCount
@@ -74,6 +76,7 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
             bags = 0,
             bank = 0,
             mail = 0,
+            equipped = 0,
           }
         end
         summary[key].bank = summary[key].bank + item.itemCount
@@ -89,9 +92,25 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
           bags = 0,
           bank = 0,
           mail = 0,
+          equipped = 0,
         }
       end
       summary[key].mail = summary[key].mail + item.itemCount
+    end
+  end
+
+  for _, item in pairs(details.equipped) do
+    if item.itemLink then
+      local key = Baganator.Utilities.GetItemKey(item.itemLink)
+      if not summary[key] then
+        summary[key] = {
+          bags = 0,
+          bank = 0,
+          mail = 0,
+          equipped = 0,
+        }
+      end
+      summary[key].equipped = summary[key].equipped + item.itemCount
     end
   end
 
@@ -186,6 +205,7 @@ function BaganatorItemSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sam
             bags = byKey.bags or 0, 
             bank = byKey.bank or 0, 
             mail = byKey.mail or 0, 
+            equipped = byKey.equipped or 0,
           })
         end
       end

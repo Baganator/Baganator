@@ -29,6 +29,8 @@ Baganator.Constants = {
 
   MaxGuildBankTabItemSlots = 98,
   GuildBankFullAccessWithdrawalsLimit = 25000,
+
+  EquippedInventorySlotOffset = 1,
 }
 
 if Baganator.Constants.IsWrath then
@@ -59,6 +61,7 @@ Baganator.Constants.Events = {
   "MailCacheUpdate",
   "CurrencyCacheUpdate",
   "GuildCacheUpdate",
+  "EquippedCacheUpdate",
 
   "SearchTextChanged",
   "BagShow",
