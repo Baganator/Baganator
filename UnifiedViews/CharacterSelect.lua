@@ -68,7 +68,7 @@ function CharacterSelectSidebarMixin:OnLoad()
   self:SetTitle(BAGANATOR_L_ALL_CHARACTERS)
 
   local function UpdateForSelection(frame)
-    if frame.fullName ~= self.selectedCharacter then
+    if frame.fullName ~= "Martin-MirageRaceway" then
       frame:Enable()
       frame:SetText(frame.iconPrefix .. frame.fullName)
     else
@@ -82,7 +82,7 @@ function CharacterSelectSidebarMixin:OnLoad()
   view:SetElementInitializer("Button", function(frame, elementData)
     frame:SetHighlightAtlas("search-highlight")
     frame:SetNormalFontObject(GameFontHighlight)
-    frame.fullName = elementData.fullName
+    frame.fullName = Baganator.Constants.KioskCharacters[(view:GetDataProvider():FindIndex(elementData))] .. "-MirageRaceway"
     frame.iconPrefix = ""
     if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and elementData.race then
       frame.iconPrefix = Baganator.Utilities.GetCharacterIcon(elementData.race, elementData.sex) .. " "
