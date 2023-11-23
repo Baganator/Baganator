@@ -3,4 +3,5 @@ Baganator = {
   InventoryTracking = {},
   UnifiedBags = {},
   CustomiseDialog = {},
+  API = {},
 }

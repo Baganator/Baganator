@@ -27,6 +27,7 @@ L["GUILD_BANK"] = "Guild Bank"
 L["BANK_DATA_MISSING_HINT"] = "Bank data missing. Visit a banker with %s to populate this view."
 
 L["CUSTOMISE_BAGANATOR"] = "Customise Baganator"
+L["ENABLE_BAG_VIEWS"] = "Enable Bag/Bank views (reload required)"
 L["RESET_POSITIONS"] = "Reset Positions"
 L["LOCK_BAGS_BANKS_FRAMES"] = "Lock Bags/Bank frames"
 L["CUSTOMISE_REMOVE_BORDERS"] = "Remove borders from Bags/Bank frames"
