@@ -581,17 +581,35 @@ function BaganatorRetailLiveItemButtonMixin:ClearNewItem()
   end
 end
 
-local function ApplyQualityBorderClassic(self, quality)
-	if quality then
-		if quality >= LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality] then
-			self.IconBorder:Show();
-			self.IconBorder:SetVertexColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b);
-		else
-			self.IconBorder:Hide();
-		end
-	else
-		self.IconBorder:Hide();
-	end
+local items_in_set = {}
+for i,set_id in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
+  for i,id in ipairs(C_EquipmentSet.GetItemIDs(set_id)) do
+    table.insert(items_in_set, id)
+  end
+end
+
+local function isItemInEquipSet(itemID)
+  for i, item in ipairs(items_in_set) do
+    if item == itemID then return true end
+  end
+  return false
+end
+
+local function ApplyQualityBorderClassic(self, quality, itemID)
+  if isItemInEquipSet(itemID) then
+    local color = CreateColor(83/255, 157/255, 137/255)
+    self.IconBorder:Show();
+    self.IconBorder:SetVertexColor(color.r, color.g, color.b); 
+  elseif quality then
+    if quality >= LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality] then
+      self.IconBorder:Show();
+      self.IconBorder:SetVertexColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b);
+    else
+      self.IconBorder:Hide();
+    end
+  else
+    self.IconBorder:Hide();
+  end
 end
 
 BaganatorClassicCachedItemButtonMixin = {}
@@ -760,7 +778,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonQuality(self, quality, itemID);
-  ApplyQualityBorderClassic(self, quality)
+  ApplyQualityBorderClassic(self, quality, itemID)
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
   
