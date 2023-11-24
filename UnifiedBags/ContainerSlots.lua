@@ -20,11 +20,12 @@ local function ShowBagSlotTooltip(self)
 end
 
 function BaganatorRetailBagSlotButtonMixin:Init()
+  self.isBag = true -- Passed into item button code to force slot count display
   self:RegisterForDrag("LeftButton")
   local inventorySlot = GetBagInventorySlot(self)
   self:SetItemButtonTexture(GetInventoryItemTexture("player", inventorySlot))
   self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
-  self:SetItemButtonCount(1)
+  self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(self:GetID()))
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnClick()
@@ -50,9 +51,10 @@ end
 BaganatorClassicBagSlotButtonMixin = {}
 
 function BaganatorClassicBagSlotButtonMixin:Init()
+  self.isBag = true -- Passed into item button code to force slot count display
   self:RegisterForDrag("LeftButton")
 
-  SetItemButtonCount(self, 1)
+  SetItemButtonCount(self, C_Container.GetContainerNumFreeSlots(self:GetID()))
 
   local inventorySlot = GetBagInventorySlot(self)
 
