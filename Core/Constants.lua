@@ -31,6 +31,8 @@ Baganator.Constants = {
   GuildBankFullAccessWithdrawalsLimit = 25000,
 
   EquippedInventorySlotOffset = 1,
+
+  MaxPinnedCurrencies = 3,
 }
 
 if Baganator.Constants.IsWrath then

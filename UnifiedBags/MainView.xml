@@ -154,6 +154,21 @@
             <Anchor point="BOTTOMRIGHT" x="-15" y="6"/>
           </Anchors>
         </FontString>
+        <FontString parentKey="Currency1" parentArray="Currencies" inherits="NumberFontNormal" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Money" relativePoint="BOTTOMLEFT" x="-15" />
+          </Anchors>
+        </FontString>
+        <FontString parentKey="Currency2" parentArray="Currencies" inherits="NumberFontNormal" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Currency1" relativePoint="BOTTOMLEFT" x="-15" />
+          </Anchors>
+        </FontString>
+        <FontString parentKey="Currency3" parentArray="Currencies" inherits="NumberFontNormal" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Currency2" relativePoint="BOTTOMLEFT" x="-15" />
+          </Anchors>
+        </FontString>
         <FontString parentKey="BankMissingHint" inherits="GameFontHighlight" text="BAGANATOR_L_BANK_DATA_MISSING_HINT">
           <Anchors>
             <Anchor point="LEFT" x="20"/>
