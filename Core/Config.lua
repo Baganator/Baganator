@@ -11,6 +11,8 @@ Baganator.Config.Options = {
   SHOW_REAGENTS = "show_reagents",
   SHOW_SORT_BUTTON = "show_sort_button_2",
   SORT_METHOD = "sort_method",
+  REVERSE_GROUPS_SORT_ORDER = "reverse_groups_sort_order",
+  SORT_START_AT_BOTTOM = "sort_start_at_bottom",
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
 
@@ -94,6 +96,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = false,
   [Baganator.Config.Options.SORT_METHOD] = "quality",
+  [Baganator.Config.Options.REVERSE_GROUPS_SORT_ORDER] = false,
+  [Baganator.Config.Options.SORT_START_AT_BOTTOM] = false,
   [Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT] = false,
 
   [Baganator.Config.Options.DEBUG] = false,

@@ -217,6 +217,16 @@ local SORTING_OPTIONS = {
     text = BAGANATOR_L_SHOW_SORT_BUTTON,
     option = "show_sort_button_2",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SORT_START_AT_BOTTOM,
+    option = "sort_start_at_bottom",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_REVERSE_GROUPS_SORT_ORDER,
+    option = "reverse_groups_sort_order",
+  },
 }
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)

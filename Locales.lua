@@ -77,6 +77,8 @@ L["BOA"] = "BoA"
 
 L["SORT"] = "Sort"
 L["SORTING"] = "Sorting"
+L["REVERSE_GROUPS_SORT_ORDER"] = "Reverse groups sort order"
+L["SORT_START_AT_BOTTOM"] = "Start the sorted items at the bottom of bag"
 
 L["KEYWORD_REAGENT"] = "reagent"
 L["KEYWORD_PET"] = "pet"

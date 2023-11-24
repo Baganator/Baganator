@@ -8,7 +8,6 @@ local QualityKeys = {
   "itemID",
   "itemLink",
   "itemCount",
-  "index",
 }
 
 local TypeKeys = {
@@ -20,7 +19,6 @@ local TypeKeys = {
   "itemID",
   "itemLink",
   "itemCount",
-  "index",
 }
 
 local PriorityItems = {
@@ -67,6 +65,8 @@ function Baganator.Sorting.SortOneListOffline(bags, indexesToUse, isReverse)
     print("sort convert", debugprofilestop() - start)
   end
 
+  local reverse = Baganator.Config.Get(Baganator.Config.Options.REVERSE_GROUPS_SORT_ORDER)
+
   -- We keep an index so that the order is consistent after sort application and
   -- resorting of the bag items.
   -- This part is to handle reversing the items correctly
@@ -85,14 +85,25 @@ function Baganator.Sorting.SortOneListOffline(bags, indexesToUse, isReverse)
     sortKeys = QualityKeys
   end
 
-  table.sort(list, function(a, b)
-    for _, key in ipairs(sortKeys) do
-      if a[key] ~= b[key] then
-        return a[key] < b[key]
+  if reverse then
+    table.sort(list, function(a, b)
+      for _, key in ipairs(sortKeys) do
+        if a[key] ~= b[key] then
+          return a[key] > b[key]
+        end
       end
-    end
-    return false
-  end)
+      return a.index < b.index
+    end)
+  else
+    table.sort(list, function(a, b)
+      for _, key in ipairs(sortKeys) do
+        if a[key] ~= b[key] then
+          return a[key] < b[key]
+        end
+      end
+      return a.index < b.index
+    end)
+  end
 
   return list
 end
@@ -208,6 +219,10 @@ local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
 end
 
 function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isReverse)
+  if Baganator.Config.Get(Baganator.Config.Options.SORT_START_AT_BOTTOM) then
+    isReverse = not isReverse
+  end
+
   local showTimers = Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS)
   local start = debugprofilestop()
   local sortedItems = Baganator.Sorting.SortOneListOffline(bags, indexesToUse, isReverse)
