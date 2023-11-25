@@ -79,11 +79,6 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   end
 end
 
-function BaganatorBankOnlyViewMixin:OnHide()
-  Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
-  Baganator.UnifiedBags.Search.ClearCache()
-end
-
 function BaganatorBankOnlyViewMixin:OnDragStart()
   if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
@@ -138,6 +133,10 @@ end
 
 function BaganatorBankOnlyViewMixin:OnHide(eventName)
   CloseBankFrame()
+
+  Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  Baganator.UnifiedBags.Search.ClearCache()
+  self.sortManager:SetScript("OnUpdate", nil)
 end
 
 function BaganatorBankOnlyViewMixin:SetLiveCharacter(character)
