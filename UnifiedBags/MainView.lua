@@ -137,6 +137,13 @@ function BaganatorMainViewMixin:OnLoad()
       bb:SetPoint("TOPLEFT", self.bagSlots[#self.bagSlots - 1], "TOPRIGHT")
     end
   end
+
+  -- Update currencies when they are watched/unwatched in Blizz UI
+  EventRegistry:RegisterCallback("TokenFrame.OnTokenWatchChanged", function()
+    if self:IsShown() then
+      self:UpdateCurrencies(self.lastCharacter)
+    end
+  end)
 end
 
 function BaganatorMainViewMixin:OnHide()
