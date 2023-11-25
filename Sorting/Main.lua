@@ -57,31 +57,16 @@ end
 
 -- We keep an index so that the order is consistent after sort application and
 -- resorting of the bag items.
--- This ensure the index is stable between items, even those that are
--- identifical
--- Special care is taken to take the custom priority orders of the bags into
--- account, both when sorting forwards and backwards
-local function SetIndexes(list, bagIDs, isReverse, bagIDsOrdered)
-  if isReverse then
-    local indexToMult = {}
-    for index, bID in ipairs(bagIDsOrdered) do
-      indexToMult[tIndexOf(bagIDs, bID)] = index * #list
-    end
-    for index, item in ipairs(list) do
-      item.index = indexToMult[item.from.bagIndex] - index
-    end
-  else
-    local indexToMult = {}
-    for index, bID in ipairs(bagIDsOrdered) do
-      indexToMult[tIndexOf(bagIDs, bID)] = index * #list
-    end
-    for index, item in ipairs(list) do
-      item.index = indexToMult[item.from.bagIndex] + index
+local function SetIndexes(list, bagIDs)
+  for index, item in ipairs(list) do
+    if item.itemLink then
+      local location = ItemLocation:CreateFromBagAndSlot(bagIDs[item.from.bagIndex], item.from.slot)
+      item.index = C_Item.GetItemGUID(location)
     end
   end
 end
 
-function Baganator.Sorting.SortOneListOffline(list, isReverse)
+function Baganator.Sorting.SortOneListOffline(list)
   local start = debugprofilestop()
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
@@ -168,53 +153,13 @@ local function GetUsableBags(bagIDs, indexesToUse, bagChecks, isReverse)
   return bagIDsAvailable, bagSizes
 end
 
-local function GetPositionGenerators(bagIDsAvailable, bagState, bagSizes, isReverse)
-  local bagLocations = {}
-  if isReverse then
-    for _, bagID in ipairs(bagIDsAvailable) do
-      local first, last = bagSizes[bagID], 1
-      bagLocations[bagID] = function(isJunk)
-        if not bagState[bagID] then
-          return
-        end
-        local out
-        if isJunk then
-          out = last
-          last = last + 1
-        else
-          out = first
-          first = first - 1
-        end
-        if first < last then
-          bagState[bagID] = nil
-        end
-        return bagID, out
-      end
-    end
-  else
-    for _, bagID in ipairs(bagIDsAvailable) do
-      local first, last = 1, bagSizes[bagID]
-      bagLocations[bagID] = function(isJunk)
-        if not bagState[bagID] then
-          return
-        end
-        local out
-        if isJunk then
-          out = last
-          last = last - 1
-        else
-          out = first
-          first = first + 1
-        end
-        if first > last then
-          bagState[bagID] = nil
-        end
-        return bagID, out
-      end
-    end
+local function GetPositionStores(bagIDsAvailable, bagSizes)
+  local stores = {}
+  for _, bagID in ipairs(bagIDsAvailable) do
+    stores[bagID] = {first = 1, last = bagSizes[bagID]}
   end
 
-  return bagLocations
+  return stores
 end
 
 local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
@@ -240,52 +185,68 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
   local showTimers = Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS)
   local start = debugprofilestop()
 
-  local bagIDsAvailable, bagSizes = GetUsableBags(bagIDs, indexesToUse, bagChecks, isReverse)
-  local bagIDsInverted = GetUsableBags(bagIDs, indexesToUse, bagChecks, not isReverse)
+  local bagIDsAvailable, bagSizes = GetUsableBags(bagIDs, indexesToUse, bagChecks, false)
+  local bagIDsInverted = GetUsableBags(bagIDs, indexesToUse, bagChecks, true)
 
   local oneList = ConvertToOneList(bags, indexesToUse)
 
-  SetIndexes(oneList, bagIDs, isReverse, bagIDsAvailable, bagIDsInverted)
+  SetIndexes(oneList, bagIDs)
 
-  local sortedItems = Baganator.Sorting.SortOneListOffline(oneList, isReverse)
+  local sortedItems = Baganator.Sorting.SortOneListOffline(oneList)
   if showTimers then
     print("sort initial", debugprofilestop() - start)
     start = debugprofilestop()
   end
 
-  local pending = false
-
   local moveQueue0 = {}
   local moveQueue1 = {}
 
-  local bagState = {}
+  local bagStores = GetPositionStores(bagIDsAvailable, bagSizes)
 
-  local bagLocations = GetPositionGenerators(bagIDsAvailable, bagState, bagSizes, isReverse)
   if showTimers then
     print("sort gens", debugprofilestop() - start)
     start = debugprofilestop()
   end
 
-  for _, bagID in ipairs(bagIDsAvailable) do
-    bagState[bagID] = true
+  local groupA = tFilter(sortedItems, function(item) return item.quality ~= Enum.ItemQuality.Poor end, true)
+  local groupB = tFilter(sortedItems, function(item) return item.quality == Enum.ItemQuality.Poor end, true)
+
+  if isReverse then
+    local tmp = groupA
+    groupA = groupB
+    groupB = tmp
   end
 
-  for itemIndex, item in ipairs(sortedItems) do
-    local isJunk = item.quality == Enum.ItemQuality.Poor
-    local list
-    if isJunk then
-      list = bagIDsInverted
-    else
-      list = bagIDsAvailable
-    end
+  if showTimers then
+    print("reverse applied", debugprofilestop() - start)
+    start = debugprofilestop()
+  end
 
-    for _, bagID in ipairs(list) do
-      if not bagChecks[bagID] or bagChecks[bagID](item) then
-        local bagID, slotID = bagLocations[bagID](isJunk)
-        if slotID ~= nil then
-          QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
-          break
+  for index, item in ipairs(groupB) do
+    for bagIndex, bagID in ipairs(bagIDsInverted) do
+      if not bagChecks[bagID] or (item.classID ~= Enum.ItemClass.Container and bagChecks[bagID](item)) then
+        local slot = bagStores[bagID].last
+        QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
+        bagStores[bagID].last = slot - 1
+        if bagStores[bagID].first == slot then
+          table.remove(bagIDsInverted, bagIndex)
         end
+        break
+      end
+    end
+  end
+
+  bagIDsAvailable = tFilter(bagIDsAvailable, function(bagID) return tIndexOf(bagIDsInverted, bagID) ~= nil end, true)
+  for index, item in ipairs(groupA) do
+    for bagIndex, bagID in ipairs(bagIDsAvailable) do
+      if not bagChecks[bagID] or (item.classID ~= Enum.ItemClass.Container and bagChecks[bagID](item)) then
+        local slot = bagStores[bagID].first
+        QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
+        bagStores[bagID].first = slot + 1
+        if bagStores[bagID].last == slot then
+          table.remove(bagIDsAvailable, bagIndex)
+        end
+        break
       end
     end
   end
@@ -313,7 +274,7 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
     end
   end
 
-  pending = #moveQueue0 > 0 or #moveQueue1 > 0
+  local pending = #moveQueue0 > 0 or #moveQueue1 > 0
 
   if showTimers then
     print("sort items moved", debugprofilestop() - start)
