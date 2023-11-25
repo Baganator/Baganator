@@ -129,8 +129,9 @@ end
 BaganatorRetailBankButtonMixin = {}
 
 function BaganatorRetailBankButtonMixin:Init()
+  self.isBag = true
   self:RegisterForDrag("LeftButton")
-  self:SetItemButtonCount(1)
+  self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(Baganator.Constants.AllBankIndexes[self:GetID() + 1]))
   self.needPurchase = true
 
   local _, texture = GetInventorySlotInfo("Bag1")
@@ -172,10 +173,11 @@ end
 BaganatorClassicBankButtonMixin = {}
 
 function BaganatorClassicBankButtonMixin:Init()
+  self.isBag = true
   self:RegisterForDrag("LeftButton")
   self.needPurchase = true
 
-  SetItemButtonCount(self, 1)
+  SetItemButtonCount(self, C_Container.GetContainerNumFreeSlots(Baganator.Constants.AllBankIndexes[self:GetID() + 1]))
 
   local _, texture = GetInventorySlotInfo("Bag1")
   self.icon:SetTexture(texture)
