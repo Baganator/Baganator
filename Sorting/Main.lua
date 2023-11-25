@@ -39,7 +39,6 @@ local function ConvertToOneList(bags, indexesToUse)
     if indexesToUse[bagIndex] then
       for slotIndex, item in ipairs(bagContents) do
         item.from = { bagIndex = bagIndex, slot = slotIndex}
-        item.index = #list + 1
         if item.itemLink then
           local linkToCheck = item.itemLink
           if not linkToCheck:match("item:") then
@@ -56,25 +55,40 @@ local function ConvertToOneList(bags, indexesToUse)
   return list
 end
 
-function Baganator.Sorting.SortOneListOffline(bags, indexesToUse, isReverse)
-  local start = debugprofilestop()
+-- We keep an index so that the order is consistent after sort application and
+-- resorting of the bag items.
+-- This ensure the index is stable between items, even those that are
+-- identifical
+-- Special care is taken to take the custom priority orders of the bags into
+-- account, both when sorting forwards and backwards
+local function SetIndexes(list, bagIDs, isReverse, bagIDsOrdered)
+  if isReverse then
+    local indexToMult = {}
+    for index, bID in ipairs(bagIDsOrdered) do
+      indexToMult[tIndexOf(bagIDs, bID)] = index * #list
+    end
+    for index, item in ipairs(list) do
+      item.index = indexToMult[item.from.bagIndex] - index
+    end
+  else
+    local indexToMult = {}
+    for index, bID in ipairs(bagIDsOrdered) do
+      indexToMult[tIndexOf(bagIDs, bID)] = index * #list
+    end
+    for index, item in ipairs(list) do
+      item.index = indexToMult[item.from.bagIndex] + index
+    end
+  end
+end
 
-  local list = ConvertToOneList(bags, indexesToUse)
+function Baganator.Sorting.SortOneListOffline(list, isReverse)
+  local start = debugprofilestop()
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("sort convert", debugprofilestop() - start)
   end
 
   local reverse = Baganator.Config.Get(Baganator.Config.Options.REVERSE_GROUPS_SORT_ORDER)
-
-  -- We keep an index so that the order is consistent after sort application and
-  -- resorting of the bag items.
-  -- This part is to handle reversing the items correctly
-  if isReverse then
-    for _, item in ipairs(list) do
-      item.index = #list + 1 - item.index
-    end
-  end
 
   list = tFilter(list, function(a) return a.itemLink ~= nil end, true)
 
@@ -225,7 +239,15 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
 
   local showTimers = Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS)
   local start = debugprofilestop()
-  local sortedItems = Baganator.Sorting.SortOneListOffline(bags, indexesToUse, isReverse)
+
+  local bagIDsAvailable, bagSizes = GetUsableBags(bagIDs, indexesToUse, bagChecks, isReverse)
+  local bagIDsInverted = GetUsableBags(bagIDs, indexesToUse, bagChecks, not isReverse)
+
+  local oneList = ConvertToOneList(bags, indexesToUse)
+
+  SetIndexes(oneList, bagIDs, isReverse, bagIDsAvailable, bagIDsInverted)
+
+  local sortedItems = Baganator.Sorting.SortOneListOffline(oneList, isReverse)
   if showTimers then
     print("sort initial", debugprofilestop() - start)
     start = debugprofilestop()
@@ -237,9 +259,6 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
   local moveQueue1 = {}
 
   local bagState = {}
-
-  local bagIDsAvailable, bagSizes = GetUsableBags(bagIDs, indexesToUse, bagChecks, isReverse)
-  local bagIDsInverted = GetUsableBags(bagIDs, indexesToUse, bagChecks, not isReverse)
 
   local bagLocations = GetPositionGenerators(bagIDsAvailable, bagState, bagSizes, isReverse)
   if showTimers then
