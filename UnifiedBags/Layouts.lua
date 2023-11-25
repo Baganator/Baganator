@@ -100,6 +100,10 @@ function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
   end
 end
 
+function BaganatorCachedBagLayoutMixin:RequestContentRefresh()
+  self.refreshContent = true
+end
+
 function BaganatorCachedBagLayoutMixin:CompareButtonIndexes(indexes, indexesToUse, newBags)
   for index in pairs(indexesToUse) do
     local bagID = indexes[index]
@@ -334,6 +338,10 @@ function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)
   elseif tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
+end
+
+function BaganatorLiveBagLayoutMixin:RequestContentRefresh()
+  self.refreshContent = true
 end
 
 function BaganatorLiveBagLayoutMixin:UpdateLockForItem(bagID, slotID)
