@@ -41,6 +41,7 @@ UnifiedBags\ContainerSlots.xml
 UnifiedBags\Components.xml
 UnifiedBags\Layouts.lua
 UnifiedBags\Layouts.xml
+UnifiedBags\Plugins.lua
 UnifiedBags\BankView.lua
 UnifiedBags\BankView.xml
 UnifiedBags\MoneyDisplay.lua

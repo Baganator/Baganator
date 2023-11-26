@@ -74,6 +74,8 @@ Baganator.Constants.Events = {
   "ResetFramePositions",
 
   "HighlightSimilarItems",
+
+  "ContentRefreshRequired",
 }
 
 -- Hidden currencies for all characters tooltips as they are shared between characters

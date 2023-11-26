@@ -53,6 +53,15 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     end
   end)
 
+  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+    for _, layout in ipairs(self.Layouts) do
+      layout:RequestContentRefresh()
+    end
+    if self:IsVisible() then
+      self:UpdateForCharacter(self.liveCharacter)
+    end
+  end)
+
   Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self:ApplySearch(text)
   end)

@@ -63,14 +63,12 @@ function BaganatorMainViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate",  function(_, character)
-    if Baganator.Config.Get(Baganator.Config.Options.SHOW_PAWN_ARROW) then
-      for _, layout in ipairs(self.Layouts) do
-        layout:RequestContentRefresh()
-      end
-      if self:IsShown() then
-        self:UpdateForCharacter(self.lastCharacter, self.isLive)
-      end
+  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+    for _, layout in ipairs(self.Layouts) do
+      layout:RequestContentRefresh()
+    end
+    if self:IsVisible() then
+      self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
 
