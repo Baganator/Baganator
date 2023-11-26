@@ -36,12 +36,12 @@ Sorting\Plugins.lua
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua
 UnifiedBags\ItemButton.xml
+UnifiedBags\ItemButtonDataEvents.lua
 UnifiedBags\ContainerSlots.lua
 UnifiedBags\ContainerSlots.xml
 UnifiedBags\Components.xml
 UnifiedBags\Layouts.lua
 UnifiedBags\Layouts.xml
-UnifiedBags\Plugins.lua
 UnifiedBags\BankView.lua
 UnifiedBags\BankView.xml
 UnifiedBags\MoneyDisplay.lua

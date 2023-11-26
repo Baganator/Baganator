@@ -1,6 +1,6 @@
 EventUtil.ContinueOnAddOnLoaded("Pawn", function()
   -- Equip/unequip
-  hooksecurefunc("PawnCheckInventoryForUpgrades", function()
+  Baganator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
     Baganator.CallbackRegistry:TriggerEvent("ContentRefreshRequired")
   end)
   -- Spec change
