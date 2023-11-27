@@ -42,6 +42,7 @@ local ReflowSettings = {
 local RefreshContentSettings = {
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
   Baganator.Config.Options.SHOW_BOE_STATUS,
+  Baganator.Config.Options.HIDE_BOE_ON_COMMON,
   Baganator.Config.Options.SHOW_BOA_STATUS,
   Baganator.Config.Options.SHOW_PAWN_ARROW,
   Baganator.Config.Options.SHOW_CIMI_ICON,

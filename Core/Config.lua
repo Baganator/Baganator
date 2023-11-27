@@ -29,6 +29,7 @@ Baganator.Config.Options = {
 
   SHOW_ITEM_LEVEL = "show_item_level",
   SHOW_BOE_STATUS = "show_boe_status",
+  HIDE_BOE_ON_COMMON = "hide_boe_on_common",
   SHOW_BOA_STATUS = "show_boa_status",
   ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
   ICON_TEXT_FONT_SIZE = "icon_text_font_size",
@@ -71,6 +72,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW] = {},
   [Baganator.Config.Options.SHOW_ITEM_LEVEL] = true,
   [Baganator.Config.Options.SHOW_BOE_STATUS] = false,
+  [Baganator.Config.Options.HIDE_BOE_ON_COMMON] = false,
   [Baganator.Config.Options.SHOW_BOA_STATUS] = false,
   [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
   [Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS] = true,
@@ -122,6 +124,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.SHOW_SORT_BUTTON,
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
   Baganator.Config.Options.SHOW_BOE_STATUS,
+  Baganator.Config.Options.HIDE_BOE_ON_COMMON,
   Baganator.Config.Options.SHOW_BOA_STATUS,
   Baganator.Config.Options.SHOW_PAWN_ARROW,
   Baganator.Config.Options.SHOW_CIMI_ICON,

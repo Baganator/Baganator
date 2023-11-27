@@ -72,6 +72,11 @@ local ICON_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_HIDE_BOE_STATUS_ON_COMMON,
+    option = "hide_boe_on_common",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_USE_ITEM_QUALITY_COLORS_FOR_ICON_TEXT,
     option = "icon_text_quality_colors",
   },

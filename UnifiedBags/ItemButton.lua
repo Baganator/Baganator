@@ -81,8 +81,9 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     end)
   end
   if Baganator.Config.Get("show_boe_status") then
+    local boe_on_common = not Baganator.Config.Get("hide_boe_on_common")
     table.insert(itemCallbacks, function(self, data)
-      if IsEquipment(data.itemLink) and not data.isBound then
+      if IsEquipment(data.itemLink) and not data.isBound and (boe_on_common or data.quality > 1) then
         self.BindingText:SetText(BAGANATOR_L_BOE)
         if useQualityColors then
           local color = qualityColors[data.quality]
