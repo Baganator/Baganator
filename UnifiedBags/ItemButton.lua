@@ -16,7 +16,7 @@ function Baganator.ItemButtonUtil.SetAutoSettings()
       Baganator.Config.Set(Baganator.Config.Options.AUTO_PAWN_ARROW, false)
       if not Baganator.Config.Get(Baganator.Config.Options.SHOW_PAWN_ARROW) then
         Baganator.Config.Set(Baganator.Config.Options.SHOW_PAWN_ARROW, true)
-        Baganator.Config.Set(Baganator.Config.Options.ICON_TOP_LEFT_CORNER, "pawn")
+        Baganator.Config.Set(Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER, "pawn")
       end
     end)
   end
