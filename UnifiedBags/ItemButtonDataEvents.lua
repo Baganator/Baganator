@@ -1,4 +1,4 @@
-EventUtil.ContinueOnAddOnLoaded("Pawn", function()
+Baganator.Utilities.OnAddonLoaded("Pawn", function()
   -- Equip/unequip
   Baganator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
     Baganator.CallbackRegistry:TriggerEvent("ContentRefreshRequired")

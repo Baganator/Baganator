@@ -134,6 +134,7 @@ function Baganator.UnifiedBags.Initialize()
 
   Baganator.InitializeOpenClose()
 
+  Baganator.ItemButtonUtil.SetAutoSettings()
   Baganator.ItemButtonUtil.UpdateSettings()
 
   if BackpackTokenFrame then

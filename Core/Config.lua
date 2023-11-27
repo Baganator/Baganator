@@ -32,8 +32,6 @@ Baganator.Config.Options = {
   SHOW_BOA_STATUS = "show_boa_status",
   ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
   ICON_TEXT_FONT_SIZE = "icon_text_font_size",
-  SHOW_PAWN_ARROW = "show_pawn_arrow",
-  SHOW_CIMI_ICON = "show_cimi_icon",
   ICON_TOP_LEFT_CORNER = "icon_top_left_corner",
   ICON_TOP_RIGHT_CORNER = "icon_top_right_corner",
   ICON_BOTTOM_LEFT_CORNER = "icon_bottom_left_corner",
@@ -42,7 +40,9 @@ Baganator.Config.Options = {
   ICON_FLASH_SIMILAR_ALT = "icon_flash_similar_alt",
 
   SHOW_PAWN_ARROW = "show_pawn_arrow",
+  AUTO_PAWN_ARROW = "auto_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
+  AUTO_CIMI_ICON = "auto_cimi_icon",
 
   MAIN_VIEW_POSITION = "main_view_position",
   MAIN_VIEW_SHOW_BAG_SLOTS = "main_view_show_bag_slots",
@@ -78,6 +78,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
   [Baganator.Config.Options.SHOW_PAWN_ARROW] = true,
   [Baganator.Config.Options.SHOW_CIMI_ICON] = false,
+  [Baganator.Config.Options.AUTO_PAWN_ARROW] = true,
+  [Baganator.Config.Options.AUTO_CIMI_ICON] = true,
   [Baganator.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
   [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
   [Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT] = false,

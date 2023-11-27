@@ -1,4 +1,27 @@
 Baganator.ItemButtonUtil = {}
+
+function Baganator.ItemButtonUtil.SetAutoSettings()
+  if Baganator.Config.Get(Baganator.Config.Options.AUTO_PAWN_ARROW) then
+    Baganator.Utilities.OnAddonLoaded("Pawn", function()
+      Baganator.Config.Set(Baganator.Config.Options.AUTO_PAWN_ARROW, false)
+      if not Baganator.Config.Get(Baganator.Config.Options.SHOW_PAWN_ARROW) then
+        Baganator.Config.Set(Baganator.Config.Options.SHOW_PAWN_ARROW, true)
+        Baganator.Config.Set(Baganator.Config.Options.ICON_TOP_LEFT_CORNER, "pawn")
+      end
+    end)
+  end
+
+  if Baganator.Config.Get(Baganator.Config.Options.AUTO_CIMI_ICON) then
+    Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
+      Baganator.Config.Set(Baganator.Config.Options.AUTO_CIMI_ICON, false)
+      if not Baganator.Config.Get(Baganator.Config.Options.SHOW_CIMI_ICON) then
+        Baganator.Config.Set(Baganator.Config.Options.SHOW_CIMI_ICON, true)
+        Baganator.Config.Set(Baganator.Config.Options.ICON_TOP_RIGHT_CORNER, "can_i_mog_it")
+      end
+    end)
+  end
+end
+
 local IsEquipment = Baganator.Utilities.IsEquipment
 
 local qualityColors = {
