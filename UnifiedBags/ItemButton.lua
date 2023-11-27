@@ -2,6 +2,16 @@ Baganator.ItemButtonUtil = {}
 
 function Baganator.ItemButtonUtil.SetAutoSettings()
   if Baganator.Config.Get(Baganator.Config.Options.AUTO_PAWN_ARROW) then
+    if Baganator.Config.Get(Baganator.Config.Options.SHOW_PAWN_ARROW) then
+      -- special check for pawn as the config SHOW_PAWN_ARROW started with the
+      -- wrong state previously
+      local isPawn = false
+      for _, corner in ipairs({"icon_top_left_corner", "icon_top_right_corner", "icon_bottom_left_corner", "icon_bottom_right_corner"}) do
+        isPawn = isPawn or Baganator.Config.Get(corner) == "pawn"
+      end
+      Baganator.Config.Set(Baganator.Config.Options.SHOW_PAWN_ARROW, isPawn)
+    end
+
     Baganator.Utilities.OnAddonLoaded("Pawn", function()
       Baganator.Config.Set(Baganator.Config.Options.AUTO_PAWN_ARROW, false)
       if not Baganator.Config.Get(Baganator.Config.Options.SHOW_PAWN_ARROW) then
