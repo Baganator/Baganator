@@ -14,9 +14,12 @@ do
       callbacksPending[addonName] = nil
     end
   end)
+
   local AddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+
+  -- Necessary because cannot nest EventUtil.ContinueOnAddOnLoaded
   function Baganator.Utilities.OnAddonLoaded(addonName, callback)
-    if AddOnLoaded(addonName) then
+    if select(2, AddOnLoaded(addonName)) then
       callback()
     else
       callbacksPending[addonName] = callbacksPending[addonName] or {}
