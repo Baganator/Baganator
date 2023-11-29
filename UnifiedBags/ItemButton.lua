@@ -228,6 +228,10 @@ local function SetStaticInfo(self, details)
 
   self.JunkIcon:SetShown(details.quality == Enum.ItemQuality.Poor)
   self.icon:SetDesaturated(iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor)
+
+  if self.BaganatorBagHighlight then
+    self.BaganatorBagHighlight:Hide()
+  end
 end
 
 local function SearchCheck(self, text)
@@ -418,6 +422,17 @@ local function FlashItemButton(self)
   end)
 end
 
+local function SetHighlightItemButton(self, isShown)
+  if not self.BaganatorBagHighlight then
+    local highlight = self:CreateTexture(nil, "OVERLAY", nil)
+    highlight:SetPoint("CENTER", self)
+    highlight:SetAllPoints(self.icon)
+    highlight:SetAtlas("bags-glow-heirloom")
+    self.BaganatorBagHighlight = highlight
+  end
+  self.BaganatorBagHighlight:SetShown(isShown)
+end
+
 BaganatorRetailCachedItemButtonMixin = {}
 
 function BaganatorRetailCachedItemButtonMixin:UpdateTextures(size)
@@ -443,6 +458,10 @@ end
 
 function BaganatorRetailCachedItemButtonMixin:BGRStartFlashing()
   FlashItemButton(self)
+end
+
+function BaganatorRetailCachedItemButtonMixin:BGRSetHighlight(isHighlighted)
+  SetHighlightItemButton(self, isHighlighted)
 end
 
 function BaganatorRetailCachedItemButtonMixin:SetItemFiltered(text)
@@ -592,6 +611,10 @@ function BaganatorRetailLiveItemButtonMixin:BGRStartFlashing()
   FlashItemButton(self)
 end
 
+function BaganatorRetailLiveItemButtonMixin:BGRSetHighlight(isHighlighted)
+  SetHighlightItemButton(self, isHighlighted)
+end
+
 function BaganatorRetailLiveItemButtonMixin:BGRUpdateCooldown()
   self:UpdateCooldown(self.BGR.itemLink);
 end
@@ -653,6 +676,10 @@ end
 
 function BaganatorClassicCachedItemButtonMixin:BGRStartFlashing()
   FlashItemButton(self)
+end
+
+function BaganatorClassicCachedItemButtonMixin:BGRSetHighlight(isHighlighted)
+  SetHighlightItemButton(self, isHighlighted)
 end
 
 function BaganatorClassicCachedItemButtonMixin:SetItemFiltered(text)
@@ -837,6 +864,10 @@ end
 
 function BaganatorClassicLiveItemButtonMixin:BGRStartFlashing()
   FlashItemButton(self)
+end
+
+function BaganatorClassicLiveItemButtonMixin:BGRSetHighlight(isHighlighted)
+  SetHighlightItemButton(self, isHighlighted)
 end
 
 function BaganatorClassicLiveItemButtonMixin:ClearNewItem()

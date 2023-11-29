@@ -14,9 +14,14 @@ local function OnBagSlotClick(self)
 end
 
 local function ShowBagSlotTooltip(self)
+  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", self:GetID())
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   GameTooltip:SetInventoryItem("player", GetBagInventorySlot(self))
   GameTooltip:Show()
+end
+
+local function HideBagSlotTooltip(self)
+  Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
 end
 
 function BaganatorRetailBagSlotButtonMixin:Init()
@@ -45,7 +50,7 @@ function BaganatorRetailBagSlotButtonMixin:OnEnter()
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnLeave()
-  GameTooltip:Hide()
+  HideBagSlotTooltip(self)
 end
 
 BaganatorClassicBagSlotButtonMixin = {}
@@ -79,7 +84,7 @@ function BaganatorClassicBagSlotButtonMixin:OnEnter()
 end
 
 function BaganatorClassicBagSlotButtonMixin:OnLeave()
-  GameTooltip:Hide()
+  HideBagSlotTooltip(self)
 end
 
 -- BANK
@@ -116,6 +121,8 @@ local function OnBankSlotClick(self)
 end
 
 local function ShowBankSlotTooltip(self)
+  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", Baganator.Constants.AllBankIndexes[self:GetID() + 1])
+
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   if self.needPurchase then
     GameTooltip:SetText(BANK_BAG_PURCHASE)
@@ -124,6 +131,11 @@ local function ShowBankSlotTooltip(self)
     GameTooltip:SetInventoryItem("player", GetBankInventorySlot(self))
   end
   GameTooltip:Show()
+end
+
+local function HideBankSlotTooltip(self)
+  Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+  GameTooltip:Hide()
 end
 
 BaganatorRetailBankButtonMixin = {}
@@ -167,7 +179,7 @@ function BaganatorRetailBankButtonMixin:OnEnter()
 end
 
 function BaganatorRetailBankButtonMixin:OnLeave()
-  GameTooltip:Hide()
+  HideBankSlotTooltip(self)
 end
 
 BaganatorClassicBankButtonMixin = {}
@@ -212,5 +224,5 @@ function BaganatorClassicBankButtonMixin:OnEnter()
 end
 
 function BaganatorClassicBankButtonMixin:OnLeave()
-  GameTooltip:Hide()
+  HideBankSlotTooltip(self)
 end

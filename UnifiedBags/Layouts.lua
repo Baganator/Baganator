@@ -308,6 +308,18 @@ function BaganatorLiveBagLayoutMixin:OnShow()
     print("update cooldowns show", debugprofilestop() - start)
   end
 
+  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, bagID)
+    for _, button in ipairs(self.buttons) do
+      button:BGRSetHighlight(button:GetParent():GetID() == bagID)
+    end
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("ClearHighlightBag", function(_, itemName)
+    for _, button in ipairs(self.buttons) do
+      button:BGRSetHighlight(false)
+    end
+  end, self)
+
   Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
     if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
       return
@@ -331,6 +343,8 @@ function BaganatorLiveBagLayoutMixin:OnHide()
   end
 
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
 end
 
 function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)

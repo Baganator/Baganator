@@ -75,6 +75,9 @@ Baganator.Constants.Events = {
 
   "HighlightSimilarItems",
 
+  "HighlightBagItems",
+  "ClearHighlightBag",
+
   "ContentRefreshRequired",
 }
 
