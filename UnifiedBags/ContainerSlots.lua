@@ -22,6 +22,7 @@ end
 
 local function HideBagSlotTooltip(self)
   Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+  GameTooltip:Hide()
 end
 
 function BaganatorRetailBagSlotButtonMixin:Init()
