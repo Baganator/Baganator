@@ -43,7 +43,7 @@ local function InitCurrentCharacter()
   characterData.details.faction = UnitFactionGroup("player")
   characterData.mail = characterData.mail or {}
   characterData.equipped = characterData.equipped or {}
-  --characterData.containerInfo = characterData.containerInfo or {}
+  characterData.containerInfo = characterData.containerInfo or {}
   characterData.currencies = characterData.currencies or {}
 end
 
