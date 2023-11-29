@@ -60,3 +60,14 @@ end
 function Baganator.Utilities.ShouldShowSortButton()
   return Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
 end
+
+function Baganator.Utilities.CountEmptySlots(cachedBag)
+  local empty = 0
+  for _, slotContents in ipairs(cachedBag) do
+    if next(slotContents) == nil then
+      empty = empty + 1
+    end
+  end
+
+  return empty
+end

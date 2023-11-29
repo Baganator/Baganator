@@ -126,26 +126,7 @@ function BaganatorMainViewMixin:OnLoad()
     GameTooltip:Hide()
   end)
 
-  local function GetBagSlotButton()
-    if Baganator.Constants.IsRetail then
-      return CreateFrame("ItemButton", nil, self, "BaganatorRetailBagSlotButtonTemplate")
-    else
-      return CreateFrame("Button", nil, self, "BaganatorClassicBagSlotButtonTemplate")
-    end
-  end
-
-  self.bagSlots = {}
-  for index = 1, Baganator.Constants.BagSlotsCount do
-    local bb = GetBagSlotButton()
-    table.insert(self.bagSlots, bb)
-    bb:SetID(index)
-    if #self.bagSlots == 1 then
-      bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -15, 0)
-    else
-      bb:SetPoint("TOPLEFT", self.bagSlots[#self.bagSlots - 1], "TOPRIGHT")
-    end
-  end
+  self:CreateBagSlots()
 
   -- Update currencies when they are watched/unwatched in Blizz UI
   EventRegistry:RegisterCallback("TokenFrame.OnTokenWatchChanged", function()
@@ -204,13 +185,85 @@ function BaganatorMainViewMixin:OnEvent(eventName)
   end
 end
 
+function BaganatorMainViewMixin:CreateBagSlots()
+  local function GetBagSlotButton()
+    if Baganator.Constants.IsRetail then
+      return CreateFrame("ItemButton", nil, self, "BaganatorRetailBagSlotButtonTemplate")
+    else
+      return CreateFrame("Button", nil, self, "BaganatorClassicBagSlotButtonTemplate")
+    end
+  end
+
+  self.liveBagSlots = {}
+  for index = 1, Baganator.Constants.BagSlotsCount do
+    local bb = GetBagSlotButton()
+    table.insert(self.liveBagSlots, bb)
+    bb:SetID(index)
+    if #self.liveBagSlots == 1 then
+      bb:SetPoint("BOTTOM", self, "TOP")
+      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -15, 0)
+    else
+      bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
+    end
+  end
+
+  local cachedBagSlotCounter = 0
+  local function GetCachedBagSlotButton()
+    -- Use cached item buttons from cached layout views
+    if Baganator.Constants.IsRetail then
+      return CreateFrame("ItemButton", nil, self, "BaganatorRetailCachedItemButtonTemplate")
+    else
+      cachedBagSlotCounter = cachedBagSlotCounter + 1
+      return CreateFrame("Button", "BGRCachedBagSlotItemButton" .. cachedBagSlotCounter, self, "BaganatorClassicCachedItemButtonTemplate")
+    end
+  end
+
+  self.cachedBagSlots = {}
+  for index = 1, Baganator.Constants.BagSlotsCount do
+    local bb = GetCachedBagSlotButton()
+    bb.isBag = true
+    table.insert(self.cachedBagSlots, bb)
+    bb:SetID(index)
+    bb:HookScript("OnEnter", function(self)
+      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", self:GetID())
+    end)
+    bb:HookScript("OnLeave", function(self)
+      Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+    end)
+    if #self.cachedBagSlots == 1 then
+      bb:SetPoint("BOTTOM", self, "TOP")
+      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -15, 0)
+    else
+      bb:SetPoint("TOPLEFT", self.cachedBagSlots[#self.cachedBagSlots - 1], "TOPRIGHT")
+    end
+  end
+end
+
 function BaganatorMainViewMixin:UpdateBagSlots()
-  self.ToggleBagSlotsButton:SetShown(self.isLive)
+  -- Show live back slots if viewing live bags
   local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
-  for _, bb in ipairs(self.bagSlots) do
+  for _, bb in ipairs(self.liveBagSlots) do
     bb:Init()
     bb:SetShown(show)
   end
+
+  -- Show cached bag slots when viewing cached bags for other characters
+  local containerInfo = BAGANATOR_DATA.Characters[self.lastCharacter].containerInfo
+  if not self.isLive and containerInfo then
+    local show = Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
+    for index, bb in ipairs(self.cachedBagSlots) do
+      local details = CopyTable(containerInfo.bags[index])
+      details.itemCount = Baganator.Utilities.CountEmptySlots(BAGANATOR_DATA.Characters[self.lastCharacter].bags[index + 1])
+      bb:SetItemDetails(details)
+      bb:SetShown(show)
+    end
+  else
+    for _, bb in ipairs(self.cachedBagSlots) do
+      bb:Hide()
+    end
+  end
+
+  self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bags))
 end
 
 function BaganatorMainViewMixin:OnDragStart()

@@ -231,6 +231,20 @@ function BaganatorCachedBagLayoutMixin:ApplySearch(text)
 end
 
 function BaganatorCachedBagLayoutMixin:OnShow()
+  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, highlightBagID)
+    for bagID, bag in pairs(self.buttonsByBag) do
+      for slotID, button in ipairs(bag) do
+        button:BGRSetHighlight(bagID == highlightBagID)
+      end
+    end
+  end, self)
+
+  Baganator.CallbackRegistry:RegisterCallback("ClearHighlightBag", function(_, itemName)
+    for _, button in ipairs(self.buttons) do
+      button:BGRSetHighlight(false)
+    end
+  end, self)
+
   Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
     if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
       return
@@ -245,6 +259,8 @@ end
 
 function BaganatorCachedBagLayoutMixin:OnHide()
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
 end
 
 BaganatorLiveBagLayoutMixin = {}
@@ -312,7 +328,7 @@ function BaganatorLiveBagLayoutMixin:OnShow()
     for _, button in ipairs(self.buttons) do
       button:BGRSetHighlight(button:GetParent():GetID() == bagID)
     end
-  end)
+  end, self)
 
   Baganator.CallbackRegistry:RegisterCallback("ClearHighlightBag", function(_, itemName)
     for _, button in ipairs(self.buttons) do
