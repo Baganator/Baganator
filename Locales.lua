@@ -80,6 +80,8 @@ L["SORT"] = "Sort"
 L["SORTING"] = "Sorting"
 L["REVERSE_GROUPS_SORT_ORDER"] = "Reverse groups sort order"
 L["SORT_START_AT_BOTTOM"] = "Start the sorted items at the bottom of bag"
+L["SORT_IGNORE_SLOTS_AT_END_NOT_START"] = "Ignore slots at the end, not start, for sorting"
+L["X_SLOTS_TO_IGNORE_WHEN_SORTING"] = "%s regular slots to ignore when sorting"
 
 L["KEYWORD_REAGENT"] = "reagent"
 L["KEYWORD_PET"] = "pet"

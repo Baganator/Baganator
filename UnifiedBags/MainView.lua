@@ -687,7 +687,15 @@ function BaganatorMainViewMixin:DoSort(isReverse)
     end
   end
   self.sortManager:SetScript("OnUpdate", function()
-    local goAgain = Baganator.Sorting.ApplySort(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, bagsToSort, bagChecks, isReverse)
+    local goAgain = Baganator.Sorting.ApplySort(
+      BAGANATOR_DATA.Characters[self.liveCharacter].bags,
+      Baganator.Constants.AllBagIndexes,
+      bagsToSort,
+      bagChecks,
+      isReverse,
+      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END),
+      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT)
+    )
     if not goAgain then
       self.sortManager:SetScript("OnUpdate", nil)
     end

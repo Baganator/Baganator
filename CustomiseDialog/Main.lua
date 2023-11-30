@@ -229,6 +229,20 @@ local SORTING_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_SORT_IGNORE_SLOTS_AT_END_NOT_START,
+    option = "sort_ignore_slots_at_end",
+  },
+  {
+    type = "slider",
+    min = 0,
+    max = 128,
+    lowText = "0",
+    highText = "128",
+    valuePattern = BAGANATOR_L_X_SLOTS_TO_IGNORE_WHEN_SORTING,
+    option = "sort_ignore_slots_count",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_REVERSE_GROUPS_SORT_ORDER,
     option = "reverse_groups_sort_order",
   },

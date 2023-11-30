@@ -55,6 +55,32 @@ local function ConvertToOneList(bags, indexesToUse)
   return list
 end
 
+local function RemoveIgnoredSlotsFromOneList(list, bagIDs, bagChecks, isEnd, left)
+  local offset = 0
+
+  if isEnd then
+    while left > 0 do
+      local item = list[#list - offset]
+      if bagChecks[bagIDs[item.from.bagIndex]] then
+        offset = offset + 1
+      else
+        table.remove(list, #list - offset)
+        left = left - 1
+      end
+    end
+  else
+    while left > 0 do
+      local item = list[1 + offset]
+      if bagChecks[bagIDs[item.from.bagIndex]] then
+        offset = offset + 1
+      else
+        table.remove(list, 1 + offset)
+        left = left - 1
+      end
+    end
+  end
+end
+
 -- We keep an index so that the order is consistent after sort application and
 -- resorting of the bag items.
 local function SetIndexes(list, bagIDs)
@@ -162,6 +188,43 @@ local function GetPositionStores(bagIDsAvailable, bagSizes)
   return stores
 end
 
+local function RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, isEnd, left)
+  local regularBags = tFilter(bagIDsAvailable, function(bagID) return not bagChecks[bagID] end, true)
+
+  if isEnd then
+    for index = #regularBags, 1, -1 do
+      local bagID = regularBags[index]
+      if bagSizes[bagID] > left then
+        bagStores[bagID].last = bagStores[bagID].last - left
+        left = 0
+        break
+      elseif bagSizes[bagID] == left then
+        bagStores[bagID] = nil
+        left = 0
+        break
+      else
+        left = left - bagSizes[bagID]
+        bagStores[bagID] = nil
+      end
+    end
+  else
+    for _, bagID in ipairs(regularBags) do
+      if bagSizes[bagID] > left then
+        bagStores[bagID].first = bagStores[bagID].first + left
+        left = 0
+        break
+      elseif bagSizes[bagID] == left then
+        bagStores[bagID] = nil
+        left = 0
+        break
+      else
+        left = left - bagSizes[bagID]
+        bagStores[bagID] = nil
+      end
+    end
+  end
+end
+
 local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
   local target = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
   local fromBag, fromSlot = bagIDs[item.from.bagIndex], item.from.slot
@@ -177,7 +240,11 @@ local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
   end
 end
 
-function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isReverse)
+function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
+  if ignoreCount == nil then
+    ignoreCount = 0
+  end
+
   if Baganator.Config.Get(Baganator.Config.Options.SORT_START_AT_BOTTOM) then
     isReverse = not isReverse
   end
@@ -189,6 +256,10 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
   local bagIDsInverted = GetUsableBags(bagIDs, indexesToUse, bagChecks, true)
 
   local oneList = ConvertToOneList(bags, indexesToUse)
+
+  if ignoreCount > 0 then
+    RemoveIgnoredSlotsFromOneList(oneList, bagIDs, bagChecks, ignoreAtEnd, ignoreCount)
+  end
 
   SetIndexes(oneList, bagIDs)
 
@@ -202,6 +273,10 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
   local moveQueue1 = {}
 
   local bagStores = GetPositionStores(bagIDsAvailable, bagSizes)
+
+  if ignoreCount > 0 then
+    RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, ignoreAtEnd, ignoreCount)
+  end
 
   if showTimers then
     print("sort gens", debugprofilestop() - start)
@@ -239,7 +314,7 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
   bagIDsAvailable = tFilter(bagIDsAvailable, function(bagID) return tIndexOf(bagIDsInverted, bagID) ~= nil end, true)
   for index, item in ipairs(groupA) do
     for bagIndex, bagID in ipairs(bagIDsAvailable) do
-      if not bagChecks[bagID] or (item.classID ~= Enum.ItemClass.Container and bagChecks[bagID](item)) then
+      if bagStores[bagID] and (not bagChecks[bagID] or (item.classID ~= Enum.ItemClass.Container and bagChecks[bagID](item))) then
         local slot = bagStores[bagID].first
         QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
         bagStores[bagID].first = slot + 1
