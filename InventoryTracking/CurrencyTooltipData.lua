@@ -13,7 +13,7 @@ function Baganator.InventoryTracking.GetCurrencyTooltipData(currencyID, sameConn
 
   local summary = {}
   for character, info in pairs(BAGANATOR_DATA.Characters) do
-    if (not sameConnectedRealm or matchingRealms[info.details.realmNormalized]) and (not sameFaction or info.details.faction == currentFaction) then
+    if not info.details.hidden and (not sameConnectedRealm or matchingRealms[info.details.realmNormalized]) and (not sameFaction or info.details.faction == currentFaction) then
       if info.currencies and info.currencies[currencyID] and info.currencies[currencyID] > 0 then
         table.insert(summary, {character = info.details.character, realmNormalized = info.details.realmNormalized, className = info.details.className, quantity = info.currencies[currencyID]})
       end

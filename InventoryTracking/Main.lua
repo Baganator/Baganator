@@ -34,6 +34,7 @@ local function InitCurrentCharacter()
         realmNormalized = realm,
         realm = GetRealmName(),
         character = characterName,
+        hidden = false,
       }
     }
   end

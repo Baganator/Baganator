@@ -197,7 +197,7 @@ function BaganatorItemSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sam
       for char, summary in pairs(charactersByRealm) do
         local byKey = summary[key]
         local characterDetails = BAGANATOR_DATA.Characters[char .. "-" .. r].details
-        if byKey ~= nil and (not sameFaction or characterDetails.faction == currentFaction) then
+        if byKey ~= nil and not characterDetails.hidden and (not sameFaction or characterDetails.faction == currentFaction) then
           table.insert(result.characters, {
             character = char,
             realmNormalized = r,
