@@ -44,15 +44,15 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
   local realmCount = 0
   local currentRealm
   for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
-    if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
-      AddRealm(currentRealm, realmCount, realmTotal)
-      realmTotal = 0
-      realmCount = 0
-    end
-    currentRealm = characterInfo.realm
-    realmCount = realmCount + 1
-
     if not BAGANATOR_DATA.Characters[characterInfo.fullName].details.hidden then
+      if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
+        AddRealm(currentRealm, realmCount, realmTotal)
+        realmTotal = 0
+        realmCount = 0
+      end
+      currentRealm = characterInfo.realm
+      realmCount = realmCount + 1
+
       local money = BAGANATOR_DATA.Characters[characterInfo.fullName].money
 
       total = total + money
