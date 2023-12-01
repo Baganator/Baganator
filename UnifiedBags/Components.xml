@@ -110,6 +110,10 @@
       <OnLoad>
         if Baganator.Constants.IsRetail then
           self.icon:SetAtlas("Professions_Tracking_Herb")
+          self.tooltipText = BAGANATOR_L_REAGENTS
+        elseif Baganator.Constants.IsClassic then
+          self.icon:SetAtlas("AdventureMapIcon-Lock")
+          self.tooltipText = BAGANATOR_L_KEYS
         end
       </OnLoad>
     </Scripts>

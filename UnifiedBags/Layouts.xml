@@ -29,7 +29,7 @@
           self.Divider:SetTexture("Interface\\Common\\UI-TooltipDivider")
           self.Divider:ClearAllPoints()
           self.Divider:SetHeight(15)
-          self.Divider:SetPoint("LEFT", 0, -8)
+          self.Divider:SetPoint("LEFT", 0, 8)
           self.Divider:SetPoint("RIGHT")
         end
       </OnLoad>

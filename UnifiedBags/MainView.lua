@@ -467,12 +467,10 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   local bagIndexesToUse = {
     [1] = true, [2] = true, [3] = true, [4] = true, [5] = true
   }
-  local reagentBagIndexesToUse = {}
-  if Baganator.Constants.IsRetail then
-    reagentBagIndexesToUse = {
-      [6] = true
-    }
-  end
+  -- Works on retail for the reagent bag and on classic for the keyring
+  local reagentBagIndexesToUse = {
+    [6] = true
+  }
 
   local bankIndexesToUse = {
     [1] = true, [2] = true, [3] = true, [4] = true, [5] = true, [6] = true, [7] = true, [8] = true

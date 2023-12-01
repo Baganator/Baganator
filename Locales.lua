@@ -18,6 +18,7 @@ local L = Locales.enUS
 
 L["BANK"] = "Bank"
 L["REAGENTS"] = "Reagents"
+L["KEYS"] = "Keys"
 L["XS_BANK_AND_BAGS"] = "%s's Bank and Bags"
 L["XS_BAGS"] = "%s's Bags"
 L["XS_BANK"] = "%s's Bank"
