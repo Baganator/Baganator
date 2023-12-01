@@ -45,7 +45,7 @@ function CharacterSelectSidebarMixin:OnLoad()
     end
     if not frame.HideButton then
       frame.HideButton = CreateFrame("Button", nil, frame)
-      frame.HideButton:SetNormalAtlas("UI_Editor_Eye_Icon")
+      frame.HideButton:SetNormalAtlas("socialqueuing-icon-eye")
       frame.HideButton:SetPoint("TOPLEFT", 8, -2.5)
       frame.HideButton:SetSize(15, 15)
       frame.HideButton:SetScript("OnClick", function()
