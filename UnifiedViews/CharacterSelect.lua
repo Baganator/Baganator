@@ -98,7 +98,7 @@ function CharacterSelectSidebarMixin:OnLoad()
       Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", elementData.fullName)
     end)
     frame.UpdateHideVisual = function()
-      if BAGANATOR_DATA.Characters[frame.fullName].details.hidden then
+      if false and BAGANATOR_DATA.Characters[frame.fullName].details.hidden then
         frame.HideButton:GetNormalTexture():SetVertexColor(hiddenColor.r, hiddenColor.g, hiddenColor.b)
       else
         frame.HideButton:GetNormalTexture():SetVertexColor(shownColor.r, shownColor.g, shownColor.b)
