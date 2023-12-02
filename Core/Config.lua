@@ -30,6 +30,7 @@ Baganator.Config.Options = {
   TOOLTIPS_SORT_BY_NAME = "tooltips_sort_by_name",
 
   SHOW_ITEM_LEVEL = "show_item_level",
+  SHOW_EXPANSION = "show_expansion",
   SHOW_BOE_STATUS = "show_boe_status",
   HIDE_BOE_ON_COMMON = "hide_boe_on_common",
   SHOW_BOA_STATUS = "show_boa_status",
@@ -73,6 +74,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.INVERTED_BAG_SHORTCUTS] = false,
   [Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW] = {},
   [Baganator.Config.Options.SHOW_ITEM_LEVEL] = true,
+  [Baganator.Config.Options.SHOW_EXPANSION] = false,
   [Baganator.Config.Options.SHOW_BOE_STATUS] = false,
   [Baganator.Config.Options.HIDE_BOE_ON_COMMON] = false,
   [Baganator.Config.Options.SHOW_BOA_STATUS] = false,
@@ -127,6 +129,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.SHOW_REAGENTS,
   Baganator.Config.Options.SHOW_SORT_BUTTON,
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
+  Baganator.Config.Options.SHOW_EXPANSION,
   Baganator.Config.Options.SHOW_BOE_STATUS,
   Baganator.Config.Options.HIDE_BOE_ON_COMMON,
   Baganator.Config.Options.SHOW_BOA_STATUS,

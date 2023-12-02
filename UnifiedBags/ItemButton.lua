@@ -46,6 +46,19 @@ local qualityColors = {
   [8] = CreateColor(79/255, 196/255, 225/255), -- Blizzard
 }
 
+local expansionIDToText = {
+  [0] = "Cla",
+  [1] = "BC",
+  [2] = "W",
+  [3] = "Cata",
+  [4] = "MoP",
+  [5] = "Dra",
+  [6] = "Leg",
+  [7] = "BfA",
+  [8] = "SL",
+  [9] = "DF",
+}
+
 local function IsBindOnAccount(itemLink)
   local tooltipInfo = C_TooltipInfo.GetHyperlink(itemLink)
   if tooltipInfo then
@@ -117,6 +130,13 @@ function Baganator.ItemButtonUtil.UpdateSettings()
       end
     end)
   end
+  if Baganator.Config.Get("show_expansion") then
+    table.insert(itemCallbacks, function(self, data)
+      if not Baganator.Constants.IsClassic then
+        self.Expansion:SetText(expansionIDToText[self.BGR.expacID] or "")
+      end
+    end)
+  end
   if Baganator.Config.Get("show_pawn_arrow") and PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
     table.insert(itemCallbacks, function(self, data)
       if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted(data.itemLink) then
@@ -168,6 +188,7 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     self.BGR.subClassID = itemInfo[13]
     self.BGR.invType = itemInfo[9]
     self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
+    self.BGR.expacID = itemInfo[15]
     if self.BGR.isCosmetic then
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
@@ -190,6 +211,7 @@ local function GetExtraInfo(self, itemID, itemLink, data)
       self.BGR.subClassID = itemInfo[13]
       self.BGR.invType = itemInfo[9]
       self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
+      self.BGR.expacID = itemInfo[15]
       if self.BGR.isCosmetic then
         self.IconOverlay:SetAtlas("CosmeticIconFrame")
         self.IconOverlay:Show();
@@ -287,6 +309,7 @@ local function ApplyItemDetailSettings(button, size)
     ["quantity"] = button.Count,
     ["pawn"] = button.UpgradeArrow,
     ["can_i_mog_it"] = button.CanIMogItOverlay,
+    ["expansion"] = button.Expansion,
   }
 
   for config, anchor in pairs(positions) do
@@ -309,6 +332,12 @@ local function ApplyItemDetailSettings(button, size)
       button.Count:SetPoint(unpack(anchor))
       button.Count:SetFont(font, newSize, fontFlags)
       button.Count:SetScale(scale)
+    elseif cornerType == "expansion" then
+      button.Expansion:SetParent(button)
+      button.Expansion:ClearAllPoints()
+      button.Expansion:SetPoint(unpack(anchor))
+      button.Expansion:SetFont(font, newSize, fontFlags)
+      button.Expansion:SetScale(scale)
     elseif cornerType == "pawn" then
       button.UpgradeArrow:SetParent(button)
       button.UpgradeArrow:ClearAllPoints()

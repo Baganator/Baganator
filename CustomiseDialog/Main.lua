@@ -425,12 +425,14 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
       NONE,
       BAGANATOR_L_ITEM_LEVEL,
       BAGANATOR_L_BINDING_TYPE,
+      BAGANATOR_L_EXPANSION,
       BAGANATOR_L_QUANTITY,
     },
     values = {
       "none",
       "item_level",
       "binding_type",
+      "expansion",
       "quantity",
     },
   }
@@ -448,6 +450,7 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
     ["binding_type"] = "show_boe_status",
     ["pawn"] = "show_pawn_arrow",
     ["can_i_mog_it"] = "show_cimi_icon",
+    ["expansion"] = "show_expansion",
   }
 
   local configs = {
