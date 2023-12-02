@@ -431,7 +431,6 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
       "none",
       "item_level",
       "binding_type",
-      "expansion",
       "quantity",
     },
   }
