@@ -425,7 +425,6 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
       NONE,
       BAGANATOR_L_ITEM_LEVEL,
       BAGANATOR_L_BINDING_TYPE,
-      BAGANATOR_L_EXPANSION,
       BAGANATOR_L_QUANTITY,
     },
     values = {
@@ -436,6 +435,10 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
       "quantity",
     },
   }
+  if not Baganator.Constants.IsClassic then
+    table.insert(iconCornerOptions.entries, BAGANATOR_L_EXPANSION)
+    table.insert(iconCornerOptions.values, "expansion")
+  end
   if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
     table.insert(iconCornerOptions.entries, BAGANATOR_L_PAWN)
     table.insert(iconCornerOptions.values, "pawn")

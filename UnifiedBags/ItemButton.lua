@@ -232,6 +232,7 @@ local function SetStaticInfo(self, details)
   self.BGR.quality = details.quality
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
+  self.Expansion:SetText("")
 
   if self.ProfessionQualityOverlay then
     local scale = self:GetWidth() / 37
