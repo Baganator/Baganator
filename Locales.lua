@@ -75,7 +75,7 @@ L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
 L["BUY_REAGENT_BANK"] = "Buy Reagent Bank"
 L["ALL_CHARACTERS_COLON"] = "All Characters:"
 L["HIDE_IN_TOOLTIPS"] = "Hide in tooltips"
-L["REMOVE_CHARACTER"] = "Remove Character"
+L["DELETE_CHARACTER"] = "Delete Character"
 L["SHOW_IN_TOOLTIPS"] = "Show in tooltips"
 
 L["BOE"] = "BoE"

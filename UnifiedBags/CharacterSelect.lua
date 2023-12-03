@@ -1,11 +1,6 @@
 CharacterSelectSidebarMixin = {}
 
-local arrowLeft
-if Baganator.Constants.IsRetail then
-  arrowLeft = CreateAtlasMarkup("characterupdate_arrow-bullet-point", 22, 22, 0, -2)
-else
-  arrowLeft = CreateAtlasMarkup("common-icon-forwardarrow", 15, 15, 0, -1)
-end
+local arrowLeft = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 18, 18, 0, 1, 0, 1)
 
 local hiddenColor = CreateColor(1, 0, 0)
 local shownColor = CreateColor(0, 1, 0)
@@ -46,7 +41,7 @@ local function SetDeleteButton(frame)
   end)
   frame.DeleteButton:SetScript("OnEnter", function()
     GameTooltip:SetOwner(frame.DeleteButton, "ANCHOR_RIGHT")
-    GameTooltip:SetText(BAGANATOR_L_REMOVE_CHARACTER)
+    GameTooltip:SetText(BAGANATOR_L_DELETE_CHARACTER)
     GameTooltip:Show()
     frame.DeleteButton:SetAlpha(0.5)
   end)
