@@ -92,7 +92,7 @@ local function SetIndexes(list, bagIDs)
   end
 end
 
-function Baganator.Sorting.SortOneListOffline(list)
+function Baganator.Sorting.OrderOneListOffline(list)
   local start = debugprofilestop()
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
@@ -240,7 +240,7 @@ local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
   end
 end
 
-function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
+function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
   if ignoreCount == nil then
     ignoreCount = 0
   end
@@ -263,7 +263,7 @@ function Baganator.Sorting.ApplySort(bags, bagIDs, indexesToUse, bagChecks, isRe
 
   SetIndexes(oneList, bagIDs)
 
-  local sortedItems = Baganator.Sorting.SortOneListOffline(oneList)
+  local sortedItems = Baganator.Sorting.OrderOneListOffline(oneList)
   if showTimers then
     print("sort initial", debugprofilestop() - start)
     start = debugprofilestop()

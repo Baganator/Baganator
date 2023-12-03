@@ -685,7 +685,7 @@ function BaganatorMainViewMixin:DoSort(isReverse)
     end
   end
   self.sortManager:SetScript("OnUpdate", function()
-    local goAgain = Baganator.Sorting.ApplySort(
+    local goAgain = Baganator.Sorting.ApplyOrdering(
       BAGANATOR_DATA.Characters[self.liveCharacter].bags,
       Baganator.Constants.AllBagIndexes,
       bagsToSort,

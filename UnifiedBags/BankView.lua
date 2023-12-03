@@ -260,7 +260,7 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
   end
 
   self.sortManager:SetScript("OnUpdate", function()
-    local goAgain = Baganator.Sorting.ApplySort(
+    local goAgain = Baganator.Sorting.ApplyOrdering(
       BAGANATOR_DATA.Characters[self.liveCharacter].bank,
       Baganator.Constants.AllBankIndexes,
       indexesToUse,
