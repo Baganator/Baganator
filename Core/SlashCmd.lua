@@ -64,13 +64,9 @@ function Baganator.SlashCmd.RemoveCharacter(characterName)
     return
   end
 
-  BAGANATOR_DATA.Characters[characterName] = nil
-  local realmSummary = BAGANATOR_SUMMARIES.Characters.ByRealm[characterData.details.realmNormalized]
-  if realmSummary and realmSummary[characterData.details.character] then
-    realmSummary[characterData.details.character] = nil
-  end
-  Baganator.CallbackRegistry:TriggerEvent("CharacterDeleted", characterName)
-  Baganator.Utilities.Message("Character '" .. characterName .. "' removed. Close any open bags to complete.")
+  Baganator.Utilities.RemoveCharacter(characterName)
+
+  Baganator.Utilities.Message("Character '" .. characterName .. "' removed.")
 end
 
 function Baganator.SlashCmd.CustomiseUI()

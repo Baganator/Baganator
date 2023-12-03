@@ -107,6 +107,12 @@ function BaganatorMainViewMixin:OnLoad()
     self:UpdateForCharacter(character, self.liveCharacter == character)
   end)
 
+  Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
+    if self.lastCharacter == character then
+      self:UpdateForCharacter(self.liveCharacter, true)
+    end
+  end)
+
   local frame = CreateFrame("Frame")
   local function UpdateMoneyDisplay()
     if IsShiftKeyDown() then

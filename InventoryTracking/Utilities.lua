@@ -102,3 +102,15 @@ function Baganator.Utilities.GetConnectedRealms()
 
   return realms
 end
+
+function Baganator.Utilities.RemoveCharacter(characterName)
+  local characterData = BAGANATOR_DATA.Characters[characterName or ""]
+  assert(characterData, "Unrecognised character")
+
+  BAGANATOR_DATA.Characters[characterName] = nil
+  local realmSummary = BAGANATOR_SUMMARIES.Characters.ByRealm[characterData.details.realmNormalized]
+  if realmSummary and realmSummary[characterData.details.character] then
+    realmSummary[characterData.details.character] = nil
+  end
+  Baganator.CallbackRegistry:TriggerEvent("CharacterDeleted", characterName)
+end

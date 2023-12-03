@@ -43,7 +43,13 @@ function Baganator.Utilities.GetAllCharacters(searchText)
   local characters = {}
   for char, info in pairs(BAGANATOR_DATA.Characters) do
     if searchText == "" or char:lower():find(searchText, nil, true) then
-      table.insert(characters, {fullName = char, name = info.details.character, realmNormalized = info.details.realmNormalized, realm = info.details.realm, className = info.details.className})
+      table.insert(characters, {
+        fullName = char,
+        name = info.details.character,
+        realmNormalized = info.details.realmNormalized,
+        realm = info.details.realm,
+        className = info.details.className
+      })
     end
   end
   table.sort(characters, function(a, b)
