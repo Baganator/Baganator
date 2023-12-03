@@ -22,7 +22,7 @@
       <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
         <Anchors>
           <Anchor point="TOPLEFT" y="-50"/>
-          <Anchor point="BOTTOMRIGHT" relativeKey="$parent.ScrollBar"/>
+          <Anchor point="BOTTOMRIGHT" relativeKey="$parent.ScrollBar" y="3"/>
         </Anchors>
       </Frame>
     </Frames>
