@@ -1,7 +1,11 @@
 CharacterSelectSidebarMixin = {}
 
-local arrowRight = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 13, 13, 1, 0, 0, 1)
-local arrowLeft = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 13, 13, 0, 1, 0, 1)
+local arrowLeft
+if Baganator.Constants.IsRetail then
+  arrowLeft = CreateAtlasMarkup("characterupdate_arrow-bullet-point", 22, 22, 0, -2)
+else
+  arrowLeft = CreateAtlasMarkup("common-icon-forwardarrow", 15, 15, 0, -1)
+end
 
 local hiddenColor = CreateColor(1, 0, 0)
 local shownColor = CreateColor(0, 1, 0)
@@ -61,7 +65,7 @@ function CharacterSelectSidebarMixin:OnLoad()
       frame:SetText(frame.fullName)
     else
       frame:Disable()
-      frame:SetText(arrowLeft .. " " .. frame.fullName .. " " .. arrowRight)
+      frame:SetText(arrowLeft .. " " .. frame.fullName)
     end
   end
 
