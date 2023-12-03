@@ -114,7 +114,7 @@ end
 
 function CharacterSelectSidebarMixin:UpdateList()
   local characters = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
-  self.ScrollBox:SetDataProvider(CreateDataProvider(characters))
+  self.ScrollBox:SetDataProvider(CreateDataProvider(characters), true)
 end
 
 function CharacterSelectSidebarMixin:OnShow()
