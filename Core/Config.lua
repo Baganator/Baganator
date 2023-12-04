@@ -16,6 +16,7 @@ Baganator.Config.Options = {
   SORT_IGNORE_SLOTS_AT_END = "sort_ignore_slots_at_end",
   SORT_IGNORE_SLOTS_COUNT = "sort_ignore_slots_count",
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
+  AUTO_SORT_ON_OPEN = "auto_sort_on_open",
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
@@ -109,6 +110,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT] = false,
   [Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END] = false,
   [Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT] = 0,
+  [Baganator.Config.Options.AUTO_SORT_ON_OPEN] = false,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,

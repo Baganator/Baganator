@@ -224,6 +224,11 @@ local SORTING_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_AUTO_SORT_ON_OPENING_BAGS,
+    option = "auto_sort_on_open",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_SORT_START_AT_BOTTOM,
     option = "sort_start_at_bottom",
   },

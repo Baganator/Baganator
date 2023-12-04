@@ -40,6 +40,9 @@ local function SetupView()
     mainView:SetShown(not mainView:IsShown())
     if mainView:IsVisible() then
       mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
+      if Baganator.Config.Get(Baganator.Config.Options.AUTO_SORT_ON_OPEN) then
+        mainView:CombineStacksAndSort()
+      end
     end
     lastToggleTime = GetTime()
   end
@@ -51,6 +54,9 @@ local function SetupView()
   Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
     mainView:Show()
     mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
+    if Baganator.Config.Get(Baganator.Config.Options.AUTO_SORT_ON_OPEN) then
+      mainView:CombineStacksAndSort()
+    end
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_, ...)
