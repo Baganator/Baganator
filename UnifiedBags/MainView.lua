@@ -108,8 +108,11 @@ function BaganatorMainViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
+    self.tabsSetup = false
     if self.lastCharacter == character then
       self:UpdateForCharacter(self.liveCharacter, true)
+    else
+      self:UpdateForCharacter(self.lastCharacter, true)
     end
   end)
 
@@ -313,7 +316,6 @@ function BaganatorMainViewMixin:SelectTab(character)
   end
 end
 
-local maxRecents = 5
 local function DeDuplicateRecents()
   local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
   local newRecents = {}
@@ -410,6 +412,13 @@ function BaganatorMainViewMixin:SetupTabs()
   self:FillRecents(characters)
 
   self.tabsSetup = self.liveCharacter ~= nil
+end
+
+function BaganatorMainViewMixin:HideExtraTabs()
+  local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
+  for _, tab in ipairs(self.Tabs) do
+    tab:SetShown(isShown and tab:GetRight() < self:GetRight())
+  end
 end
 
 function BaganatorMainViewMixin:NotifyBagUpdate(updatedBags)
@@ -567,6 +576,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     activeBag:GetWidth() + 30 + (activeBank and activeBank:GetWidth() + 30 or 0),
     height + 68
   )
+
+  self:HideExtraTabs()
 
   self.ToggleReagentsButton:SetShown(activeReagentBag:GetHeight() > 0 or activeReagentBag:IsShown())
   if self.ToggleReagentsButton:IsShown() then
