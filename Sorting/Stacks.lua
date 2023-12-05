@@ -11,11 +11,18 @@ function Baganator.Sorting.CombineStacks(bags, bagIDs, indexesToUse, callback)
       local stackSize = itemIDToStackSize[itemID]
       if stackSize > 1 then
         local total = 0
+        local fullStacks = 0
         for _, details in ipairs(stacksForItem) do
           total = details.item.itemCount + total
+          if details.item.itemCount == stackSize then
+            fullStacks = fullStacks + 1
+          end
         end
 
-        if #stacksForItem > math.ceil(total / stackSize) then
+        local targetFullStacks = math.floor(total / stackSize)
+        local targetStacks = math.ceil(total / stackSize)
+
+        if #stacksForItem > targetStacks or fullStacks ~= targetFullStacks then
           -- Get incomplete stacks sorting in ascending order
           local partials = tFilter(stacksForItem, function(a) return a.item.itemCount ~= stackSize end, true)
           table.sort(partials, function(a, b) return a.item.itemCount < b.item.itemCount end)
