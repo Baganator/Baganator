@@ -42,6 +42,7 @@ Baganator.Config.Options = {
   ICON_BOTTOM_LEFT_CORNER = "icon_bottom_left_corner",
   ICON_BOTTOM_RIGHT_CORNER = "icon_bottom_right_corner",
   ICON_GREY_JUNK = "icon_grey_junk",
+  ICON_EQUIPMENT_SET_BORDER = "icon_equipment_set_border",
   ICON_FLASH_SIMILAR_ALT = "icon_flash_similar_alt",
 
   SHOW_PAWN_ARROW = "show_pawn_arrow",
@@ -100,6 +101,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER] = "none",
   [Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER] = "quantity",
   [Baganator.Config.Options.ICON_GREY_JUNK] = false,
+  [Baganator.Config.Options.ICON_EQUIPMENT_SET_BORDER] = true,
   [Baganator.Config.Options.AUTO_OPEN] = {},
   [Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,

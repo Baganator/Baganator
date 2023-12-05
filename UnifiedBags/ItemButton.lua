@@ -45,6 +45,7 @@ local qualityColors = {
   [7] = CreateColor(79/255, 196/255, 225/255), -- Heirloom
   [8] = CreateColor(79/255, 196/255, 225/255), -- Blizzard
 }
+local equipmentSetBorder = CreateColor(83/255, 216/255, 186/255)
 
 local expansionIDToText = {
   [0] = "Cla",
@@ -86,6 +87,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
 
   iconSettings = {
     markJunk = Baganator.Config.Get("icon_grey_junk"),
+    equipmentSetBorder = Baganator.Config.Get("icon_equipment_set_border"),
   }
 
   local useQualityColors = Baganator.Config.Get("icon_text_quality_colors")
@@ -250,6 +252,10 @@ local function SetStaticInfo(self, details)
 
   if self.BaganatorBagHighlight then
     self.BaganatorBagHighlight:Hide()
+  end
+
+  if iconSettings.equipmentSetBorder and self.BGR.setInfo then
+    self.IconBorder:SetVertexColor(equipmentSetBorder.r, equipmentSetBorder.g, equipmentSetBorder.b)
   end
 end
 
@@ -474,6 +480,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self.BGR.itemLink = details.itemLink
   self.BGR.itemID = details.itemID
   self.BGR.itemName = ""
+  self.BGR.setInfo = details.setInfo
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
@@ -630,6 +637,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemLink = cacheData.itemLink
   self.BGR.itemID = cacheData.itemID
   self.BGR.itemNameLower = nil
+  self.BGR.setInfo = cacheData.setInfo
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
@@ -669,16 +677,18 @@ function BaganatorRetailLiveItemButtonMixin:ClearNewItem()
 end
 
 local function ApplyQualityBorderClassic(self, quality)
-	if quality then
-		if quality >= LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality] then
-			self.IconBorder:Show();
-			self.IconBorder:SetVertexColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b);
-		else
-			self.IconBorder:Hide();
-		end
-	else
-		self.IconBorder:Hide();
-	end
+  local color
+
+  if quality and quality >= LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality] then
+    color = BAG_ITEM_QUALITY_COLORS[quality]
+  end
+
+  if color then
+    self.IconBorder:Show()
+    self.IconBorder:SetVertexColor(color.r, color.g, color.b)
+  else
+    self.IconBorder:Hide()
+  end
 end
 
 BaganatorClassicCachedItemButtonMixin = {}
@@ -693,6 +703,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   self.BGR.itemID = details.itemID
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
+  self.BGR.setInfo = details.setInfo
   
   SetItemButtonTexture(self, details.iconTexture or self.emptySlotFilepath);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
@@ -843,6 +854,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemID = cacheData.itemID
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
+  self.BGR.setInfo = cacheData.setInfo
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()

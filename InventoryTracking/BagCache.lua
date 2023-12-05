@@ -13,6 +13,7 @@ local function GetEmptyPending()
   return {
     bags = {},
     bank = {},
+    equipmentSets = false,
   }
 end
 
@@ -28,6 +29,9 @@ function BaganatorBagCacheMixin:OnLoad()
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
     "PLAYERBANKSLOTS_CHANGED",
+
+    -- Used to identify items in an equipment set
+    "EQUIPMENT_SETS_CHANGED",
   })
   if not Baganator.Constants.IsClassic then
     -- Bank items reagent bank updating
@@ -37,11 +41,15 @@ function BaganatorBagCacheMixin:OnLoad()
 
   self.currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
+  self.equipmentSetInfo = {}
+
   self:SetupPending()
 
   for bagID in pairs(bagBags) do
     self.pending.bags[bagID] = true
   end
+  self.pending.equipmentSets = true
+
   self:ScanContainerBagSlots()
   self:QueueCaching()
 end
@@ -77,6 +85,7 @@ function BaganatorBagCacheMixin:OnEvent(eventName, ...)
 
   elseif eventName == "BANKFRAME_OPENED" then
     self.bankOpen = true
+    self.pending.equipmentSets = true
     for bagID in pairs(bankBags) do
       self.pending.bank[bagID] = true
     end
@@ -84,11 +93,62 @@ function BaganatorBagCacheMixin:OnEvent(eventName, ...)
     self:QueueCaching()
   elseif eventName == "BANKFRAME_CLOSED" then
     self.bankOpen = false
+  elseif eventName == "EQUIPMENT_SETS_CHANGED" then
+    self.pending.equipmentSets = true
+    for bagID in pairs(bagBags) do
+      self.pending.bags[bagID] = true
+    end
+    if self.bankOpen then
+      for bagID in pairs(bankBags) do
+        self.pending.bank[bagID] = true
+      end
+    end
+    self:QueueCaching()
   end
 end
 
 function BaganatorBagCacheMixin:SetupPending()
+  -- Used to batch updates until the next OnUpdate tick
   self.pending = GetEmptyPending()
+end
+
+-- Determine the GUID of all accessible items in an equipment set
+function BaganatorBagCacheMixin:SetEquipmentSetInfo()
+  local cache = {}
+  for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
+    local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
+    local info = {name = name, iconTexture = iconTexture, setID = setID}
+    for _, location in pairs(C_EquipmentSet.GetItemLocations(setID)) do
+      if location ~= -1 and location ~= 0 and location ~= 1 then
+        local player, bank, bags, voidStorage, slot, bag
+        if Baganator.Constants.IsClassic then
+          player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(location)
+        else
+          player, bank, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(location)
+        end
+        local location, bagID, slotID
+        if (player or bank) and bags then
+          bagID = bag
+          slotID = slot
+          location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
+        elseif bank and not bags then
+          bagID = Baganator.Constants.AllBankIndexes[1]
+          slotID = slot - BankButtonIDToInvSlotID(0)
+          location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
+        elseif player then
+          location = ItemLocation:CreateFromEquipmentSlot(slot)
+        end
+        if location then
+          local guid = C_Item.GetItemGUID(location)
+          if not cache[guid] then
+            cache[guid] = {}
+          end
+          table.insert(cache[guid], info)
+        end
+      end
+    end
+  end
+  self.equipmentSetInfo = cache
 end
 
 function BaganatorBagCacheMixin:UpdateContainerSlots()
@@ -182,6 +242,14 @@ function BaganatorBagCacheMixin:OnUpdate()
   if self.currentCharacter == nil then
     return
   end
+  if self.pending.equipmentSets then
+    local start = debugprofilestop()
+    self:SetEquipmentSetInfo()
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("equipment set info", debugprofilestop() - start)
+    end
+    self.pending.equipmentSets = false
+  end
 
   local start = debugprofilestop()
 
@@ -197,7 +265,7 @@ function BaganatorBagCacheMixin:OnUpdate()
   local waiting = 0
   local loopsFinished = false
 
-  local function GetInfo(slotInfo)
+  local function GetInfo(slotInfo, itemGUID)
     return {
       itemID = slotInfo.itemID,
       itemCount = slotInfo.stackCount,
@@ -205,6 +273,7 @@ function BaganatorBagCacheMixin:OnUpdate()
       itemLink = slotInfo.hyperlink,
       quality = slotInfo.quality,
       isBound = slotInfo.isBound,
+      setInfo = self.equipmentSetInfo[itemGUID],
     }
   end
 
@@ -215,10 +284,11 @@ function BaganatorBagCacheMixin:OnUpdate()
       local itemID = C_Item.DoesItemExist(location) and C_Item.GetItemID(location)
       bag[slotID] = {}
       if itemID then
+        local itemGUID = C_Item.GetItemGUID(location)
         if C_Item.IsItemDataCachedByID(itemID) then
           local slotInfo = C_Container.GetContainerItemInfo(bagID, slotID)
           if slotInfo then
-            bag[slotID] = GetInfo(slotInfo)
+            bag[slotID] = GetInfo(slotInfo, itemGUID)
           end
         else
           waiting = waiting + 1
@@ -226,7 +296,7 @@ function BaganatorBagCacheMixin:OnUpdate()
           item:ContinueOnItemLoad(function()
             local slotInfo = C_Container.GetContainerItemInfo(bagID, slotID)
             if slotInfo and slotInfo.itemID == itemID then
-              bag[slotID] = GetInfo(slotInfo)
+              bag[slotID] = GetInfo(slotInfo, itemGUID)
             end
             waiting = waiting - 1
             if loopsFinished and waiting == 0 then
