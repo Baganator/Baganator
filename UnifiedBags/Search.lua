@@ -12,6 +12,10 @@ local function BindCheck(details)
   return details.isBound
 end
 
+local function SetCheck(details)
+  return details.setInfo ~= nil
+end
+
 local function BindOnEquipCheck(details)
   return not details.isBound and details.itemLink and Baganator.Utilities.IsEquipment(details.itemLink)
 end
@@ -33,6 +37,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_FOOD] = FoodCheck,
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
   [BAGANATOR_L_KEYWORD_POTION] = PotionCheck,
+  [BAGANATOR_L_KEYWORD_SET] = SetCheck,
 }
 
 local inventorySlots = {

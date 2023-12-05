@@ -97,6 +97,7 @@ L["KEYWORD_FOOD"] = "food"
 L["KEYWORD_DRINK"] = "drink"
 L["KEYWORD_POTION"] = "potion"
 L["KEYWORD_BOE"] = "boe"
+L["KEYWORD_SET"] = "set"
 
 L["WINDOWS"] = "Windows"
 L["ICONS"] = "Icons"
