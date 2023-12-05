@@ -667,9 +667,10 @@ function BaganatorMainViewMixin:CombineStacks(callback)
   end
   Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, bagsToSort, function(check)
     if not check then
+      self.sortManager:SetScript("OnUpdate", nil)
       callback()
-    elseif self:IsVisible() then
-      C_Timer.After(0, function()
+    else
+      self.sortManager:SetScript("OnUpdate", function()
         self:CombineStacks(callback)
       end)
     end

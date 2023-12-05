@@ -22,7 +22,12 @@ function Baganator.Sorting.CombineStacks(bags, bagIDs, indexesToUse, callback)
 
           local source, target = partials[1], partials[#partials]
 
-          C_Container.SplitContainerItem(source.bagID, source.slotID, math.min(target.item.itemCount - source.item.itemCount, source.item.itemCount))
+          local splitSize = math.min(target.item.itemCount - source.item.itemCount, source.item.itemCount)
+          if splitSize == 0 then
+            C_Container.PickupContainerItem(source.bagID, source.slotID)
+          else
+            C_Container.SplitContainerItem(source.bagID, source.slotID, splitSize)
+          end
           C_Container.PickupContainerItem(target.bagID, target.slotID)
           ClearCursor()
 
