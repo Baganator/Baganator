@@ -342,7 +342,7 @@ local function ApplyItemDetailSettings(button, size)
     elseif cornerType == "pawn" then
       button.UpgradeArrow:SetParent(button)
       button.UpgradeArrow:ClearAllPoints()
-      button.UpgradeArrow:SetSize(15 * scale, 15 * scale)
+      button.UpgradeArrow:SetSize(13 * scale, 15 * scale)
       button.UpgradeArrow:SetPoint(unpack(anchor))
     elseif cornerType == "can_i_mog_it" and CIMI_AddToFrame then
       CIMI_AddToFrame(button, function() end)
