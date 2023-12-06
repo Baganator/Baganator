@@ -16,6 +16,10 @@ local function BindOnEquipCheck(details)
   return not details.isBound and details.itemLink and Baganator.Utilities.IsEquipment(details.itemLink)
 end
 
+local function EquipmentCheck(details)
+  return details.itemLink and Baganator.Utilities.IsEquipment(details.itemLink)
+end
+
 local function FoodCheck(details)
   return details.classID == Enum.ItemClass.Consumable and details.subClassID == 5
 end
@@ -29,6 +33,8 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_SOULBOUND] = BindCheck,
   [BAGANATOR_L_KEYWORD_BOE] = BindOnEquipCheck,
+  [BAGANATOR_L_KEYWORD_EQUIPMENT] = EquipmentCheck,
+  [BAGANATOR_L_KEYWORD_GEAR] = EquipmentCheck,
   [BAGANATOR_L_KEYWORD_REAGENT] = ReagentCheck,
   [BAGANATOR_L_KEYWORD_FOOD] = FoodCheck,
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
