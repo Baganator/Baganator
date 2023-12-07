@@ -193,9 +193,6 @@ local function GetExtraInfo(self, itemID, itemLink, data)
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
     end
-    if self.BGR.pendingSearch then
-      self:SetItemFiltered(self.BGR.pendingSearch)
-    end
     for _, callback in ipairs(itemCallbacks) do
       callback(self, data)
     end
@@ -215,9 +212,6 @@ local function GetExtraInfo(self, itemID, itemLink, data)
       if self.BGR.isCosmetic then
         self.IconOverlay:SetAtlas("CosmeticIconFrame")
         self.IconOverlay:Show();
-      end
-      if self.BGR.pendingSearch then
-        self:SetItemFiltered(self.BGR.pendingSearch)
       end
 
       for _, callback in ipairs(itemCallbacks) do
@@ -267,11 +261,8 @@ local function SearchCheck(self, text)
   end
 
   if self.BGR.itemInfoWaiting then
-    self.BGR.pendingSearch = text
     return
   end
-
-  self.BGR.pendingSearch = nil
 
   if not self.BGR.itemName then
     return
@@ -478,6 +469,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   SetItemCraftingQualityOverlay(self, details.itemLink)
 
   self.BGR.itemLink = details.itemLink
+  self.BGR.itemID = details.itemID
   self.BGR.itemName = ""
 
   SetStaticInfo(self, details)
@@ -495,7 +487,11 @@ function BaganatorRetailCachedItemButtonMixin:BGRSetHighlight(isHighlighted)
 end
 
 function BaganatorRetailCachedItemButtonMixin:SetItemFiltered(text)
-  self:SetMatchesSearch(SearchCheck(self, text))
+  local result = SearchCheck(self, text)
+  if result == nil then
+    return true
+  end
+  self:SetMatchesSearch(result)
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnClick(button)
@@ -629,6 +625,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR = {}
   self.BGR.itemName = ""
   self.BGR.itemLink = cacheData.itemLink
+  self.BGR.itemID = cacheData.itemID
   self.BGR.itemNameLower = nil
 
   SetStaticInfo(self, cacheData)
@@ -650,11 +647,11 @@ function BaganatorRetailLiveItemButtonMixin:BGRUpdateCooldown()
 end
 
 function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
-  self:SetMatchesSearch(SearchCheck(self, text))
-end
-
-function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
-  self:SetMatchesSearch(SearchCheck(self, text))
+  local result = SearchCheck(self, text)
+  if result == nil then
+    return true
+  end
+  self:SetMatchesSearch(result)
 end
 
 function BaganatorRetailLiveItemButtonMixin:ClearNewItem()
@@ -690,6 +687,7 @@ end
 function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   self.BGR = {}
   self.BGR.itemLink = details.itemLink
+  self.BGR.itemID = details.itemID
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
   
@@ -713,7 +711,11 @@ function BaganatorClassicCachedItemButtonMixin:BGRSetHighlight(isHighlighted)
 end
 
 function BaganatorClassicCachedItemButtonMixin:SetItemFiltered(text)
-  self.searchOverlay:SetShown(not SearchCheck(self, text))
+  local result = SearchCheck(self, text)
+  if result == nil then
+    return true
+  end
+  self.searchOverlay:SetShown(not result)
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnClick(button)
@@ -834,6 +836,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   end
 
   self.BGR.itemLink = cacheData.itemLink
+  self.BGR.itemID = cacheData.itemID
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
 
@@ -904,5 +907,9 @@ function BaganatorClassicLiveItemButtonMixin:ClearNewItem()
 end
 
 function BaganatorClassicLiveItemButtonMixin:SetItemFiltered(text)
-  self.searchOverlay:SetShown(not SearchCheck(self, text))
+  local result = SearchCheck(self, text)
+  if result == nil then
+    return true
+  end
+  self.searchOverlay:SetShown(not result)
 end

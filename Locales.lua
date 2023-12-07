@@ -99,6 +99,7 @@ L["KEYWORD_POTION"] = "potion"
 L["KEYWORD_BOE"] = "boe"
 L["KEYWORD_EQUIPMENT"] = "equipment"
 L["KEYWORD_GEAR"] = "gear"
+L["KEYWORD_REPUTATION"] = "reputation"
 
 L["WINDOWS"] = "Windows"
 L["ICONS"] = "Icons"

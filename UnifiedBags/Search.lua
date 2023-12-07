@@ -28,6 +28,38 @@ local function PotionCheck(details)
   return details.classID == Enum.ItemClass.Consumable and (details.subClassID == 1 or details.subClassID == 2)
 end
 
+local function GetTooltipInfo(details)
+  if details.tooltipInfo then
+    return
+  end
+
+  local _, spellID = GetItemSpell(details.itemID)
+  if spellID and not C_Spell.IsSpellDataCached(spellID) then
+    C_Spell.RequestLoadSpellData(spellID)
+    return
+  end
+  details.tooltipInfo = C_TooltipInfo.GetHyperlink(details.itemLink)
+end
+
+local function ReputationCheck(details)
+  if not details.itemLink then
+    return false
+  end
+
+  GetTooltipInfo(details)
+
+  if details.tooltipInfo then
+    for _, lineData in ipairs(details.tooltipInfo.lines) do
+      if lineData.leftText:match(BAGANATOR_L_KEYWORD_REPUTATION) then
+        return true
+      end
+    end
+    return false
+  else
+    return nil
+  end
+end
+
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
@@ -40,6 +72,10 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
   [BAGANATOR_L_KEYWORD_POTION] = PotionCheck,
 }
+
+if Baganator.Constants.IsRetail then
+  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck
+end
 
 local inventorySlots = {
   "INVTYPE_HEAD",
@@ -98,6 +134,61 @@ local function BinarySmartSearch(text)
   return sortedKeywords[startIndex]
 end
 
+local function ItemLevelPatternCheck(details, text)
+  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+    return false
+  end
+  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
+
+  local wantedItemLevel = tonumber(text)
+  return details.itemLevel and details.itemLevel == wantedItemLevel
+end
+
+local function ItemLevelRangePatternCheck(details, text)
+  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+    return false
+  end
+  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
+
+  local minText, maxText = text:match("(%d+)%-(%d+)")
+  return details.itemLevel and details.itemLevel >= tonumber(minText) and details.itemLevel <= tonumber(maxText)
+end
+
+local function ItemLevelMinPatternCheck(details, text)
+  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+    return false
+  end
+  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
+
+  local minText = text:match("%d+")
+  return details.itemLevel and details.itemLevel <= tonumber(minText)
+end
+
+local function ItemLevelMaxPatternCheck(details, text)
+  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+    return false
+  end
+  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
+
+  local maxText = text:match("%d+")
+  return details.itemLevel and details.itemLevel >= tonumber(maxText)
+end
+
+local patterns = {
+  ["^%d+$"] = ItemLevelPatternCheck,
+  ["^%d+%-%d+$"] = ItemLevelRangePatternCheck,
+  ["^%>%d+$"] = ItemLevelMaxPatternCheck,
+  ["^%<%d+$"] = ItemLevelMinPatternCheck,
+}
+
+local function PatternSearch(searchString)
+  for pat, check in pairs(patterns) do
+    if searchString:match(pat) then
+      return check
+    end
+  end
+end
+
 local matches = {}
 local rejects = {}
 
@@ -110,21 +201,25 @@ function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
   else
     local check = matches[searchString]
     if check then
-      return check(details)
+      return check(details, searchString)
     elseif not rejects[searchString] then
       local keyword = BinarySmartSearch(searchString)
-      if not keyword then
-        rejects[searchString] = true
-        return false
+      if keyword then
+        local matchesStart = keyword:sub(1, #searchString) == searchString
+        if matchesStart then
+          local check = KEYWORDS_TO_CHECK[keyword]
+          matches[searchString] = check
+          return check(details, searchString)
+        end
       end
-      local matchesStart = keyword:sub(1, #searchString) == searchString
-      if matchesStart then
-        local check = KEYWORDS_TO_CHECK[keyword]
-        matches[searchString] = check
-        return check(details)
-      else
-        rejects[searchString] = true
+
+      local patternChecker = PatternSearch(searchString)
+      if patternChecker then
+        matches[searchString] = patternChecker
+        return patternChecker(details, searchString)
       end
+
+      rejects[searchString] = true
     end
   end
   return false

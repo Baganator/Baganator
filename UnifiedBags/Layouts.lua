@@ -91,6 +91,7 @@ function BaganatorCachedBagLayoutMixin:OnLoad()
   self.prevState = {}
   self.buttonsByBag = {}
   self.waitingUpdate = {}
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorSearchLayoutMonitorTemplate")
 end
 
 function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
@@ -221,13 +222,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
 end
 
 function BaganatorCachedBagLayoutMixin:ApplySearch(text)
-  local start = debugprofilestop()
-  for _, itemButton in ipairs(self.buttons) do
-    itemButton:SetItemFiltered(text)
-  end
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("cache search", debugprofilestop() - start)
-  end
+  self.SearchMonitor:StartSearch(text)
 end
 
 function BaganatorCachedBagLayoutMixin:OnShow()
@@ -281,6 +276,7 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
   self.bagSizesUsed = {}
   self.waitingUpdate = {}
   self.prevState = {}
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorSearchLayoutMonitorTemplate")
 
   self:RegisterEvent("ITEM_LOCK_CHANGED")
 end
@@ -500,11 +496,43 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
 end
 
 function BaganatorLiveBagLayoutMixin:ApplySearch(text)
+  self.SearchMonitor:StartSearch(text)
+end
+
+BaganatorSearchLayoutMonitorMixin = {}
+
+function BaganatorSearchLayoutMonitorMixin:OnLoad()
+  self.pendingItems = {}
+  self.text = ""
+end
+
+function BaganatorSearchLayoutMonitorMixin:OnUpdate()
+  for itemButton in pairs(self.pendingItems)do
+    if not itemButton:SetItemFiltered(self.text) then
+      self.pendingItems[itemButton] = nil
+    end
+  end
+  if next(self.pendingItems) == nil then
+    self:SetScript("OnUpdate", nil)
+  end
+end
+
+function BaganatorSearchLayoutMonitorMixin:StartSearch(text)
   local start = debugprofilestop()
-  for _, itemButton in ipairs(self.buttons) do
-    itemButton:SetItemFiltered(text)
+  self.text = text
+  self.pendingItems = {}
+  for _, itemButton in ipairs(self:GetParent().buttons) do
+    if itemButton:SetItemFiltered(text) then
+      self.pendingItems[itemButton] = true
+    end
+  end
+  if next(self.pendingItems) then
+    self:SetScript("OnUpdate", self.OnUpdate)
   end
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("live search", debugprofilestop() - start)
+    print("search monitor start", debugprofilestop() - start)
   end
+end
+
+function BaganatorSearchLayoutMonitorMixin:ClearSearch()
 end
