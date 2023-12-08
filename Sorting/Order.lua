@@ -276,6 +276,9 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
 
   if ignoreCount > 0 then
     RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, ignoreAtEnd, ignoreCount)
+
+    bagIDsAvailable = tFilter(bagIDsAvailable, function(a) return bagStores[a] ~= nil end, true)
+    bagIDsInverted = tFilter(bagIDsInverted, function(a) return bagStores[a] ~= nil end, true)
   end
 
   if showTimers then
