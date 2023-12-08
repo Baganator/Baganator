@@ -79,9 +79,13 @@ local function SetupView()
   for i = 0, 3 do
     _G["CharacterBag" .. i .. "Slot"]:HookScript("OnClick", ToggleMainView)
   end
-  -- Reagent bas
+  -- Reagent bag
   if CharacterReagentBag0Slot then
     CharacterReagentBag0Slot:HookScript("OnClick", ToggleMainView)
+  end
+  -- Keyring bag
+  if KeyRingButton then
+    KeyRingButton:HookScript("OnClick", ToggleMainView)
   end
 
   hooksecurefunc("ToggleBackpack", function()
@@ -99,13 +103,17 @@ local function HideDefaultBags()
   local hidden = CreateFrame("Frame")
   hidden:Hide()
 
+  --Retail: 1-6 are regular bags and 7-13 are bank bags
+  --Wrath: 1-5 are regular bags, 6 is keyring and 7-13 are bank bags
+  --Era: Doing 1-13 gets the right result even if it hides more frames than
+  --needed
+  for i = 1, 13 do
+    _G["ContainerFrame" .. i]:SetParent(hidden)
+  end
+
   if Baganator.Constants.IsRetail then
     ContainerFrameCombinedBags:SetParent(hidden)
 
-    -- 1-6 are regular bags and 7-13 are bank bags
-    for i = 1, 13 do
-      _G["ContainerFrame" .. i]:SetParent(hidden)
-    end
     local frame = CreateFrame("Frame")
     frame:RegisterEvent("VARIABLES_LOADED")
     frame:SetScript("OnEvent", function()
@@ -116,14 +124,6 @@ local function HideDefaultBags()
       SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_MOUNT_EQUIPMENT_SLOT_FRAME, true)
       SetCVarBitfield("closedInfoFrames", LE_FRAME_TUTORIAL_UPGRADEABLE_ITEM_IN_SLOT, true)
     end)
-  else
-    for i = 1, 5 do -- regular bag frames
-      _G["ContainerFrame" .. i]:SetParent(hidden)
-    end
-    -- skip over keyring bag (6)
-    for i = 7, 13 do -- bank bag frames
-      _G["ContainerFrame" .. i]:SetParent(hidden)
-    end
   end
 
   BankFrame:SetParent(hidden)
