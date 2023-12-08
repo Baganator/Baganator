@@ -244,7 +244,9 @@ local function SetStaticInfo(self, details)
   end
 
   self.JunkIcon:SetShown(details.quality == Enum.ItemQuality.Poor)
-  self.icon:SetDesaturated(iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor)
+  if iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor then
+    self.icon:SetDesaturated(true)
+  end
 
   if self.BaganatorBagHighlight then
     self.BaganatorBagHighlight:Hide()
@@ -467,6 +469,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self:SetItemButtonQuality(details.quality)
   self:SetItemButtonCount(details.itemCount)
   SetItemCraftingQualityOverlay(self, details.itemLink)
+  SetItemButtonDesaturated(self, false);
 
   self.BGR.itemLink = details.itemLink
   self.BGR.itemID = details.itemID
@@ -695,6 +698,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
   ApplyQualityBorderClassic(self, details.quality)
   SetItemButtonCount(self, details.itemCount);
+  SetItemButtonDesaturated(self, false)
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
