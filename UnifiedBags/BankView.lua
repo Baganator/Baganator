@@ -227,11 +227,12 @@ function BaganatorBankOnlyViewMixin:CombineStacks(callback)
   end
   Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bank, Baganator.Constants.AllBankIndexes, bagsToSort, function(check)
     if not check then
+      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
       callback()
-    elseif self:IsVisible() then
-      C_Timer.After(0, function()
+    else
+      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         self:CombineStacks(callback)
-      end)
+      end, self.sortManager)
     end
   end)
 end
@@ -259,7 +260,7 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
     end
   end
 
-  self.sortManager:SetScript("OnUpdate", function()
+  local function DoSortInternal()
     local goAgain = Baganator.Sorting.ApplyOrdering(
       BAGANATOR_DATA.Characters[self.liveCharacter].bank,
       Baganator.Constants.AllBankIndexes,
@@ -268,9 +269,15 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
       isReverse
     )
     if not goAgain then
-      self.sortManager:SetScript("OnUpdate", nil)
+      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+    else
+      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+        DoSortInternal()
+      end, self.sortManager)
     end
-  end)
+  end
+
+  DoSortInternal()
 end
 
 function BaganatorBankOnlyViewMixin:CombineStacksAndSort(isReverse)

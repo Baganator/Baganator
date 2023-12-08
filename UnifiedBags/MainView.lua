@@ -149,7 +149,7 @@ function BaganatorMainViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
   self.CharacterSelect:Hide()
-  self.sortManager:SetScript("OnUpdate", nil)
+  Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
 end
 
 function BaganatorMainViewMixin:ApplySearch(text)
@@ -667,12 +667,12 @@ function BaganatorMainViewMixin:CombineStacks(callback)
   end
   Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, bagsToSort, function(check)
     if not check then
-      self.sortManager:SetScript("OnUpdate", nil)
+      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
       callback()
     else
-      self.sortManager:SetScript("OnUpdate", function()
+      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         self:CombineStacks(callback)
-      end)
+      end, self.sortManager)
     end
   end)
 end
@@ -702,7 +702,7 @@ function BaganatorMainViewMixin:DoSort(isReverse)
       end
     end
   end
-  self.sortManager:SetScript("OnUpdate", function()
+  local function DoSortInternal()
     local goAgain = Baganator.Sorting.ApplyOrdering(
       BAGANATOR_DATA.Characters[self.liveCharacter].bags,
       Baganator.Constants.AllBagIndexes,
@@ -713,9 +713,14 @@ function BaganatorMainViewMixin:DoSort(isReverse)
       Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT)
     )
     if not goAgain then
-      self.sortManager:SetScript("OnUpdate", nil)
+      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+    else
+      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+        DoSortInternal()
+      end, self.sortManager)
     end
-  end)
+  end
+  DoSortInternal()
 end
 
 function BaganatorMainViewMixin:CombineStacksAndSort(isReverse)

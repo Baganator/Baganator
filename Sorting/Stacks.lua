@@ -29,14 +29,18 @@ function Baganator.Sorting.CombineStacks(bags, bagIDs, indexesToUse, callback)
 
           local source, target = partials[1], partials[#partials]
 
-          local splitSize = stackSize - target.item.itemCount
-          if splitSize >= source.item.itemCount then
-            C_Container.PickupContainerItem(source.bagID, source.slotID)
-          else
-            C_Container.SplitContainerItem(source.bagID, source.slotID, splitSize)
+          local sourceLocation = ItemLocation:CreateFromBagAndSlot(source.bagID, source.slotID)
+          local targetLocation = ItemLocation:CreateFromBagAndSlot(target.bagID, target.slotID)
+          if not C_Item.IsLocked(sourceLocation) and not C_Item.IsLocked(targetLocation) then
+            local splitSize = stackSize - target.item.itemCount
+            if splitSize >= source.item.itemCount then
+              C_Container.PickupContainerItem(source.bagID, source.slotID)
+            else
+              C_Container.SplitContainerItem(source.bagID, source.slotID, splitSize)
+            end
+            C_Container.PickupContainerItem(target.bagID, target.slotID)
+            ClearCursor()
           end
-          C_Container.PickupContainerItem(target.bagID, target.slotID)
-          ClearCursor()
 
           anySwaps = true
         end
