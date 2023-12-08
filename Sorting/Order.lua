@@ -59,7 +59,7 @@ local function RemoveIgnoredSlotsFromOneList(list, bagIDs, bagChecks, isEnd, lef
   local offset = 0
 
   if isEnd then
-    while left > 0 do
+    while left > 0 and #list > offset do
       local item = list[#list - offset]
       if bagChecks[bagIDs[item.from.bagIndex]] then
         offset = offset + 1
@@ -69,7 +69,7 @@ local function RemoveIgnoredSlotsFromOneList(list, bagIDs, bagChecks, isEnd, lef
       end
     end
   else
-    while left > 0 do
+    while left > 0 and #list > offset do
       local item = list[1 + offset]
       if bagChecks[bagIDs[item.from.bagIndex]] then
         offset = offset + 1
