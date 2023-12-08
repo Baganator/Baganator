@@ -145,7 +145,7 @@ function BaganatorBankOnlyViewMixin:OnHide(eventName)
 
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
-  self.sortManager:SetScript("OnUpdate", nil)
+  Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
 end
 
 function BaganatorBankOnlyViewMixin:SetLiveCharacter(character)
