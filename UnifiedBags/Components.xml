@@ -119,7 +119,7 @@
           self.icon:SetAtlas("Professions_Tracking_Herb")
           self.tooltipText = BAGANATOR_L_REAGENTS
         elseif Baganator.Constants.IsClassic then
-          self.icon:SetAtlas("AdventureMapIcon-Lock")
+          self.icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\spell_nature_moonkey")
           self.tooltipText = BAGANATOR_L_KEYS
         end
       </OnLoad>
