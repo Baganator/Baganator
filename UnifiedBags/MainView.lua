@@ -665,6 +665,7 @@ function BaganatorMainViewMixin:CombineStacks(callback)
   for index, bagID in ipairs(Baganator.Constants.AllBagIndexes) do
     bagsToSort[index] = true
   end
+
   Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, bagsToSort, function(check)
     if not check then
       Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)

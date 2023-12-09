@@ -78,7 +78,14 @@
         if Baganator.Constants.IsRetail then
           self.icon:SetSize(20, 20)
         end
+        -- Disable sort button during combat as sorting is partially blocked by Blizzard
+        self:RegisterEvent("PLAYER_REGEN_ENABLED")
+        self:RegisterEvent("PLAYER_REGEN_DISABLED")
+        self:SetEnabled(not InCombatLockdown())
       </OnLoad>
+      <OnEvent>
+        self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
+      </OnEvent>
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">

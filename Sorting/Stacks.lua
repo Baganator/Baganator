@@ -1,11 +1,20 @@
 local itemIDToStackSize = {}
 
 function Baganator.Sorting.CombineStacks(bags, bagIDs, indexesToUse, callback)
+  if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
+    return
+  end
+
   local waiting = 0
   local loopComplete = false
   local stacks = {}
 
   local function Continue()
+    if InCombatLockdown() then
+      callback(false)
+      return
+    end
+
     local anySwaps = false
     for itemID, stacksForItem in pairs(stacks) do
       local stackSize = itemIDToStackSize[itemID]

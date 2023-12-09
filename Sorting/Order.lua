@@ -241,6 +241,10 @@ local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
 end
 
 function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
+  if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
+    return
+  end
+
   if ignoreCount == nil then
     ignoreCount = 0
   end
