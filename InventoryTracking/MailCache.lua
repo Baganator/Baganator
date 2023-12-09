@@ -1,17 +1,75 @@
--- TODO Track sent mail to alts
 BaganatorMailCacheMixin = {}
+
+local PENDING_OUTGOING_EVENTS = {
+  "MAIL_SEND_SUCCESS",
+  "MAIL_FAILED",
+}
 
 -- Assumed to run after PLAYER_LOGIN
 function BaganatorMailCacheMixin:OnLoad()
-  self:RegisterEvent("MAIL_INBOX_UPDATE")
+  FrameUtil.RegisterFrameForEvents(self, {
+    "MAIL_INBOX_UPDATE"
+  })
 
   local characterName, realm = UnitFullName("player")
   self.currentCharacter = characterName .. "-" .. realm
+
+  -- Track outgoing mail to alts
+  hooksecurefunc("SendMail", function(recipient, subject, body)
+    if not recipient:find("-", nil, true) then
+      recipient = recipient .. "-" .. GetNormalizedRealmName()
+    end
+
+    local mail = {
+      recipient = recipient,
+      items = {},
+    }
+
+    if not BAGANATOR_DATA.Characters[mail.recipient] then
+      return
+    end
+
+    for index = 1, ATTACHMENTS_MAX_SEND do
+      local itemLink = GetSendMailItemLink(index)
+      if itemLink ~= nil then
+        local name, itemID, texture, itemCount = GetSendMailItem(index)
+        table.insert(mail.items, {
+          itemLink = itemLink,
+          itemID = itemID,
+          iconTexture = iconTexture,
+          itemCount = itemCount,
+        })
+      end
+    end
+
+    if #mail.items == 0 then
+      return
+    end
+
+    self.pendingOutgoingMail = mail
+    FrameUtil.RegisterFrameForEvents(self, PENDING_OUTGOING_EVENTS)
+  end)
 end
 
 function BaganatorMailCacheMixin:OnEvent(eventName, ...)
+  -- General mailbox scan
   if eventName == "MAIL_INBOX_UPDATE" then
     self:SetScript("OnUpdate", self.OnUpdate)
+  -- Sending to an another character failed
+  elseif eventName == "MAIL_FAILED" then
+    FrameUtil.UnregisterFrameForEvents(self, PENDING_OUTGOING_EVENTS)
+    self.pendingOutgoingMail = nil
+  -- Sending to an another character was successful
+  elseif eventName == "MAIL_SEND_SUCCESS" then
+    local characterData = BAGANATOR_DATA.Characters[self.pendingOutgoingMail.recipient]
+    characterData.mail = characterData.mail or {}
+    for _, item in ipairs(self.pendingOutgoingMail.items) do
+      table.insert(characterData.mail, item)
+    end
+    Baganator.CallbackRegistry:TriggerEvent("MailCacheUpdate", self.pendingOutgoingMail.recipient)
+
+    FrameUtil.UnregisterFrameForEvents(self, PENDING_OUTGOING_EVENTS)
+    self.pendingOutgoingMail = nil
   end
 end
 
