@@ -1,4 +1,4 @@
-name: Addon build
+name: Build
 
 on:
   push:
@@ -12,13 +12,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        type: [retail, wrath, classic]
 
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
     - uses: BigWigsMods/packager@master
       with:
-        args: -p 914482 -a kGr09M6y
+        args: -p 914482 -a kGr09M6y -g ${{matrix.type}}
       env:
         CF_API_KEY: ${{ secrets.plusmouse_curseforge }}
         WAGO_API_TOKEN: ${{ secrets.plusmouse_wago }}

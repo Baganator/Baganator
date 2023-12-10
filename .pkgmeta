@@ -3,7 +3,11 @@ ignore:
   - tmp
   - scripts
 plain-copy:
-  - Source
+  - Core
+  - InventoryTracking
+  - CustomiseDialog
+  - Sorting
+  - UnifiedBags
 optional-dependencies:
   - masque
 enable-toc-creation: yes
