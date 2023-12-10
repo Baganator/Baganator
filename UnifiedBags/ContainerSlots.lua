@@ -31,7 +31,7 @@ function BaganatorRetailBagSlotButtonMixin:Init()
   local inventorySlot = GetBagInventorySlot(self)
   local texture = GetInventoryItemTexture("player", inventorySlot)
 
-  if texture == nil then
+  if texture == nil and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
     texture = select(2, GetInventorySlotInfo("Bag1"))
   end
 
@@ -72,7 +72,7 @@ function BaganatorClassicBagSlotButtonMixin:Init()
 
   local texture = GetInventoryItemTexture("player", inventorySlot)
 
-  if texture == nil then
+  if texture == nil and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
     texture = select(2, GetInventorySlotInfo("Bag1"))
   end
 

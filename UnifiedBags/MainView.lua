@@ -264,7 +264,7 @@ function BaganatorMainViewMixin:UpdateBagSlots()
       local details = CopyTable(containerInfo.bags[index])
       details.itemCount = Baganator.Utilities.CountEmptySlots(BAGANATOR_DATA.Characters[self.lastCharacter].bags[index + 1])
       bb:SetItemDetails(details)
-      if not details.iconTexture then
+      if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
         local _, texture = GetInventorySlotInfo("Bag1")
         SetItemButtonTexture(bb, texture)
       end
