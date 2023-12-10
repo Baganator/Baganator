@@ -10,6 +10,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   FrameUtil.RegisterFrameForEvents(self, {
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
+    "PLAYERBANKBAGSLOTS_CHANGED",
   })
 
   self.sortManager = CreateFrame("Frame", nil, self)
@@ -126,6 +127,10 @@ function BaganatorBankOnlyViewMixin:OnEvent(eventName)
     self:Show()
     if self.liveCharacter then
       self:UpdateForCharacter(self.liveCharacter)
+    end
+  elseif eventName == "PLAYERBANKBAGSLOTS_CHANGED" then
+    if self:IsVisible() then
+      self:UpdateBagSlots()
     end
   else
     self:Hide()
