@@ -145,11 +145,23 @@ function BaganatorMainViewMixin:OnLoad()
   end)
 end
 
+function BaganatorMainViewMixin:OnShow()
+  if Baganator.Config.Get(Baganator.Config.Options.AUTO_SORT_ON_OPEN) then
+    C_Timer.After(0, function()
+      self:CombineStacksAndSort()
+    end)
+  end
+
+  PlaySound(SOUNDKIT.IG_BACKPACK_OPEN);
+end
+
 function BaganatorMainViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
   self.CharacterSelect:Hide()
   Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+
+  PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE);
 end
 
 function BaganatorMainViewMixin:ApplySearch(text)

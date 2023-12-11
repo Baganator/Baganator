@@ -2,6 +2,7 @@
   <Frame name="BaganatorMainViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorMainViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
       <OnHide method="OnHide"/>
       <OnEvent method="OnEvent"/>
       <OnDragStart method="OnDragStart"/>
