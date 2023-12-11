@@ -91,13 +91,8 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   local useQualityColors = Baganator.Config.Get("icon_text_quality_colors")
   if Baganator.Config.Get("show_item_level") then
     table.insert(itemCallbacks, function(self, data)
-      local itemLevel
       if IsEquipment(data.itemLink) and not self.BGR.isCosmetic then
-        itemLevel = GetDetailedItemLevelInfo(data.itemLink)
-      elseif data.itemLink:find("keystone:", nil, true) then
-        itemLevel = tonumber((data.itemLink:match("keystone:[^:]*:[^:]*:(%d+)")))
-      end
-      if itemLevel then
+        local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
         self.ItemLevel:SetText(itemLevel)
         if useQualityColors then
           local color = qualityColors[data.quality]
