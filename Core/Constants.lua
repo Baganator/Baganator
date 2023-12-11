@@ -1,4 +1,3 @@
--- Retail bag indexes. Will need changing for classic.
 Baganator.Constants = {
   AllBagIndexes = {
     Enum.BagIndex.Backpack,
