@@ -1,21 +1,5 @@
 BaganatorGuildCacheMixin = {}
 
-function BaganatorGuildCacheMixin:OnLoad()
-  self:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")
-end
-
-function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
-  if eventName == "GUILDBANKBAGSLOTS_CHANGED" then
-    self:SetScript("OnUpdate", self.OnUpdate)
-  end
-end
-
-function BaganatorGuildCacheMixin:OnUpdate()
-  self:SetScript("OnUpdate", nil)
-
-  self:ScanBank()
-end
-
 local function InitGuild(key, guild, realms)
   if not BAGANATOR_DATA.Guilds[key] then
     BAGANATOR_DATA.Guilds[key] = {
@@ -58,11 +42,38 @@ local function GetGuildKey()
   return key
 end
 
+function BaganatorGuildCacheMixin:OnLoad()
+  FrameUtil.RegisterFrameForEvents(self, {
+    "GUILDBANKBAGSLOTS_CHANGED",
+    "GUILDBANK_UPDATE_MONEY",
+  })
+end
+
+function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
+  if eventName == "GUILDBANKBAGSLOTS_CHANGED" then
+    self:SetScript("OnUpdate", self.OnUpdate)
+  elseif eventName == "GUILDBANK_UPDATE_MONEY" then
+    local key = GetGuildKey()
+    local data = BAGANATOR_DATA.Guilds[key]
+    data.money = GetGuildBankMoney()
+
+    Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
+  end
+end
+
+function BaganatorGuildCacheMixin:OnUpdate()
+  self:SetScript("OnUpdate", nil)
+
+  self:ScanBank()
+end
+
 function BaganatorGuildCacheMixin:ScanBank()
   local start = debugprofilestop()
 
   local key = GetGuildKey()
   local data = BAGANATOR_DATA.Guilds[key]
+
+  data.money = GetGuildBankMoney()
 
   local numTabs = GetNumGuildBankTabs()
   if numTabs == 0 then
