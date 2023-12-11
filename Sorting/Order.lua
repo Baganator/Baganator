@@ -16,7 +16,6 @@ local TypeKeys = {
   "subClassID",
   "itemID",
   "quality",
-  "itemID",
   "itemLink",
   "itemCount",
 }
