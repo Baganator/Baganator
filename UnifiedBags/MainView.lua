@@ -9,16 +9,6 @@ function BaganatorMainViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  -- DO NOT REMOVE
-  -- Preallocating is necessary to avoid taint issues if a
-  -- player logs in or first opens their bags when in combat
-  if Baganator.Constants.IsClassic then
-    self.BagLive:PreallocateButtons(Baganator.Constants.MaxBagSize * 6) -- bags and keyring
-  else
-    self.BagLive:PreallocateButtons(Baganator.Constants.MaxBagSize * 5) -- bags and backpack
-    self.ReagentBagLive:PreallocateButtons(Baganator.Constants.MaxBagSize) -- reagent bag only
-  end
-
   self.sortManager = CreateFrame("Frame", nil, self)
 
   FrameUtil.RegisterFrameForEvents(self, {
