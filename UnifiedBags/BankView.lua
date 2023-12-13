@@ -260,7 +260,7 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
     if family ~= nil and family ~= 0 then
       bagChecks[bagID] = function(item)
         local itemFamily = item.itemLink and GetItemFamily(item.itemLink)
-        return itemFamily and bit.band(itemFamily, family) ~= 0
+        return itemFamily and item.classID ~= Enum.ItemClass.Container and item.classID ~= Enum.ItemClass.Quiver and bit.band(itemFamily, family) ~= 0
       end
     end
   end

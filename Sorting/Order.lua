@@ -305,7 +305,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
 
   for index, item in ipairs(groupB) do
     for bagIndex, bagID in ipairs(bagIDsInverted) do
-      if not bagChecks[bagID] or (item.classID ~= Enum.ItemClass.Container and bagChecks[bagID](item)) then
+      if not bagChecks[bagID] or bagChecks[bagID](item) then
         local slot = bagStores[bagID].last
         QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
         bagStores[bagID].last = slot - 1
@@ -320,7 +320,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
   bagIDsAvailable = tFilter(bagIDsAvailable, function(bagID) return tIndexOf(bagIDsInverted, bagID) ~= nil end, true)
   for index, item in ipairs(groupA) do
     for bagIndex, bagID in ipairs(bagIDsAvailable) do
-      if bagStores[bagID] and (not bagChecks[bagID] or (item.classID ~= Enum.ItemClass.Container and bagChecks[bagID](item))) then
+      if not bagChecks[bagID] or bagChecks[bagID](item) then
         local slot = bagStores[bagID].first
         QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
         bagStores[bagID].first = slot + 1
