@@ -262,6 +262,15 @@ end
 BaganatorLiveBagLayoutMixin = {}
 
 function BaganatorLiveBagLayoutMixin:OnLoad()
+  if Baganator.Constants.IsRetail then
+    self.buttonPool = CreateFramePool("ItemButton", self, "BaganatorRetailLiveItemButtonTemplate")
+  else
+    self.buttonPool = CreateObjectPool(function(pool)
+      classicCachedObjectCounter = classicCachedObjectCounter + 1
+      return CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicLiveItemButtonTemplate")
+    end, FramePool_HideAndClearAnchors)
+  end
+
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByBag = {}
@@ -273,27 +282,18 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
   self:RegisterEvent("ITEM_LOCK_CHANGED")
 end
 
-if Baganator.Constants.IsRetail then
-  BaganatorLiveBagLayoutMixin.buttonPool = CreateFramePool("ItemButton", self, "BaganatorRetailLiveItemButtonTemplate")
-else
-  BaganatorLiveBagLayoutMixin.buttonPool = CreateObjectPool(function(pool)
-    classicCachedObjectCounter = classicCachedObjectCounter + 1
-    return CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicLiveItemButtonTemplate")
-  end, FramePool_HideAndClearAnchors)
-end
 
--- DO NOT REMOVE
--- Preallocating is necessary to avoid taint issues if a
--- player logs in or first opens their bags when in combat
-do
-  -- Uses PLAYER_LOGIN to avoid allocating during combat
+function BaganatorLiveBagLayoutMixin:PreallocateButtons(buttonCount)
+  self.pendingAllocations = true
+  -- Avoid allocating during combat
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("PLAYER_LOGIN")
   frame:SetScript("OnEvent", function()
-    for i = 1, Baganator.Constants.ItemButtonsPreallocated do
-      BaganatorLiveBagLayoutMixin.buttonPool:Acquire()
+    self.pendingAllocations = false
+    for i = 1, buttonCount do
+      self.buttonPool:Acquire()
     end
-    BaganatorLiveBagLayoutMixin.buttonPool:ReleaseAll()
+    self.buttonPool:ReleaseAll()
   end)
 end
 
@@ -386,20 +386,12 @@ function BaganatorLiveBagLayoutMixin:UpdateLockForItem(bagID, slotID)
   end
 end
 
-function BaganatorLiveBagLayoutMixin:DeallocateButtons()
-  for _, button in ipairs(self.buttons) do
-    self.buttonPool:Release(button)
-  end
-  self.buttons = {}
-  self.buttonsByBag = {}
-
-  self.indexFramesPool:ReleaseAll()
-end
-
 function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWidth)
-  self:DeallocateButtons()
-  local indexFrames = {}
+  self.buttonPool:ReleaseAll()
+  self.indexFramesPool:ReleaseAll()
+
   self.bagSizesUsed = {}
+  self.buttons = {}
 
   for index, bagID in ipairs(indexes) do
     if indexesToUse[index] then
@@ -421,8 +413,6 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
       self.bagSizesUsed[index] = size
     end
   end
-
-  assert(self.buttonPool:GetNumActive() <= Baganator.Constants.ItemButtonsPreallocated, "some live item buttons not preallocated")
 
   FlowButtons(self, rowWidth)
 end
