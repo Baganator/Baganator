@@ -52,7 +52,7 @@ if Baganator.Constants.IsClassic then
   Baganator.Constants.MaxBagSize = 36
 end
 
-Baganator.Constants.ItemButtonsPreallocated = Baganator.Constants.MaxBagSize * 6
+Baganator.Constants.ItemButtonsPreallocated = Baganator.Constants.MaxBagSize * (#Baganator.Constants.AllBagIndexes + #Baganator.Constants.AllBankIndexes)
 
 Baganator.Constants.Events = {
   "SettingChangedEarly",
