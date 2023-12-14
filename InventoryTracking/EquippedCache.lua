@@ -4,8 +4,7 @@ BaganatorEquippedCacheMixin = {}
 function BaganatorEquippedCacheMixin:OnLoad()
   self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 
-  local characterName, realm = UnitFullName("player")
-  self.currentCharacter = characterName .. "-" .. realm
+  self.currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
   self:ScanEquipped()
 end

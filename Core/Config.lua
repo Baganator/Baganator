@@ -14,7 +14,7 @@ Baganator.Config.Options = {
   REVERSE_GROUPS_SORT_ORDER = "reverse_groups_sort_order",
   SORT_START_AT_BOTTOM = "sort_start_at_bottom",
   SORT_IGNORE_SLOTS_AT_END = "sort_ignore_slots_at_end",
-  SORT_IGNORE_SLOTS_COUNT = "sort_ignore_slots_count",
+  SORT_IGNORE_SLOTS_COUNT = "sort_ignore_slots_count_2",
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
   AUTO_SORT_ON_OPEN = "auto_sort_on_open",
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
@@ -118,6 +118,10 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ENABLE_UNIFIED_BAGS] = true,
 }
 
+Baganator.Config.IsCharacterSpecific = {
+  [Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT] = true,
+}
+
 Baganator.Config.VisualsFrameOnlySettings = {
   Baganator.Config.Options.VIEW_ALPHA,
   Baganator.Config.Options.NO_FRAME_BORDERS,
@@ -173,8 +177,14 @@ function Baganator.Config.Set(name, value)
   elseif not Baganator.Config.IsValidOption(name) then
     error("Invalid option '" .. name .. "'")
   else
-    local oldValue = BAGANATOR_CONFIG[name]
-    BAGANATOR_CONFIG[name] = value
+    local oldValue
+    if Baganator.Config.IsCharacterSpecific[name] then
+      local characterName = Baganator.Utilities.GetCharacterFullName()
+      oldValue = BAGANATOR_CONFIG[name][characterName]
+      BAGANATOR_CONFIG[name][characterName] = value
+    else
+      BAGANATOR_CONFIG[name] = value
+    end
     if value ~= oldValue then
       Baganator.CallbackRegistry:TriggerEvent("SettingChangedEarly", name)
       Baganator.CallbackRegistry:TriggerEvent("SettingChanged", name)
@@ -189,7 +199,11 @@ end
 function Baganator.Config.Reset()
   BAGANATOR_CONFIG = {}
   for option, value in pairs(Baganator.Config.Defaults) do
-    BAGANATOR_CONFIG[option] = value
+    if Baganator.Config.IsCharacterSpecific[option] then
+      BAGANATOR_CONFIG[option] = {}
+    else
+      BAGANATOR_CONFIG[option] = value
+    end
   end
 end
 
@@ -199,7 +213,11 @@ function Baganator.Config.InitializeData()
   else
     for option, value in pairs(Baganator.Config.Defaults) do
       if BAGANATOR_CONFIG[option] == nil then
-        BAGANATOR_CONFIG[option] = value
+        if Baganator.Config.IsCharacterSpecific[option] then
+          BAGANATOR_CONFIG[option] = {}
+        else
+          BAGANATOR_CONFIG[option] = value
+        end
       end
     end
   end
@@ -209,6 +227,13 @@ function Baganator.Config.Get(name)
   -- This is ONLY if a config is asked for before variables are loaded
   if BAGANATOR_CONFIG == nil then
     return Baganator.Config.Defaults[name]
+  elseif Baganator.Config.IsCharacterSpecific[name] then
+    local value = BAGANATOR_CONFIG[name][Baganator.Utilities.GetCharacterFullName()]
+    if value == nil then
+      return Baganator.Config.Defaults[name]
+    else
+      return value
+    end
   else
     return BAGANATOR_CONFIG[name]
   end

@@ -4,8 +4,7 @@ BaganatorCurrencyCacheMixin = {}
 function BaganatorCurrencyCacheMixin:OnLoad()
   self:RegisterEvent("PLAYER_MONEY")
 
-  local characterName, realm = UnitFullName("player")
-  self.currentCharacter = characterName .. "-" .. realm
+  self.currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
   BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
 

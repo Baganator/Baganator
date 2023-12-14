@@ -35,8 +35,7 @@ function BaganatorBagCacheMixin:OnLoad()
     self:RegisterEvent("REAGENTBANK_UPDATE")
   end
 
-  local characterName, realm = UnitFullName("player")
-  self.currentCharacter = characterName .. "-" .. realm
+  self.currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
   self:SetupPending()
 

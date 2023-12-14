@@ -27,3 +27,8 @@ do
     end
   end
 end
+
+function Baganator.Utilities.GetCharacterFullName()
+  local characterName, realm = UnitFullName("player")
+  return characterName .. "-" .. realm
+end

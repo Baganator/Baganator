@@ -11,8 +11,7 @@ function BaganatorMailCacheMixin:OnLoad()
     "MAIL_INBOX_UPDATE"
   })
 
-  local characterName, realm = UnitFullName("player")
-  self.currentCharacter = characterName .. "-" .. realm
+  self.currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
   -- Track outgoing mail to alts
   hooksecurefunc("SendMail", function(recipient, subject, body)
