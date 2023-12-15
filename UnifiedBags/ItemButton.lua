@@ -139,6 +139,13 @@ function Baganator.ItemButtonUtil.UpdateSettings()
       end
     end)
   end
+  if Baganator.Config.Get("show_equipment_set") then
+    table.insert(itemCallbacks, function(self, data)
+      if not Baganator.Constants.IsClassic and data.setInfo then
+        self.EquipmentSet:Show()
+      end
+    end)
+  end
   if Baganator.Config.Get("show_pawn_arrow") and PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
     table.insert(itemCallbacks, function(self, data)
       if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted(data.itemLink) then
@@ -229,6 +236,8 @@ local function SetStaticInfo(self, details)
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
   self.Expansion:SetText("")
+  self.EquipmentSet:SetTexture("Interface\\Minimap\\Minimap_Shield_Normal")
+  self.EquipmentSet:Hide()
 
   if self.ProfessionQualityOverlay then
     local scale = self:GetWidth() / 37
@@ -310,6 +319,7 @@ local function ApplyItemDetailSettings(button, size)
     ["pawn"] = button.UpgradeArrow,
     ["can_i_mog_it"] = button.CanIMogItOverlay,
     ["expansion"] = button.Expansion,
+    ["equipment_set"] = button.EquipmentSet,
   }
 
   for config, anchor in pairs(positions) do
@@ -357,6 +367,11 @@ local function ApplyItemDetailSettings(button, size)
         end
         overlay.CIMIIconTexture:SetSize(13 * shift, 13 * shift)
       end
+    elseif cornerType == "equipment_set" then
+      button.EquipmentSet:SetParent(button)
+      button.EquipmentSet:ClearAllPoints()
+      button.EquipmentSet:SetSize(15 * scale, 15 * scale)
+      button.EquipmentSet:SetPoint(unpack(anchor))
     end
     toHide[cornerType] = nil
   end

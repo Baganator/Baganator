@@ -113,6 +113,7 @@ function BaganatorBagCacheMixin:SetupPending()
 end
 
 -- Determine the GUID of all accessible items in an equipment set
+-- This shouldn't be called in Wrath classic as it may cause the client to crash
 function BaganatorBagCacheMixin:SetEquipmentSetInfo()
   local cache = {}
   for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
@@ -243,10 +244,12 @@ function BaganatorBagCacheMixin:OnUpdate()
     return
   end
   if self.pending.equipmentSets then
-    local start = debugprofilestop()
-    self:SetEquipmentSetInfo()
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-      print("equipment set info", debugprofilestop() - start)
+    if Baganator.Config.Get(Baganator.Config.Options.ENABLE_EQUIPMENT_SET_INFO) then
+      local start = debugprofilestop()
+      self:SetEquipmentSetInfo()
+      if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+        print("equipment set info", debugprofilestop() - start)
+      end
     end
     self.pending.equipmentSets = false
   end

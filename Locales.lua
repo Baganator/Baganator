@@ -59,6 +59,7 @@ L["EXPANSION"] = "Expansion"
 L["ICON_CORNERS"] = "Icon Corners"
 L["PAWN"] = "Pawn"
 L["CAN_I_MOG_IT"] = "Can I Mog It"
+L["EQUIPMENT_SET"] = "Equipment Set"
 L["PLACE_SPACE_EMPTY_OF_SLOTS_AT_TOP"] = "Place bag space empty of slots at the top"
 L["ITEMS_FLASH_ON_ALT_CLICK"] = "Flash all the same items on [Alt]+Click"
 

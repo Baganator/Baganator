@@ -47,6 +47,7 @@ local RefreshContentSettings = {
   Baganator.Config.Options.SHOW_PAWN_ARROW,
   Baganator.Config.Options.SHOW_CIMI_ICON,
   Baganator.Config.Options.SHOW_EXPANSION,
+  Baganator.Config.Options.SHOW_EQUIPMENT_SET,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
   Baganator.Config.Options.ICON_GREY_JUNK,
 }

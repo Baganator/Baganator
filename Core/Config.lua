@@ -31,6 +31,7 @@ Baganator.Config.Options = {
   TOOLTIPS_SORT_BY_NAME = "tooltips_sort_by_name",
 
   SHOW_ITEM_LEVEL = "show_item_level",
+  SHOW_EQUIPMENT_SET = "show_equipment_set",
   SHOW_EXPANSION = "show_expansion",
   SHOW_BOE_STATUS = "show_boe_status",
   HIDE_BOE_ON_COMMON = "hide_boe_on_common",
@@ -61,6 +62,7 @@ Baganator.Config.Options = {
   AUTO_OPEN = "auto_open",
 
   ENABLE_UNIFIED_BAGS = "enable_unified_bags",
+  ENABLE_EQUIPMENT_SET_INFO = "enable_equipment_set_info",
 }
 
 Baganator.Config.Defaults = {
@@ -86,6 +88,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
   [Baganator.Config.Options.SHOW_PAWN_ARROW] = false,
   [Baganator.Config.Options.SHOW_CIMI_ICON] = false,
+  [Baganator.Config.Options.SHOW_EQUIPMENT_SET] = false,
   [Baganator.Config.Options.AUTO_PAWN_ARROW] = true,
   [Baganator.Config.Options.AUTO_CIMI_ICON] = true,
   [Baganator.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
@@ -118,6 +121,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
 
   [Baganator.Config.Options.ENABLE_UNIFIED_BAGS] = true,
+  [Baganator.Config.Options.ENABLE_EQUIPMENT_SET_INFO] = Baganator.Constants.IsRetail,
 }
 
 Baganator.Config.IsCharacterSpecific = {
@@ -138,6 +142,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.SHOW_SORT_BUTTON,
   Baganator.Config.Options.SHOW_ITEM_LEVEL,
   Baganator.Config.Options.SHOW_EXPANSION,
+  Baganator.Config.Options.SHOW_EQUIPMENT_SET,
   Baganator.Config.Options.SHOW_BOE_STATUS,
   Baganator.Config.Options.HIDE_BOE_ON_COMMON,
   Baganator.Config.Options.SHOW_BOA_STATUS,

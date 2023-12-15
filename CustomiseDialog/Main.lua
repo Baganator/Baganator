@@ -451,6 +451,10 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
     table.insert(iconCornerOptions.entries, BAGANATOR_L_CAN_I_MOG_IT)
     table.insert(iconCornerOptions.values, "can_i_mog_it")
   end
+  if Baganator.Config.Get(Baganator.Config.Options.ENABLE_EQUIPMENT_SET_INFO) then
+    table.insert(iconCornerOptions.entries, BAGANATOR_L_EQUIPMENT_SET)
+    table.insert(iconCornerOptions.values, "equipment_set")
+  end
 
   local valuesToConfig = {
     ["item_level"] = "show_item_level",
@@ -458,6 +462,7 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
     ["pawn"] = "show_pawn_arrow",
     ["can_i_mog_it"] = "show_cimi_icon",
     ["expansion"] = "show_expansion",
+    ["equipment_set"] = "show_equipment_set",
   }
 
   local configs = {
