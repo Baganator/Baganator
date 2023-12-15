@@ -539,6 +539,11 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   activeReagentBag:ShowCharacter(character, "bags", Baganator.Constants.AllBagIndexes, reagentBagIndexesToUse, bagWidth)
   activeReagentBag:ApplySearch(searchText)
 
+  local sideSpacing = 13
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+    sideSpacing = 8
+  end
+
   local bagHeight = activeBag:GetHeight() + 6
   if activeReagentBag:GetHeight() > 0 then
     if showReagents then
@@ -571,7 +576,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
       activeReagentBank:Hide()
     end
     height = math.max(bankHeight, height)
-    activeBank:SetPoint("TOPLEFT", 13, - (height - bankHeight)/2 - 50)
+    activeBank:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, - (height - bankHeight)/2 - 50)
   end
   self.BankMissingHint:SetShown(self.viewBankShown and #activeBank.buttons == 0)
   if self.BankMissingHint:IsShown() then
@@ -579,11 +584,6 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   end
 
   self.Tabs[1]:SetPoint("LEFT", activeBag, "LEFT")
-
-  local sideSpacing = 13
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 5
-  end
 
   activeBag:SetPoint("TOPRIGHT", -sideSpacing, - (height - bagHeight)/2 - 50)
 
@@ -594,7 +594,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.ToggleBankButton:SetPoint("TOP")
   self.ToggleBankButton:SetPoint("LEFT", activeBag, -sideSpacing, 0)
   self:SetSize(
-    activeBag:GetWidth() + sideSpacing * 2 + 4 + (activeBank and activeBank:GetWidth() + sideSpacing * 2 + 4 or 0),
+    activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset + (activeBank and (activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset) or 0),
     height + 68
   )
 

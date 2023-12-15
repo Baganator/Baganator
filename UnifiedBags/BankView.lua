@@ -205,8 +205,16 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
     reagentBankHeight = 20
   end
 
+  local sideSpacing = 13
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+    sideSpacing = 8
+  end
+
+  self.BankLive:ClearAllPoints()
+  self.BankLive:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -50)
+
   self:SetSize(
-    self.BankLive:GetWidth() + 30,
+    self.BankLive:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset,
     self.BankLive:GetHeight() + reagentBankHeight + 55
   )
   -- 300 is the default searchbox width

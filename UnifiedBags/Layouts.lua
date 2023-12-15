@@ -57,7 +57,7 @@ local function FlowButtons(self, rowWidth)
   local iconPadding = 4
 
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
-    iconPadding = 0
+    iconPadding = 1
   end
 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
@@ -81,7 +81,7 @@ local function FlowButtons(self, rowWidth)
     end
   end
 
-  self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding + iconSize) * ((cols > 0 and (rows + 1) or rows)))
+  self:SetSize(rowWidth * (iconSize + iconPadding) - iconPadding, (iconPadding + iconSize) * ((cols > 0 and (rows + 1) or rows)))
   self.oldRowWidth = rowWidth
 end
 
