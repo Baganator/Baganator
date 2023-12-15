@@ -131,6 +131,9 @@ end
 
 function CharacterSelectSidebarMixin:UpdateList()
   local characters = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
+  while #characters > #Baganator.Constants.KioskCharacters do
+    table.remove(characters, #characters)
+  end
   self.ScrollBox:SetDataProvider(CreateDataProvider(characters), true)
 end
 

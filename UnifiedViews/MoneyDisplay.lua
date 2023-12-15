@@ -10,7 +10,7 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
   local lines = {}
   local total = 0
   for index, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
-    if realmsToInclude[characterInfo.realmNormalized] and not BAGANATOR_DATA.Characters[characterInfo.fullName].details.hidden then
+    if realmsToInclude[characterInfo.realmNormalized] and not BAGANATOR_DATA.Characters[characterInfo.fullName].details.hidden and index <= #Baganator.Constants.KioskCharacters then
       local money = BAGANATOR_DATA.Characters[characterInfo.fullName].money
       local characterName = characterInfo.name
       if #connectedRealms > 1 then
