@@ -41,12 +41,9 @@ function Baganator.Sorting.CombineStacks(bags, bagIDs, indexesToUse, callback)
           local sourceLocation = ItemLocation:CreateFromBagAndSlot(source.bagID, source.slotID)
           local targetLocation = ItemLocation:CreateFromBagAndSlot(target.bagID, target.slotID)
           if not C_Item.IsLocked(sourceLocation) and not C_Item.IsLocked(targetLocation) then
-            local splitSize = stackSize - target.item.itemCount
-            if splitSize >= source.item.itemCount then
-              C_Container.PickupContainerItem(source.bagID, source.slotID)
-            else
-              C_Container.SplitContainerItem(source.bagID, source.slotID, splitSize)
-            end
+            -- No need to split the stack as the Blizzard engine will do that
+            -- for us to combine the stacks
+            C_Container.PickupContainerItem(source.bagID, source.slotID)
             C_Container.PickupContainerItem(target.bagID, target.slotID)
             ClearCursor()
           end
