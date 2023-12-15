@@ -581,7 +581,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.Tabs[1]:SetPoint("LEFT", activeBag, "LEFT")
 
   local sideSpacing = 13
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCED_SPACING) then
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 5
   end
 

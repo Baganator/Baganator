@@ -58,8 +58,8 @@ local WINDOW_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_REDUCED_SPACING_BETWEEN_UI_COMPONENTS,
-    option = "reduced_spacing",
+    text = BAGANATOR_L_REDUCE_SPACING_BETWEEN_UI_COMPONENTS,
+    option = "reduce_spacing",
   },
 }
 

@@ -35,7 +35,7 @@ local ReflowSettings = {
   Baganator.Config.Options.ICON_TOP_RIGHT_CORNER,
   Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER,
   Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER,
-  Baganator.Config.Options.REDUCED_SPACING,
+  Baganator.Config.Options.REDUCE_SPACING,
 }
 
 local RefreshContentSettings = {
@@ -56,7 +56,7 @@ local classicCachedObjectCounter = 0
 local function FlowButtons(self, rowWidth)
   local iconPadding = 4
 
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCED_SPACING) then
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     iconPadding = 0
   end
 
