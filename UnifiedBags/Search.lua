@@ -116,6 +116,32 @@ for _, slot in ipairs(inventorySlots) do
   end
 end
 
+local TextToExpansion = {
+  ["classic"] = 0,
+  ["vanilla"] = 0,
+  ["bc"] = 1,
+  ["burning crusade"] = 1,
+  ["wrath"] = 2,
+  ["cataclysm"] = 3,
+  ["mop"] = 4,
+  ["mists of pandaria"] = 4,
+  ["draenor"] = 5,
+  ["legion"] = 6,
+  ["bfa"] = 7,
+  ["battle for azeroth"] = 7,
+  ["sl"] = 8,
+  ["shadowlands"] = 8,
+  ["df"] = 9,
+  ["dragonflight"] = 9,
+}
+
+if Baganator.Constants.IsRetail then
+  for key, expansionID in pairs(TextToExpansion) do
+    KEYWORDS_TO_CHECK["xpac:" .. key] = function(details) return details.expacID == expansionID end
+    KEYWORDS_TO_CHECK["-xpac:" .. key] = function(details) return details.expacID ~= expansionID end
+  end
+end
+
 -- Sorted in initialize function later
 local sortedKeywords = {}
 
