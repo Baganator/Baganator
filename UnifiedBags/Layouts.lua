@@ -24,7 +24,7 @@ local function MasqueRegistration(button)
   end
 end
 
-local iconPadding = 2
+local iconPadding = 4
 
 BaganatorCachedBagLayoutMixin = {}
 
@@ -65,7 +65,7 @@ local function FlowButtons(self, rowWidth)
     end
   end
   for _, button in ipairs(self.buttons) do
-    button:SetPoint("TOPLEFT", self, cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding * 2))
+    button:SetPoint("TOPLEFT", self, cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding))
     button:SetSize(iconSize, iconSize)
     button:UpdateTextures(iconSize)
     MasqueRegistration(button)
@@ -76,7 +76,7 @@ local function FlowButtons(self, rowWidth)
     end
   end
 
-  self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding * 2 + iconSize) * ((cols > 0 and (rows + 1) or rows)))
+  self:SetSize(rowWidth * (iconSize + iconPadding), (iconPadding + iconSize) * ((cols > 0 and (rows + 1) or rows)))
   self.oldRowWidth = rowWidth
 end
 
