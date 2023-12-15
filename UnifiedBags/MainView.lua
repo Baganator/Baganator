@@ -580,16 +580,21 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   self.Tabs[1]:SetPoint("LEFT", activeBag, "LEFT")
 
-  activeBag:SetPoint("TOPRIGHT", -13, - (height - bagHeight)/2 - 50)
+  local sideSpacing = 13
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCED_SPACING) then
+    sideSpacing = 5
+  end
+
+  activeBag:SetPoint("TOPRIGHT", -sideSpacing, - (height - bagHeight)/2 - 50)
 
   self.SearchBox:ClearAllPoints()
-  self.SearchBox:SetPoint("RIGHT", -13, 0)
+  self.SearchBox:SetPoint("RIGHT", -sideSpacing, 0)
   self.SearchBox:SetPoint("BOTTOMLEFT", activeBag, "TOPLEFT", 5, 3)
   self.ToggleBankButton:ClearAllPoints()
   self.ToggleBankButton:SetPoint("TOP")
-  self.ToggleBankButton:SetPoint("LEFT", activeBag, -13, 0)
+  self.ToggleBankButton:SetPoint("LEFT", activeBag, -sideSpacing, 0)
   self:SetSize(
-    activeBag:GetWidth() + 30 + (activeBank and activeBank:GetWidth() + 30 or 0),
+    activeBag:GetWidth() + sideSpacing * 2 + 4 + (activeBank and activeBank:GetWidth() + sideSpacing * 2 + 4 or 0),
     height + 68
   )
 

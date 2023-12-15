@@ -56,6 +56,11 @@ local WINDOW_OPTIONS = {
     valuePattern = BAGANATOR_L_X_BANK_COLUMNS,
     option = "bank_view_width",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_REDUCED_SPACING_BETWEEN_UI_COMPONENTS,
+    option = "reduced_spacing",
+  },
 }
 
 local ICON_OPTIONS = {

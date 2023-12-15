@@ -18,6 +18,7 @@ Baganator.Config.Options = {
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
   AUTO_SORT_ON_OPEN = "auto_sort_on_open",
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
+  REDUCED_SPACING = "reduced_spacing",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
@@ -109,6 +110,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = false,
+  [Baganator.Config.Options.REDUCED_SPACING] = false,
   [Baganator.Config.Options.SORT_METHOD] = "quality",
   [Baganator.Config.Options.REVERSE_GROUPS_SORT_ORDER] = false,
   [Baganator.Config.Options.SORT_START_AT_BOTTOM] = false,
@@ -157,6 +159,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER,
   Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.ICON_GREY_JUNK,
+  Baganator.Config.Options.REDUCED_SPACING,
 }
 
 function Baganator.Config.IsValidOption(name)
