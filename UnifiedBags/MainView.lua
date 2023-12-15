@@ -595,7 +595,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.ToggleBankButton:SetPoint("LEFT", activeBag, -sideSpacing, 0)
   self:SetSize(
     activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset + (activeBank and (activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset) or 0),
-    height + 68
+    height + 74
   )
 
   self:HideExtraTabs()
@@ -603,14 +603,14 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.ToggleReagentsButton:SetShown(activeReagentBag:GetHeight() > 0 or activeReagentBag:IsShown())
   if self.ToggleReagentsButton:IsShown() then
     self.ToggleReagentsButton:ClearAllPoints()
-    self.ToggleReagentsButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
-    self.ToggleReagentsButton:SetPoint("LEFT", activeBag, -2, 0)
+    self.ToggleReagentsButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
+    self.ToggleReagentsButton:SetPoint("LEFT", activeBag, -2, -2)
   end
   self.ToggleReagentsBankButton:SetShown(activeReagentBank and activeReagentBank:GetHeight() > 0)
   if self.ToggleReagentsBankButton:IsShown() then
     self.ToggleReagentsBankButton:ClearAllPoints()
-    self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", -2, 0)
-    self.ToggleReagentsBankButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 4)
+    self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", -2, -4)
+    self.ToggleReagentsBankButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 8)
   end
 
   self:UpdateCurrencies(character)

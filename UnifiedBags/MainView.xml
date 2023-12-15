@@ -152,7 +152,7 @@
       <Layer level="BACKGROUND">
         <FontString parentKey="Money" inherits="NumberFontNormal" enableMouse="true">
           <Anchors>
-            <Anchor point="BOTTOMRIGHT" x="-15" y="6"/>
+            <Anchor point="BOTTOMRIGHT" x="-15" y="10"/>
           </Anchors>
         </FontString>
         <FontString parentKey="Currency1" parentArray="Currencies" inherits="NumberFontNormal" enableMouse="true">
