@@ -388,7 +388,7 @@ function BaganatorLiveBagLayoutMixin:UpdateLockForItem(bagID, slotID)
   if itemButton then
     local info = C_Container.GetContainerItemInfo(bagID, slotID);
     local locked = info and info.isLocked;
-    SetItemButtonDesaturated(itemButton, locked or Baganator.Config.Get(Baganator.Config.Options.ICON_GREY_JUNK) and itemButton.JunkIcon:IsShown())
+    SetItemButtonDesaturated(itemButton, locked or itemButton.BGR.persistIconGrey)
   end
 end
 

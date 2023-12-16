@@ -256,6 +256,7 @@ local function SetStaticInfo(self, details)
 
   self.JunkIcon:SetShown(details.quality == Enum.ItemQuality.Poor)
   if iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor then
+    self.BGR.persistIconGrey = true
     self.icon:SetDesaturated(true)
   end
 
