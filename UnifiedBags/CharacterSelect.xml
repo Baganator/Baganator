@@ -9,8 +9,8 @@
       <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate">
         <Size y="22"/>
         <Anchors>
-          <Anchor point="TOPRIGHT" x="-20" y="-22"/>
-          <Anchor point="TOPLEFT" x="20" y="-22"/>
+          <Anchor point="TOPRIGHT" x="-20" y="-25"/>
+          <Anchor point="TOPLEFT" x="20" y="-25"/>
         </Anchors>
       </EditBox>
       <EventFrame parentKey="ScrollBar" inherits="WowTrimScrollBar">

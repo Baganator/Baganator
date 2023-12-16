@@ -610,7 +610,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   if self.ToggleReagentsBankButton:IsShown() then
     self.ToggleReagentsBankButton:ClearAllPoints()
     self.ToggleReagentsBankButton:SetPoint("LEFT", activeBank, "LEFT", -2, -4)
-    self.ToggleReagentsBankButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 8)
+    self.ToggleReagentsBankButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
   end
 
   self:UpdateCurrencies(character)

@@ -82,7 +82,7 @@
         </Scripts>
         <Anchors>
           <Anchor point="LEFT" relativeKey="$parent.BankLive" x="-2"/>
-          <Anchor point="BOTTOM" y="4"/>
+          <Anchor point="BOTTOM" y="7"/>
         </Anchors>
       </Button>
     </Frames>
