@@ -143,8 +143,8 @@ local TextToExpansion = {
 
 if Baganator.Constants.IsRetail then
   for key, expansionID in pairs(TextToExpansion) do
-    KEYWORDS_TO_CHECK["xpac:" .. key] = function(details) return details.expacID == expansionID end
-    KEYWORDS_TO_CHECK["-xpac:" .. key] = function(details) return details.expacID ~= expansionID end
+    KEYWORDS_TO_CHECK[key] = function(details) return details.expacID == expansionID end
+    KEYWORDS_TO_CHECK["-" .. key] = function(details) return details.expacID ~= expansionID end
   end
 end
 
