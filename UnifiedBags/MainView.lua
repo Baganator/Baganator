@@ -222,7 +222,7 @@ function BaganatorMainViewMixin:CreateBagSlots()
     bb:SetID(index)
     if #self.liveBagSlots == 1 then
       bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -15, 0)
+      bb:SetPoint("LEFT", self.ToggleBankButton, "LEFT", 2, 0)
     else
       bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
     end
