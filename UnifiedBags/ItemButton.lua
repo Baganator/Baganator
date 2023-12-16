@@ -141,7 +141,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
   if Baganator.Config.Get("show_equipment_set") then
     table.insert(itemCallbacks, function(self, data)
-      if not Baganator.Constants.IsClassic and data.setInfo then
+      if data.setInfo then
         self.EquipmentSet:Show()
       end
     end)
