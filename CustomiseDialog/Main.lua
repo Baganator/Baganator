@@ -220,6 +220,13 @@ local OPEN_CLOSE_OPTIONS = {
     root = "auto_open",
     check = function() return not Baganator.Constants.IsEra end,
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SCRAPPING_MACHINE,
+    option = "scrapping_machine",
+    root = "auto_open",
+    check = IsRetailCheck,
+  },
 }
 local SORTING_OPTIONS = {
   {

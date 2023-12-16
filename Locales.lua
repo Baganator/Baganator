@@ -129,6 +129,7 @@ L["AUTO_OPEN_CLOSE"] = "Auto Open/Close"
 L["TRADE"] = "Trade"
 L["GUILD_BANK"] = "Guild Bank"
 L["SOCKET_INTERFACE"] = "Socket Interface"
+L["SCRAPPING_MACHINE"] = "Scrapping Machine"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@

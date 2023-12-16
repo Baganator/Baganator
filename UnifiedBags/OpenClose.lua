@@ -15,6 +15,7 @@ local interactions = {
   [IT.MailInfo] = {option = "mail", default = false },
   [IT.Merchant] = {option = "merchant", default = true },
   [IT.TradePartner] = {option = "trade_partner", default = false },
+  [IT.ScrappingMachine] = {option = "scrapping_machine", default = true },
  }
 
 BaganatorOpenCloseMixin = {}
