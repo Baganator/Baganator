@@ -193,6 +193,7 @@ function Baganator.Config.Set(name, value)
       oldValue = BAGANATOR_CONFIG[name][characterName]
       BAGANATOR_CONFIG[name][characterName] = value
     else
+      oldValue = BAGANATOR_CONFIG[name]
       BAGANATOR_CONFIG[name] = value
     end
     if value ~= oldValue then
