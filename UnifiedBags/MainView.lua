@@ -397,7 +397,7 @@ function BaganatorMainViewMixin:RefreshTabs()
   local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
 
   local lastTab
-  tabs = {}
+  local tabs = {}
   for index, char in ipairs(characters) do
     local tabButton = self.tabsPool:Acquire()
     tabButton:SetText(char.nameOnly)
