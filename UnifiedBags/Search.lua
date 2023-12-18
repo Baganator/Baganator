@@ -64,6 +64,42 @@ local function ReputationCheck(details)
   end
 end
 
+local function GetRequirementCheck(requirement)
+  return function(details)
+    if not details.itemLink or not details.itemLink:find("item:", nil, true) then
+      return false
+    end
+
+    GetTooltipInfo(details)
+
+    if details.tooltipInfo then
+      for _, lineData in ipairs(details.tooltipInfo.lines) do
+        if lineData.type == Enum.TooltipDataLineType.RestrictedSkill and lineData.leftText:match(requirement) then
+          return true
+        end
+      end
+      return false
+    else
+      return nil
+    end
+  end
+end
+
+local professionsKeywords = {
+  CHARACTER_PROFESSION_TAILORING,
+  CHARACTER_PROFESSION_SKINNING,
+  CHARACTER_PROFESSION_MINING,
+  CHARACTER_PROFESSION_LEATHERWORKING,
+  CHARACTER_PROFESSION_JEWELCRAFTING,
+  CHARACTER_PROFESSION_INSCRIPTION,
+  CHARACTER_PROFESSION_HERBALISM,
+  CHARACTER_PROFESSION_FIRST_AID,
+  CHARACTER_PROFESSION_ENGINEERING,
+  CHARACTER_PROFESSION_ENCHANTING,
+  CHARACTER_PROFESSION_BLACKSMITHING,
+  CHARACTER_PROFESSION_ALCHEMY,
+}
+
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
@@ -80,7 +116,20 @@ local KEYWORDS_TO_CHECK = {
 
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck
+
+  for _, keyword in ipairs(professionsKeywords) do
+    KEYWORDS_TO_CHECK[keyword:lower()] = GetRequirementCheck(keyword)
+  end
 end
+
+local tradeGoodsToCheck = {
+  5, -- cloth
+  6, -- leather
+  7, -- metal and stone
+  8, -- cooking
+  9, -- herb
+  10, -- elemental
+}
 
 local inventorySlots = {
   "INVTYPE_HEAD",
@@ -163,7 +212,12 @@ local function BinarySmartSearch(text)
       endIndex = middleIndex
     end
   end
-  return sortedKeywords[startIndex]
+  local allKeywords = {}
+  while sortedKeywords[startIndex]:sub(1, #text) == text do
+    table.insert(allKeywords, sortedKeywords[startIndex])
+    startIndex = startIndex + 1
+  end
+  return allKeywords
 end
 
 local function ItemLevelPatternCheck(details, text)
@@ -235,14 +289,18 @@ function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
     if check then
       return check(details, searchString)
     elseif not rejects[searchString] then
-      local keyword = BinarySmartSearch(searchString)
-      if keyword then
-        local matchesStart = keyword:sub(1, #searchString) == searchString
-        if matchesStart then
-          local check = KEYWORDS_TO_CHECK[keyword]
-          matches[searchString] = check
-          return check(details, searchString)
+      local keywords = BinarySmartSearch(searchString)
+      if #keywords > 0 then
+        local check = function(details)
+          for _, k in ipairs(keywords) do
+            if KEYWORDS_TO_CHECK[k](details) then
+              return true
+            end
+          end
+          return false
         end
+        matches[searchString] = check
+        return check(details, searchString)
       end
 
       local patternChecker = PatternSearch(searchString)
@@ -272,6 +330,13 @@ function Baganator.UnifiedBags.Search.Initialize()
           return details.classID == classID
         end
       end
+    end
+  end
+
+  for _, subClass in ipairs(tradeGoodsToCheck) do
+    local keyword = GetItemSubClassInfo(7, subClass)
+    KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+      return details.classID == 7 and details.subClassID == subClass
     end
   end
 
