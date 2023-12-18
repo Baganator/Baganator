@@ -292,12 +292,20 @@ function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
       local keywords = BinarySmartSearch(searchString)
       if #keywords > 0 then
         local check = function(details)
+          local miss = false
           for _, k in ipairs(keywords) do
-            if KEYWORDS_TO_CHECK[k](details) then
+            local result = KEYWORDS_TO_CHECK[k](details)
+            if result then
               return true
+            elseif result == nil then
+              miss = true
             end
           end
-          return false
+          if miss then
+            return nil
+          else
+            return false
+          end
         end
         matches[searchString] = check
         return check(details, searchString)
