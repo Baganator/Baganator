@@ -122,15 +122,6 @@ if Baganator.Constants.IsRetail then
   end
 end
 
-local tradeGoodsToCheck = {
-  5, -- cloth
-  6, -- leather
-  7, -- metal and stone
-  8, -- cooking
-  9, -- herb
-  10, -- elemental
-}
-
 local inventorySlots = {
   "INVTYPE_HEAD",
   "INVTYPE_NECK",
@@ -276,7 +267,9 @@ local function PatternSearch(searchString)
   end
 end
 
+-- Previously found search terms checks by keyword or pattern
 local matches = {}
+-- Search terms with no keyword or pattern match
 local rejects = {}
 
 function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
@@ -292,14 +285,29 @@ function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
     elseif not rejects[searchString] then
       local keywords = BinarySmartSearch(searchString)
       if #keywords > 0 then
+        -- Work through each keyword that matches the search string and check if
+        -- the details match the keyword's criteria
         local check = function(details)
+          -- Cache results for each keyword to speed up continuing searches
+          if not details.matchInfo then
+            details.matchInfo = {}
+          end
           local miss = false
           for _, k in ipairs(keywords) do
-            local result = KEYWORDS_TO_CHECK[k](details)
-            if result then
+            if details.matchInfo[k] == nil then
+              -- Keyword results not cached yet
+              local result = KEYWORDS_TO_CHECK[k](details)
+              if result then
+                details.matchInfo[k] = true
+                return true
+              elseif result ~= nil then
+                details.matchInfo[k] = false
+              else
+                miss = true
+              end
+            elseif details.matchInfo[k] then
+              -- got a positive result cached, we're done
               return true
-            elseif result == nil then
-              miss = true
             end
           end
           if miss then
@@ -312,12 +320,14 @@ function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
         return check(details, searchString)
       end
 
+      -- See if a pattern matches, e.g. item level range
       local patternChecker = PatternSearch(searchString)
       if patternChecker then
         matches[searchString] = patternChecker
         return patternChecker(details, searchString)
       end
 
+      -- Couldn't find anything that matched
       rejects[searchString] = true
     end
   end
@@ -342,6 +352,14 @@ function Baganator.UnifiedBags.Search.Initialize()
     end
   end
 
+  local tradeGoodsToCheck = {
+    5, -- cloth
+    6, -- leather
+    7, -- metal and stone
+    8, -- cooking
+    9, -- herb
+    10, -- elemental
+  }
   for _, subClass in ipairs(tradeGoodsToCheck) do
     local keyword = GetItemSubClassInfo(7, subClass)
     KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
