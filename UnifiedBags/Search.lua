@@ -46,7 +46,7 @@ local function GetTooltipInfo(details)
 end
 
 local function ReputationCheck(details)
-  if not details.itemLink then
+  if not details.itemLink or not details.itemLink:find("item:", nil, true) then
     return false
   end
 
