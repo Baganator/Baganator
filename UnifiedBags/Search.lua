@@ -212,8 +212,9 @@ local function BinarySmartSearch(text)
       endIndex = middleIndex
     end
   end
+
   local allKeywords = {}
-  while sortedKeywords[startIndex]:sub(1, #text) == text do
+  while startIndex <= #sortedKeywords and sortedKeywords[startIndex]:sub(1, #text) == text do
     table.insert(allKeywords, sortedKeywords[startIndex])
     startIndex = startIndex + 1
   end
