@@ -51,6 +51,7 @@ Baganator.Config.Options = {
   AUTO_PAWN_ARROW = "auto_pawn_arrow",
   SHOW_CIMI_ICON = "show_cimi_icon",
   AUTO_CIMI_ICON = "auto_cimi_icon",
+  JUNK_PLUGIN = "junk_plugin",
 
   MAIN_VIEW_POSITION = "main_view_position",
   MAIN_VIEW_SHOW_BAG_SLOTS = "main_view_show_bag_slots",
@@ -118,6 +119,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END] = false,
   [Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT] = 0,
   [Baganator.Config.Options.AUTO_SORT_ON_OPEN] = false,
+  [Baganator.Config.Options.JUNK_PLUGIN] = "poor_quality",
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
@@ -160,6 +162,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.ICON_GREY_JUNK,
   Baganator.Config.Options.REDUCE_SPACING,
+  Baganator.Config.Options.JUNK_PLUGIN,
 }
 
 function Baganator.Config.IsValidOption(name)

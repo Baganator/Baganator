@@ -1,3 +1,5 @@
+local _, addonTable = ...
+
 local IsRetailCheck = function()
   return Baganator.Constants.IsRetail
 end
@@ -60,6 +62,11 @@ local WINDOW_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_REDUCE_SPACING_BETWEEN_UI_COMPONENTS,
     option = "reduce_spacing",
+  },
+  {
+    type = "header",
+    text = BAGANATOR_L_JUNK_DETECTION,
+    level = 2,
   },
 }
 
@@ -401,6 +408,35 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
   frame.ResetFramePositions:SetScript("OnClick", function()
     Baganator.CallbackRegistry:TriggerEvent("ResetFramePositions")
   end)
+
+  do
+    local junkPlugins = {}
+    for id, pluginDetails in pairs(addonTable.JunkPlugins) do
+      table.insert(junkPlugins, {
+        label = pluginDetails.label,
+        id = id,
+      })
+    end
+    table.sort(junkPlugins, function(a, b)
+      return a.label < b.label
+    end)
+    local dropdown = {
+      type = "dropdown",
+      option = "junk_plugin",
+      entries = {
+        BAGANATOR_L_POOR_QUALITY,
+      },
+      values = {
+        "poor_quality",
+      },
+    }
+    for _, pluginInfo in ipairs(junkPlugins) do
+      table.insert(dropdown.entries, pluginInfo.label)
+      table.insert(dropdown.values, pluginInfo.id)
+    end
+
+    table.insert(WINDOW_OPTIONS, dropdown)
+  end
 
   local allFrames = GenerateFrames(WINDOW_OPTIONS, frame)
 

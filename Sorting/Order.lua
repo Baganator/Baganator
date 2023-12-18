@@ -1,3 +1,5 @@
+local _, addonTable = ...
+
 Baganator.Sorting = {}
 
 local QualityKeys = {
@@ -289,8 +291,21 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     start = debugprofilestop()
   end
 
-  local groupA = tFilter(sortedItems, function(item) return item.quality ~= Enum.ItemQuality.Poor end, true)
-  local groupB = tFilter(sortedItems, function(item) return item.quality == Enum.ItemQuality.Poor end, true)
+  local junkPlugin = addonTable.JunkPlugins[Baganator.Config.Get("junk_plugin")]
+  local groupA, groupB
+  if junkPlugin then
+    groupA, groupB = {}, {}
+    for _, item in ipairs(sortedItems) do
+      if junkPlugin.callback(item.itemLink, item.itemID, item.isBound, item.quality) then
+        table.insert(groupB, item)
+      else
+        table.insert(groupA, item)
+      end
+    end
+  else
+    groupA = tFilter(sortedItems, function(item) return item.quality ~= Enum.ItemQuality.Poor end, true)
+    groupB = tFilter(sortedItems, function(item) return item.quality == Enum.ItemQuality.Poor end, true)
+  end
 
   if isReverse then
     local tmp = groupA

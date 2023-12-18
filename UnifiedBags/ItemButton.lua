@@ -1,3 +1,7 @@
+local _, addonTable = ...
+
+addonTable.JunkPlugins = {}
+
 Baganator.ItemButtonUtil = {}
 
 function Baganator.ItemButtonUtil.SetAutoSettings()
@@ -170,6 +174,20 @@ function Baganator.ItemButtonUtil.UpdateSettings()
       end
       self.CanIMogItOverlay:Show()
       CIMI_SetIcon(self.CanIMogItOverlay, CIMI_Update, CanIMogIt:GetTooltipText(data.itemLink))
+    end)
+  end
+
+  local junkPluginID = Baganator.Config.Get("junk_plugin")
+  local junkPlugin = addonTable.JunkPlugins[junkPluginID]
+  if junkPlugin and junkPluginID ~= "poor_quality" then
+    table.insert(itemCallbacks, function(self, data)
+      local isJunk = junkPlugin.callback(data.itemLink, data.itemID, data.isBound, data.quality)
+
+      self.JunkIcon:SetShown(isJunk)
+      if iconSettings.markJunk and isJunk then
+        self.BGR.persistIconGrey = true
+        self.icon:SetDesaturated(true)
+      end
     end)
   end
 end

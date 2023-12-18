@@ -49,6 +49,7 @@ local RefreshContentSettings = {
   Baganator.Config.Options.SHOW_EQUIPMENT_SET,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
   Baganator.Config.Options.ICON_GREY_JUNK,
+  Baganator.Config.Options.JUNK_PLUGIN,
 }
 
 local classicCachedObjectCounter = 0

@@ -59,4 +59,5 @@ CustomiseDialog\Main.lua
 CustomiseDialog\Main.xml
 CustomiseDialog\Initialize.lua
 
-API.lua
+API\Main.lua
+API\Plugins.lua

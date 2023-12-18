@@ -1,10 +1,10 @@
 Baganator.Utilities.OnAddonLoaded("Pawn", function()
   -- Equip/unequip
   Baganator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
-    Baganator.CallbackRegistry:TriggerEvent("ContentRefreshRequired")
+    Baganator.API.RequestItemButtonsRefresh()
   end)
   -- Spec change
   hooksecurefunc("PawnInvalidateBestItems", function()
-    Baganator.CallbackRegistry:TriggerEvent("ContentRefreshRequired")
+    Baganator.API.RequestItemButtonsRefresh()
   end)
 end)
