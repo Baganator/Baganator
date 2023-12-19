@@ -64,42 +64,6 @@ local function ReputationCheck(details)
   end
 end
 
-local function GetRequirementCheck(requirement)
-  return function(details)
-    if not details.itemLink or not details.itemLink:find("item:", nil, true) then
-      return false
-    end
-
-    GetTooltipInfo(details)
-
-    if details.tooltipInfo then
-      for _, lineData in ipairs(details.tooltipInfo.lines) do
-        if lineData.type == Enum.TooltipDataLineType.RestrictedSkill and lineData.leftText:match(requirement) then
-          return true
-        end
-      end
-      return false
-    else
-      return nil
-    end
-  end
-end
-
-local professionsKeywords = {
-  CHARACTER_PROFESSION_TAILORING,
-  CHARACTER_PROFESSION_SKINNING,
-  CHARACTER_PROFESSION_MINING,
-  CHARACTER_PROFESSION_LEATHERWORKING,
-  CHARACTER_PROFESSION_JEWELCRAFTING,
-  CHARACTER_PROFESSION_INSCRIPTION,
-  CHARACTER_PROFESSION_HERBALISM,
-  CHARACTER_PROFESSION_FIRST_AID,
-  CHARACTER_PROFESSION_ENGINEERING,
-  CHARACTER_PROFESSION_ENCHANTING,
-  CHARACTER_PROFESSION_BLACKSMITHING,
-  CHARACTER_PROFESSION_ALCHEMY,
-}
-
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
@@ -116,10 +80,6 @@ local KEYWORDS_TO_CHECK = {
 
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck
-
-  for _, keyword in ipairs(professionsKeywords) do
-    KEYWORDS_TO_CHECK[keyword:lower()] = GetRequirementCheck(keyword)
-  end
 end
 
 local inventorySlots = {
