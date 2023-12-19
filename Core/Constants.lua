@@ -43,7 +43,7 @@ if Baganator.Constants.IsRetail then
   table.insert(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)
   Baganator.Constants.BagSlotsCount = 5
   Baganator.Constants.MaxBagSize = 42
-  Baganator.Constants.ButtonFrameOffset = 4
+  Baganator.Constants.ButtonFrameOffset = 6
 end
 if Baganator.Constants.IsClassic then
   -- Workaround for the enum containing the wrong values for the bank bag slots
@@ -52,7 +52,7 @@ if Baganator.Constants.IsClassic then
   end
   Baganator.Constants.BagSlotsCount = 4
   Baganator.Constants.MaxBagSize = 36
-  Baganator.Constants.ButtonFrameOffset = -2
+  Baganator.Constants.ButtonFrameOffset = 0
 end
 
 Baganator.Constants.Events = {
