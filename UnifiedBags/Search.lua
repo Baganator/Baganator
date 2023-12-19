@@ -362,8 +362,10 @@ function Baganator.UnifiedBags.Search.Initialize()
   }
   for _, subClass in ipairs(tradeGoodsToCheck) do
     local keyword = GetItemSubClassInfo(7, subClass)
-    KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
-      return details.classID == 7 and details.subClassID == subClass
+    if keyword ~= nil then
+      KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+        return details.classID == 7 and details.subClassID == subClass
+      end
     end
   end
 
