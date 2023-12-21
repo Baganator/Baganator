@@ -10,7 +10,7 @@ function Baganator.API.GetInventoryInfo(itemLink, sameConnectedRealm, sameFactio
   return Baganator.ItemSummaries:GetTooltipInfo(key, sameConnectedRealm == true, sameFaction == true)
 end
 
--- callback - function(itemLink, itemID, isBound, quality) returns nil/true/false
+-- callback - function(bagID, slotID, itemID, itemLink) returns nil/true/false
 --  Returning true indicates this item is junk and should show a junk coin
 --  Returning false or nil indicates this item isn't junk and shouldn't show a
 --  junk coin
