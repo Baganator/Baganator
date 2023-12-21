@@ -12,11 +12,6 @@
         <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
         <Texture parentKey="UpgradeArrow"/>
         <Texture parentKey="EquipmentSet"/>
-        <Texture parentKey="JunkIcon" atlas="bags-junkcoin" useAtlasSize="true" hidden="true">
-          <Anchors>
-            <Anchor point="TOPLEFT" x="1" y="0"/>
-          </Anchors>
-        </Texture>
       </Layer>
     </Layers>
   </ItemButton>
@@ -52,11 +47,6 @@
         <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
         <Texture parentKey="UpgradeArrow"/>
         <Texture parentKey="EquipmentSet"/>
-        <Texture parentKey="JunkIcon" atlas="bags-junkcoin" useAtlasSize="true" hidden="true">
-          <Anchors>
-            <Anchor point="TOPLEFT" x="1" y="0"/>
-          </Anchors>
-        </Texture>
       </Layer>
     </Layers>
   </Button>

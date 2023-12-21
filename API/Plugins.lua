@@ -3,47 +3,16 @@ Baganator.Utilities.OnAddonLoaded("Peddler", function()
     return
   end
 
-  Baganator.API.RegisterJunkPlugin(BAGANATOR_L_PEDDLER, "peddler", function(itemLink, itemID, isBound, quality)
-    local _, itemID, _, _, _, _, _, suffixID = strsplit(":", itemLink)
-    itemID = tonumber(itemID)
-    suffixID = tonumber(suffixID)
+  Baganator.API.RegisterJunkPlugin(BAGANATOR_L_PEDDLER, "peddler", function(bagID, slotID, ...)
+    local itemID, uniqueItemID, isSoulbound, itemLink = PeddlerAPI.getUniqueItemID(bagID, slotID)
 
-    if not itemID then
-      return false
-    end
-
-    local uniqueItemID = itemID
-    if suffixID and suffixID ~= 0 then
-      uniqueItemID = itemID .. suffixID
-    end
-
-    return PeddlerAPI.itemIsToBeSold(itemID, uniqueItemID, isBound)
+    return uniqueItemID and PeddlerAPI.itemIsToBeSold(itemID, uniqueItemID, isSoulbound)
   end)
 end)
 
 Baganator.Utilities.OnAddonLoaded("SellJunk", function()
-  Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SELLJUNK, "selljunk", function(itemLink, itemID, isBound, quality)
-    -- is it grey quality item?
-    local grey = quality == Enum.ItemQuality.Poor
-
-    -- is it an armor or weapon?
-    local _, _, _, _, _, sType, _, _ = GetItemInfo(itemLink);
-    local armor_weapon = ((sType == "Armor") or (sType == "Weapon"));
-
-    -- ignore soulbound configuration
-    local ignoreSoulbound = SellJunk.db.char.ignoreSoulbound
-
-    if grey and (not SellJunk:isException(itemLink)) then
-      if (not armor_weapon) or (armor_weapon and isBound) or (ignoreSoulbound) then
-        return true
-      end
-    end
-
-    if (not grey) and (SellJunk:isException(itemLink)) then
-      return true
-    end
-
-    return false
+  Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SELLJUNK, "selljunk", function(bagID, slotID, itemID, itemLink)
+    return SellJunk:CheckItemIsJunk(itemLink, bagID, slotID)
   end)
   hooksecurefunc(SellJunk, "Add", function()
     Baganator.API.RequestItemButtonsRefresh()
@@ -54,8 +23,8 @@ Baganator.Utilities.OnAddonLoaded("SellJunk", function()
 end)
 
 Baganator.Utilities.OnAddonLoaded("Scrap", function()
-  Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SCRAP, "scrap", function(itemLink, itemID, isBound, quality)
-    return Scrap:IsJunk(itemID)
+  Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SCRAP, "scrap", function(bagID, slotID, itemID, itemLink)
+    return Scrap:IsJunk(itemID, bagID, slotID)
   end)
   hooksecurefunc(Scrap, "ToggleJunk", function()
     Baganator.API.RequestItemButtonsRefresh()

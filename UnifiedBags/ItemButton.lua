@@ -91,6 +91,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
 
   iconSettings = {
     markJunk = Baganator.Config.Get("icon_grey_junk"),
+    usingJunkPlugin = false,
     equipmentSetBorder = Baganator.Config.Get("icon_equipment_set_border"),
   }
 
@@ -180,13 +181,15 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   local junkPluginID = Baganator.Config.Get("junk_plugin")
   local junkPlugin = addonTable.JunkPlugins[junkPluginID]
   if junkPlugin and junkPluginID ~= "poor_quality" then
+    iconSettings.usingJunkPlugin = true
     table.insert(itemCallbacks, function(self, data)
-      local isJunk = junkPlugin.callback(data.itemLink, data.itemID, data.isBound, data.quality)
-
-      self.JunkIcon:SetShown(isJunk)
-      if iconSettings.markJunk and isJunk then
-        self.BGR.persistIconGrey = true
-        self.icon:SetDesaturated(true)
+      if self.JunkIcon then
+        local isJunk = junkPlugin.callback(self:GetParent():GetID(), self:GetID(), data.itemID, data.itemLink)
+        self.JunkIcon:SetShown(isJunk)
+        if iconSettings.markJunk and isJunk then
+          self.BGR.persistIconGrey = true
+          self.icon:SetDesaturated(true)
+        end
       end
     end)
   end
@@ -272,10 +275,12 @@ local function SetStaticInfo(self, details)
     self.CanIMogItOverlay:Hide()
   end
 
-  self.JunkIcon:SetShown(details.quality == Enum.ItemQuality.Poor)
-  if iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor then
-    self.BGR.persistIconGrey = true
-    self.icon:SetDesaturated(true)
+  if not iconSettings.usingJunkPlugin and self.JunkIcon then
+    self.JunkIcon:SetShown(details.quality == Enum.ItemQuality.Poor)
+    if iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor then
+      self.BGR.persistIconGrey = true
+      self.icon:SetDesaturated(true)
+    end
   end
 
   if self.BaganatorBagHighlight then
@@ -666,6 +671,8 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self:SetMatchesSearch(true)
 
   -- Baganator specific stuff
+  self.JunkIcon:Hide()
+
   self.BGR = {}
   self.BGR.itemName = ""
   self.BGR.itemLink = cacheData.itemLink
@@ -917,7 +924,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   battlepayItemTexture:Hide();
   newItemTexture:Hide();
 
-  self.JunkIcon:SetShown(false);
+  self.JunkIcon:Hide();
 
   if ( texture ) then
     ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
