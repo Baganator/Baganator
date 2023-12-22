@@ -146,7 +146,6 @@ local TextToExpansion = {
 if Baganator.Constants.IsRetail then
   for key, expansionID in pairs(TextToExpansion) do
     KEYWORDS_TO_CHECK[key] = function(details) return details.expacID == expansionID end
-    KEYWORDS_TO_CHECK["-" .. key] = function(details) return details.expacID ~= expansionID end
   end
 end
 
@@ -234,66 +233,112 @@ local matches = {}
 -- Search terms with no keyword or pattern match
 local rejects = {}
 
-function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
-  local itemLink = details.itemLink
-  local itemName = details.itemNameLower
-
-  if itemName:find(searchString, nil, true) ~= nil then
-    return true
-  else
-    local check = matches[searchString]
-    if check then
-      return check(details, searchString)
-    elseif not rejects[searchString] then
-      local keywords = BinarySmartSearch(searchString)
-      if #keywords > 0 then
-        -- Work through each keyword that matches the search string and check if
-        -- the details match the keyword's criteria
-        local check = function(details)
-          -- Cache results for each keyword to speed up continuing searches
-          if not details.matchInfo then
-            details.matchInfo = {}
-          end
-          local miss = false
-          for _, k in ipairs(keywords) do
-            if details.matchInfo[k] == nil then
-              -- Keyword results not cached yet
-              local result = KEYWORDS_TO_CHECK[k](details)
-              if result then
-                details.matchInfo[k] = true
-                return true
-              elseif result ~= nil then
-                details.matchInfo[k] = false
-              else
-                miss = true
-              end
-            elseif details.matchInfo[k] then
-              -- got a positive result cached, we're done
+local function ApplyKeyword(searchString)
+  local function MatchesText(details)
+    return details.itemNameLower:find(searchString, nil, true) ~= nil
+  end
+  local check = matches[searchString]
+  if check then
+    return check
+  elseif not rejects[searchString] then
+    local keywords = BinarySmartSearch(searchString)
+    if #keywords > 0 then
+      -- Work through each keyword that matches the search string and check if
+      -- the details match the keyword's criteria
+      local check = function(details)
+        if MatchesText(details, searchString) then
+          return true
+        end
+        -- Cache results for each keyword to speed up continuing searches
+        if not details.matchInfo then
+          details.matchInfo = {}
+        end
+        local miss = false
+        for _, k in ipairs(keywords) do
+          if details.matchInfo[k] == nil then
+            -- Keyword results not cached yet
+            local result = KEYWORDS_TO_CHECK[k](details, searchString)
+            if result then
+              details.matchInfo[k] = true
               return true
+            elseif result ~= nil then
+              details.matchInfo[k] = false
+            else
+              miss = true
             end
-          end
-          if miss then
-            return nil
-          else
-            return false
+          elseif details.matchInfo[k] then
+            -- got a positive result cached, we're done
+            return true
           end
         end
-        matches[searchString] = check
-        return check(details, searchString)
+        if miss then
+          return nil
+        else
+          return false
+        end
       end
-
-      -- See if a pattern matches, e.g. item level range
-      local patternChecker = PatternSearch(searchString)
-      if patternChecker then
-        matches[searchString] = patternChecker
-        return patternChecker(details, searchString)
-      end
-
-      -- Couldn't find anything that matched
-      rejects[searchString] = true
+      matches[searchString] = check
+      return check
     end
+
+    -- See if a pattern matches, e.g. item level range
+    local patternChecker = PatternSearch(searchString)
+    if patternChecker then
+      matches[searchString] = patternChecker
+      return function(details)
+        return MatchesText(details, searchString) or patternChecker(details, searchString)
+      end
+    end
+
+    -- Couldn't find anything that matched
+    rejects[searchString] = true
   end
-  return false
+  return MatchesText
+end
+
+local function ApplyCombinedTerms(fullSearchString)
+  if fullSearchString:match("[|]") then
+    local checks = {}
+    for part in fullSearchString:gmatch("[^|]+") do
+      table.insert(checks, ApplyCombinedTerms(part))
+    end
+    return function(...)
+      for _, check in ipairs(checks) do
+        if check(...) then
+          return true
+        end
+      end
+      return false
+    end
+  elseif fullSearchString:match("[&]") then
+    local checks = {}
+    for part in fullSearchString:gmatch("[^&]+") do
+      table.insert(checks, ApplyCombinedTerms(part))
+    end
+    return function(...)
+      for _, check in ipairs(checks) do
+        if not check(...) then
+          return false
+        end
+      end
+      return true
+    end
+  elseif fullSearchString:match("^~") then
+    local nested = ApplyCombinedTerms(fullSearchString:sub(2, #fullSearchString))
+    return function(...) return not nested(...) end
+  else
+    return ApplyKeyword(fullSearchString)
+  end
+end
+
+function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
+  local check = matches[searchString]
+  if not check then
+    check = ApplyCombinedTerms(searchString)
+    matches[searchString] = check
+  end
+
+  return check(details, searchString)
 end
 
 function Baganator.UnifiedBags.Search.ClearCache()
