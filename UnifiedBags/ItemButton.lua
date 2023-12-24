@@ -720,7 +720,7 @@ end
 local function ApplyQualityBorderClassic(self, quality)
   local color
 
-  if quality and quality >= LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality] then
+  if quality and quality >= LE_ITEM_QUALITY_UNCOMMON and BAG_ITEM_QUALITY_COLORS[quality] then
     color = BAG_ITEM_QUALITY_COLORS[quality]
   end
 
