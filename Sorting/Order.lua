@@ -5,22 +5,125 @@ Baganator.Sorting = {}
 local QualityKeys = {
   "priority",
   "quality",
-  "classID",
-  "subClassID",
+  "sortedClassID",
+  "sortedInvSlotID",
+  "sortedSubClassID",
   "itemID",
   "itemLink",
   "itemCount",
 }
 
 local TypeKeys = {
-  "priority",
-  "classID",
-  "subClassID",
+  "priority", -- custom
+  "sortedClassID", -- GetItemInfo -> itemType (https://warcraft.wiki.gg/wiki/API_GetItemInfo)
+  "sortedSubClassID", -- GetItemInfo -> subclassID
+  "sortedInvSlotID", -- InventorySlotId (https://warcraft.wiki.gg/wiki/InventorySlotId)
+  -- "itemLevel",
   "itemID",
   "quality",
   "itemLink",
   "itemCount",
 }
+
+-- Custom ordering of classIDs, subClassIDs and inv[entory]SlotIDs. Original
+-- configuration supplied by Phraxik
+local sorted = {
+  classID = {
+    18, -- wowtoken
+    0, -- consumable
+    1, -- container
+    5, -- reagent
+    6, -- projectile (obsolete)
+    2, -- weapon
+    4, -- armor
+    11, -- quiver (obsolete)
+    3, -- gem
+    8, -- item enhancement
+    16, -- glyph
+    7, -- tradegoods
+    19, -- profession
+    9, -- recipe
+    10, -- money (obsolete)
+    12, -- quest
+    13, -- key
+    14, -- permanent (obsolete)
+    15, -- misc
+    17, -- battle pet
+  },
+  weaponSubClassID = {
+    0, -- 1h axe
+    4, -- 1h mace
+    7, -- 1h sword
+    9, -- warglaives
+    15, -- dagger
+    13, -- fist weapons
+    11, -- bear claws
+    12, -- cat claws
+    19, -- wands
+    1, -- 2h axe
+    5, -- 2h mace
+    8, -- 2h sword
+    6, -- polearm
+    10, -- staff
+    2, -- bows
+    18, -- crossbows
+    3, -- guns
+    16, -- thrown
+    17, -- spears
+    14, -- misc
+    20, -- fishing pole
+  },
+  armorSubClassID = {
+    6, -- shields
+    7, -- librams
+    8, -- idols
+    9, -- totems
+    10, -- sigils
+    11, -- relic
+    2, -- leather
+    3, -- mail
+    4, -- plate
+    1, -- cloth
+    0, -- generic
+    5, -- cosmetic
+  },
+  invSlotID = {
+    1, -- head
+    3, -- shoulder
+    5, -- body
+    9, -- wrist
+    10, -- hands
+    6, -- waist
+    7, -- legs
+    8, -- feet
+    2, -- neck
+    15, -- back
+    11, -- finger1
+    12, -- finger2
+    13, -- trinket1
+    14, -- trinket2
+    4, -- shirt
+    19, -- tabard
+    16, -- one hand
+    17, -- one hand dual/two hand
+    20, -- prof tool
+    23, -- prof tool
+    21, -- prof gear
+    22, -- prof gear
+    24, -- prof gear
+    25, -- prof gear
+  },
+}
+
+-- Fast lookup to find ordering of a given detail
+local sortedMap = {}
+for key, list in pairs(sorted) do
+  local map = {}
+  for index, entry in ipairs(list) do
+    map[entry] = index
+  end
+  sortedMap[key] = map
+end
 
 local PriorityItems = {
   6948, -- Hearthstone
@@ -45,8 +148,22 @@ local function ConvertToOneList(bags, indexesToUse)
           if not linkToCheck:match("item:") then
             linkToCheck = "item:" .. item.itemID
           end
-          item.classID, item.subClassID = select(6, GetItemInfoInstant(linkToCheck))
+
           item.priority = PriorityMap[item.itemID] and 1 or 1000
+
+          item.classID, item.subClassID = select(6, GetItemInfoInstant(linkToCheck))
+          item.sortedClassID = sortedMap.classID[item.classID] or (item.classID + 200)
+
+          if item.classID == Enum.ItemClass.Weapon then
+            item.sortedSubClassID = sortedMap.weaponSubClassID[item.subClassID] or (item.subClassID + 200)
+          elseif item.classID == Enum.ItemClass.Armor then
+            item.sortedSubClassID = sortedMap.armorSubClassID[item.subClassID] or (item.subClassID + 200)
+          else
+            item.sortedSubClassID = item.subClassID
+          end
+
+          local invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID)
+          item.invSlotID = sortedMap.invSlotID[invSlotID] or (invSlotID + 200)
         end
         table.insert(list, item)
       end
