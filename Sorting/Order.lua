@@ -80,9 +80,9 @@ local sorted = {
     9, -- totems
     10, -- sigils
     11, -- relic
-    2, -- leather
-    3, -- mail
     4, -- plate
+    3, -- mail
+    2, -- leather
     1, -- cloth
     0, -- generic
     5, -- cosmetic
