@@ -21,7 +21,11 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     return
   end
 
-  local key = Baganator.Utilities.GetItemKey(itemLink)
+  local success, key = pcall(Baganator.Utilities.GetItemKey, itemLink)
+
+  if not success then
+    return
+  end
 
   local tooltipInfo = summaries:GetTooltipInfo(key, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
