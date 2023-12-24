@@ -17,11 +17,11 @@ local function SetCheck(details)
 end
 
 local function BindOnEquipCheck(details)
-  return not details.isBound and Baganator.Utilities.IsEquipment(details.itemLink)
+  return not details.isBound and Baganator.Utilities.IsEquipment(details.itemLink) == true
 end
 
 local function EquipmentCheck(details)
-  return Baganator.Utilities.IsEquipment(details.itemLink)
+  return Baganator.Utilities.IsEquipment(details.itemLink) == true
 end
 
 local function FoodCheck(details)
