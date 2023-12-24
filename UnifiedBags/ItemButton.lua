@@ -297,7 +297,7 @@ local function SearchCheck(self, text)
     return true
   end
 
-  if self.BGR == nil then
+  if self.BGR == nil or self.BGR.itemLink == nil then
     return false
   end
 

@@ -17,11 +17,11 @@ local function SetCheck(details)
 end
 
 local function BindOnEquipCheck(details)
-  return not details.isBound and details.itemLink and Baganator.Utilities.IsEquipment(details.itemLink)
+  return not details.isBound and Baganator.Utilities.IsEquipment(details.itemLink)
 end
 
 local function EquipmentCheck(details)
-  return details.itemLink and Baganator.Utilities.IsEquipment(details.itemLink)
+  return Baganator.Utilities.IsEquipment(details.itemLink)
 end
 
 local function FoodCheck(details)
@@ -46,7 +46,7 @@ local function GetTooltipInfo(details)
 end
 
 local function ReputationCheck(details)
-  if not details.itemLink or not details.itemLink:find("item:", nil, true) then
+  if not details.itemLink:find("item:", nil, true) then
     return false
   end
 
@@ -174,7 +174,7 @@ local function BinarySmartSearch(text)
 end
 
 local function ItemLevelPatternCheck(details, text)
-  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+  if not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
@@ -184,7 +184,7 @@ local function ItemLevelPatternCheck(details, text)
 end
 
 local function ItemLevelRangePatternCheck(details, text)
-  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+  if not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
@@ -194,7 +194,7 @@ local function ItemLevelRangePatternCheck(details, text)
 end
 
 local function ItemLevelMinPatternCheck(details, text)
-  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+  if not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
@@ -204,7 +204,7 @@ local function ItemLevelMinPatternCheck(details, text)
 end
 
 local function ItemLevelMaxPatternCheck(details, text)
-  if not details.itemLink or not Baganator.Utilities.IsEquipment(details.itemLink) then
+  if not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
