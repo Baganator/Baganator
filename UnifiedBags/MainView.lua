@@ -273,7 +273,7 @@ function BaganatorMainViewMixin:UpdateBagSlots()
   if not self.isLive and containerInfo then
     local show = Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
     for index, bb in ipairs(self.cachedBagSlots) do
-      local details = CopyTable(containerInfo.bags[index])
+      local details = CopyTable(containerInfo.bags[index] or {})
       details.itemCount = Baganator.Utilities.CountEmptySlots(BAGANATOR_DATA.Characters[self.lastCharacter].bags[index + 1])
       bb:SetItemDetails(details)
       if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
