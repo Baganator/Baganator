@@ -2,27 +2,46 @@ local _, addonTable = ...
 
 Baganator.Sorting = {}
 
-local QualityKeys = {
-  "priority",
-  "quality",
-  "sortedClassID",
-  "sortedInvSlotID",
-  "sortedSubClassID",
-  "itemID",
-  "itemLink",
-  "itemCount",
-}
-
-local TypeKeys = {
-  "priority", -- custom
-  "sortedClassID", -- GetItemInfo -> itemType (https://warcraft.wiki.gg/wiki/API_GetItemInfo)
-  "sortedSubClassID", -- GetItemInfo -> subclassID
-  "sortedInvSlotID", -- InventorySlotId (https://warcraft.wiki.gg/wiki/InventorySlotId)
-  -- "itemLevel",
-  "itemID",
-  "quality",
-  "itemLink",
-  "itemCount",
+local allSortKeys = {
+  ["quality"] = {
+    "priority",
+    "quality",
+    "sortedClassID",
+    "sortedInvSlotID",
+    "sortedSubClassID",
+    "itemID",
+    "itemLink",
+    "invertedItemCount",
+  },
+  ["quality-legacy"] = {
+    "priority",
+    "quality",
+    "classID",
+    "subClassID",
+    "itemID",
+    "itemLink",
+    "itemCount",
+  },
+  ["type"] = {
+    "priority", -- custom
+    "sortedClassID", -- GetItemInfo -> itemType (https://warcraft.wiki.gg/wiki/API_GetItemInfo)
+    "sortedSubClassID", -- GetItemInfo -> subclassID
+    "sortedInvSlotID", -- InventorySlotId (https://warcraft.wiki.gg/wiki/InventorySlotId)
+    -- "itemLevel",
+    "itemID",
+    "quality",
+    "itemLink",
+    "invertedItemCount",
+  },
+  ["type-legacy"] = {
+    "priority",
+    "classID",
+    "subClassID",
+    "itemID",
+    "quality",
+    "itemLink",
+    "itemCount",
+  },
 }
 
 -- Custom ordering of classIDs, subClassIDs and inv[entory]SlotIDs. Original
@@ -150,6 +169,7 @@ local function ConvertToOneList(bags, indexesToUse)
           end
 
           item.priority = PriorityMap[item.itemID] and 1 or 1000
+          item.invertedItemCount = -item.itemCount
 
           item.classID, item.subClassID = select(6, GetItemInfoInstant(linkToCheck))
           item.sortedClassID = sortedMap.classID[item.classID] or (item.classID + 200)
@@ -221,12 +241,7 @@ function Baganator.Sorting.OrderOneListOffline(list)
 
   list = tFilter(list, function(a) return a.itemLink ~= nil end, true)
 
-  local sortKeys
-  if Baganator.Config.Get("sort_method") == "type" then
-    sortKeys = TypeKeys
-  elseif Baganator.Config.Get("sort_method") == "quality" then
-    sortKeys = QualityKeys
-  end
+  local sortKeys = allSortKeys[Baganator.Config.Get("sort_method")]
 
   if reverse then
     table.sort(list, function(a, b)
