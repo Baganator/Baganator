@@ -49,7 +49,7 @@ local qualityColors = {
   [7] = CreateColor(79/255, 196/255, 225/255), -- Heirloom
   [8] = CreateColor(79/255, 196/255, 225/255), -- Blizzard
 }
-local equipmentSetBorder = CreateColor(83/255, 216/255, 186/255)
+local equipmentSetBorder = CreateColor(198/255, 166/255, 0/255)
 
 local expansionIDToText = {
   [0] = "Cla",
@@ -257,7 +257,7 @@ local function SetStaticInfo(self, details)
   self.BindingText:SetText("")
   self.ItemLevel:SetText("")
   self.Expansion:SetText("")
-  self.EquipmentSet:SetTexture("Interface\\Minimap\\Minimap_Shield_Normal")
+  self.EquipmentSet:SetTexture("interface\\groupframe\\ui-group-maintankicon")
   self.EquipmentSet:Hide()
 
   if self.ProfessionQualityOverlay then
@@ -288,6 +288,7 @@ local function SetStaticInfo(self, details)
   end
 
   if iconSettings.equipmentSetBorder and self.BGR.setInfo then
+    self.IconBorder:Show()
     self.IconBorder:SetVertexColor(equipmentSetBorder.r, equipmentSetBorder.g, equipmentSetBorder.b)
   end
 end
