@@ -70,10 +70,11 @@ local function FlowButtons(self, rowWidth)
       cols = 0
     end
   end
+  local iconPaddingScaled = iconPadding * 37 / iconSize
   for _, button in ipairs(self.buttons) do
-    button:SetPoint("TOPLEFT", self, cols * (iconSize + iconPadding), - rows * (iconSize + iconPadding))
-    button:SetSize(iconSize, iconSize)
-    button:UpdateTextures(iconSize)
+    button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
+    button:SetScale(iconSize / 37)
+    button:UpdateTextures()
     MasqueRegistration(button)
     cols = cols + 1
     if cols >= rowWidth then
@@ -148,7 +149,6 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
       self.buttonsByBag[indexes[bagIndex]] = bagButtons
       for slotIndex = 1, #newBags[bagIndex] do
         local button = self.buttonPool:Acquire()
-        button:SetSize(iconSize, iconSize)
         button:Show()
 
         table.insert(self.buttons, button)

@@ -260,12 +260,6 @@ local function SetStaticInfo(self, details)
   self.EquipmentSet:SetTexture("interface\\groupframe\\ui-group-maintankicon")
   self.EquipmentSet:Hide()
 
-  if self.ProfessionQualityOverlay then
-    local scale = self:GetWidth() / 37
-    self.ProfessionQualityOverlay:SetPoint("TOPLEFT", -3 * scale, 2 * scale);
-    self.ProfessionQualityOverlay:SetScale(scale);
-  end
-
   if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
     self.UpgradeArrow:SetTexture("Interface\\AddOns\\Pawn\\Textures\\UpgradeArrow")
     self.UpgradeArrow:Hide()
@@ -320,22 +314,15 @@ end
 local hidden = CreateFrame("Frame")
 hidden:Hide()
 
-local function ApplyItemDetailSettings(button, size)
+local function ApplyItemDetailSettings(button)
   local font, originalSize, fontFlags = button.ItemLevel:GetFont()
   local newSize = Baganator.Config.Get("icon_text_font_size")
-  local scale = size / 37
 
-  local positions_no_scale = {
+  local positions = {
     ["icon_top_left_corner"] = {"TOPLEFT", 2, -2},
     ["icon_top_right_corner"] = {"TOPRIGHT", -2, -2},
     ["icon_bottom_left_corner"] = {"BOTTOMLEFT", 2, 2},
     ["icon_bottom_right_corner"] = {"BOTTOMRIGHT", -2, 2},
-  }
-  local positions = {
-    ["icon_top_left_corner"] = {"TOPLEFT", 2 * scale, -2 * scale},
-    ["icon_top_right_corner"] = {"TOPRIGHT", -2 * scale, -2 * scale},
-    ["icon_bottom_left_corner"] = {"BOTTOMLEFT", 2 * scale, 2 * scale},
-    ["icon_bottom_right_corner"] = {"BOTTOMRIGHT", -2 * scale, 2 * scale},
   }
   local toHide = {
     ["item_level"] = button.ItemLevel,
@@ -354,29 +341,25 @@ local function ApplyItemDetailSettings(button, size)
       button.ItemLevel:ClearAllPoints()
       button.ItemLevel:SetPoint(unpack(anchor))
       button.ItemLevel:SetFont(font, newSize, fontFlags)
-      button.ItemLevel:SetScale(scale)
     elseif cornerType == "binding_type" then
       button.BindingText:SetParent(button)
       button.BindingText:ClearAllPoints()
       button.BindingText:SetPoint(unpack(anchor))
       button.BindingText:SetFont(font, newSize, fontFlags)
-      button.BindingText:SetScale(scale)
     elseif cornerType == "quantity" then
       button.Count:SetParent(button)
       button.Count:ClearAllPoints()
       button.Count:SetPoint(unpack(anchor))
       button.Count:SetFont(font, newSize, fontFlags)
-      button.Count:SetScale(scale)
     elseif cornerType == "expansion" then
       button.Expansion:SetParent(button)
       button.Expansion:ClearAllPoints()
       button.Expansion:SetPoint(unpack(anchor))
       button.Expansion:SetFont(font, newSize, fontFlags)
-      button.Expansion:SetScale(scale)
     elseif cornerType == "pawn" then
       button.UpgradeArrow:SetParent(button)
       button.UpgradeArrow:ClearAllPoints()
-      button.UpgradeArrow:SetSize(13 * scale, 15 * scale)
+      button.UpgradeArrow:SetSize(13, 15)
       button.UpgradeArrow:SetPoint(unpack(anchor))
     elseif cornerType == "can_i_mog_it" and CIMI_AddToFrame then
       CIMI_AddToFrame(button, function() end)
@@ -384,18 +367,13 @@ local function ApplyItemDetailSettings(button, size)
       if overlay and overlay.CIMIIconTexture then
         overlay:SetParent(button)
         overlay.CIMIIconTexture:ClearAllPoints()
-        local shift = math.max(1, scale)
-        if shift > 1  then
-          overlay.CIMIIconTexture:SetPoint(unpack(positions[config]))
-        else
-          overlay.CIMIIconTexture:SetPoint(unpack(positions_no_scale[config]))
-        end
-        overlay.CIMIIconTexture:SetSize(13 * shift, 13 * shift)
+        overlay.CIMIIconTexture:SetSize(13, 13)
+        overlay.CIMIIconTexture:SetPoint(unpack(positions[config]))
       end
     elseif cornerType == "equipment_set" then
       button.EquipmentSet:SetParent(button)
       button.EquipmentSet:ClearAllPoints()
-      button.EquipmentSet:SetSize(15 * scale, 15 * scale)
+      button.EquipmentSet:SetSize(15, 15)
       button.EquipmentSet:SetPoint(unpack(anchor))
     end
     toHide[cornerType] = nil
@@ -405,16 +383,8 @@ local function ApplyItemDetailSettings(button, size)
   end
 end
 
--- Fix anchors and item sizes when resizing the item buttons
-local function AdjustRetailButton(button, size)
-  local scale = size / 37
-  button.IconBorder:SetSize(size, size)
-  button.IconOverlay:SetSize(size, size)
-  button.IconOverlay2:SetSize(size, size)
-  button.NormalTexture:SetSize(64 * scale, 64 * scale)
-  button.NormalTexture:ClearAllPoints()
-  button.NormalTexture:SetPoint("CENTER", 0, -1 * scale)
-
+-- Scale button and set visuals as appropriate
+local function AdjustRetailButton(button)
   if not button.SlotBackground then
     button.emptyBackgroundAtlas = nil
     button.SlotBackground = button:CreateTexture(nil, "BACKGROUND", nil, -1)
@@ -424,22 +394,11 @@ local function AdjustRetailButton(button, size)
 
   button.SlotBackground:SetShown(not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND))
 
-  if button.ProfessionQualityOverlay then
-    local scale = size / 37
-    button.ProfessionQualityOverlay:SetPoint("TOPLEFT", -2 * scale, 2 * scale);
-    button.ProfessionQualityOverlay:SetScale(scale);
-  end
-
-  ApplyItemDetailSettings(button, size)
+  ApplyItemDetailSettings(button)
 end
 
--- Fix anchors and item sizes when resizing the item buttons
-local function AdjustClassicButton(button, size)
-  button.IconBorder:SetSize(size, size)
-  button.IconOverlay:SetSize(size, size)
-  local scaleNormal = 64/37 * size
-  _G[button:GetName() .. "NormalTexture"]:SetSize(scaleNormal, scaleNormal)
-
+-- Scale button and set visuals as appropriate
+local function AdjustClassicButton(button)
   if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
     if not button.BGR or button.BGR.itemLink == nil then
       button.icon:SetTexture(nil)
@@ -454,7 +413,7 @@ local function AdjustClassicButton(button, size)
     end
   end
 
-  ApplyItemDetailSettings(button, size)
+  ApplyItemDetailSettings(button)
 end
 
 local function FlashItemButton(self)
@@ -504,8 +463,8 @@ end
 
 BaganatorRetailCachedItemButtonMixin = {}
 
-function BaganatorRetailCachedItemButtonMixin:UpdateTextures(size)
-  AdjustRetailButton(self, size)
+function BaganatorRetailCachedItemButtonMixin:UpdateTextures()
+  AdjustRetailButton(self)
 end
 
 function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
@@ -609,20 +568,8 @@ function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
   end)
 end
 
-function BaganatorRetailLiveItemButtonMixin:UpdateTextures(size)
-  AdjustRetailButton(self, size)
-
-  local s2 = 64 * size/37
-  if self.IconQuestTexture then
-    self.IconQuestTexture:SetSize(size, size)
-    self.ExtendedSlot:SetSize(s2, s2)
-  end
-
-  -- Uses in-game determined atlas sizes
-  local s3 = 39 * size/37
-  self.NewItemTexture:SetSize(s3, s3)
-  local s4 = 90 * size/37
-  self.flash:SetSize(s4, s4)
+function BaganatorRetailLiveItemButtonMixin:UpdateTextures()
+  AdjustRetailButton(self)
 end
 
 function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
@@ -735,8 +682,8 @@ end
 
 BaganatorClassicCachedItemButtonMixin = {}
 
-function BaganatorClassicCachedItemButtonMixin:UpdateTextures(size)
-  AdjustClassicButton(self, size)
+function BaganatorClassicCachedItemButtonMixin:UpdateTextures()
+  AdjustClassicButton(self)
 end
 
 function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
@@ -876,12 +823,8 @@ function BaganatorClassicLiveItemButtonMixin:OnLeave()
 end
 -- end alterations
 
-function BaganatorClassicLiveItemButtonMixin:UpdateTextures(size)
-  AdjustClassicButton(self, size)
-
-  _G[self:GetName() .. "IconQuestTexture"]:SetSize(size, size+1)
-  self.ExtendedOverlay:SetSize(size, size)
-  self.ExtendedOverlay2:SetSize(size, size)
+function BaganatorClassicLiveItemButtonMixin:UpdateTextures()
+  AdjustClassicButton(self)
 end
 
 function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
