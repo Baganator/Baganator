@@ -333,6 +333,9 @@ local function ApplyItemDetailSettings(button)
     ["expansion"] = button.Expansion,
     ["equipment_set"] = button.EquipmentSet,
   }
+  if CIMI_AddToFrame then
+    CIMI_AddToFrame(button, function() end)
+  end
 
   for config, anchor in pairs(positions) do
     local cornerType = Baganator.Config.Get(config)
@@ -362,7 +365,6 @@ local function ApplyItemDetailSettings(button)
       button.UpgradeArrow:SetSize(13, 15)
       button.UpgradeArrow:SetPoint(unpack(anchor))
     elseif cornerType == "can_i_mog_it" and CIMI_AddToFrame then
-      CIMI_AddToFrame(button, function() end)
       local overlay = button.CanIMogItOverlay 
       if overlay and overlay.CIMIIconTexture then
         overlay:SetParent(button)
