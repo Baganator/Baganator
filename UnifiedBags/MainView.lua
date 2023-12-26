@@ -594,7 +594,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.ToggleBankButton:SetPoint("TOP")
   self.ToggleBankButton:SetPoint("LEFT", activeBag, -sideSpacing, 0)
   self:SetSize(
-    activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset + (activeBank and (activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset) or 0),
+    activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2 + (activeBank and (activeBank:GetWidth() + sideSpacing * 1 + Baganator.Constants.ButtonFrameOffset - 2) or 0),
     height + 74
   )
 
