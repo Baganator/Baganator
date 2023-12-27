@@ -648,6 +648,8 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   if Baganator.Constants.IsRetail then
     table.insert(typeDropDown.entries, BAGANATOR_L_BLIZZARD)
     table.insert(typeDropDown.values, "blizzard")
+    table.insert(typeDropDown.entries, BAGANATOR_L_EXPANSION)
+    table.insert(typeDropDown.values, "expansion")
   end
 
   if IsAddOnLoaded("SortBags") then

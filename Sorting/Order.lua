@@ -1,5 +1,19 @@
 local _, addonTable = ...
 
+-- Translate from a base item info to get information hidden behind further API
+-- calls
+local keysMapping = {}
+
+local itemMetatable = {
+  __index = function(self, key)
+    if keysMapping[key] then
+      local result = keysMapping[key](self)
+      self[key] = result
+      return result
+    end
+  end
+}
+
 Baganator.Sorting = {}
 
 local allSortKeys = {
@@ -41,6 +55,17 @@ local allSortKeys = {
     "quality",
     "itemLink",
     "itemCount",
+  },
+  ["expansion"] = {
+    "expansion",
+    "sortedClassID", -- GetItemInfo -> itemType (https://warcraft.wiki.gg/wiki/API_GetItemInfo)
+    "sortedSubClassID", -- GetItemInfo -> subclassID
+    "sortedInvSlotID", -- InventorySlotId (https://warcraft.wiki.gg/wiki/InventorySlotId)
+    -- "itemLevel",
+    "itemID",
+    "quality",
+    "itemLink",
+    "invertedItemCount",
   },
 }
 
@@ -154,6 +179,19 @@ for _, itemID in ipairs(PriorityItems) do
   PriorityMap[itemID] = true
 end
 
+keysMapping["expansion"] = function(self)
+  local expansion = select(15, GetItemInfo(self.itemLink))
+  return expansion
+end
+
+-- Unused, but example of how item level could be safely acquired
+keysMapping["itemLevel"] = function(self)
+  if C_Item.IsItemDataCachedByID(self.itemID) then
+    local itemLevel = GetDetailedItemLevelInfo(self.itemLink)
+    return itemLevel or -1
+  end
+end
+
 local function ConvertToOneList(bags, indexesToUse)
   -- Get one long list of the items involved
   local newBags = CopyTable(bags)
@@ -163,6 +201,7 @@ local function ConvertToOneList(bags, indexesToUse)
       for slotIndex, item in ipairs(bagContents) do
         item.from = { bagIndex = bagIndex, slot = slotIndex}
         if item.itemLink then
+          setmetatable(item, itemMetatable)
           local linkToCheck = item.itemLink
           if not linkToCheck:match("item:") then
             linkToCheck = "item:" .. item.itemID
@@ -183,7 +222,7 @@ local function ConvertToOneList(bags, indexesToUse)
           end
 
           local invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID)
-          item.invSlotID = sortedMap.invSlotID[invSlotID] or (invSlotID + 200)
+          item.sortedInvSlotID = sortedMap.invSlotID[invSlotID] or (invSlotID + 200)
         end
         table.insert(list, item)
       end
@@ -243,11 +282,16 @@ function Baganator.Sorting.OrderOneListOffline(list)
 
   local sortKeys = allSortKeys[Baganator.Config.Get("sort_method")]
 
+  local incomplete = false
   if reverse then
     table.sort(list, function(a, b)
       for _, key in ipairs(sortKeys) do
-        if a[key] ~= b[key] then
-          return a[key] > b[key]
+        if a[key] ~= nil and b[key] ~= nil then
+          if a[key] ~= b[key] then
+            return a[key] > b[key]
+          end
+        else
+          incomplete = true
         end
       end
       return a.index < b.index
@@ -255,8 +299,12 @@ function Baganator.Sorting.OrderOneListOffline(list)
   else
     table.sort(list, function(a, b)
       for _, key in ipairs(sortKeys) do
-        if a[key] ~= b[key] then
-          return a[key] < b[key]
+        if a[key] ~= nil and b[key] ~= nil then
+          if a[key] ~= b[key] then
+            return a[key] > b[key]
+          end
+        else
+          incomplete = true
         end
       end
       return a.index < b.index
@@ -400,7 +448,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
 
   SetIndexes(oneList, bagIDs)
 
-  local sortedItems = Baganator.Sorting.OrderOneListOffline(oneList)
+  local sortedItems, incomplete = Baganator.Sorting.OrderOneListOffline(oneList)
   if showTimers then
     print("sort initial", debugprofilestop() - start)
     start = debugprofilestop()
@@ -502,7 +550,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     end
   end
 
-  local pending = #moveQueue0 > 0 or #moveQueue1 > 0
+  local pending = incomplete or #moveQueue0 > 0 or #moveQueue1 > 0
 
   if showTimers then
     print("sort items moved", debugprofilestop() - start)
