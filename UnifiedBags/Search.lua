@@ -64,6 +64,29 @@ local function ReputationCheck(details)
   end
 end
 
+local function SaveBaseStats(details)
+  if not Baganator.Utilities.IsEquipment(details.itemLink) then
+    details.baseItemStats = {}
+    return
+  end
+
+  local cleanedLink = details.itemLink:gsub("item:(%d+):(%d*):(%d*):(%d*):(%d*):", "item:%1:::::")
+  details.baseItemStats = GetItemStats(cleanedLink)
+end
+
+local function SocketCheck(details)
+  SaveBaseStats(details)
+  if not details.baseItemStats then
+    return nil
+  end
+  for key in pairs(details.baseItemStats) do
+    if key:find("EMPTY_SOCKET", nil, true) then
+      return true
+    end
+  end
+  return false
+end
+
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
@@ -76,10 +99,42 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
   [BAGANATOR_L_KEYWORD_POTION] = PotionCheck,
   [BAGANATOR_L_KEYWORD_SET] = SetCheck,
+  [BAGANATOR_L_KEYWORD_SOCKET] = SocketCheck,
 }
 
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck
+end
+
+local sockets = {
+  "EMPTY_SOCKET_BLUE",
+  "EMPTY_SOCKET_COGWHEEL",
+  "EMPTY_SOCKET_CYPHER",
+  "EMPTY_SOCKET_DOMINATION",
+  "EMPTY_SOCKET_HYDRAULIC",
+  "EMPTY_SOCKET_META",
+  "EMPTY_SOCKET_NO_COLOR",
+  "EMPTY_SOCKET_PRIMORDIAL",
+  "EMPTY_SOCKET_PRISMATIC",
+  "EMPTY_SOCKET_PUNCHCARDBLUE",
+  "EMPTY_SOCKET_PUNCHCARDRED",
+  "EMPTY_SOCKET_PUNCHCARDYELLOW",
+  "EMPTY_SOCKET_RED",
+  "EMPTY_SOCKET_TINKER",
+  "EMPTY_SOCKET_YELLOW",
+}
+
+for _, key in ipairs(sockets) do
+  local global = _G[key]
+  if global then
+    KEYWORDS_TO_CHECK[global:lower()] = function(details)
+      SaveBaseStats(details)
+      if details.baseItemStats then
+        return details.baseItemStats[key] ~= nil
+      end
+      return nil
+    end
+  end
 end
 
 local inventorySlots = {
