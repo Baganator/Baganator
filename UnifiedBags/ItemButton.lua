@@ -682,6 +682,35 @@ local function ApplyQualityBorderClassic(self, quality)
   end
 end
 
+local function ApplyNewItemAnimation(self, quality)
+  -- Modified code from Blizzard for classic
+  local isNewItem = C_NewItems.IsNewItem(self:GetParent():GetID(), self:GetID());
+
+  newItemTexture = self.NewItemTexture;
+  flash = self.flashAnim;
+  newItemAnim = self.newitemglowAnim;
+
+  if ( isNewItem ) then
+    if (quality and NEW_ITEM_ATLAS_BY_QUALITY[quality]) then
+      newItemTexture:SetAtlas(NEW_ITEM_ATLAS_BY_QUALITY[quality]);
+    else
+      newItemTexture:SetAtlas("bags-glow-white");
+    end
+    battlepayItemTexture:Hide();
+    newItemTexture:Show();
+    if (not flash:IsPlaying() and not newItemAnim:IsPlaying()) then
+      flash:Play();
+      newItemAnim:Play();
+    end
+  else
+    newItemTexture:Hide();
+    if (flash:IsPlaying() or newItemAnim:IsPlaying()) then
+      flash:Stop();
+      newItemAnim:Stop();
+    end
+  end
+end
+
 BaganatorClassicCachedItemButtonMixin = {}
 
 function BaganatorClassicCachedItemButtonMixin:UpdateTextures()
@@ -858,6 +887,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonQuality(self, quality, itemID);
   ApplyQualityBorderClassic(self, quality)
+  ApplyNewItemAnimation(self, quality)
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
   
@@ -907,6 +937,12 @@ function BaganatorClassicLiveItemButtonMixin:BGRSetHighlight(isHighlighted)
 end
 
 function BaganatorClassicLiveItemButtonMixin:ClearNewItem()
+  C_NewItems.RemoveNewItem(self:GetParent():GetID(), self:GetID())
+  self.NewItemTexture:Hide();
+  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
+    self.flashAnim:Stop();
+    self.newitemglowAnim:Stop();
+  end
 end
 
 function BaganatorClassicLiveItemButtonMixin:SetItemFiltered(text)
