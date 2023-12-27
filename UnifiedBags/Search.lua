@@ -32,6 +32,10 @@ local function PotionCheck(details)
   return details.classID == Enum.ItemClass.Consumable and (details.subClassID == 1 or details.subClassID == 2)
 end
 
+local function JunkCheck(details)
+  return details.isJunk == true
+end
+
 local function GetTooltipInfo(details)
   if details.tooltipInfo then
     return
@@ -100,6 +104,8 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_POTION] = PotionCheck,
   [BAGANATOR_L_KEYWORD_SET] = SetCheck,
   [BAGANATOR_L_KEYWORD_SOCKET] = SocketCheck,
+  [BAGANATOR_L_KEYWORD_JUNK] = JunkCheck,
+  [BAGANATOR_L_KEYWORD_TRASH] = JunkCheck,
 }
 
 if Baganator.Constants.IsRetail then

@@ -108,6 +108,8 @@ L["KEYWORD_GEAR"] = "gear"
 L["KEYWORD_REPUTATION"] = "reputation"
 L["KEYWORD_SET"] = "set"
 L["KEYWORD_SOCKET"] = "socket"
+L["KEYWORD_JUNK"] = "junk"
+L["KEYWORD_TRASH"] = "trash"
 
 L["WINDOWS"] = "Windows"
 L["ICONS"] = "Icons"

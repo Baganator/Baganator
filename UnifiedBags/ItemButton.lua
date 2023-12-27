@@ -184,9 +184,9 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     iconSettings.usingJunkPlugin = true
     table.insert(itemCallbacks, function(self, data)
       if self.JunkIcon then
-        local isJunk = junkPlugin.callback(self:GetParent():GetID(), self:GetID(), data.itemID, data.itemLink)
-        self.JunkIcon:SetShown(isJunk)
-        if iconSettings.markJunk and isJunk then
+        self.BGR.isJunk = junkPlugin.callback(self:GetParent():GetID(), self:GetID(), data.itemID, data.itemLink)
+        self.JunkIcon:SetShown(self.BGR.isJunk)
+        if iconSettings.markJunk and self.BGR.isJunk then
           self.BGR.persistIconGrey = true
           self.icon:SetDesaturated(true)
         end
@@ -270,8 +270,9 @@ local function SetStaticInfo(self, details)
   end
 
   if not iconSettings.usingJunkPlugin and self.JunkIcon then
-    self.JunkIcon:SetShown(details.quality == Enum.ItemQuality.Poor)
-    if iconSettings.markJunk and details.quality == Enum.ItemQuality.Poor then
+    self.BGR.isJunk = details.quality == Enum.ItemQuality.Poor
+    self.JunkIcon:SetShown(self.BGR.isJunk)
+    if iconSettings.markJunk and self.BGR.isJunk then
       self.BGR.persistIconGrey = true
       self.icon:SetDesaturated(true)
     end
