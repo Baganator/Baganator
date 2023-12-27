@@ -33,7 +33,11 @@ local function PotionCheck(details)
 end
 
 local function JunkCheck(details)
-  return details.isJunk == true
+  return details.isJunk
+end
+
+local function CosmeticCheck(details)
+  return details.isCosmetic
 end
 
 local function GetTooltipInfo(details)
@@ -110,6 +114,7 @@ local KEYWORDS_TO_CHECK = {
 
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck
+  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_COSMETIC] = CosmeticCheck
 end
 
 local sockets = {
@@ -433,6 +438,21 @@ function Baganator.UnifiedBags.Search.Initialize()
     if keyword ~= nil then
       KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
         return details.classID == 7 and details.subClassID == subClass
+      end
+    end
+  end
+
+  local armorTypesToCheck = {
+    1, -- cloth
+    2, -- leather
+    3, -- mail
+    4, -- plate
+  }
+  for _, subClass in ipairs(armorTypesToCheck) do
+    local keyword = GetItemSubClassInfo(Enum.ItemClass.Armor, subClass)
+    if keyword ~= nil then
+      KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+        return details.classID == Enum.ItemClass.Armor and details.subClassID == subClass
       end
     end
   end

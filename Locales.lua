@@ -111,6 +111,7 @@ L["KEYWORD_SET"] = "set"
 L["KEYWORD_SOCKET"] = "socket"
 L["KEYWORD_JUNK"] = "junk"
 L["KEYWORD_TRASH"] = "trash"
+L["KEYWORD_COSMETIC"] = "cosmetic"
 
 L["WINDOWS"] = "Windows"
 L["ICONS"] = "Icons"
