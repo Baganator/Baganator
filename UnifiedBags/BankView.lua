@@ -300,6 +300,8 @@ function BaganatorBankOnlyViewMixin:CombineStacksAndSort(isReverse)
     Baganator.Sorting.BlizzardBankSort(isReverse)
   elseif sortMethod == "sortbags" then
     Baganator.Sorting.ExternalSortBagsBank(isReverse)
+  elseif sortMethod == "combine_stacks_only" then
+    self:CombineStacks(function() end)
   else
     self:CombineStacks(function()
       self:DoSort(isReverse)

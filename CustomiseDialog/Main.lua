@@ -636,10 +636,12 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
     entries = {
       BAGANATOR_L_ITEM_TYPE,
       BAGANATOR_L_ITEM_QUALITY,
+      BAGANATOR_L_COMBINE_STACKS_ONLY,
     },
     values = {
       "type",
       "quality",
+      "combine_stacks_only",
     },
   }
 
