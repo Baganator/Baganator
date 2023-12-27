@@ -832,6 +832,11 @@ function BaganatorClassicLiveItemButtonMixin:GetInventorySlot()
 end
 
 function BaganatorClassicLiveItemButtonMixin:OnEnter()
+  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
+    self.flashAnim:Stop();
+    self.newitemglowAnim:Stop();
+  end
+
   if self:GetParent():GetID() == -1 then
     BankFrameItemButton_OnEnter(self)
   else
