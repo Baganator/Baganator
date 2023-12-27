@@ -686,9 +686,10 @@ local function ApplyNewItemAnimation(self, quality)
   -- Modified code from Blizzard for classic
   local isNewItem = C_NewItems.IsNewItem(self:GetParent():GetID(), self:GetID());
 
-  newItemTexture = self.NewItemTexture;
-  flash = self.flashAnim;
-  newItemAnim = self.newitemglowAnim;
+  local newItemTexture = self.NewItemTexture;
+  local battlepayItemTexture = self.BattlepayItemTexture;
+  local flash = self.flashAnim;
+  local newItemAnim = self.newitemglowAnim;
 
   if ( isNewItem ) then
     if (quality and NEW_ITEM_ATLAS_BY_QUALITY[quality]) then
@@ -708,6 +709,8 @@ local function ApplyNewItemAnimation(self, quality)
       flash:Stop();
       newItemAnim:Stop();
     end
+    battlepayItemTexture:Hide();
+    newItemTexture:Hide();
   end
 end
 
@@ -894,11 +897,6 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   ContainerFrameItemButton_SetForceExtended(self, false);
 
   UpdateQuestItemClassic(self)
-
-  battlepayItemTexture = self.BattlepayItemTexture;
-  newItemTexture = self.NewItemTexture;
-  battlepayItemTexture:Hide();
-  newItemTexture:Hide();
 
   self.JunkIcon:Hide();
 
