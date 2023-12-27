@@ -195,6 +195,16 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
 end
 
+local function GetExpansion(self, itemInfo)
+  if ItemVersion then
+    local details = ItemVersion.API:getItemVersion(self.BGR.itemID)
+    if details then
+      return details.major - 1
+    end
+  end
+  return itemInfo[15]
+end
+
 -- Load item data late
 local function GetExtraInfo(self, itemID, itemLink, data)
   if itemLink:find("keystone:", nil, true) then
@@ -218,7 +228,7 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     self.BGR.subClassID = itemInfo[13]
     self.BGR.invType = itemInfo[9]
     self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
-    self.BGR.expacID = itemInfo[15]
+    self.BGR.expacID = GetExpansion(self, itemInfo)
     if self.BGR.isCosmetic then
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
@@ -238,7 +248,7 @@ local function GetExtraInfo(self, itemID, itemLink, data)
       self.BGR.subClassID = itemInfo[13]
       self.BGR.invType = itemInfo[9]
       self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
-      self.BGR.expacID = itemInfo[15]
+      self.BGR.expacID = GetExpansion(self, itemInfo)
       if self.BGR.isCosmetic then
         self.IconOverlay:SetAtlas("CosmeticIconFrame")
         self.IconOverlay:Show();

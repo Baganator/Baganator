@@ -180,6 +180,13 @@ for _, itemID in ipairs(PriorityItems) do
 end
 
 keysMapping["expansion"] = function(self)
+  if ItemVersion and ItemVersion.API then
+    local expansionDetails = ItemVersion.API:getItemVersion(self.itemID, true)
+    if expansionDetails then
+      return expansionDetails.major
+    end
+  end
+
   local expansion = select(15, GetItemInfo(self.itemLink))
   return expansion
 end
