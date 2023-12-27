@@ -301,7 +301,7 @@ function Baganator.Sorting.OrderOneListOffline(list)
       for _, key in ipairs(sortKeys) do
         if a[key] ~= nil and b[key] ~= nil then
           if a[key] ~= b[key] then
-            return a[key] > b[key]
+            return a[key] < b[key]
           end
         else
           incomplete = true
