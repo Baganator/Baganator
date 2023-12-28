@@ -633,6 +633,8 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   local allModes = {
     {"type", BAGANATOR_L_ITEM_TYPE},
     {"quality", BAGANATOR_L_ITEM_QUALITY},
+    {"type-legacy", BAGANATOR_L_ITEM_TYPE_LEGACY},
+    {"quality-legacy", BAGANATOR_L_ITEM_QUALITY_LEGACY},
     {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
     {"blizzard", BAGANATOR_L_BLIZZARD},
     {"expansion", BAGANATOR_L_EXPANSION},
