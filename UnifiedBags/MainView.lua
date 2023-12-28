@@ -161,7 +161,9 @@ function BaganatorMainViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
   self.CharacterSelect:Hide()
+
   Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+  self.sortManager:SetScript("OnUpdate", nil)
 
   PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE);
 end
@@ -753,8 +755,11 @@ function BaganatorMainViewMixin:DoSort(isReverse)
       Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END),
       Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT)
     )
-    if not goAgain then
+    self.sortManager:SetScript("OnUpdate", nil)
+    if goAgain == 0 then
       Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+    elseif goAgain == 2 then
+      self.sortManager:SetScript("OnUpdate", DoSortInternal)
     else
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         DoSortInternal()

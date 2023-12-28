@@ -318,7 +318,7 @@ function Baganator.Sorting.OrderOneListOffline(list)
     end)
   end
 
-  return list
+  return list, incomplete
 end
 
 local function GetUsableBags(bagIDs, indexesToUse, bagChecks, isReverse)
@@ -557,7 +557,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     end
   end
 
-  local pending = incomplete or #moveQueue0 > 0 or #moveQueue1 > 0
+  local pending = (incomplete and 2) or ((#moveQueue0 > 0 or #moveQueue1 > 0) and 1) or 0
 
   if showTimers then
     print("sort items moved", debugprofilestop() - start)

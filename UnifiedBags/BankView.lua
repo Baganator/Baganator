@@ -170,6 +170,7 @@ function BaganatorBankOnlyViewMixin:OnHide(eventName)
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
   Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+  self.sortManager:SetScript("OnUpdate", nil)
 end
 
 function BaganatorBankOnlyViewMixin:SetLiveCharacter(character)
@@ -300,8 +301,10 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
       bagChecks,
       isReverse
     )
-    if not goAgain then
+    if goAgain == 0 then
       Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+    elseif goAgain == 2 then
+      self.sortManager:SetScript("OnUpdate", DoSortInternal)
     else
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         DoSortInternal()
