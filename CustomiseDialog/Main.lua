@@ -7,7 +7,7 @@ end
 local WINDOW_OPTIONS = {
   {
     type = "checkbox",
-    text = BAGANATOR_L_ENABLE_BAG_VIEWS,
+    text = BAGANATOR_L_ENABLE_BAG_VIEWS_2,
     option = "enable_unified_bags",
   },
   {
