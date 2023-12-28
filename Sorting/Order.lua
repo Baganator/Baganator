@@ -23,8 +23,11 @@ local allSortKeys = {
     "sortedClassID",
     "sortedInvSlotID",
     "sortedSubClassID",
-    "itemID",
-    "itemLink",
+    "itemLevel",
+    "invertedExpansion",
+    "itemName",
+    "craftingQuality",
+    "invertedItemID",
     "invertedItemCount",
   },
   ["quality-legacy"] = {
@@ -37,14 +40,16 @@ local allSortKeys = {
     "itemCount",
   },
   ["type"] = {
-    "priority", -- custom
-    "sortedClassID", -- GetItemInfo -> itemType (https://warcraft.wiki.gg/wiki/API_GetItemInfo)
-    "sortedSubClassID", -- GetItemInfo -> subclassID
-    "sortedInvSlotID", -- InventorySlotId (https://warcraft.wiki.gg/wiki/InventorySlotId)
-    -- "itemLevel",
-    "itemID",
-    "quality",
-    "itemLink",
+    "priority",
+    "sortedClassID",
+    "sortedInvSlotID",
+    "sortedSubClassID",
+    "invertedItemLevel",
+    "invertedExpansion",
+    "invertedQuality",
+    "itemName",
+    "invertedCraftingQuality",
+    "invertedItemID",
     "invertedItemCount",
   },
   ["type-legacy"] = {
@@ -57,14 +62,15 @@ local allSortKeys = {
     "itemCount",
   },
   ["expansion"] = {
-    "expansion",
-    "sortedClassID", -- GetItemInfo -> itemType (https://warcraft.wiki.gg/wiki/API_GetItemInfo)
-    "sortedSubClassID", -- GetItemInfo -> subclassID
-    "sortedInvSlotID", -- InventorySlotId (https://warcraft.wiki.gg/wiki/InventorySlotId)
-    -- "itemLevel",
-    "itemID",
-    "quality",
-    "itemLink",
+    "invertedExpansion",
+    "sortedClassID",
+    "sortedInvSlotID",
+    "sortedSubClassID",
+    "invertedItemLevel",
+    "invertedQuality",
+    "itemName",
+    "invertedCraftingQuality",
+    "invertedItemID",
     "invertedItemCount",
   },
 }
@@ -75,7 +81,6 @@ local sorted = {
   classID = {
     18, -- wowtoken
     0, -- consumable
-    1, -- container
     5, -- reagent
     6, -- projectile (obsolete)
     2, -- weapon
@@ -84,6 +89,7 @@ local sorted = {
     3, -- gem
     8, -- item enhancement
     16, -- glyph
+    1, -- container
     7, -- tradegoods
     19, -- profession
     9, -- recipe
@@ -132,30 +138,62 @@ local sorted = {
     5, -- cosmetic
   },
   invSlotID = {
+    17, -- 2h weapon
+    13, -- weapon
+    21, -- weapon main
+    26, -- ranged right
+    22, -- weapon off
+    15, -- ranged
+    25, -- thrown
+    24, -- ammo
+    14, -- shield
+    27, -- quiver
+    28, -- relic
+    23, -- holdable
     1, -- head
     3, -- shoulder
-    5, -- body
+    4, -- body/shirt
+    5, -- chest
+    20, -- robe
     9, -- wrist
-    10, -- hands
+    10, -- hand
     6, -- waist
     7, -- legs
     8, -- feet
     2, -- neck
-    15, -- back
-    11, -- finger1
-    12, -- finger2
-    13, -- trinket1
-    14, -- trinket2
-    4, -- shirt
+    16, -- cloak
+    11, -- finger
+    12, -- trinket
+    29, -- prof tool
+    30, -- prof gear
     19, -- tabard
-    16, -- one hand
-    17, -- one hand dual/two hand
-    20, -- prof tool
-    23, -- prof tool
-    21, -- prof gear
-    22, -- prof gear
-    24, -- prof gear
-    25, -- prof gear
+    18, -- bag
+    31, -- spell offensive
+    32, -- spell utility
+    33, -- spell defensive
+    34, -- spell weapon
+    0, -- non equipable
+  },
+  tradegoodSubClassID = {
+    18, -- optional reagents
+    1, -- parts
+    4, -- jewelcrafting
+    7, -- metal and stone
+    6, -- leather
+    5, -- cloth
+    12, -- enchanting
+    16, -- inscription
+    10, -- elemental
+    9, -- herb
+    8, -- cooking
+    11, -- other
+    0, -- trade goods (obsolete)
+    2, -- explosives (obsolete)
+    3, -- devices (obsolete)
+    13, -- materials (obsolete)
+    14, -- item enchantment (obsolete)
+    15, -- weapon enchantment (obsolete)
+    17, -- explosives and devices (obsolete)
   },
 }
 
@@ -191,12 +229,51 @@ keysMapping["expansion"] = function(self)
   return expansion
 end
 
--- Unused, but example of how item level could be safely acquired
+keysMapping["invertedExpansion"] = function(self)
+  return self.expansion and -self.expansion
+end
+
 keysMapping["itemLevel"] = function(self)
   if C_Item.IsItemDataCachedByID(self.itemID) then
     local itemLevel = GetDetailedItemLevelInfo(self.itemLink)
     return itemLevel or -1
   end
+end
+
+keysMapping["invertedItemLevel"] = function(self)
+  return self.itemLevel and -self.itemLevel
+end
+
+if C_TradeSkillUI and C_TradeSkillUI.GetItemReagentQualityByItemInfo then
+  keysMapping["craftingQuality"] = function(self)
+    return C_TradeSkillUI.GetItemReagentQualityByItemInfo(self.itemID) or -1
+  end
+
+  keysMapping["invertedCraftingQuality"] = function(self)
+    return self.craftingQuality and -self.craftingQuality
+  end
+else
+  keysMapping["craftingQuality"] = function(self)
+    return -1
+  end
+
+  keysMapping["invertedCraftingQuality"] = function(self)
+    return -self.craftingQuality
+  end
+end
+
+keysMapping["itemName"] = function(self)
+  if C_Item.IsItemDataCachedByID(self.itemID) then
+    return C_Item.GetItemNameByID(self.itemID) or ""
+  end
+end
+
+keysMapping["invertedQuality"] = function(self)
+  return -self.quality
+end
+
+keysMapping["invertedItemID"] = function(self)
+  return -self.itemID
 end
 
 local function ConvertToOneList(bags, indexesToUse)
@@ -224,6 +301,8 @@ local function ConvertToOneList(bags, indexesToUse)
             item.sortedSubClassID = sortedMap.weaponSubClassID[item.subClassID] or (item.subClassID + 200)
           elseif item.classID == Enum.ItemClass.Armor then
             item.sortedSubClassID = sortedMap.armorSubClassID[item.subClassID] or (item.subClassID + 200)
+          elseif item.classID == Enum.ItemClass.Tradegoods then
+            item.sortedSubClassID = sortedMap.tradegoodSubClassID[item.subClassID] or (item.subClassID + 200)
           else
             item.sortedSubClassID = item.subClassID
           end
