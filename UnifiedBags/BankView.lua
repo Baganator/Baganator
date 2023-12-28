@@ -11,6 +11,8 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
     "PLAYERBANKBAGSLOTS_CHANGED",
+    "PLAYER_REGEN_DISABLED",
+    "PLAYER_REGEN_ENABLED",
   })
 
   self.sortManager = CreateFrame("Frame", nil, self)
@@ -128,12 +130,29 @@ function BaganatorBankOnlyViewMixin:OnEvent(eventName)
     if self.liveCharacter then
       self:UpdateForCharacter(self.liveCharacter)
     end
+  elseif eventName == "BANKFRAME_CLOSED" then
+    self:Hide()
   elseif eventName == "PLAYERBANKBAGSLOTS_CHANGED" then
     if self:IsVisible() then
       self:UpdateBagSlots()
     end
-  else
-    self:Hide()
+  elseif eventName == "PLAYER_REGEN_DISABLED" then
+    if not self.liveBagSlots then
+      return
+    end
+    -- Disable bank bag slots buttons in combat as they cannot be used there
+    for _, button in ipairs(self.liveBagSlots) do
+      SetItemButtonDesaturated(button, true)
+      button:Disable()
+    end
+  elseif eventName == "PLAYER_REGEN_ENABLED" then
+    if not self.liveBagSlots then
+      return
+    end
+    for _, button in ipairs(self.liveBagSlots) do
+      SetItemButtonDesaturated(button, false)
+      button:Enable()
+    end
   end
 end
 

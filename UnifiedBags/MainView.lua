@@ -24,6 +24,8 @@ function BaganatorMainViewMixin:OnLoad()
   FrameUtil.RegisterFrameForEvents(self, {
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
+    "PLAYER_REGEN_DISABLED",
+    "PLAYER_REGEN_ENABLED",
   })
 
   self.blizzardBankOpen = false
@@ -202,6 +204,23 @@ function BaganatorMainViewMixin:OnEvent(eventName)
     self.blizzardBankOpen = false
     if self:IsVisible() and self.isLive then
       self:UpdateForCharacter(self.lastCharacter, true)
+    end
+  elseif eventName == "PLAYER_REGEN_DISABLED" then
+    -- Disable bag bag slots buttons in combat as pickup/drop doesn't work then
+    if not self.liveBagSlots then
+      return
+    end
+    for _, button in ipairs(self.liveBagSlots) do
+      SetItemButtonDesaturated(button, true)
+      button:Disable()
+    end
+  elseif eventName == "PLAYER_REGEN_ENABLED" then
+    if not self.liveBagSlots then
+      return
+    end
+    for _, button in ipairs(self.liveBagSlots) do
+      SetItemButtonDesaturated(button, false)
+      button:Enable()
     end
   end
 end
