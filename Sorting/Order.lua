@@ -183,7 +183,7 @@ keysMapping["expansion"] = function(self)
   if ItemVersion and ItemVersion.API then
     local expansionDetails = ItemVersion.API:getItemVersion(self.itemID, true)
     if expansionDetails then
-      return expansionDetails.major
+      return expansionDetails.major - 1
     end
   end
 
