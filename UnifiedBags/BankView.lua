@@ -140,7 +140,7 @@ function BaganatorBankOnlyViewMixin:OnEvent(eventName)
     if not self.liveBagSlots then
       return
     end
-    -- Disable bank bag slots buttons in combat as they cannot be used there
+    -- Disable bank bag slots buttons in combat as pickup/drop doesn't work
     for _, button in ipairs(self.liveBagSlots) do
       SetItemButtonDesaturated(button, true)
       button:Disable()
