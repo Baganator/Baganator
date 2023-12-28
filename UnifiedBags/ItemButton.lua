@@ -195,7 +195,7 @@ end
 
 local function GetExpansion(self, itemInfo)
   if ItemVersion then
-    local details = ItemVersion.API:getItemVersion(self.BGR.itemID)
+    local details = ItemVersion.API:getItemVersion(self.BGR.itemID, true)
     if details then
       return details.major - 1
     end
