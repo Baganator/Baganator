@@ -32,6 +32,7 @@ InventoryTracking\Main.lua
 Sorting\Order.lua
 Sorting\Stacks.lua
 Sorting\Plugins.lua
+Sorting\ModeCheck.lua
 
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua

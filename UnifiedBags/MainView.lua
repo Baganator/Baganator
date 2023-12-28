@@ -767,6 +767,11 @@ end
 function BaganatorMainViewMixin:CombineStacksAndSort(isReverse)
   local sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
 
+  if not Baganator.Sorting.IsModeAvailable(sortMethod) then
+    Baganator.Config.ResetOne(Baganator.Config.Options.SORT_METHOD)
+    sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
+  end
+
   if sortMethod == "blizzard" then
     Baganator.Sorting.BlizzardBagSort(isReverse)
   elseif sortMethod == "sortbags" then

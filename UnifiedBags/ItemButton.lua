@@ -139,9 +139,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
   if Baganator.Config.Get("show_expansion") then
     table.insert(itemCallbacks, function(self, data)
-      if not Baganator.Constants.IsClassic then
-        self.Expansion:SetText(expansionIDToText[self.BGR.expacID] or "")
-      end
+      self.Expansion:SetText(expansionIDToText[self.BGR.expacID] or "")
     end)
   end
   if Baganator.Config.Get("show_equipment_set") then

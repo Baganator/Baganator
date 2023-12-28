@@ -207,7 +207,11 @@ function Baganator.Config.Set(name, value)
 end
 
 function Baganator.Config.ResetOne(name)
-  Baganator.Config.Set(name, CopyTable(Baganator.Config.Defaults[name]))
+  local newValue = Baganator.Config.Defaults[name]
+  if type(newValue) == "table" then
+    newValue = CopyTable(newValue)
+  end
+  Baganator.Config.Set(name, newValue)
 end
 
 function Baganator.Config.Reset()

@@ -487,7 +487,7 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
       "quantity",
     },
   }
-  if not Baganator.Constants.IsClassic then
+  if not Baganator.Constants.IsClassic or ItemVersion then
     table.insert(iconCornerOptions.entries, BAGANATOR_L_EXPANSION)
     table.insert(iconCornerOptions.values, "expansion")
   end
@@ -630,31 +630,33 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
   local frame = GetWrapperFrame(self)
 
+  local allModes = {
+    {"type", BAGANATOR_L_ITEM_TYPE},
+    {"quality", BAGANATOR_L_ITEM_QUALITY},
+    {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
+    {"blizzard", BAGANATOR_L_BLIZZARD},
+    {"expansion", BAGANATOR_L_EXPANSION},
+    {"sortbags", BAGANATOR_L_SORTBAGS},
+  }
+
+  table.sort(allModes, function(a, b) return a[2] < b[2] end)
+
   local typeDropDown = {
     type = "dropdown",
     option = "sort_method",
-    entries = {
-      BAGANATOR_L_ITEM_TYPE,
-      BAGANATOR_L_ITEM_QUALITY,
-      BAGANATOR_L_COMBINE_STACKS_ONLY,
-    },
-    values = {
-      "type",
-      "quality",
-      "combine_stacks_only",
-    },
+    entries = {},
+    values = {},
   }
 
-  if Baganator.Constants.IsRetail then
-    table.insert(typeDropDown.entries, BAGANATOR_L_BLIZZARD)
-    table.insert(typeDropDown.values, "blizzard")
-    table.insert(typeDropDown.entries, BAGANATOR_L_EXPANSION)
-    table.insert(typeDropDown.values, "expansion")
+  for _, details in ipairs(allModes) do
+    if Baganator.Sorting.IsModeAvailable(details[1]) then
+      table.insert(typeDropDown.values, details[1])
+      table.insert(typeDropDown.entries, details[2])
+    end
   end
 
-  if IsAddOnLoaded("SortBags") then
-    table.insert(typeDropDown.entries, BAGANATOR_L_SORTBAGS)
-    table.insert(typeDropDown.values, "sortbags")
+  if not Baganator.Sorting.IsModeAvailable(Baganator.Config.Get("sort_method")) then
+    Baganator.Config.ResetOne("sort_method")
   end
 
   table.insert(SORTING_OPTIONS, typeDropDown)
