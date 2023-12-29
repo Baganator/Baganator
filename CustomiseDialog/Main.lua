@@ -270,6 +270,11 @@ local SORTING_OPTIONS = {
     text = BAGANATOR_L_REVERSE_GROUPS_SORT_ORDER,
     option = "reverse_groups_sort_order",
   },
+  {
+    type = "header",
+    text = BAGANATOR_L_SORT_METHOD,
+    level = 2,
+  },
 }
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
