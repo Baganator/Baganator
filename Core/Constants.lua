@@ -86,3 +86,9 @@ Baganator.Constants.Events = {
 Baganator.Constants.SharedCurrencies = {
   2032, -- Trader's Tender
 }
+
+Baganator.Constants.SortStatus = {
+  Complete = 0,
+  WaitingMove = 1,
+  WaitingItemData = 2,
+}

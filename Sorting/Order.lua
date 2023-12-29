@@ -642,7 +642,14 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     end
   end
 
-  local pending = (incomplete and 2) or ((#moveQueue0 > 0 or #moveQueue1 > 0) and 1) or 0
+  local pending
+  if incomplete then
+    pending = Baganator.Constants.SortStatus.WaitingItemData
+  elseif (#moveQueue0 > 0 or #moveQueue1 > 0) then
+    pending = Baganator.Constants.SortStatus.WaitingMove
+  else
+    pending = Baganator.Constants.SortStatus.Complete
+  end
 
   if showTimers then
     print("sort items moved", debugprofilestop() - start)

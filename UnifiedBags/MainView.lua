@@ -759,11 +759,11 @@ function BaganatorMainViewMixin:DoSort(isReverse)
       Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT)
     )
     self.sortManager:SetScript("OnUpdate", nil)
-    if goAgain == 0 then
+    if goAgain == Baganator.Constants.SortStatus.Complete then
       Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
-    elseif goAgain == 2 then
+    elseif goAgain == Baganator.Constants.SortStatus.WaitingItemData then
       self.sortManager:SetScript("OnUpdate", DoSortInternal)
-    else
+    else--if goAgain == Baganator.Constants.SortStatus.WaitingMove
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         DoSortInternal()
       end, self.sortManager)
