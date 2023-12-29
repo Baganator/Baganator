@@ -32,7 +32,6 @@ Baganator.Constants = {
   EquippedInventorySlotOffset = 1,
 
   MaxPinnedCurrencies = 3,
-
 }
 
 if Baganator.Constants.IsWrath then
