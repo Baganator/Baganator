@@ -75,6 +75,11 @@ local allSortKeys = {
   },
 }
 
+if Baganator.Constants.IsClassic then
+  table.remove(allSortKeys["quality"], tIndexOf(allSortKeys["quality"], "invertedExpansion"))
+  table.remove(allSortKeys["type"], tIndexOf(allSortKeys["type"], "invertedExpansion"))
+end
+
 -- Custom ordering of classIDs, subClassIDs and inv[entory]SlotIDs. Original
 -- configuration supplied by Phraxik
 local sorted = {
