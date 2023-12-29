@@ -2,6 +2,10 @@ local _, addonTable = ...
 
 -- Translate from a base item info to get information hidden behind further API
 -- calls
+-- Function stored on the sort key's field returns nil if the item information
+-- isn't ready yet - which will cause the sort to try again later when the
+-- information is hopefully ready
+-- Values are cached across the current sort iteration.
 local keysMapping = {}
 
 local itemMetatable = {
@@ -16,6 +20,7 @@ local itemMetatable = {
 
 Baganator.Sorting = {}
 
+-- Different sort modes, with different sorting criteria based on item data keys
 local allSortKeys = {
   ["quality"] = {
     "priority",
@@ -24,7 +29,7 @@ local allSortKeys = {
     "sortedInvSlotID",
     "sortedSubClassID",
     "itemLevel",
-    "invertedExpansion",
+    "invertedExpansion", -- table.remove removes this on classic
     "itemName",
     "craftingQuality",
     "invertedItemID",
@@ -45,7 +50,7 @@ local allSortKeys = {
     "sortedInvSlotID",
     "sortedSubClassID",
     "invertedItemLevel",
-    "invertedExpansion",
+    "invertedExpansion", -- table.remove removes this on classic
     "invertedQuality",
     "itemName",
     "invertedCraftingQuality",
@@ -75,6 +80,8 @@ local allSortKeys = {
   },
 }
 
+-- Remove expansion sort criteria on classic, as there isn't much expansion
+-- content to sort among
 if Baganator.Constants.IsClassic then
   table.remove(allSortKeys["quality"], tIndexOf(allSortKeys["quality"], "invertedExpansion"))
   table.remove(allSortKeys["type"], tIndexOf(allSortKeys["type"], "invertedExpansion"))
@@ -225,6 +232,7 @@ end
 local petCageID = Baganator.Constants.BattlePetCageID
 
 keysMapping["expansion"] = function(self)
+  -- Use ItemVersion addon's database if available
   if ItemVersion and ItemVersion.API then
     local expansionDetails = ItemVersion.API:getItemVersion(self.itemID, true)
     if expansionDetails then
@@ -232,6 +240,7 @@ keysMapping["expansion"] = function(self)
     end
   end
 
+  -- Pet cages contain no expansion information
   if self.itemID == petCageID then
     return 0
   end
@@ -257,6 +266,7 @@ keysMapping["invertedItemLevel"] = function(self)
   return self.itemLevel and -self.itemLevel
 end
 
+-- Dragonflight crafting reagent quality
 if C_TradeSkillUI and C_TradeSkillUI.GetItemReagentQualityByItemInfo then
   keysMapping["craftingQuality"] = function(self)
     return C_TradeSkillUI.GetItemReagentQualityByItemInfo(self.itemID) or -1
@@ -312,6 +322,7 @@ local function ConvertToOneList(bags, indexesToUse)
           item.classID, item.subClassID = select(6, GetItemInfoInstant(linkToCheck))
           item.sortedClassID = sortedMap.classID[item.classID] or (item.classID + 200)
 
+          -- Reorder some subclass items so that the order makes more sense
           if item.classID == Enum.ItemClass.Weapon then
             item.sortedSubClassID = sortedMap.weaponSubClassID[item.subClassID] or (item.subClassID + 200)
           elseif item.classID == Enum.ItemClass.Armor then
