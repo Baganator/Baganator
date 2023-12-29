@@ -490,12 +490,25 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   end
 
   local characterData = BAGANATOR_DATA.Characters[character]
+
+  -- Used to change the alignment of the title based on the current layout
+  local titleOffset = Baganator.Constants.IsClassic and 60 or 0
+  local titleText = _G[self:GetName() .. "TitleText"]
+
   if not characterData then
     self:SetTitle("")
   elseif self.viewBankShown then
     self:SetTitle(BAGANATOR_L_XS_BANK_AND_BAGS:format(characterData.details.character))
+
+    -- Left aligned
+    titleText:SetPoint("LEFT", Baganator.Constants.ButtonFrameOffset + 15 + titleOffset, 0)
+    titleText:SetPoint("RIGHT", self.ToggleBankButton, "LEFT", -15, 0)
   else
     self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
+
+    -- Centred
+    titleText:SetPoint("LEFT", titleOffset, 0)
+    titleText:SetPoint("RIGHT", -titleOffset, 0)
   end
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
