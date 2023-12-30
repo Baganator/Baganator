@@ -40,6 +40,12 @@ local function CosmeticCheck(details)
   return details.isCosmetic
 end
 
+local function GetQualityCheck(quality)
+  return function(details)
+    return details.quality == quality
+  end
+end
+
 local function GetTooltipInfo(details)
   if details.tooltipInfo then
     return
@@ -208,6 +214,13 @@ local TextToExpansion = {
   ["df"] = 9,
   ["dragonflight"] = 9,
 }
+
+for key, quality in pairs(Enum.ItemQuality) do
+  local term = _G["ITEM_QUALITY" .. quality .. "_DESC"]
+  if term then
+    KEYWORDS_TO_CHECK[term:lower()] = function(details) return details.quality == quality end
+  end
+end
 
 if Baganator.Constants.IsRetail then
   for key, expansionID in pairs(TextToExpansion) do

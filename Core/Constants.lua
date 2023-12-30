@@ -107,7 +107,9 @@ Baganator.Constants.SampleSearchTerms = {
   "~" .. BAGANATOR_L_KEYWORD_EQUIPMENT,
   "200-300",
   BAGANATOR_L_KEYWORD_GEAR .. "&" .. BAGANATOR_L_KEYWORD_SOULBOUND .. "&" .. BAGANATOR_L_KEYWORD_JUNK,
-  EMPTY_SOCKET_BLUE:lower()
+  EMPTY_SOCKET_BLUE:lower(),
+  ITEM_QUALITY3_DESC:lower(),
+  ITEM_QUALITY2_DESC:lower(),
 }
 if Baganator.Constants.IsRetail then
   local retailSearchTerms = {
