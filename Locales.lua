@@ -118,6 +118,8 @@ L["KEYWORD_JUNK"] = "junk"
 L["KEYWORD_TRASH"] = "trash"
 L["KEYWORD_COSMETIC"] = "cosmetic"
 
+L["SEARCH_TRY_X"] = "Search, try %s"
+
 L["WINDOWS"] = "Windows"
 L["ICONS"] = "Icons"
 L["TOOLTIPS"] = "Tooltips"

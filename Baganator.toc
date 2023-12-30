@@ -11,8 +11,8 @@
 Locales.lua
 
 Core\Objects.lua
-Core\Constants.lua
 Core\Locales.lua
+Core\Constants.lua
 Core\Config.lua
 Core\Utilities.lua
 Core\SlashCmd.lua

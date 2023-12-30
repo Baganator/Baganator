@@ -93,3 +93,26 @@ Baganator.Constants.SortStatus = {
   WaitingMove = 1,
   WaitingItemData = 2,
 }
+
+Baganator.Constants.SampleSearchTerms = {
+  "<400",
+  BAGANATOR_L_KEYWORD_BOE,
+  INVTYPE_HEAD:lower(),
+  INVTYPE_TRINKET:lower(),
+  BAGANATOR_L_KEYWORD_FOOD .. "|" ..  BAGANATOR_L_KEYWORD_POTION,
+  BAGANATOR_L_KEYWORD_SOCKET,
+  BAGANATOR_L_KEYWORD_SOULBOUND,
+  "~" .. BAGANATOR_L_KEYWORD_EQUIPMENT,
+  "200-300",
+}
+if Baganator.Constants.IsRetail then
+  local retailSearchTerms = {
+    BAGANATOR_L_KEYWORD_BOE .. "&" .. "dragonflight",
+    BAGANATOR_L_KEYWORD_PET,
+    BAGANATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
+    "~" .. BAGANATOR_L_KEYWORD_SET .. "&" .. BAGANATOR_L_KEYWORD_GEAR,
+    BAGANATOR_L_KEYWORD_SET,
+    BAGANATOR_L_KEYWORD_COSMETIC,
+  }
+  tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
+end

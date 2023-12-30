@@ -77,3 +77,9 @@ function Baganator.Utilities.CountEmptySlots(cachedBag)
 
   return empty
 end
+
+function Baganator.Utilities.GetRandomSearchesText()
+  local term = Baganator.Constants.SampleSearchTerms[random(#Baganator.Constants.SampleSearchTerms)]
+
+  return BAGANATOR_L_SEARCH_TRY_X:format(term)
+end

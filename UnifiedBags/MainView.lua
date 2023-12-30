@@ -45,6 +45,9 @@ function BaganatorMainViewMixin:OnLoad()
       local text = self.SearchBox:GetText()
       Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
     end
+    if self.SearchBox:GetText() == "" then
+      self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
+    end
   end)
   self.SearchBox.clearButton:SetScript("OnClick", function()
     Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
