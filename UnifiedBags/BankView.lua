@@ -167,6 +167,10 @@ function BaganatorBankOnlyViewMixin:UpdateBagSlots()
   end
 end
 
+function BaganatorBankOnlyViewMixin:OnShow()
+  self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
+end
+
 function BaganatorBankOnlyViewMixin:OnHide(eventName)
   CloseBankFrame()
 

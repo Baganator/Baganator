@@ -3,6 +3,7 @@
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnEvent method="OnEvent"/>
+      <OnShow method="OnShow"/>
       <OnHide method="OnHide"/>
       <OnDragStart method="OnDragStart"/>
       <OnDragStop method="OnDragStop"/>

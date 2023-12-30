@@ -156,6 +156,7 @@ function BaganatorMainViewMixin:OnShow()
       self:CombineStacksAndSort()
     end)
   end
+  self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
 
   PlaySound(SOUNDKIT.IG_BACKPACK_OPEN);
 end

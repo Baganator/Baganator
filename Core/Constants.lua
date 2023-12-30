@@ -97,7 +97,7 @@ Baganator.Constants.SortStatus = {
 Baganator.Constants.SampleSearchTerms = {
   "<400",
   BAGANATOR_L_KEYWORD_BOE,
-  INVTYPE_HEAD:lower(),
+  INVTYPE_SHOULDER:lower(),
   INVTYPE_TRINKET:lower(),
   BAGANATOR_L_KEYWORD_FOOD .. "|" ..  BAGANATOR_L_KEYWORD_POTION,
   BAGANATOR_L_KEYWORD_SOCKET,
