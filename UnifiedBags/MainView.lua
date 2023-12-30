@@ -346,7 +346,7 @@ end
 
 function BaganatorMainViewMixin:SelectTab(character)
   for index, tab in ipairs(self.Tabs) do
-    if tab.details.character == character then
+    if tab.details == character then
       PanelTemplates_SetTab(self, index)
       break
     end
@@ -357,11 +357,11 @@ local function DeDuplicateRecents()
   local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
   local newRecents = {}
   local seen = {}
-  for _, char in ipairs(recents) do
-    if BAGANATOR_DATA.Characters[char.character] and not seen[char.character] and #newRecents < Baganator.Constants.MaxRecents then
-      table.insert(newRecents, char)
+  for _, character in ipairs(recents) do
+    if BAGANATOR_DATA.Characters[character] and not seen[character] and #newRecents < Baganator.Constants.MaxRecents then
+      table.insert(newRecents, character)
     end
-    seen[char.character] = true
+    seen[character] = true
   end
   Baganator.Config.Set(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW, newRecents)
 end
@@ -369,21 +369,15 @@ end
 function BaganatorMainViewMixin:FillRecents(characters)
   local characters = {}
   for char, data in pairs(BAGANATOR_DATA.Characters) do
-    if char ~= self.liveCharacter  then
-      table.insert(characters, {character = char, nameOnly = data.details.character})
-    end
+    table.insert(characters, char)
   end
 
-  table.sort(characters, function(a, b) return a.character < b.character end)
-  for char, data in pairs(BAGANATOR_DATA.Characters) do
-    if char == self.liveCharacter  then
-      table.insert(characters, 1, {character = char, nameOnly = data.details.character})
-    end
-  end
+  table.sort(characters, function(a, b) return a < b end)
 
   local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
 
-  table.insert(recents, 1, characters[1])
+  table.insert(recents, 1, self.liveCharacter)
+
   for _, char in ipairs(characters) do
     table.insert(recents, char)
   end
@@ -399,11 +393,8 @@ function BaganatorMainViewMixin:AddNewRecent(character)
   if not data then
     return
   end
-  local char = {
-    character = character,
-    nameOnly = data.details.character,
-  }
-  table.insert(recents, 2, char)
+
+  table.insert(recents, 2, character)
 
   DeDuplicateRecents()
 
@@ -416,29 +407,39 @@ function BaganatorMainViewMixin:RefreshTabs()
   local characters = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
 
   local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
+  local sameConnected = {}
+  for _, realmNormalized in ipairs(Baganator.Utilities.GetConnectedRealms()) do
+    sameConnected[realmNormalized] = true
+  end
 
   local lastTab
   local tabs = {}
-  for index, char in ipairs(characters) do
-    local tabButton = self.tabsPool:Acquire()
-    tabButton:SetText(char.nameOnly)
-    tabButton:SetScript("OnClick", function()
-      Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", char.character)
-    end)
-    if not lastTab then
-      tabButton:SetPoint("BOTTOM", 0, -30)
-    else
-      tabButton:SetPoint("TOPLEFT", lastTab, "TOPRIGHT")
+  local index = 1
+  while #tabs < Baganator.Constants.MaxRecentsTabs and index <= #characters do
+    local char = characters[index]
+    local details = BAGANATOR_DATA.Characters[char].details
+    if sameConnected[details.realmNormalized] then
+      local tabButton = self.tabsPool:Acquire()
+      tabButton:SetText(details.character)
+      tabButton:SetScript("OnClick", function()
+        Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", char)
+      end)
+      if not lastTab then
+        tabButton:SetPoint("BOTTOM", 0, -30)
+      else
+        tabButton:SetPoint("TOPLEFT", lastTab, "TOPRIGHT")
+      end
+      tabButton.details = char
+      tabButton:SetID(index)
+      tabButton:SetShown(isShown)
+      lastTab = tabButton
+      table.insert(tabs, tabButton)
     end
-    tabButton.details = char
-    tabButton:SetID(index)
-    tabButton:SetShown(isShown)
-    lastTab = tabButton
-    table.insert(tabs, tabButton)
+    index = index + 1
   end
   self.Tabs = tabs
 
-  PanelTemplates_SetNumTabs(self, #characters)
+  PanelTemplates_SetNumTabs(self, #tabs)
 end
 
 function BaganatorMainViewMixin:SetupTabs()
