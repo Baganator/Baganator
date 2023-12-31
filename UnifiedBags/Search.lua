@@ -79,6 +79,10 @@ local function ReputationCheck(details)
 end
 
 local function BindOnAccountCheck(details)
+  if not details.itemLink:find("item:", nil, true) then
+    return false
+  end
+
   GetTooltipInfo(details)
 
   if details.tooltipInfo then
