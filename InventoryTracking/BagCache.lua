@@ -119,7 +119,9 @@ function BaganatorBagCacheMixin:SetEquipmentSetInfo()
   for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
     local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
     local info = {name = name, iconTexture = iconTexture, setID = setID}
-    for _, location in pairs(C_EquipmentSet.GetItemLocations(setID)) do
+    -- Uses or {} because a set might exist without any associated item
+    -- locations
+    for _, location in pairs(C_EquipmentSet.GetItemLocations(setID) or {}) do
       if location ~= -1 and location ~= 0 and location ~= 1 then
         local player, bank, bags, voidStorage, slot, bag
         if Baganator.Constants.IsClassic then
