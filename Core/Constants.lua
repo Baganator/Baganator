@@ -117,11 +117,16 @@ if Baganator.Constants.IsRetail then
     BAGANATOR_L_KEYWORD_BOE .. "&" .. "dragonflight",
     BAGANATOR_L_KEYWORD_PET,
     BAGANATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
-    "~" .. BAGANATOR_L_KEYWORD_SET .. "&" .. BAGANATOR_L_KEYWORD_GEAR,
-    BAGANATOR_L_KEYWORD_SET,
     BAGANATOR_L_KEYWORD_COSMETIC,
     BAGANATOR_L_KEYWORD_REAGENT,
     BAGANATOR_L_KEYWORD_REPUTATION,
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
+end
+if Baganator.Constants.IsRetail or not IsMacClient() then
+  local setTerms = {
+    BAGANATOR_L_KEYWORD_SET,
+    "~" .. BAGANATOR_L_KEYWORD_SET .. "&" .. BAGANATOR_L_KEYWORD_GEAR,
+  }
+  tAppendAll(Baganator.Constants.SampleSearchTerms, setTerms)
 end
