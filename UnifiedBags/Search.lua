@@ -21,7 +21,7 @@ local function BindOnEquipCheck(details)
 end
 
 local function EquipmentCheck(details)
-  return Baganator.Utilities.IsEquipment(details.itemLink) == true
+  return details.classID == Enum.ItemClass.Armor or details.classID == Enum.ItemClass.Weapon
 end
 
 local function FoodCheck(details)
