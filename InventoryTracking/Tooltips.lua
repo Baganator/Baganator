@@ -123,7 +123,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     end
     tooltip:AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
   end
-  if #tooltipInfo > Baganator.Config.Get("tooltips_character_limit") then
+  if #tooltipInfo.characters > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
   end
 
