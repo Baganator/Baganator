@@ -78,6 +78,19 @@ local function ReputationCheck(details)
   end
 end
 
+local function BindOnAccountCheck(details)
+  GetTooltipInfo(details)
+
+  if details.tooltipInfo then
+    for _, row in ipairs(details.tooltipInfo.lines) do
+      if row.type == Enum.TooltipDataLineType.ItemBinding and row.leftText == ITEM_BIND_TO_BNETACCOUNT then
+        return true
+      end
+    end
+    return false
+  end
+end
+
 local function SaveBaseStats(details)
   if not Baganator.Utilities.IsEquipment(details.itemLink) then
     details.baseItemStats = {}
@@ -121,6 +134,7 @@ local KEYWORDS_TO_CHECK = {
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_COSMETIC] = CosmeticCheck
+  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck
 end
 
 local sockets = {

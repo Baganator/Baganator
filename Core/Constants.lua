@@ -120,6 +120,7 @@ if Baganator.Constants.IsRetail then
     BAGANATOR_L_KEYWORD_COSMETIC,
     BAGANATOR_L_KEYWORD_REAGENT,
     BAGANATOR_L_KEYWORD_REPUTATION,
+    BAGANATOR_L_KEYWORD_BOA,
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
 end
