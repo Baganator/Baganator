@@ -330,6 +330,10 @@ local matches = {}
 -- Search terms with no keyword or pattern match
 local rejects = {}
 
+-- Each keyword/pattern check function returns nil if the data needed to
+-- complete the check doesn't exist yet. Then the item will be queued for
+-- checking again on a later frame. If the data is available either true or
+-- false is returned.
 local function ApplyKeyword(searchString)
   local function MatchesText(details)
     return details.itemNameLower:find(searchString, nil, true) ~= nil
@@ -401,8 +405,11 @@ local function ApplyCombinedTerms(fullSearchString)
     end
     return function(...)
       for _, check in ipairs(checks) do
-        if check(...) then
+        local result = check(...)
+        if result then
           return true
+        elseif result == nil then
+          return nil
         end
       end
       return false
@@ -414,15 +421,24 @@ local function ApplyCombinedTerms(fullSearchString)
     end
     return function(...)
       for _, check in ipairs(checks) do
-        if not check(...) then
+        local result = check(...)
+        if result == false then
           return false
+        elseif result == nil then
+          return nil
         end
       end
       return true
     end
   elseif fullSearchString:match("^~") then
     local nested = ApplyCombinedTerms(fullSearchString:sub(2, #fullSearchString))
-    return function(...) return not nested(...) end
+    return function(...)
+      local result = nested(...)
+      if result ~= nil then
+        return not result
+      end
+      return nil
+    end
   else
     return ApplyKeyword(fullSearchString)
   end
