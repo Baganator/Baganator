@@ -84,7 +84,9 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
     end
   end
 
-  for _, item in pairs(details.mail) do
+  -- or because the mail is a newer key that might not exist on another
+  -- character yet
+  for _, item in pairs(details.mail or {}) do
     if item.itemLink then
       local key = Baganator.Utilities.GetItemKey(item.itemLink)
       if not summary[key] then
@@ -99,7 +101,9 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
     end
   end
 
-  for _, item in pairs(details.equipped) do
+  -- or because the equipped is a newer key that might not exist on another
+  -- character yet
+  for _, item in pairs(details.equipped or {}) do
     if item.itemLink then
       local key = Baganator.Utilities.GetItemKey(item.itemLink)
       if not summary[key] then
