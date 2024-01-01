@@ -29,6 +29,7 @@ InventoryTracking\Tooltips.lua
 InventoryTracking\CurrencyTooltipData.lua
 InventoryTracking\Main.lua
 
+Sorting\ItemFields.lua
 Sorting\Order.lua
 Sorting\Stacks.lua
 Sorting\Plugins.lua
