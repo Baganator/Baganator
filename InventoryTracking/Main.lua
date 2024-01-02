@@ -49,6 +49,8 @@ local function InitCurrentCharacter()
 end
 
 local function SetupDataProcessing()
+  Baganator.Utilities.CacheConnectedRealms()
+
   local bagCache = CreateFrame("Frame")
   Mixin(bagCache, BaganatorBagCacheMixin)
   bagCache:OnLoad()

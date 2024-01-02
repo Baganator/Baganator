@@ -94,13 +94,16 @@ function Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
   return quality:WrapTextInColorCode("|H" .. itemString .. "|h[" .. name .. "]|h")
 end
 
-function Baganator.Utilities.GetConnectedRealms()
-  local realms = GetAutoCompleteRealms()
-  if #realms == 0 then
-    realms = {GetNormalizedRealmName()}
+local cachedConnectedRealms
+function Baganator.Utilities.CacheConnectedRealms()
+  cachedConnectedRealms = GetAutoCompleteRealms()
+  if #cachedConnectedRealms == 0 then
+    cachedConnectedRealms = {GetNormalizedRealmName()}
   end
+end
 
-  return realms
+function Baganator.Utilities.GetConnectedRealms()
+  return cachedConnectedRealms
 end
 
 function Baganator.Utilities.RemoveCharacter(characterName)
