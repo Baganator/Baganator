@@ -134,12 +134,22 @@ function Baganator.InventoryTracking.Initialize()
       end
     end)
   else
-    local function ItemTooltipHandler(tooltip)
-      local _, itemLink = tooltip:GetItem()
-      AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
+    local function SetItemTooltipHandler(tooltip)
+      local ready = true
+      tooltip:HookScript("OnTooltipSetItem", function(tooltip)
+        if not ready then
+          return
+        end
+        local _, itemLink = tooltip:GetItem()
+        AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
+        ready = false
+      end)
+      tooltip:HookScript("OnTooltipCleared", function(tooltip)
+        ready = true
+      end)
     end
-    GameTooltip:HookScript("OnTooltipSetItem", ItemTooltipHandler)
-    ItemRefTooltip:HookScript("OnTooltipSetItem", ItemTooltipHandler)
+    SetItemTooltipHandler(GameTooltip)
+    SetItemTooltipHandler(ItemRefTooltip)
     local function CurrencyTooltipHandler(tooltip, index)
       local link = C_CurrencyInfo.GetCurrencyListLink(index)
       if link ~= nil then
