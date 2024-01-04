@@ -131,3 +131,9 @@ if Baganator.Constants.IsRetail or not IsMacClient() then
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, setTerms)
 end
+
+-- Some keys in Wrath classic have the wrong item type so would get sorted into
+-- the wrong bag without this override.
+Baganator.Constants.KeyOverrides = {
+  [45798] = true,
+}

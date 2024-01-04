@@ -753,7 +753,7 @@ function BaganatorMainViewMixin:DoSort(isReverse)
     end
   elseif Baganator.Constants.IsWrath then
     bagChecks[Enum.BagIndex.Keyring] = function(item)
-      return item.classID == Enum.ItemClass.Key
+      return item.classID == Enum.ItemClass.Key or Baganator.Constants.KeyOverrides[item.itemID]
     end
   end
 
