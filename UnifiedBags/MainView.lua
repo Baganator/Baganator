@@ -72,7 +72,7 @@ function BaganatorMainViewMixin:OnLoad()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
-    if self:IsVisible() then
+    if self:IsVisible() and self.lastCharacter ~= nil then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)

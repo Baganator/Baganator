@@ -63,7 +63,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
-    if self:IsVisible() then
+    if self:IsVisible() and self.liveCharacter ~= nil then
       self:UpdateForCharacter(self.liveCharacter)
     end
   end)
