@@ -64,11 +64,16 @@ local expansionIDToText = {
   [9] = "DF",
 }
 
-local function IsBindOnAccount(itemLink)
-  local tooltipInfo = C_TooltipInfo.GetHyperlink(itemLink)
-  if tooltipInfo then
-    for _, row in ipairs(tooltipInfo.lines) do
-      if row.type == Enum.TooltipDataLineType.ItemBinding and row.leftText == ITEM_BIND_TO_BNETACCOUNT then
+local function IsBindOnAccount(details)
+  if not details.isBound then
+    return false
+  end
+  if not details.tooltipInfo then
+    details.tooltipInfo = details.tooltipGetter()
+  end
+  if details.tooltipInfo then
+    for _, row in ipairs(details.tooltipInfo.lines) do
+      if row.leftText == ITEM_BIND_TO_BNETACCOUNT or row.leftText == ITEM_BNETACCOUNTBOUND then
         return true
       end
     end
@@ -126,7 +131,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
   if Baganator.Config.Get("show_boa_status") then
     table.insert(itemCallbacks, function(self, data)
-      if IsBindOnAccount(data.itemLink) then
+      if IsBindOnAccount(self.BGR) then
         self.BindingText:SetText(BAGANATOR_L_BOA)
         if useQualityColors then
           local color = qualityColors[data.quality]
@@ -491,6 +496,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self.BGR.itemID = details.itemID
   self.BGR.itemName = ""
   self.BGR.setInfo = details.setInfo
+  self.BGR.tooltipGetter = function() return C_TooltipInfo.GetHyperlink(details.itemLink) end
 
   SetStaticInfo(self, details)
   if details.iconTexture ~= nil then
@@ -638,6 +644,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemID = cacheData.itemID
   self.BGR.itemNameLower = nil
   self.BGR.setInfo = cacheData.setInfo
+  self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
@@ -736,6 +743,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
   self.BGR.setInfo = details.setInfo
+  self.BGR.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(details.itemLink) end) end
   
   SetItemButtonTexture(self, details.iconTexture or self.emptySlotFilepath);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
@@ -888,6 +896,15 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
   self.BGR.setInfo = cacheData.setInfo
+  self.BGR.tooltipGetter = function()
+    return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
+      if self:GetParent():GetID() == -1 then
+        tooltip:SetInventoryItem("player", self:GetInventorySlot())
+      else
+        tooltip:SetBagItem(self:GetParent():GetID(), self:GetID())
+      end
+    end)
+  end
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()

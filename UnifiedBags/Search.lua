@@ -46,8 +46,10 @@ local function GetQualityCheck(quality)
   end
 end
 
-local function GetTooltipInfo(details)
-  if details.tooltipInfo then
+local ReputationCheck, BindOnAccountCheck
+
+local function GetTooltipInfoSpell(details)
+  if details.tooltipInfoSpell then
     return
   end
 
@@ -56,7 +58,7 @@ local function GetTooltipInfo(details)
     C_Spell.RequestLoadSpellData(spellID)
     return
   end
-  details.tooltipInfo = C_TooltipInfo.GetHyperlink(details.itemLink)
+  details.tooltipInfoSpell = details.tooltipGetter()
 end
 
 local function ReputationCheck(details)
@@ -64,10 +66,10 @@ local function ReputationCheck(details)
     return false
   end
 
-  GetTooltipInfo(details)
+  GetTooltipInfoSpell(details)
 
-  if details.tooltipInfo then
-    for _, lineData in ipairs(details.tooltipInfo.lines) do
+  if details.tooltipInfoSpell then
+    for _, lineData in ipairs(details.tooltipInfoSpell.lines) do
       if lineData.leftText:match(BAGANATOR_L_KEYWORD_REPUTATION) then
         return true
       end
@@ -79,15 +81,15 @@ local function ReputationCheck(details)
 end
 
 local function BindOnAccountCheck(details)
-  if not details.itemLink:find("item:", nil, true) then
+  if not details.isBound or not details.itemLink:find("item:", nil, true) then
     return false
   end
 
-  GetTooltipInfo(details)
+  GetTooltipInfoSpell(details)
 
-  if details.tooltipInfo then
-    for _, row in ipairs(details.tooltipInfo.lines) do
-      if row.type == Enum.TooltipDataLineType.ItemBinding and row.leftText == ITEM_BIND_TO_BNETACCOUNT then
+  if details.tooltipInfoSpell then
+    for _, row in ipairs(details.tooltipInfoSpell.lines) do
+      if row.leftText == ITEM_BIND_TO_BNETACCOUNT or row.leftText == ITEM_BNETACCOUNTBOUND then
         return true
       end
     end
@@ -133,12 +135,12 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_SOCKET] = SocketCheck,
   [BAGANATOR_L_KEYWORD_JUNK] = JunkCheck,
   [BAGANATOR_L_KEYWORD_TRASH] = JunkCheck,
+  [BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck,
+  [BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck,
 }
 
 if Baganator.Constants.IsRetail then
-  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_COSMETIC] = CosmeticCheck
-  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck
 end
 
 local sockets = {

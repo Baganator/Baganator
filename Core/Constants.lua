@@ -110,6 +110,8 @@ Baganator.Constants.SampleSearchTerms = {
   EMPTY_SOCKET_BLUE:lower(),
   ITEM_QUALITY3_DESC:lower(),
   ITEM_QUALITY2_DESC:lower(),
+  BAGANATOR_L_KEYWORD_BOA,
+  BAGANATOR_L_KEYWORD_REPUTATION,
 }
 if Baganator.Constants.IsRetail then
   local retailSearchTerms = {
@@ -119,8 +121,6 @@ if Baganator.Constants.IsRetail then
     BAGANATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
     BAGANATOR_L_KEYWORD_COSMETIC,
     BAGANATOR_L_KEYWORD_REAGENT,
-    BAGANATOR_L_KEYWORD_REPUTATION,
-    BAGANATOR_L_KEYWORD_BOA,
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
 end

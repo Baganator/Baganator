@@ -83,3 +83,36 @@ function Baganator.Utilities.GetRandomSearchesText()
 
   return BAGANATOR_L_SEARCH_TRY_X:format(term)
 end
+
+if Baganator.Constants.IsClassic then
+  local tooltip = CreateFrame("GameTooltip", "BaganatorUtilitiesScanTooltip", nil, "GameTooltipTemplate")
+  tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+
+  function Baganator.Utilities.DumpClassicTooltip(tooltipSetter)
+    tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
+    tooltipSetter(tooltip)
+
+    local name = tooltip:GetName()
+    local dump = {}
+
+    local row = 1
+    while _G[name .. "TextLeft" .. row] ~= nil do
+      local leftFontString = _G[name .. "TextLeft" .. row]
+      local rightFontString = _G[name .. "TextRight" .. row]
+
+      local entry = {
+        leftText = leftFontString:GetText(),
+        --leftColor = {leftFontString:GetTextColor()},
+        rightText = rightFontString:GetText(),
+        --rightColor = {rightFontString:GetTextColor()}
+      }
+      if entry.leftText or entry.rightText then
+        table.insert(dump, entry)
+      end
+
+      row = row + 1
+    end
+
+    return {lines = dump}
+  end
+end

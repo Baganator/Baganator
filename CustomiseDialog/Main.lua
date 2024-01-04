@@ -4,6 +4,10 @@ local IsRetailCheck = function()
   return Baganator.Constants.IsRetail
 end
 
+local IsVanillaCheck = function()
+  return Baganator.Constants.IsVanilla
+end
+
 local WINDOW_OPTIONS = {
   {
     type = "checkbox",
@@ -80,7 +84,7 @@ local ICON_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_BOA_STATUS,
     option = "show_boa_status",
-    check = IsRetailCheck,
+    check = IsVanillaCheck
   },
   {
     type = "checkbox",
