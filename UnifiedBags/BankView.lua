@@ -282,23 +282,7 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
   for index in ipairs(Baganator.Constants.AllBankIndexes) do
     indexesToUse[index] = true
   end
-  local bagChecks = {}
-  if Baganator.Constants.IsRetail then
-    bagChecks[Enum.BagIndex.Reagentbank] = function(item)
-      return (select(17, GetItemInfo(item.itemLink)))
-    end
-  end
-
-  for index = 1, Baganator.Constants.BankBagSlotsCount do
-    local bagID = Baganator.Constants.AllBankIndexes[index + 1]
-    local _, family = C_Container.GetContainerNumFreeSlots(bagID)
-    if family ~= nil and family ~= 0 then
-      bagChecks[bagID] = function(item)
-        local itemFamily = item.itemLink and GetItemFamily(item.itemLink)
-        return itemFamily and item.classID ~= Enum.ItemClass.Container and item.classID ~= Enum.ItemClass.Quiver and bit.band(itemFamily, family) ~= 0
-      end
-    end
-  end
+  local bagChecks = Baganator.Sorting.GetBagUsageChecks(Baganator.Constants.AllBankIndexes)
 
   local function DoSortInternal()
     local goAgain = Baganator.Sorting.ApplyOrdering(

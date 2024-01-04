@@ -14,8 +14,6 @@ local itemMetatable = {
   end
 }
 
-Baganator.Sorting = {}
-
 -- Different sort modes, with different sorting criteria based on item data keys
 local allSortKeys = {
   ["quality"] = {

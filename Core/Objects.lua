@@ -4,4 +4,5 @@ Baganator = {
   UnifiedBags = {},
   CustomiseDialog = {},
   API = {},
+  Sorting = {},
 }

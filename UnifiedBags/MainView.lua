@@ -746,26 +746,7 @@ function BaganatorMainViewMixin:DoSort(isReverse)
   for index, bagID in ipairs(Baganator.Constants.AllBagIndexes) do
     bagsToSort[index] = true
   end
-  local bagChecks = {}
-  if Baganator.Constants.IsRetail then
-    bagChecks[Enum.BagIndex.ReagentBag] = function(item)
-      return item.itemLink and (select(17, GetItemInfo(item.itemLink)))
-    end
-  elseif Baganator.Constants.IsWrath then
-    bagChecks[Enum.BagIndex.Keyring] = function(item)
-      return item.classID == Enum.ItemClass.Key or Baganator.Constants.KeyOverrides[item.itemID]
-    end
-  end
-
-  for index = 1, Baganator.Constants.BagSlotsCount do
-    local _, family = C_Container.GetContainerNumFreeSlots(index)
-    if family ~= nil and family ~= 0 then
-      bagChecks[index] = function(item)
-        local itemFamily = item.itemLink and GetItemFamily(item.itemLink)
-        return itemFamily and item.classID ~= Enum.ItemClass.Container and item.classID ~= Enum.ItemClass.Quiver and bit.band(itemFamily, family) ~= 0
-      end
-    end
-  end
+  local bagChecks = Baganator.Sorting.GetBagUsageChecks(Baganator.Constants.AllBagIndexes)
   local function DoSortInternal()
     local goAgain = Baganator.Sorting.ApplyOrdering(
       BAGANATOR_DATA.Characters[self.liveCharacter].bags,
