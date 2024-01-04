@@ -55,7 +55,7 @@ function BaganatorMainViewMixin:OnLoad()
 
   Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
-    if self:IsShown() then
+    if self:IsVisible() then
       self:UpdateForCharacter(character, true, updatedBags)
     else
       self:NotifyBagUpdate(updatedBags)
@@ -63,7 +63,7 @@ function BaganatorMainViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
-    if self:IsShown() and self.isLive then
+    if self:IsVisible() and self.isLive then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
@@ -83,14 +83,14 @@ function BaganatorMainViewMixin:OnLoad()
       return
     end
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsShown() then
+      if self:IsVisible() then
         Baganator.Utilities.ApplyVisuals(self)
       end
     elseif tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
-      if self:IsShown() then
+      if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == Baganator.Config.Options.SHOW_RECENTS_TABS then
@@ -144,7 +144,7 @@ function BaganatorMainViewMixin:OnLoad()
 
   -- Update currencies when they are watched/unwatched in Blizz UI
   EventRegistry:RegisterCallback("TokenFrame.OnTokenWatchChanged", function()
-    if self:IsShown() then
+    if self:IsVisible() then
       self:UpdateCurrencies(self.lastCharacter)
     end
   end)
@@ -175,7 +175,7 @@ end
 function BaganatorMainViewMixin:ApplySearch(text)
   self.SearchBox:SetText(text)
 
-  if not self:IsShown() then
+  if not self:IsVisible() then
     return
   end
 
