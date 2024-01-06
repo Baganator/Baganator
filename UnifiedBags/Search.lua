@@ -319,10 +319,16 @@ local patterns = {
   ["^%<%d+$"] = ItemLevelMinPatternCheck,
 }
 
+local function MatchesText(details, searchString)
+  return details.itemNameLower:find(searchString, nil, true) ~= nil
+end
+
 local function PatternSearch(searchString)
   for pat, check in pairs(patterns) do
     if searchString:match(pat) then
-      return check
+      return function(...)
+        return MatchesText(...) or check(...)
+      end
     end
   end
 end
@@ -337,9 +343,6 @@ local rejects = {}
 -- checking again on a later frame. If the data is available either true or
 -- false is returned.
 local function ApplyKeyword(searchString)
-  local function MatchesText(details)
-    return details.itemNameLower:find(searchString, nil, true) ~= nil
-  end
   local check = matches[searchString]
   if check then
     return check
