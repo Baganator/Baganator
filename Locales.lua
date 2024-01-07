@@ -16,6 +16,10 @@ BAGANATOR_LOCALES = Locales
 
 local L = Locales.enUS
 
+L["BAGANATOR"] = "Baganator"
+L["TO_OPEN_OPTIONS_X"] = "Access options with /bgr"
+L["OPEN_OPTIONS"] = "Open Options"
+
 L["BANK"] = "Bank"
 L["REAGENTS"] = "Reagents"
 L["KEYS"] = "Keys"
