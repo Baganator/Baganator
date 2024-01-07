@@ -134,6 +134,10 @@ end
 
 -- Some keys in Wrath classic have the wrong item type so would get sorted into
 -- the wrong bag without this override.
-Baganator.Constants.KeyOverrides = {
-  [45798] = true,
+local keys = {
+  45798, 43853, 43854, 15872, 15871, 15870, 15869, 32773, 13704
 }
+Baganator.Constants.KeyOverrides = {}
+for _, k in ipairs(keys) do
+  Baganator.Constants.KeyOverrides[k] = true
+end
