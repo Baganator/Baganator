@@ -4,82 +4,7 @@ addonTable.JunkPlugins = {}
 
 Baganator.ItemButtonUtil = {}
 
-function Baganator.ItemButtonUtil.SetAutoSettings()
-  if Baganator.Config.Get(Baganator.Config.Options.AUTO_PAWN_ARROW) then
-    if Baganator.Config.Get(Baganator.Config.Options.SHOW_PAWN_ARROW) then
-      -- special check for pawn as the config SHOW_PAWN_ARROW started with the
-      -- wrong state previously
-      local isPawn = false
-      for _, corner in ipairs({"icon_top_left_corner", "icon_top_right_corner", "icon_bottom_left_corner", "icon_bottom_right_corner"}) do
-        isPawn = isPawn or Baganator.Config.Get(corner) == "pawn"
-      end
-      Baganator.Config.Set(Baganator.Config.Options.SHOW_PAWN_ARROW, isPawn)
-    end
-
-    Baganator.Utilities.OnAddonLoaded("Pawn", function()
-      Baganator.Config.Set(Baganator.Config.Options.AUTO_PAWN_ARROW, false)
-      if not Baganator.Config.Get(Baganator.Config.Options.SHOW_PAWN_ARROW) then
-        Baganator.Config.Set(Baganator.Config.Options.SHOW_PAWN_ARROW, true)
-        Baganator.Config.Set(Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER, "pawn")
-      end
-    end)
-  end
-
-  if Baganator.Config.Get(Baganator.Config.Options.AUTO_CIMI_ICON) then
-    Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
-      Baganator.Config.Set(Baganator.Config.Options.AUTO_CIMI_ICON, false)
-      if not Baganator.Config.Get(Baganator.Config.Options.SHOW_CIMI_ICON) then
-        Baganator.Config.Set(Baganator.Config.Options.SHOW_CIMI_ICON, true)
-        Baganator.Config.Set(Baganator.Config.Options.ICON_TOP_RIGHT_CORNER, "can_i_mog_it")
-      end
-    end)
-  end
-end
-
 local IsEquipment = Baganator.Utilities.IsEquipment
-
-local qualityColors = {
-  [0] = CreateColor(157/255, 157/255, 157/255), -- Poor
-  [1] = CreateColor(240/255, 240/255, 240/255), -- Common
-  [2] = CreateColor(30/255, 178/255, 0/255), -- Uncommon
-  [3] = CreateColor(0/255, 112/255, 221/255), -- Rare
-  [4] = CreateColor(163/255, 53/255, 238/255), -- Epic
-  [5] = CreateColor(225/255, 96/255, 0/255), -- Legendary
-  [6] = CreateColor(229/255, 204/255, 127/255), -- Artifact
-  [7] = CreateColor(79/255, 196/255, 225/255), -- Heirloom
-  [8] = CreateColor(79/255, 196/255, 225/255), -- Blizzard
-}
-local equipmentSetBorder = CreateColor(198/255, 166/255, 0/255)
-
-local expansionIDToText = {
-  [0] = "Cla",
-  [1] = "BC",
-  [2] = "W",
-  [3] = "Cata",
-  [4] = "MoP",
-  [5] = "Dra",
-  [6] = "Leg",
-  [7] = "BfA",
-  [8] = "SL",
-  [9] = "DF",
-}
-
-local function IsBindOnAccount(details)
-  if not details.isBound then
-    return false
-  end
-  if not details.tooltipInfo then
-    details.tooltipInfo = details.tooltipGetter()
-  end
-  if details.tooltipInfo then
-    for _, row in ipairs(details.tooltipInfo.lines) do
-      if row.leftText == ITEM_BIND_TO_BNETACCOUNT or row.leftText == ITEM_BNETACCOUNTBOUND then
-        return true
-      end
-    end
-  end
-  return false
-end
 
 local itemCallbacks = {}
 local iconSettings = {}
@@ -91,95 +16,15 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
       Baganator.ItemButtonUtil.UpdateSettings()
     end)
+    Baganator.CallbackRegistry:RegisterCallback("PluginsUpdated", function()
+      Baganator.ItemButtonUtil.UpdateSettings()
+      Baganator.API.RequestItemButtonsRefresh()
+    end)
   end
   itemCallbacks = {}
-
   iconSettings = {
     markJunk = Baganator.Config.Get("icon_grey_junk"),
-    usingJunkPlugin = false,
-    equipmentSetBorder = Baganator.Config.Get("icon_equipment_set_border"),
   }
-
-  local useQualityColors = Baganator.Config.Get("icon_text_quality_colors")
-  if Baganator.Config.Get("show_item_level") then
-    table.insert(itemCallbacks, function(self, data)
-      if IsEquipment(data.itemLink) and not self.BGR.isCosmetic then
-        local itemLevel = GetDetailedItemLevelInfo(data.itemLink)
-        self.ItemLevel:SetText(itemLevel)
-        if useQualityColors then
-          local color = qualityColors[data.quality]
-          self.ItemLevel:SetTextColor(color.r, color.g, color.b)
-        else
-          self.ItemLevel:SetTextColor(1,1,1)
-        end
-      end
-    end)
-  end
-  if Baganator.Config.Get("show_boe_status") then
-    local boe_on_common = not Baganator.Config.Get("hide_boe_on_common")
-    table.insert(itemCallbacks, function(self, data)
-      if IsEquipment(data.itemLink) and not data.isBound and (boe_on_common or data.quality > 1) then
-        self.BindingText:SetText(BAGANATOR_L_BOE)
-        if useQualityColors then
-          local color = qualityColors[data.quality]
-          self.BindingText:SetTextColor(color.r, color.g, color.b)
-        else
-          self.BindingText:SetTextColor(1,1,1)
-        end
-      end
-    end)
-  end
-  if Baganator.Config.Get("show_boa_status") then
-    table.insert(itemCallbacks, function(self, data)
-      if IsBindOnAccount(self.BGR) then
-        self.BindingText:SetText(BAGANATOR_L_BOA)
-        if useQualityColors then
-          local color = qualityColors[data.quality]
-          self.BindingText:SetTextColor(color.r, color.g, color.b)
-        else
-          self.BindingText:SetTextColor(1,1,1)
-        end
-      end
-    end)
-  end
-  if Baganator.Config.Get("show_expansion") then
-    table.insert(itemCallbacks, function(self, data)
-      self.Expansion:SetText(expansionIDToText[self.BGR.expacID] or "")
-    end)
-  end
-  if Baganator.Config.Get("show_equipment_set") then
-    table.insert(itemCallbacks, function(self, data)
-      if data.setInfo then
-        self.EquipmentSet:Show()
-      end
-    end)
-  end
-  if Baganator.Config.Get("show_pawn_arrow") and PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
-    table.insert(itemCallbacks, function(self, data)
-      if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted(data.itemLink) then
-        self.UpgradeArrow:Show()
-      end
-    end)
-  end
-  if Baganator.Config.Get("show_cimi_icon") and CIMI_AddToFrame then
-    table.insert(itemCallbacks, function(self, data)
-      local function CIMI_Update(self)
-        if not self or not self:GetParent() then return end
-        if not CIMI_CheckOverlayIconEnabled(self) then
-            self.CIMIIconTexture:SetShown(false)
-            self:SetScript("OnUpdate", nil)
-            return
-        end
-
-        CIMI_SetIcon(self, CIMI_Update, CanIMogIt:GetTooltipText(data.itemLink))
-      end
-      if not self.CanIMogItOverlay then
-        return
-      end
-      self.CanIMogItOverlay:Show()
-      CIMI_SetIcon(self.CanIMogItOverlay, CIMI_Update, CanIMogIt:GetTooltipText(data.itemLink))
-    end)
-  end
 
   local junkPluginID = Baganator.Config.Get("junk_plugin")
   local junkPlugin = addonTable.JunkPlugins[junkPluginID]
@@ -188,13 +33,49 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     table.insert(itemCallbacks, function(self, data)
       if self.JunkIcon then
         self.BGR.isJunk = junkPlugin.callback(self:GetParent():GetID(), self:GetID(), data.itemID, data.itemLink)
-        self.JunkIcon:SetShown(self.BGR.isJunk)
         if iconSettings.markJunk and self.BGR.isJunk then
           self.BGR.persistIconGrey = true
           self.icon:SetDesaturated(true)
         end
       end
     end)
+  end
+
+  local positions = {
+    "icon_top_left_corner_array",
+    "icon_top_right_corner_array",
+    "icon_bottom_left_corner_array",
+    "icon_bottom_right_corner_array",
+  }
+
+  for _, key in ipairs(positions) do
+    local array = CopyTable(Baganator.Config.Get(key))
+    local callbacks = {}
+    local plugins = {}
+    for _, plugin in ipairs(array) do
+      if addonTable.IconCornerPlugins[plugin] then
+        table.insert(callbacks, addonTable.IconCornerPlugins[plugin].onUpdate)
+        table.insert(plugins, plugin)
+      end
+    end
+    if #callbacks > 0 then
+      table.insert(itemCallbacks, function(itemButton)
+        local index = 1
+        local toShow = nil
+        while index <= #callbacks do
+          local cb = callbacks[index]
+          local widget = itemButton.cornerPlugins[plugins[index]]
+          if widget then
+            local show = cb(widget, itemButton.BGR)
+            if show then
+              widget:Show()
+              break
+            end
+          end
+          index = index + 1
+        end
+      end)
+    end
   end
 end
 
@@ -267,24 +148,14 @@ end
 local function SetStaticInfo(self, details)
   self.BGR.isBound = details.isBound
   self.BGR.quality = details.quality
-  self.BindingText:SetText("")
-  self.ItemLevel:SetText("")
-  self.Expansion:SetText("")
-  self.EquipmentSet:SetTexture("interface\\groupframe\\ui-group-maintankicon")
-  self.EquipmentSet:Hide()
+  self.BGR.itemCount = details.itemCount
 
-  if PawnShouldItemLinkHaveUpgradeArrowUnbudgeted then
-    self.UpgradeArrow:SetTexture("Interface\\AddOns\\Pawn\\Textures\\UpgradeArrow")
-    self.UpgradeArrow:Hide()
-  end
-
-  if self.CanIMogItOverlay then
-    self.CanIMogItOverlay:Hide()
+  for plugin, widget in pairs(self.cornerPlugins) do
+    widget:Hide()
   end
 
   if not iconSettings.usingJunkPlugin and self.JunkIcon then
     self.BGR.isJunk = details.quality == Enum.ItemQuality.Poor
-    self.JunkIcon:SetShown(self.BGR.isJunk)
     if iconSettings.markJunk and self.BGR.isJunk then
       self.BGR.persistIconGrey = true
       self.icon:SetDesaturated(true)
@@ -325,77 +196,38 @@ local function SearchCheck(self, text)
   return Baganator.UnifiedBags.Search.CheckItem(self.BGR, text)
 end
 
-local hidden = CreateFrame("Frame")
-hidden:Hide()
-
 local function ApplyItemDetailSettings(button)
-  local font, originalSize, fontFlags = button.ItemLevel:GetFont()
   local newSize = Baganator.Config.Get("icon_text_font_size")
 
   local positions = {
-    ["icon_top_left_corner"] = {"TOPLEFT", 2, -2},
-    ["icon_top_right_corner"] = {"TOPRIGHT", -2, -2},
-    ["icon_bottom_left_corner"] = {"BOTTOMLEFT", 2, 2},
-    ["icon_bottom_right_corner"] = {"BOTTOMRIGHT", -2, 2},
+    ["icon_top_left_corner_array"] = {"TOPLEFT", 2, -2},
+    ["icon_top_right_corner_array"] = {"TOPRIGHT", -2, -2},
+    ["icon_bottom_left_corner_array"] = {"BOTTOMLEFT", 2, 2},
+    ["icon_bottom_right_corner_array"] = {"BOTTOMRIGHT", -2, 2},
   }
-  local toHide = {
-    ["item_level"] = button.ItemLevel,
-    ["binding_type"] = button.BindingText,
-    ["quantity"] = button.Count,
-    ["pawn"] = button.UpgradeArrow,
-    ["can_i_mog_it"] = button.CanIMogItOverlay,
-    ["expansion"] = button.Expansion,
-    ["equipment_set"] = button.EquipmentSet,
-  }
-  if CIMI_AddToFrame then
-    CIMI_AddToFrame(button, function() end)
-  end
 
-  for config, anchor in pairs(positions) do
-    local cornerType = Baganator.Config.Get(config)
-    if cornerType == "item_level" then
-      button.ItemLevel:SetParent(button)
-      button.ItemLevel:ClearAllPoints()
-      button.ItemLevel:SetPoint(unpack(anchor))
-      button.ItemLevel:SetFont(font, newSize, fontFlags)
-    elseif cornerType == "binding_type" then
-      button.BindingText:SetParent(button)
-      button.BindingText:ClearAllPoints()
-      button.BindingText:SetPoint(unpack(anchor))
-      button.BindingText:SetFont(font, newSize, fontFlags)
-    elseif cornerType == "quantity" then
-      button.Count:SetParent(button)
-      button.Count:ClearAllPoints()
-      button.Count:SetPoint(unpack(anchor))
-      button.Count:SetFont(font, newSize, fontFlags)
-    elseif cornerType == "expansion" then
-      button.Expansion:SetParent(button)
-      button.Expansion:ClearAllPoints()
-      button.Expansion:SetPoint(unpack(anchor))
-      button.Expansion:SetFont(font, newSize, fontFlags)
-    elseif cornerType == "pawn" then
-      button.UpgradeArrow:SetParent(button)
-      button.UpgradeArrow:ClearAllPoints()
-      button.UpgradeArrow:SetSize(13, 15)
-      button.UpgradeArrow:SetPoint(unpack(anchor))
-    elseif cornerType == "can_i_mog_it" and CIMI_AddToFrame then
-      local overlay = button.CanIMogItOverlay 
-      if overlay and overlay.CIMIIconTexture then
-        overlay:SetParent(button)
-        overlay.CIMIIconTexture:ClearAllPoints()
-        overlay.CIMIIconTexture:SetSize(13, 13)
-        overlay.CIMIIconTexture:SetPoint(unpack(positions[config]))
+  button.cornerPlugins = button.cornerPlugins or {}
+
+  for key, anchor in pairs(positions) do
+    for _, plugin in ipairs(Baganator.Config.Get(key)) do
+      local setup = addonTable.IconCornerPlugins[plugin]
+      if setup and not button.cornerPlugins[plugin] then
+        button.cornerPlugins[plugin] = setup.onInit(button)
       end
-    elseif cornerType == "equipment_set" then
-      button.EquipmentSet:SetParent(button)
-      button.EquipmentSet:ClearAllPoints()
-      button.EquipmentSet:SetSize(15, 15)
-      button.EquipmentSet:SetPoint(unpack(anchor))
+      local corner = button.cornerPlugins[plugin]
+      if corner then
+        if corner.sizeFont then
+          local font, originalSize, fontFlags = corner:GetFont()
+          corner:SetFont(font, newSize, fontFlags)
+        end
+        local padding = 1
+        if corner.padding then
+          padding = corner.padding
+        end
+        corner:ClearAllPoints()
+        corner:SetPoint(anchor[1], button, anchor[2]*padding, anchor[3]*padding)
+      end
     end
-    toHide[cornerType] = nil
-  end
-  for key, f in pairs(toHide) do
-    f:SetParent(hidden)
   end
 end
 
@@ -634,9 +466,6 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self:SetReadable(readable);
   self:CheckUpdateTooltip(tooltipOwner);
   self:SetMatchesSearch(true)
-
-  -- Baganator specific stuff
-  self.JunkIcon:Hide()
 
   self.BGR = {}
   self.BGR.itemName = ""
@@ -928,8 +757,6 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   ContainerFrameItemButton_SetForceExtended(self, false);
 
   UpdateQuestItemClassic(self)
-
-  self.JunkIcon:Hide();
 
   if ( texture ) then
     ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);

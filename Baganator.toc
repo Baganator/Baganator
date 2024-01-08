@@ -58,9 +58,13 @@ UnifiedBags\Main.lua
 
 CustomiseDialog\Components.lua
 CustomiseDialog\Components.xml
+CustomiseDialog\CornersComponents.lua
+CustomiseDialog\Corners.lua
+CustomiseDialog\Corners.xml
 CustomiseDialog\Main.lua
 CustomiseDialog\Main.xml
 CustomiseDialog\Initialize.lua
 
 API\Main.lua
-API\Plugins.lua
+API\Junk.lua
+API\ItemButton.lua

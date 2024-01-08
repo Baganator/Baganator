@@ -31,22 +31,19 @@ local ReflowSettings = {
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
   Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
-  Baganator.Config.Options.ICON_TOP_LEFT_CORNER,
-  Baganator.Config.Options.ICON_TOP_RIGHT_CORNER,
-  Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER,
-  Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER,
+  Baganator.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
+  Baganator.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
+  Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
+  Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
   Baganator.Config.Options.REDUCE_SPACING,
 }
 
 local RefreshContentSettings = {
-  Baganator.Config.Options.SHOW_ITEM_LEVEL,
-  Baganator.Config.Options.SHOW_BOE_STATUS,
   Baganator.Config.Options.HIDE_BOE_ON_COMMON,
-  Baganator.Config.Options.SHOW_BOA_STATUS,
-  Baganator.Config.Options.SHOW_PAWN_ARROW,
-  Baganator.Config.Options.SHOW_CIMI_ICON,
-  Baganator.Config.Options.SHOW_EXPANSION,
-  Baganator.Config.Options.SHOW_EQUIPMENT_SET,
+  Baganator.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
+  Baganator.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
+  Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
+  Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
   Baganator.Config.Options.ICON_GREY_JUNK,
   Baganator.Config.Options.JUNK_PLUGIN,
@@ -106,7 +103,8 @@ end
 function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
-  elseif tIndexOf(RefreshContentSettings, setting) ~= nil then
+  end
+  if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
 end
@@ -371,7 +369,8 @@ end
 function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
-  elseif tIndexOf(RefreshContentSettings, setting) ~= nil then
+  end
+  if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
 end

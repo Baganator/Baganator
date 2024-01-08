@@ -267,6 +267,7 @@ function BaganatorMainViewMixin:CreateBagSlots()
   self.cachedBagSlots = {}
   for index = 1, Baganator.Constants.BagSlotsCount do
     local bb = GetCachedBagSlotButton()
+    bb:UpdateTextures()
     bb.isBag = true
     table.insert(self.cachedBagSlots, bb)
     bb:SetID(index)

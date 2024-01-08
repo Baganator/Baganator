@@ -81,6 +81,7 @@ Baganator.Constants.Events = {
   "ClearHighlightBag",
 
   "ContentRefreshRequired",
+  "PluginsUpdated",
 }
 
 -- Hidden currencies for all characters tooltips as they are shared between characters

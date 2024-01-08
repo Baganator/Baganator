@@ -5,15 +5,6 @@
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
     </Scripts>
-    <Layers>
-      <Layer level="OVERLAY">
-        <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
-        <FontString parentKey="Expansion" inherits="NumberFontNormal"/>
-        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
-        <Texture parentKey="UpgradeArrow"/>
-        <Texture parentKey="EquipmentSet"/>
-      </Layer>
-    </Layers>
   </ItemButton>
 
   <ItemButton name="BaganatorRetailLiveItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate">
@@ -23,15 +14,6 @@
         self:MyOnLoad()
       </OnLoad>
     </Scripts>
-    <Layers>
-      <Layer level="OVERLAY">
-        <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
-        <FontString parentKey="Expansion" inherits="NumberFontNormal"/>
-        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
-        <Texture parentKey="UpgradeArrow"/>
-        <Texture parentKey="EquipmentSet"/>
-      </Layer>
-    </Layers>
   </ItemButton>
 
   <Button name="BaganatorClassicCachedItemButtonTemplate" virtual="true" inherits="ItemButtonTemplate" mixin="BaganatorClassicCachedItemButtonMixin">
@@ -40,15 +22,6 @@
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
     </Scripts>
-    <Layers>
-      <Layer level="OVERLAY">
-        <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
-        <FontString parentKey="Expansion" inherits="NumberFontNormal"/>
-        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
-        <Texture parentKey="UpgradeArrow"/>
-        <Texture parentKey="EquipmentSet"/>
-      </Layer>
-    </Layers>
   </Button>
 
   <Button name="BaganatorClassicLiveItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate">
@@ -58,14 +31,5 @@
         self:MyOnLoad()
       </OnLoad>
     </Scripts>
-    <Layers>
-      <Layer level="OVERLAY">
-        <FontString parentKey="ItemLevel" inherits="NumberFontNormal"/>
-        <FontString parentKey="Expansion" inherits="NumberFontNormal"/>
-        <FontString parentKey="BindingText" inherits="NumberFontNormal"/>
-        <Texture parentKey="UpgradeArrow"/>
-        <Texture parentKey="EquipmentSet"/>
-      </Layer>
-    </Layers>
   </Button>
 </Ui>
