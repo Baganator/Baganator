@@ -13,10 +13,10 @@
           <Anchor point="TOPLEFT" x="20" y="-25"/>
         </Anchors>
       </EditBox>
-      <EventFrame parentKey="ScrollBar" inherits="WowTrimScrollBar">
+      <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
         <Anchors>
-          <Anchor point="TOPRIGHT" y="-50"/>
-          <Anchor point="BOTTOMRIGHT"/>
+          <Anchor point="TOPRIGHT" y="-50" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="10"/>
         </Anchors>
       </EventFrame>
       <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">

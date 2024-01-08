@@ -67,8 +67,8 @@ function CharacterSelectSidebarMixin:OnLoad()
   local view = CreateScrollBoxListLinearView()
   view:SetElementExtent(20)
   view:SetElementInitializer("Button", function(frame, elementData)
+    frame:SetHighlightAtlas("search-highlight")
     frame:SetNormalFontObject(GameFontHighlight)
-    --local fs = frame:CreateFontString(nil, nil, "GameFontHighlight")
     frame.fullName = elementData.fullName
     frame:SetText(frame.fullName)
     if elementData.className then
