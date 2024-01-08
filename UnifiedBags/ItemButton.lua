@@ -196,6 +196,14 @@ local function SearchCheck(self, text)
   return Baganator.UnifiedBags.Search.CheckItem(self.BGR, text)
 end
 
+local function SetWidgetsAlpha(self, result)
+  if not result then
+    self.widgetContainer:SetAlpha(0.4)
+  else
+    self.widgetContainer:SetAlpha(1)
+  end
+end
+
 local function ApplyItemDetailSettings(button)
   local newSize = Baganator.Config.Get("icon_text_font_size")
 
@@ -206,7 +214,11 @@ local function ApplyItemDetailSettings(button)
     ["icon_bottom_right_corner_array"] = {"BOTTOMRIGHT", -2, 2},
   }
 
-  button.cornerPlugins = button.cornerPlugins or {}
+  if not button.widgetContainer then
+    button.widgetContainer = CreateFrame("Frame", nil, button)
+    button.widgetContainer:SetAllPoints()
+    button.cornerPlugins = {}
+  end
 
   for key, anchor in pairs(positions) do
     for _, plugin in ipairs(Baganator.Config.Get(key)) do
@@ -216,6 +228,7 @@ local function ApplyItemDetailSettings(button)
       end
       local corner = button.cornerPlugins[plugin]
       if corner then
+        corner:SetParent(button.widgetContainer)
         if corner.sizeFont then
           local font, originalSize, fontFlags = corner:GetFont()
           corner:SetFont(font, newSize, fontFlags)
@@ -309,6 +322,12 @@ local function SetHighlightItemButton(self, isShown)
   self.BaganatorBagHighlight:SetShown(isShown)
 end
 
+local function ReparentOverlays(self)
+  if self.ProfessionQualityOverlay then
+    self.ProfessionQualityOverlay:SetParent(self.widgetContainer)
+  end
+end
+
 BaganatorRetailCachedItemButtonMixin = {}
 
 function BaganatorRetailCachedItemButtonMixin:UpdateTextures()
@@ -323,6 +342,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self:SetItemButtonCount(details.itemCount)
   SetItemCraftingQualityOverlay(self, details.itemLink)
   SetItemButtonDesaturated(self, false);
+  ReparentOverlays(self)
 
   self.BGR.itemLink = details.itemLink
   self.BGR.itemID = details.itemID
@@ -350,6 +370,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemFiltered(text)
     return true
   end
   self:SetMatchesSearch(result)
+  SetWidgetsAlpha(self, result)
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnClick(button)
@@ -466,6 +487,8 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self:SetReadable(readable);
   self:CheckUpdateTooltip(tooltipOwner);
   self:SetMatchesSearch(true)
+  SetWidgetsAlpha(self, true)
+  ReparentOverlays(self)
 
   self.BGR = {}
   self.BGR.itemName = ""
@@ -499,6 +522,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
     return true
   end
   self:SetMatchesSearch(result)
+  SetWidgetsAlpha(self, result)
 end
 
 function BaganatorRetailLiveItemButtonMixin:ClearNewItem()
@@ -600,6 +624,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemFiltered(text)
     return true
   end
   self.searchOverlay:SetShown(not result)
+  SetWidgetsAlpha(self, result)
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnClick(button)
@@ -776,6 +801,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   end
   
   self.searchOverlay:SetShown(false);
+  SetWidgetsAlpha(self, true)
 
   -- Back to Baganator stuff:
   SetStaticInfo(self, cacheData)
@@ -807,4 +833,5 @@ function BaganatorClassicLiveItemButtonMixin:SetItemFiltered(text)
     return true
   end
   self.searchOverlay:SetShown(not result)
+  SetWidgetsAlpha(self, result)
 end
