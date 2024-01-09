@@ -40,7 +40,7 @@ Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
 end)
 
 local function textInit(itemButton)
-  local text = itemButton:CreateFontString(nil, nil, "NumberFontNormal")
+  local text = itemButton:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
   text.sizeFont = true
   return text
 end
