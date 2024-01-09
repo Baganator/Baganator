@@ -79,7 +79,7 @@ local function GetBagStacks(bags, bagIDs, indexesToUse, callback)
   end
 end
 
-function Baganator.Sorting.CombineStacks(bags, bagIDs, indexesToUse, callback)
+function Baganator.Sorting.CombineStacks(bags, bagIDs, callback)
   if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
     return
   end

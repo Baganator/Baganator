@@ -725,12 +725,7 @@ function BaganatorMainViewMixin:UpdateCurrencies(character)
 end
 
 function BaganatorMainViewMixin:CombineStacks(callback)
-  local bagsToSort = {}
-  for index, bagID in ipairs(Baganator.Constants.AllBagIndexes) do
-    bagsToSort[index] = true
-  end
-
-  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, bagsToSort, function(check)
+  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, function(check)
     if not check then
       Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
       callback()

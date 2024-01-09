@@ -261,11 +261,7 @@ function BaganatorBankOnlyViewMixin:NotifyBagUpdate(updatedBags)
 end
 
 function BaganatorBankOnlyViewMixin:CombineStacks(callback)
-  local bagsToSort = {}
-  for index, bagID in ipairs(Baganator.Constants.AllBankIndexes) do
-    bagsToSort[index] = true
-  end
-  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bank, Baganator.Constants.AllBankIndexes, bagsToSort, function(check)
+  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bank, Baganator.Constants.AllBankIndexes, function(check)
     if not check then
       Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
       callback()
