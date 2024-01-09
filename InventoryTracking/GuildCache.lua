@@ -64,7 +64,9 @@ end
 function BaganatorGuildCacheMixin:OnUpdate()
   self:SetScript("OnUpdate", nil)
 
-  self:ScanBank()
+  if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
+    self:ScanBank()
+  end
 end
 
 function BaganatorGuildCacheMixin:ScanBank()
