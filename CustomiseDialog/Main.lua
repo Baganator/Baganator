@@ -284,6 +284,7 @@ local function GenerateFrames(options, parent)
   local allFrames = {}
   for _, option in ipairs(options) do
     if not option.check or option.check() then
+      local frame
       if option.type == "checkbox" then
         frame = CreateFrame("Frame", nil, parent, "BaganatorCheckBoxTemplate")
         frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, 0)
