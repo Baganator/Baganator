@@ -125,6 +125,9 @@ L["KEYWORD_SOCKET"] = "socket"
 L["KEYWORD_JUNK"] = "junk"
 L["KEYWORD_TRASH"] = "trash"
 L["KEYWORD_COSMETIC"] = "cosmetic"
+L["KEYWORD_AXE"] = "axe"
+L["KEYWORD_MACE"] = "mace"
+L["KEYWORD_SWORD"] = "sword"
 
 L["SEARCH_TRY_X"] = "Search, try %s"
 

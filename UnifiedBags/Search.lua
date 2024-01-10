@@ -46,6 +46,18 @@ local function GetQualityCheck(quality)
   end
 end
 
+local function AxeCheck(details)
+  return details.classID == Enum.ItemClass.Weapon and (details.subClassID == Enum.ItemWeaponSubclass.Axe2H or details.subClassID == Enum.ItemWeaponSubclass.Axe1H)
+end
+
+local function MaceCheck(details)
+  return details.classID == Enum.ItemClass.Weapon and (details.subClassID == Enum.ItemWeaponSubclass.Mace2H or details.subClassID == Enum.ItemWeaponSubclass.Mace1H)
+end
+
+local function SwordCheck(details)
+  return details.classID == Enum.ItemClass.Weapon and (details.subClassID == Enum.ItemWeaponSubclass.Sword2H or details.subClassID == Enum.ItemWeaponSubclass.Sword1H)
+end
+
 local ReputationCheck, BindOnAccountCheck
 
 local function GetTooltipInfoSpell(details)
@@ -127,6 +139,9 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_BOE] = BindOnEquipCheck,
   [BAGANATOR_L_KEYWORD_EQUIPMENT] = EquipmentCheck,
   [BAGANATOR_L_KEYWORD_GEAR] = EquipmentCheck,
+  [BAGANATOR_L_KEYWORD_AXE] = AxeCheck,
+  [BAGANATOR_L_KEYWORD_MACE] = MaceCheck,
+  [BAGANATOR_L_KEYWORD_SWORD] = SwordCheck,
   [BAGANATOR_L_KEYWORD_REAGENT] = ReagentCheck,
   [BAGANATOR_L_KEYWORD_FOOD] = FoodCheck,
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
@@ -505,6 +520,16 @@ function Baganator.UnifiedBags.Search.Initialize()
     if keyword ~= nil then
       KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
         return details.classID == Enum.ItemClass.Armor and details.subClassID == subClass
+      end
+    end
+  end
+
+  -- All weapons + fishingpole
+  for subClass = 0, 20 do
+    local keyword = GetItemSubClassInfo(Enum.ItemClass.Weapon, subClass)
+    if keyword ~= nil then
+      KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+        return details.classID == Enum.ItemClass.Weapon and details.subClassID == subClass
       end
     end
   end
