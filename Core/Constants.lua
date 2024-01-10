@@ -92,7 +92,8 @@ Baganator.Constants.SharedCurrencies = {
 Baganator.Constants.SortStatus = {
   Complete = 0,
   WaitingMove = 1,
-  WaitingItemData = 2,
+  WaitingUnlock = 2,
+  WaitingItemData = 3,
 }
 
 Baganator.Constants.SampleSearchTerms = {

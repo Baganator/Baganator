@@ -32,7 +32,7 @@ InventoryTracking\Main.lua
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
 Sorting\Order.lua
-Sorting\Stacks.lua
+Sorting\CombineStacks.lua
 Sorting\Plugins.lua
 Sorting\ModeCheck.lua
 

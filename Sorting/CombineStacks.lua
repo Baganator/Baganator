@@ -5,7 +5,7 @@ local function DoMovement(stacks)
     return false
   end
 
-  local anySwaps = false
+  local moved, locked = false, false
   for itemID, stacksForItem in pairs(stacks) do
     local stackSize = itemIDToStackSize[itemID]
     if stackSize > 1 then
@@ -36,16 +36,23 @@ local function DoMovement(stacks)
           C_Container.PickupContainerItem(source.bagID, source.slotID)
           C_Container.PickupContainerItem(target.bagID, target.slotID)
           ClearCursor()
+          moved = true
+        else
+          locked = true
         end
-
-        anySwaps = true
       end
     end
   end
-  return anySwaps
+  if moved then
+    return Baganator.Constants.SortStatus.WaitingMove
+  elseif locked then
+    return Baganator.Constants.SortStatus.WaitingUnlock
+  else
+    return Baganator.Constants.SortStatus.Complete
+  end
 end
 
-local function GetBagStacks(bags, bagIDs, indexesToUse, callback)
+local function GetBagStacks(bags, bagIDs, callback)
   local waiting = 0
   local loopComplete = false
   local stacks = {}
@@ -56,7 +63,12 @@ local function GetBagStacks(bags, bagIDs, indexesToUse, callback)
     for slot, item in ipairs(bag) do
       if item.itemLink then
         stacks[item.itemID] = stacks[item.itemID] or {}
-        table.insert(stacks[item.itemID], {item = item, bagID = bagID, slotID = slot})
+        local location = ItemLocation:CreateFromBagAndSlot(bagID, slot)
+        -- Existence check in case bag data is out of sync (e.g. for a
+        -- bank-to-bag transfer)
+        if C_Item.DoesItemExist(location) then
+          table.insert(stacks[item.itemID], {item = item, bagID = bagID, slotID = slot})
+        end
 
         if itemIDToStackSize[item.itemID] == nil then
           waiting = waiting + 1
@@ -84,8 +96,8 @@ function Baganator.Sorting.CombineStacks(bags, bagIDs, callback)
     return
   end
 
-  GetBagStacks(bags, bagIDs, indexesToUse, function(stacks)
-    local anySwaps = DoMovement(stacks)
-    callback(anySwaps)
+  GetBagStacks(bags, bagIDs, function(stacks)
+    local status = DoMovement(stacks)
+    callback(status)
   end)
 end

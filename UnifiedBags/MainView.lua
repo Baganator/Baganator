@@ -19,7 +19,7 @@ function BaganatorMainViewMixin:OnLoad()
     self.ReagentBagLive:PreallocateButtons(Baganator.Constants.MaxBagSize) -- reagent bag only
   end
 
-  self.sortManager = CreateFrame("Frame", nil, self)
+  Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
 
   FrameUtil.RegisterFrameForEvents(self, {
     "BANKFRAME_OPENED",
@@ -725,15 +725,23 @@ function BaganatorMainViewMixin:UpdateCurrencies(character)
 end
 
 function BaganatorMainViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, function(check)
-    if not check then
-      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, function(status)
+    self.sortManager:Apply(status, function()
+      self:CombineStacks(callback)
+    end, function()
       callback()
-    else
-      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-        self:CombineStacks(callback)
-      end, self.sortManager)
-    end
+    end)
+  end)
+end
+
+function BaganatorMainViewMixin:MergeCombineStacks(callback)
+  local bags, bagIDs = Baganator.Sorting.GetMergedBankBags(self.liveCharacter)
+  Baganator.Sorting.CombineStacks(bags, bagIDs, function(status)
+    self.sortManager:Apply(status, function()
+      self:MergeCombineStacks(callback)
+    end, function()
+      callback()
+    end)
   end)
 end
 
@@ -744,7 +752,7 @@ function BaganatorMainViewMixin:DoSort(isReverse)
   end
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(Baganator.Constants.AllBagIndexes)
   local function DoSortInternal()
-    local goAgain = Baganator.Sorting.ApplyOrdering(
+    local status = Baganator.Sorting.ApplyOrdering(
       BAGANATOR_DATA.Characters[self.liveCharacter].bags,
       Baganator.Constants.AllBagIndexes,
       bagsToSort,
@@ -753,16 +761,7 @@ function BaganatorMainViewMixin:DoSort(isReverse)
       Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END),
       Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT)
     )
-    self.sortManager:SetScript("OnUpdate", nil)
-    if goAgain == Baganator.Constants.SortStatus.Complete then
-      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
-    elseif goAgain == Baganator.Constants.SortStatus.WaitingItemData then
-      self.sortManager:SetScript("OnUpdate", DoSortInternal)
-    else--if goAgain == Baganator.Constants.SortStatus.WaitingMove
-      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-        DoSortInternal()
-      end, self.sortManager)
-    end
+    self.sortManager:Apply(status, DoSortInternal, function() end)
   end
   DoSortInternal()
 end

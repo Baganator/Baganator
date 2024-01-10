@@ -418,12 +418,17 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     start = debugprofilestop()
   end
 
+  local locked, moved = false, false
+
   -- Move items that have a blank slot as the target
   for _, move in ipairs(moveQueue0) do
     if not C_Item.IsLocked(move[1]) then
       C_Container.PickupContainerItem(move[1]:GetBagAndSlot())
       C_Container.PickupContainerItem(move[2]:GetBagAndSlot())
       ClearCursor()
+      moved = true
+    else
+      locked = true
     end
   end
 
@@ -433,14 +438,19 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
       C_Container.PickupContainerItem(move[1]:GetBagAndSlot())
       C_Container.PickupContainerItem(move[2]:GetBagAndSlot())
       ClearCursor()
+      moved = true
+    else
+      locked = true
     end
   end
 
   local pending
   if incomplete then
     pending = Baganator.Constants.SortStatus.WaitingItemData
-  elseif (#moveQueue0 > 0 or #moveQueue1 > 0) then
+  elseif moved then
     pending = Baganator.Constants.SortStatus.WaitingMove
+  elseif locked then
+    pending = Baganator.Constants.SortStatus.WaitingUnlock
   else
     pending = Baganator.Constants.SortStatus.Complete
   end

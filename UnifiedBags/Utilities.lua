@@ -116,3 +116,20 @@ if Baganator.Constants.IsClassic then
     return {lines = dump}
   end
 end
+
+function Baganator.Utilities.AddBagSortManager(self)
+  self.sortManager = CreateFrame("Frame", nil, self)
+  function self.sortManager:Apply(status, retryFunc, completeFunc)
+    self:SetScript("OnUpdate", nil)
+    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self)
+    if status == Baganator.Constants.SortStatus.Complete then
+      completeFunc()
+    elseif status == Baganator.Constants.SortStatus.WaitingMove then
+      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+        retryFunc()
+      end, self)
+    else -- waiting item data or item unlock
+      self:SetScript("OnUpdate", retryFunc)
+    end
+  end
+end

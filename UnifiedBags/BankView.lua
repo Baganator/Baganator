@@ -15,7 +15,8 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     "PLAYER_REGEN_ENABLED",
   })
 
-  self.sortManager = CreateFrame("Frame", nil, self)
+  Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
+
 
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
@@ -261,15 +262,12 @@ function BaganatorBankOnlyViewMixin:NotifyBagUpdate(updatedBags)
 end
 
 function BaganatorBankOnlyViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bank, Baganator.Constants.AllBankIndexes, function(check)
-    if not check then
-      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bank, Baganator.Constants.AllBankIndexes, function(status)
+    self.sortManager:Apply(status, function()
+      self:CombineStacks(callback)
+    end, function()
       callback()
-    else
-      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-        self:CombineStacks(callback)
-      end, self.sortManager)
-    end
+    end)
   end)
 end
 
@@ -281,23 +279,14 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(Baganator.Constants.AllBankIndexes)
 
   local function DoSortInternal()
-    local goAgain = Baganator.Sorting.ApplyOrdering(
+    local status = Baganator.Sorting.ApplyOrdering(
       BAGANATOR_DATA.Characters[self.liveCharacter].bank,
       Baganator.Constants.AllBankIndexes,
       indexesToUse,
       bagChecks,
       isReverse
     )
-    self.sortManager:SetScript("OnUpdate", nil)
-    if goAgain == Baganator.Constants.SortStatus.Complete then
-      Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
-    elseif goAgain == Baganator.Constants.SortStatus.WaitingItemData then
-      self.sortManager:SetScript("OnUpdate", DoSortInternal)
-    else--if goAgain == Baganator.Constants.SortStatus.WaitingMove
-      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-        DoSortInternal()
-      end, self.sortManager)
-    end
+    self.sortManager:Apply(status, DoSortInternal, function() end)
   end
 
   DoSortInternal()
