@@ -28,6 +28,7 @@ local allSortKeys = {
     "craftingQuality",
     "invertedItemID",
     "invertedItemCount",
+    "itemLink",
   },
   ["quality-legacy"] = {
     "priority",
@@ -72,6 +73,7 @@ local allSortKeys = {
     "invertedCraftingQuality",
     "invertedItemID",
     "invertedItemCount",
+    "itemLink",
   },
 }
 
@@ -110,6 +112,12 @@ local function ConvertToOneList(bags, indexesToUse)
           item.priority = PriorityMap[item.itemID] and 1 or 1000
           item.classID, item.subClassID = select(6, GetItemInfoInstant(linkToCheck))
           item.invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID)
+          if item.itemID == Baganator.Constants.BattlePetCageID then
+            local speciesID = tonumber(item.itemLink:match("battlepet:(%d+)"))
+            local petName, _, subClassID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+            item.itemName = petName
+            item.subClassID = subClassID
+          end
         end
         table.insert(list, item)
       end
