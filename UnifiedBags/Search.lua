@@ -451,9 +451,10 @@ local function ApplyCombinedTerms(fullSearchString)
       return true
     end
   elseif fullSearchString:match("^~") then
-    local nested = ApplyCombinedTerms(fullSearchString:sub(2, #fullSearchString))
-    return function(...)
-      local result = nested(...)
+    local newSearchString = fullSearchString:sub(2, #fullSearchString)
+    local nested = ApplyCombinedTerms(newSearchString)
+    return function(details)
+      local result = nested(details, newSearchString)
       if result ~= nil then
         return not result
       end
