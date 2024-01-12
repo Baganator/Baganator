@@ -102,6 +102,7 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     self.BGR.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
     self.BGR.isCraftingReagent = false
     self.BGR.classID = Enum.ItemClass.Battlepet
+    self.BGR.isCosmetic = false
 
   elseif C_Item.IsItemDataCachedByID(itemID) then
     self.BGR.itemInfoWaiting = false
