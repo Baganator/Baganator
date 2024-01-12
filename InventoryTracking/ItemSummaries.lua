@@ -178,13 +178,17 @@ function BaganatorItemSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sam
     end
   end
 
-  local realms
+  local realms = {}
   if sameConnectedRealm then
-    realms = Baganator.Utilities.GetConnectedRealms()
+    for _, r in ipairs(Baganator.Utilities.GetConnectedRealms()) do
+      realms[r] = true
+    end
   else
-    realms = {}
-    for realm in pairs(self.SV.Characters.ByRealm) do
-      table.insert(realms, realm)
+    for r in pairs(self.SV.Characters.ByRealm) do
+      realms[r] = true
+    end
+    for r in pairs(self.SV.Guilds.ByRealm) do
+      realms[r] = true
     end
   end
 
@@ -195,7 +199,7 @@ function BaganatorItemSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sam
 
   local currentFaction = UnitFactionGroup("player")
 
-  for _, r in ipairs(realms) do
+  for r in pairs(realms) do
     local charactersByRealm = self.SV.Characters.ByRealm[r]
     if charactersByRealm then
       for char, summary in pairs(charactersByRealm) do
