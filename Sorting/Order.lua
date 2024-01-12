@@ -50,6 +50,7 @@ local allSortKeys = {
     "invertedCraftingQuality",
     "invertedItemID",
     "invertedItemCount",
+    "itemLink",
   },
   ["type-legacy"] = {
     "priority",
