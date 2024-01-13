@@ -420,12 +420,14 @@ end
 local function ApplyCombinedTerms(fullSearchString)
   if fullSearchString:match("[|]") then
     local checks = {}
+    local checkPart = {}
     for part in fullSearchString:gmatch("[^|]+") do
       table.insert(checks, ApplyCombinedTerms(part))
+      table.insert(checkPart, part)
     end
-    return function(...)
-      for _, check in ipairs(checks) do
-        local result = check(...)
+    return function(details)
+      for index, check in ipairs(checks) do
+        local result = check(details, checkPart[index])
         if result then
           return true
         elseif result == nil then
@@ -436,12 +438,14 @@ local function ApplyCombinedTerms(fullSearchString)
     end
   elseif fullSearchString:match("[&]") then
     local checks = {}
+    local checkPart = {}
     for part in fullSearchString:gmatch("[^&]+") do
       table.insert(checks, ApplyCombinedTerms(part))
+      table.insert(checkPart, part)
     end
-    return function(...)
-      for _, check in ipairs(checks) do
-        local result = check(...)
+    return function(details)
+      for index, check in ipairs(checks) do
+        local result = check(details, checkPart[index])
         if result == false then
           return false
         elseif result == nil then
