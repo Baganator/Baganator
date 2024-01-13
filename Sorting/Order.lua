@@ -159,7 +159,7 @@ local function SetIndexes(list, bagIDs)
   for index, item in ipairs(list) do
     if item.itemLink then
       local location = ItemLocation:CreateFromBagAndSlot(bagIDs[item.from.bagIndex], item.from.slot)
-      item.index = C_Item.DoesItemExist(location) and C_Item.GetItemGUID(location) or -1
+      item.index = C_Item.DoesItemExist(location) and C_Item.GetItemGUID(location) or "-1"
     end
   end
 end
