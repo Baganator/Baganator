@@ -31,7 +31,7 @@ local WINDOW_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_PLACE_SPACE_EMPTY_OF_SLOTS_AT_TOP,
+    text = BAGANATOR_L_PLACE_BAG_ROW_WITH_MISSING_SLOTS_AT_THE_TOP,
     option = "bag_empty_space_at_top",
   },
   {
