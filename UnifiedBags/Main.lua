@@ -7,6 +7,23 @@ local function SetupView()
   bankOnlyView:SetClampedToScreen(true)
   bankOnlyView:SetUserPlaced(false)
 
+  local bagButtons = {}
+
+  local UpdateButtons
+  if Baganator.Constants.IsClassic then
+    UpdateButtons = function()
+      for _, b in ipairs(bagButtons) do
+        b:SetChecked(mainView:IsVisible())
+      end
+    end
+  else
+    UpdateButtons = function()
+      for _, b in ipairs(bagButtons) do
+        b.SlotHighlightTexture:SetShown(mainView:IsVisible())
+      end
+    end
+  end
+
   local function SetPositions()
     mainView:ClearAllPoints()
     mainView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
@@ -42,6 +59,7 @@ local function SetupView()
       mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
     end
     lastToggleTime = GetTime()
+    UpdateButtons()
   end
 
   if not Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
@@ -51,10 +69,12 @@ local function SetupView()
   Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
     mainView:Show()
     mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
+    UpdateButtons()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_, ...)
     mainView:Hide()
+    UpdateButtons()
   end)
 
   --Handled by OpenClose.lua
@@ -68,18 +88,21 @@ local function SetupView()
   end)]]
 
   -- Backpack button
-  MainMenuBarBackpackButton:SetScript("OnClick", ToggleMainView)
+  table.insert(bagButtons, MainMenuBarBackpackButton)
   -- Bags 1-4, hookscript so that changing bags remains
   for i = 0, 3 do
-    _G["CharacterBag" .. i .. "Slot"]:HookScript("OnClick", ToggleMainView)
+    table.insert(bagButtons, _G["CharacterBag" .. i .. "Slot"])
   end
   -- Reagent bag
   if CharacterReagentBag0Slot then
-    CharacterReagentBag0Slot:HookScript("OnClick", ToggleMainView)
+    table.insert(bagButtons, CharacterReagentBag0Slot)
   end
   -- Keyring bag
   if KeyRingButton then
-    KeyRingButton:HookScript("OnClick", ToggleMainView)
+    table.insert(bagButtons, KeyRingButton)
+  end
+  for _, b in ipairs(bagButtons) do
+    b:HookScript("OnClick", ToggleMainView)
   end
 
   hooksecurefunc("ToggleBackpack", function()
