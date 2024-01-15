@@ -77,6 +77,10 @@ local function SetupView()
     UpdateButtons()
   end)
 
+  mainView:HookScript("OnHide", function()
+    UpdateButtons()
+  end)
+
   --Handled by OpenClose.lua
   --[[hooksecurefunc("OpenAllBags", function()
     mainView:Show()
