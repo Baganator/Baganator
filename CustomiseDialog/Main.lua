@@ -280,6 +280,13 @@ local SORTING_OPTIONS = {
     level = 2,
   },
 }
+local TRANSFERS_OPTIONS = {
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_TRANSFER_BUTTON,
+    option = "show_transfer_button",
+  },
+}
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
   return a.text < b.text
@@ -378,6 +385,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:SetupTooltip()
   self:SetupOpenClose()
   self:SetupSorting()
+  self:SetupTransfers()
 
   PanelTemplates_SetNumTabs(self, #self.Tabs)
 
@@ -572,6 +580,23 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   table.insert(SORTING_OPTIONS, typeDropDown)
 
   local allFrames = GenerateFrames(SORTING_OPTIONS, frame)
+
+  frame:SetScript("OnShow", function()
+    for index, frame in ipairs(allFrames) do
+      frame:SetValue(Baganator.Config.Get(frame.option))
+    end
+  end)
+
+  table.insert(self.lowestFrames, allFrames[#allFrames])
+end
+
+function BaganatorCustomiseDialogMixin:SetupTransfers()
+  local tab = GetTab(self)
+  tab:SetText(BAGANATOR_L_TRANSFERS)
+
+  local frame = GetWrapperFrame(self)
+
+  local allFrames = GenerateFrames(TRANSFERS_OPTIONS, frame)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do

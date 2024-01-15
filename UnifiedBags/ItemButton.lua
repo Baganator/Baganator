@@ -371,6 +371,9 @@ function BaganatorRetailCachedItemButtonMixin:SetItemFiltered(text)
   if result == nil then
     return true
   end
+  if self.BGR ~= nil then
+    self.BGR.matchesSearch = result
+  end
   self:SetMatchesSearch(result)
   SetWidgetsAlpha(self, result)
 end
@@ -523,6 +526,9 @@ function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
   if result == nil then
     return true
   end
+  if self.BGR ~= nil then
+    self.BGR.matchesSearch = result
+  end
   self:SetMatchesSearch(result)
   SetWidgetsAlpha(self, result)
 end
@@ -624,6 +630,9 @@ function BaganatorClassicCachedItemButtonMixin:SetItemFiltered(text)
   local result = SearchCheck(self, text)
   if result == nil then
     return true
+  end
+  if self.BGR ~= nil then
+    self.BGR.matchesSearch = result
   end
   self.searchOverlay:SetShown(not result)
   SetWidgetsAlpha(self, result)
@@ -833,6 +842,9 @@ function BaganatorClassicLiveItemButtonMixin:SetItemFiltered(text)
   local result = SearchCheck(self, text)
   if result == nil then
     return true
+  end
+  if self.BGR ~= nil then
+    self.BGR.matchesSearch = result
   end
   self.searchOverlay:SetShown(not result)
   SetWidgetsAlpha(self, result)

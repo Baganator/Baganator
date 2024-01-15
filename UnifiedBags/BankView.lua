@@ -17,7 +17,6 @@ function BaganatorBankOnlyViewMixin:OnLoad()
 
   Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
 
-
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
       local text = self.SearchBox:GetText()
@@ -92,6 +91,33 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     else
       bb:SetPoint("TOPLEFT", self.bankBagSlots[#self.bankBagSlots - 1], "TOPRIGHT")
     end
+  end
+
+  self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
+  StaticPopupDialogs[self.confirmTransferAllDialogName] = {
+    text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK,
+    button1 = YES,
+    button2 = NO,
+    OnAccept = function()
+      self:RemoveSearchMatches(function() end)
+    end,
+    timeout = 0,
+    hideOnEscape = 1,
+  }
+  self:UpdateTransferButton()
+end
+
+function BaganatorBankOnlyViewMixin:UpdateTransferButton()
+  if not Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON) then
+    self.TransferButton:Hide()
+    return
+  end
+  self.TransferButton:Show()
+  self.TransferButton:ClearAllPoints()
+  if self.SortButton:IsShown() then
+    self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
+  else
+    self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
   end
 end
 
@@ -205,6 +231,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   end
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton())
+  self:UpdateTransferButton()
 
   self:NotifyBagUpdate(updatedBags)
 
@@ -310,5 +337,47 @@ function BaganatorBankOnlyViewMixin:CombineStacksAndSort(isReverse)
     self:CombineStacks(function()
       self:DoSort(isReverse)
     end)
+  end
+end
+
+function BaganatorBankOnlyViewMixin:RemoveSearchMatches(callback)
+  local matches = {}
+  for _, layout in ipairs({self.BankLive, self.ReagentBankLive}) do
+    tAppendAll(matches, layout.SearchMonitor:GetMatches())
+  end
+  local emptyBagSlots = Baganator.Sorting.GetEmptySlots(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes)
+  local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
+  tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
+
+  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBagSlots, {})
+
+  self.sortManager:Apply(status, function()
+    self:RemoveSearchMatches(callback)
+  end, function()
+    callback()
+  end)
+end
+
+function BaganatorBankOnlyViewMixin:SaveToBag(callback)
+  local characterData = BAGANATOR_DATA.Characters[self.liveCharacter]
+
+  local status = Baganator.Sorting.SaveToView(characterData.bank, Baganator.Constants.AllBankIndexes, characterData.bags, Baganator.Constants.AllBagIndexes)
+
+  self.sortManager:Apply(status, function()
+    self:SaveToBag(callback)
+  end, function()
+    callback()
+  end)
+end
+
+function BaganatorBankOnlyViewMixin:Transfer(button)
+  if button == "RightButton" then
+    self:SaveToBag(function() end)
+  else
+    if self.SearchBox:GetText() == "" then
+      StaticPopup_Show(self.confirmTransferAllDialogName)
+    else
+      self:RemoveSearchMatches(function() end)
+    end
   end
 end

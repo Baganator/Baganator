@@ -126,7 +126,11 @@ function Baganator.Utilities.AddBagSortManager(self)
       completeFunc()
     elseif status == Baganator.Constants.SortStatus.WaitingMove then
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-        retryFunc()
+        -- Delay until after this frame so the bag view and search will have
+        -- updated
+        C_Timer.After(0, function()
+          retryFunc()
+        end)
       end, self)
     else -- waiting item data or item unlock
       self:SetScript("OnUpdate", retryFunc)

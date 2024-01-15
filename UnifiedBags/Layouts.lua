@@ -543,5 +543,20 @@ function BaganatorSearchLayoutMonitorMixin:StartSearch(text)
   end
 end
 
+function BaganatorSearchLayoutMonitorMixin:GetMatches()
+  local matches = {}
+  for _, itemButton in ipairs(self:GetParent().buttons) do
+    if itemButton.BGR and itemButton.BGR.itemID and itemButton.BGR.matchesSearch then
+      table.insert(matches, {
+        bagID = itemButton:GetParent():GetID(),
+        slotID = itemButton:GetID(),
+        itemCount = itemButton.BGR.itemCount,
+        itemID = itemButton.BGR.itemID,
+      })
+    end
+  end
+  return matches
+end
+
 function BaganatorSearchLayoutMonitorMixin:ClearSearch()
 end

@@ -22,7 +22,10 @@
     <Scripts>
       <OnEnter>
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(self.tooltipText)
+        GameTooltip:SetText(self.tooltipHeader)
+        if self.tooltipText then
+          GameTooltip:AddLine(self.tooltipText, 1, 1, 1, true)
+        end
         GameTooltip:Show()
       </OnEnter>
       <OnLeave>
@@ -33,7 +36,7 @@
 
   <Button name="BaganatorCustomiseButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
     <KeyValues>
-      <KeyValue key="tooltipText" value="BAGANATOR_L_CUSTOMISE_BAGANATOR" type="global"/>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_CUSTOMISE_BAGANATOR" type="global"/>
     </KeyValues>
     <Layers>
       <Layer level="ARTWORK">
@@ -55,7 +58,7 @@
 
   <Button name="BaganatorToggleBagSlotsButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
     <KeyValues>
-      <KeyValue key="tooltipText" value="BAGANATOR_L_BAG_SLOTS" type="global"/>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_BAG_SLOTS" type="global"/>
     </KeyValues>
     <Layers>
       <Layer level="ARTWORK">
@@ -71,7 +74,7 @@
 
   <Button name="BaganatorSortButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
     <KeyValues>
-      <KeyValue key="tooltipText" value="BAGANATOR_L_SORT" type="global"/>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_SORT" type="global"/>
     </KeyValues>
     <Scripts>
       <OnLoad>
@@ -99,9 +102,36 @@
     </Layers>
   </Button>
 
+  <Button name="BaganatorTransferButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
+    <KeyValues>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_TRANSFER" type="global"/>
+    </KeyValues>
+    <Scripts>
+      <OnLoad>
+        -- Disable sort button during combat as sorting is partially blocked by Blizzard
+        self:RegisterEvent("PLAYER_REGEN_ENABLED")
+        self:RegisterEvent("PLAYER_REGEN_DISABLED")
+        self:SetEnabled(not InCombatLockdown())
+      </OnLoad>
+      <OnEvent>
+        self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
+      </OnEvent>
+    </Scripts>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="icon" atlas="orderhalltalents-choice-arrow-large">
+          <Size x="17" y="13"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
+
   <Button name="BaganatorToggleReagentsButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
     <KeyValues>
-      <KeyValue key="tooltipText" value="BAGANATOR_L_REAGENTS" type="global"/>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_REAGENTS" type="global"/>
     </KeyValues>
     <Layers>
       <Layer level="ARTWORK">
@@ -117,10 +147,10 @@
       <OnLoad>
         if Baganator.Constants.IsRetail then
           self.icon:SetAtlas("Professions_Tracking_Herb")
-          self.tooltipText = BAGANATOR_L_REAGENTS
+          self.tooltipHeader = BAGANATOR_L_REAGENTS
         elseif Baganator.Constants.IsClassic then
           self.icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\spell_nature_moonkey")
-          self.tooltipText = BAGANATOR_L_KEYS
+          self.tooltipHeader = BAGANATOR_L_KEYS
         end
       </OnLoad>
     </Scripts>

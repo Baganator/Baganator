@@ -78,6 +78,8 @@ L["EQUIPMENT_SET"] = "Equipment Set"
 L["PLACE_BAG_ROW_WITH_MISSING_SLOTS_AT_THE_TOP"] = "Place bag row with missing slots at the top"
 L["ITEMS_FLASH_ON_ALT_CLICK"] = "Flash all the same items on [Alt]+Click"
 L["REDUCE_SPACING_BETWEEN_UI_COMPONENTS"] = "Reduce spacing between UI components"
+L["SHOW_TRANSFER_BUTTON"] = "Show Transfer button"
+L["TRANSFERS"] = "Transfers"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["BAGS_X"] = "Bags: %s"
@@ -159,6 +161,13 @@ L["TRADE"] = "Trade"
 L["GUILD_BANK"] = "Guild Bank"
 L["SOCKET_INTERFACE"] = "Socket Interface"
 L["SCRAPPING_MACHINE"] = "Scrapping Machine"
+
+L["TRANSFER"] = "Transfer"
+L["TRANSFER_BANK_VIEW_TOOLTIP_TEXT"] = "Move searched for items out of the bank.\n\nSpecial action on right-click, transfer items where the same items are already in the bags"
+L["TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT"] = "Move searched for items out from the bags into the bank.\n\nSpecial actions on right-click (transfer items already in the bank) and shift+click (rearrange so exactly one stack of everything is in the bag)."
+L["TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT"] = "Attach the searched for items to a mail for sending."
+L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG"] = "Do you want to transfer ALL items in your bags?"
+L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK"] = "Do you want to transfer ALL items from the bank?"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@

@@ -316,6 +316,12 @@ local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
   end
 end
 
+-- Runs one step of the sort into order operation. Returns a value indicating if
+-- this needs to be run again on a later frame.
+-- bags: Scanned bag contents
+-- bagIDs: Corresponding bag IDs for the bag contents
+-- indexesToUse: Select specific bags
+-- bagChecks: Any special bag requirements for placing items in a specific bag
 function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
   if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
     return
