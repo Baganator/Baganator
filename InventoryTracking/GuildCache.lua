@@ -98,8 +98,8 @@ function BaganatorGuildCacheMixin:ScanBank()
     tab.isViewable = isViewable
     tab.name = name
     tab.iconTexture = icon
-    -- Used to avoid showing guild bank tab contents in tooltips if you can't
-    -- use it
+    -- Previously used to avoid showing guild bank tab contents in tooltips if
+    -- the tab is unusable
     tab.fullAccess = (numWithdrawals == -1 or numWithdrawals >= Baganator.Constants.GuildBankFullAccessWithdrawalsLimit)
   end
 

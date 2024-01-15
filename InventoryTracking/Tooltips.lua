@@ -51,6 +51,10 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     end)
   end
 
+  if not Baganator.Config.Get(Baganator.Config.Options.SHOW_GUILD_BANKS_IN_TOOLTIPS) then
+    tooltipInfo.guilds = {}
+  end
+
   if #tooltipInfo.characters == 0 and #tooltipInfo.guilds == 0 then
     return
   end

@@ -4,8 +4,8 @@ local IsRetailCheck = function()
   return Baganator.Constants.IsRetail
 end
 
-local NotIsVanillaCheck = function()
-  return not Baganator.Constants.IsVanilla
+local NotIsEraCheck = function()
+  return not Baganator.Constants.IsEra
 end
 
 local WINDOW_OPTIONS = {
@@ -143,6 +143,12 @@ local TOOLTIP_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_SHOW_GUILD_BANKS_IN_INVENTORY_TOOLTIPS,
+    option = "show_guild_banks_in_tooltips",
+    check = NotIsEraCheck,
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_ONLY_USE_SAME_CONNECTED_REALMS,
     option = "tooltips_connected_realms_only",
   },
@@ -179,7 +185,7 @@ local OPEN_CLOSE_OPTIONS = {
     text = GUILD_BANK,
     option = "guild_bank",
     root = "auto_open",
-    check = function() return not Baganator.Constants.IsEra end,
+    check = NotIsEraCheck,
   },
   {
     type = "checkbox",
@@ -223,7 +229,7 @@ local OPEN_CLOSE_OPTIONS = {
     text = BAGANATOR_L_SOCKET_INTERFACE,
     option = "sockets",
     root = "auto_open",
-    check = function() return not Baganator.Constants.IsEra end,
+    check = NotIsEraCheck,
   },
   {
     type = "checkbox",

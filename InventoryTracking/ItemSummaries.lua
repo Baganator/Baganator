@@ -135,7 +135,7 @@ function BaganatorItemSummariesMixin:GenerateGuildSummary(guildName)
   end
 
   for _, tab in pairs(details.bank) do
-    if tab.fullAccess then
+    if tab.isViewable then
       for _, item in pairs(tab.slots) do
         if item.itemLink then
           local key = Baganator.Utilities.GetItemKey(item.itemLink)
