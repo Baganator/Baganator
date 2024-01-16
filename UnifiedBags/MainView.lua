@@ -792,7 +792,7 @@ function BaganatorMainViewMixin:Transfer(button, force)
       if not force and transferDetails.confirmOnAll and self.SearchBox:GetText() == "" then
         StaticPopup_Show(self.confirmTransferAllDialogName)
       else
-        self:RunActions(transferDetails.actions)
+        self:RunActions(CopyTable(transferDetails.actions))
       end
     end
   end

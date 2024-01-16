@@ -2,6 +2,7 @@ local addonName, addonTable = ...
 
 addonTable.BagTransfers = {}
 addonTable.BagTransferShowConditions = {}
+addonTable.BagTransferActivationCallback = function() end
 
 local function RegisterBagTransfer(condition, actions, confirmOnAll)
   table.insert(addonTable.BagTransfers, { condition = condition, actions = actions, confirmOnAll = confirmOnAll})
@@ -11,7 +12,7 @@ local function RegisterTransferCondition(condition, tooltipText)
   table.insert(addonTable.BagTransferShowConditions, { condition = condition, tooltipText = tooltipText })
 end
 
-local IsBankOpen = false
+local isBankOpen = false
 do
   local BankCheck = CreateFrame("Frame")
   FrameUtil.RegisterFrameForEvents(BankCheck, {
@@ -19,7 +20,7 @@ do
     "BANKFRAME_CLOSED",
   })
   BankCheck:SetScript("OnEvent", function(self, event)
-    IsBankOpen = event == "BANKFRAME_OPENED"
+    isBankOpen = event == "BANKFRAME_OPENED"
     addonTable.BagTransferActivationCallback()
   end)
 end
@@ -33,6 +34,16 @@ end
 local function MergeBankStacks(_, characterName, callback)
   local characterData = BAGANATOR_DATA.Characters[characterName]
   Baganator.Sorting.CombineStacks(characterData.bank, Baganator.Constants.AllBankIndexes, callback)
+end
+
+local function TransferToBank(getMatches, characterName, callback)
+  local matches = getMatches()
+  local emptyBankSlots = Baganator.Sorting.GetEmptySlots(BAGANATOR_DATA.Characters[characterName].bank, Baganator.Constants.AllBankIndexes)
+  local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
+  tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
+
+  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBankSlots, {})
+  callback(status)
 end
 
 local function MergeAllStacks(_, characterName, callback)
@@ -64,7 +75,7 @@ RegisterBagTransfer(
     TransferToBank,
     MergeBankStacks,
   },
-  false
+  true
 )
 
 RegisterBagTransfer(
