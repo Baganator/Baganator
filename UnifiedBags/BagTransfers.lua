@@ -26,7 +26,7 @@ do
     "BANKFRAME_OPENED",
     "BANKFRAME_CLOSED",
   })
-  BankCheck:SetScript("OnEvent", function(self, event)
+  BankCheck:SetScript("OnEvent", function(_, event)
     isBankOpen = event == "BANKFRAME_OPENED"
     addonTable.BagTransferActivationCallback()
   end)
@@ -54,7 +54,7 @@ local function TransferToBank(getMatches, characterName, callback)
 end
 
 local function MergeAllStacks(_, characterName, callback)
-  local bags, bagIDs = Baganator.Sorting.GetMergedBankBags(self.liveCharacter)
+  local bags, bagIDs = Baganator.Sorting.GetMergedBankBags(characterName)
   Baganator.Sorting.CombineStacks(bags, bagIDs, callback)
 end
 
