@@ -743,6 +743,16 @@ function BaganatorMainViewMixin:UpdateCurrencies(character)
   end
 end
 
+function BaganatorMainViewMixin:CombineStacks(callback)
+  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, function(status)
+    self.sortManager:Apply(status, function()
+      self:CombineStacks(callback)
+    end, function()
+      callback()
+    end)
+  end)
+end
+
 function BaganatorMainViewMixin:UpdateTransferButton()
   if not Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON) then
     self.TransferButton:Hide()
