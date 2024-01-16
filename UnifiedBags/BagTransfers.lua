@@ -68,6 +68,15 @@ RegisterTransferCondition(function()
 end, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT)
 
 RegisterBagTransfer(
+  function(button) return IsShiftKeyDown() and isBankOpen and button == "LeftButton" end,
+  {
+    MergeAllStacks,
+    ApplyStackLimit,
+  },
+  false
+)
+
+RegisterBagTransfer(
   function(button) return button == "RightButton" and isBankOpen end,
   {
     SaveBank,
@@ -83,15 +92,6 @@ RegisterBagTransfer(
     MergeBankStacks,
   },
   true
-)
-
-RegisterBagTransfer(
-  function(button) return IsShiftKeyDown() end,
-  {
-    MergeAllStacks,
-    ApplyStackLimit,
-  },
-  false
 )
 
 local function TransferToMail(getMatches, characterName, callback)
