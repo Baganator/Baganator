@@ -55,6 +55,7 @@ UnifiedBags\BankView.xml
 UnifiedBags\MoneyDisplay.lua
 UnifiedBags\CharacterSelect.lua
 UnifiedBags\CharacterSelect.xml
+UnifiedBags\BagTransfers.lua
 UnifiedBags\MainView.lua
 UnifiedBags\MainView.xml
 UnifiedBags\Search.lua

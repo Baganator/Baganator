@@ -1,3 +1,5 @@
+local addonName, addonTable = ...
+
 local classicTabObjectCounter = 0
 
 BaganatorMainViewMixin = {}
@@ -149,8 +151,6 @@ function BaganatorMainViewMixin:OnLoad()
     end
   end)
 
-  self:UpdateTransferButton()
-
   self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG,
@@ -163,11 +163,9 @@ function BaganatorMainViewMixin:OnLoad()
     hideOnEscape = 1,
   }
 
-  self.sendMailShowing = false
-  hooksecurefunc("SetSendMailShowing", function(state)
-    self.sendMailShowing = state
+  addonTable.BagTransferActivationCallback = function()
     self:UpdateTransferButton()
-  end)
+  end
 end
 
 function BaganatorMainViewMixin:OnShow()
@@ -223,13 +221,11 @@ end
 function BaganatorMainViewMixin:OnEvent(eventName)
   if eventName == "BANKFRAME_OPENED" then
     self.blizzardBankOpen = true
-    self:UpdateTransferButton()
     if self:IsVisible() and self.isLive then
       self:UpdateForCharacter(self.lastCharacter, true)
     end
   elseif eventName == "BANKFRAME_CLOSED" then
     self.blizzardBankOpen = false
-    self:UpdateTransferButton()
     if self:IsVisible() and self.isLive then
       self:UpdateForCharacter(self.lastCharacter, true)
     end
@@ -747,59 +743,19 @@ function BaganatorMainViewMixin:UpdateCurrencies(character)
   end
 end
 
-function BaganatorMainViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, function(status)
-    self.sortManager:Apply(status, function()
-      self:CombineStacks(callback)
-    end, function()
-      callback()
-    end)
-  end)
-end
-
-function BaganatorMainViewMixin:MergeCombineStacks(callback)
-  local bags, bagIDs = Baganator.Sorting.GetMergedBankBags(self.liveCharacter)
-  Baganator.Sorting.CombineStacks(bags, bagIDs, function(status)
-    self.sortManager:Apply(status, function()
-      self:MergeCombineStacks(callback)
-    end, function()
-      callback()
-    end)
-  end)
-end
-
-function BaganatorMainViewMixin:ApplyStackLimit(callback)
-  local status = Baganator.Sorting.ApplyStackLimit(1)
-
-  self.sortManager:Apply(status, function()
-    self:ApplyStackLimit(callback)
-  end, function()
-    callback()
-  end)
-end
-
 function BaganatorMainViewMixin:UpdateTransferButton()
   if not Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON) then
     self.TransferButton:Hide()
     return
   end
-  self.TransferButton:ClearAllPoints()
-  if self.SortButton:IsShown() then
-    self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
-  else
-    self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
+  for _, info in ipairs(addonTable.BagTransferShowConditions) do
+    if info.condition() then
+      self.TransferButton:Show()
+      self.TransferButton.tooltipText = info.tooltipText
+      return
+    end
   end
-
-  local mailOpen = C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo)
-  if mailOpen and self.sendMailShowing then
-    self.TransferButton.tooltipText = BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT
-    self.TransferButton:Show()
-  elseif self.blizzardBankOpen then
-    self.TransferButton.tooltipText = BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT
-    self.TransferButton:Show()
-  else
-    self.TransferButton:Hide()
-  end
+  self.TransferButton:Hide()
 end
 
 function BaganatorMainViewMixin:GetMatches()
@@ -810,48 +766,20 @@ function BaganatorMainViewMixin:GetMatches()
   return matches
 end
 
-function BaganatorMainViewMixin:MoveMatchesToBank(callback)
-  local matches = self:GetMatches()
-  local emptyBankSlots = Baganator.Sorting.GetEmptySlots(BAGANATOR_DATA.Characters[self.liveCharacter].bank, Baganator.Constants.AllBankIndexes)
-  local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
-  tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
-
-  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBankSlots, {})
-
-  self.sortManager:Apply(status, function()
-    self:MoveMatchesToBank(callback)
-  end, function()
-    callback()
-  end)
-end
-
-function BaganatorMainViewMixin:SaveToBank(callback)
-  local characterData = BAGANATOR_DATA.Characters[self.liveCharacter]
-
-  local status = Baganator.Sorting.SaveToView(characterData.bags, Baganator.Constants.AllBagIndexes, characterData.bank, Baganator.Constants.AllBankIndexes)
-
-  self.sortManager:Apply(status, function()
-    self:SaveToBank(callback)
-  end, function()
-    self:MergeCombineStacks(callback)
-  end)
-end
-
-function BaganatorMainViewMixin:MoveMatchesToMail(callback)
-  local matches = self:GetMatches()
-  local status = Baganator.Sorting.TransferToMail(matches)
-
-  self.sortManager:Apply(status, function()
-    self:MoveMatchesToMail(callback)
-  end, function()
-    callback()
-  end)
-end
-
-function BaganatorMainViewMixin:ClearMailAttachments()
-  for i = 1, ATTACHMENTS_MAX_SEND do
-    local _, itemID = ClickSendMailItemButton(i, true)
+function BaganatorMainViewMixin:RunActions(actions)
+  if #actions == 0 then
+    return
   end
+
+  local getMatches = function() return self:GetMatches() end
+  actions[1](getMatches, self.liveCharacter, function(status)
+    self.sortManager:Apply(status, function()
+      self:RunActions(actions)
+    end, function()
+      table.remove(actions, 1)
+      self:RunActions(actions)
+    end)
+  end)
 end
 
 function BaganatorMainViewMixin:Transfer(button, force)
@@ -859,27 +787,13 @@ function BaganatorMainViewMixin:Transfer(button, force)
     self:Transfer(button, true)
   end
 
-  if IsShiftKeyDown() then
-    self:MergeCombineStacks(function()
-      self:ApplyStackLimit(function() end)
-    end)
-  elseif self.blizzardBankOpen then
-    if button == "RightButton" then
-      self:SaveToBank(function() end)
-    elseif not force and self.SearchBox:GetText() == "" then
-      StaticPopup_Show(self.confirmTransferAllDialogName)
-    else
-      self:MoveMatchesToBank(function() end)
-    end
-  elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) then
-    if button == "LeftButton" then
-      if not force and self.SearchBox:GetText() == "" then
+  for _, transferDetails in ipairs(addonTable.BagTransfers) do
+    if transferDetails.condition(button) then
+      if not force and transferDetails.confirmOnAll and self.SearchBox:GetText() == "" then
         StaticPopup_Show(self.confirmTransferAllDialogName)
       else
-        self:MoveMatchesToMail(function() end)
+        self:RunActions(transferDetails.actions)
       end
-    else
-      self:ClearMailAttachments()
     end
   end
 end

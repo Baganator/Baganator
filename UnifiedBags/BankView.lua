@@ -371,7 +371,9 @@ function BaganatorBankOnlyViewMixin:SaveToBag(callback)
 end
 
 function BaganatorBankOnlyViewMixin:Transfer(button)
-  if button == "RightButton" then
+  if IsShiftKeyDown() then
+    self:CombineStacks(function() end)
+  elseif button == "RightButton" then
     self:SaveToBag(function() end)
   else
     if self.SearchBox:GetText() == "" then
