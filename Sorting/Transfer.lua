@@ -77,8 +77,8 @@ function Baganator.Sorting.Transfer(bagIDs, toMove, targets, reverseTargets)
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(bagIDs)
 
   -- Prioritise special bags
-  SortChecksFirst(bagChecks, targets)
-  SortChecksFirst(bagChecks, reverseTargets)
+  targets = SortChecksFirst(bagChecks, targets)
+  reverseTargets = SortChecksFirst(bagChecks, reverseTargets)
 
   local locked, moved = false, false
   -- Move items if possible
