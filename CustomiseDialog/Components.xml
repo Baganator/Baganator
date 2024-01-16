@@ -11,7 +11,7 @@
   <Button name="BaganatorClassicTabTopTemplate" virtual="true" inherits="TabButtonTemplate">
     <Scripts>
       <OnShow>
-        PanelTemplates_TabResize(self, 15, nil, 10)
+        PanelTemplates_TabResize(self, 0, nil, 0)
         PanelTemplates_DeselectTab(self)
       </OnShow>
     </Scripts>
