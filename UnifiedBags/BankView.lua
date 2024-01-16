@@ -16,6 +16,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   })
 
   Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
+  Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
 
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
@@ -203,8 +204,6 @@ function BaganatorBankOnlyViewMixin:OnHide(eventName)
 
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
-  Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
-  self.sortManager:SetScript("OnUpdate", nil)
 end
 
 function BaganatorBankOnlyViewMixin:SetLiveCharacter(character)
@@ -351,7 +350,7 @@ function BaganatorBankOnlyViewMixin:RemoveSearchMatches(callback)
 
   local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBagSlots, {})
 
-  self.sortManager:Apply(status, function()
+  self.transferManager:Apply(status, function()
     self:RemoveSearchMatches(callback)
   end, function()
     callback()
@@ -363,7 +362,7 @@ function BaganatorBankOnlyViewMixin:SaveToBag(callback)
 
   local status = Baganator.Sorting.SaveToView(characterData.bank, Baganator.Constants.AllBankIndexes, characterData.bags, Baganator.Constants.AllBagIndexes)
 
-  self.sortManager:Apply(status, function()
+  self.transferManager:Apply(status, function()
     self:SaveToBag(callback)
   end, function()
     callback()

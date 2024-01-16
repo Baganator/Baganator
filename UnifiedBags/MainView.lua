@@ -22,6 +22,7 @@ function BaganatorMainViewMixin:OnLoad()
   end
 
   Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
+  Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
 
   FrameUtil.RegisterFrameForEvents(self, {
     "BANKFRAME_OPENED",
@@ -183,9 +184,6 @@ function BaganatorMainViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
   self.CharacterSelect:Hide()
-
-  Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
-  self.sortManager:SetScript("OnUpdate", nil)
 
   PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE);
 end
@@ -789,7 +787,7 @@ function BaganatorMainViewMixin:RunActions(actions)
 
   local getMatches = function() return self:GetMatches() end
   actions[1](getMatches, self.liveCharacter, function(status)
-    self.sortManager:Apply(status, function()
+    self.transferManager:Apply(status, function()
       self:RunActions(actions)
     end, function()
       table.remove(actions, 1)

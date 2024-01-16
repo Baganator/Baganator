@@ -126,14 +126,35 @@ function Baganator.Utilities.AddBagSortManager(self)
       completeFunc()
     elseif status == Baganator.Constants.SortStatus.WaitingMove then
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-        -- Delay until after this frame so the bag view and search will have
-        -- updated
-        C_Timer.After(0, function()
-          retryFunc()
-        end)
+        retryFunc()
       end, self)
     else -- waiting item data or item unlock
       self:SetScript("OnUpdate", retryFunc)
     end
   end
+  self.sortManager:SetScript("OnHide", function()
+    self.sortManager:SetScript("OnUpdate", nil)
+    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
+  end)
+end
+
+function Baganator.Utilities.AddBagTransferManager(self)
+  self.transferManager = CreateFrame("Frame", nil, self)
+  function self.transferManager:Apply(status, retryFunc, completeFunc)
+    self:SetScript("OnUpdate", nil)
+    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self)
+    if status == Baganator.Constants.SortStatus.Complete then
+      completeFunc()
+    elseif status == Baganator.Constants.SortStatus.WaitingMove then
+      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+        C_Timer.After(0, retryFunc)
+      end, self)
+    else -- waiting item data or item unlock
+      self:SetScript("OnUpdate", retryFunc)
+    end
+  end
+  self.transferManager:SetScript("OnHide", function()
+    self.transferManager:SetScript("OnUpdate", nil)
+    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.transferManager)
+  end)
 end
