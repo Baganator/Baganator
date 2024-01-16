@@ -302,6 +302,10 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
   for index in ipairs(Baganator.Constants.AllBankIndexes) do
     indexesToUse[index] = true
   end
+  -- Ignore reagent bank if it isn't purchased
+  if Baganator.Constants.IsRetail and not IsReagentBankUnlocked() then
+    indexesToUse[tIndexOf(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)] = nil
+  end
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(Baganator.Constants.AllBankIndexes)
 
   local function DoSortInternal()
