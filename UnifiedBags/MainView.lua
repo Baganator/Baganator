@@ -537,6 +537,12 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
   self:UpdateTransferButton()
+  self.TransferButton:ClearAllPoints()
+  if self.SortButton:IsShown() then
+    self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
+  else
+    self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
+  end
 
   local showReagents = Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS)
 
