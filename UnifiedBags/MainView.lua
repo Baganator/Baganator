@@ -833,7 +833,7 @@ function BaganatorMainViewMixin:SaveToBank(callback)
   self.sortManager:Apply(status, function()
     self:SaveToBank(callback)
   end, function()
-    callback()
+    self:MergeCombineStacks(callback)
   end)
 end
 
@@ -854,7 +854,11 @@ function BaganatorMainViewMixin:ClearMailAttachments()
   end
 end
 
-function BaganatorMainViewMixin:Transfer(button)
+function BaganatorMainViewMixin:Transfer(button, force)
+  StaticPopupDialogs[self.confirmTransferAllDialogName].OnAccept = function()
+    self:Transfer(button, true)
+  end
+
   if IsShiftKeyDown() then
     self:MergeCombineStacks(function()
       self:ApplyStackLimit(function() end)
@@ -862,14 +866,18 @@ function BaganatorMainViewMixin:Transfer(button)
   elseif self.blizzardBankOpen then
     if button == "RightButton" then
       self:SaveToBank(function() end)
-    elseif self.SearchBox:GetText() == "" then
+    elseif not force and self.SearchBox:GetText() == "" then
       StaticPopup_Show(self.confirmTransferAllDialogName)
     else
       self:MoveMatchesToBank(function() end)
     end
   elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) then
     if button == "LeftButton" then
-      self:MoveMatchesToMail(function() end)
+      if not force and self.SearchBox:GetText() == "" then
+        StaticPopup_Show(self.confirmTransferAllDialogName)
+      else
+        self:MoveMatchesToMail(function() end)
+      end
     else
       self:ClearMailAttachments()
     end
