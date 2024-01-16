@@ -58,8 +58,6 @@ local function SwordCheck(details)
   return details.classID == Enum.ItemClass.Weapon and (details.subClassID == Enum.ItemWeaponSubclass.Sword2H or details.subClassID == Enum.ItemWeaponSubclass.Sword1H)
 end
 
-local ReputationCheck, BindOnAccountCheck
-
 local function GetTooltipInfoSpell(details)
   if details.tooltipInfoSpell then
     return
