@@ -150,7 +150,7 @@ end
 
 RegisterTransferCondition(function()
   return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine)
-end, BAGANATOR_L_TRANSFER)
+end, BAGANATOR_L_TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT)
 
 RegisterBagTransfer(
   function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,

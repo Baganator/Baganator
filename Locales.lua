@@ -166,6 +166,7 @@ L["TRANSFER"] = "Transfer"
 L["TRANSFER_BANK_VIEW_TOOLTIP_TEXT"] = "Move searched for items out of the bank.\n\nSpecial action on right-click, transfer items where the same items are already in the bags"
 L["TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT"] = "Move searched for items out from the bags into the bank.\n\nSpecial actions on right-click (transfer items already in the bank) and shift+click (rearrange so exactly one stack of everything is in the bag)."
 L["TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT"] = "Attach the searched for items to a mail for sending.\n\nRight-click to clear all attachments."
+L["TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT"] = "Place scrappable items into the scrapping machine.\n\nRight-click to remove all items from the scrapping machine."
 
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG"] = "Do you want to transfer ALL items in your bags?"
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK"] = "Do you want to transfer ALL items from the bank?"
