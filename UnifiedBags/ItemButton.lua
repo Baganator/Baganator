@@ -197,6 +197,7 @@ local function SearchCheck(self, text)
   return Baganator.UnifiedBags.Search.CheckItem(self.BGR, text)
 end
 
+-- Used to fade widgets when the item doesn't match the current search/context
 local function SetWidgetsAlpha(self, result)
   if not result then
     self.widgetContainer:SetAlpha(0.4)
@@ -441,6 +442,18 @@ function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
       BankFrame.selectedTab = 1
     end
   end)
+
+  -- Hide widgets when Blizzard highlights only a limited set of items
+  self.ItemContextOverlay:SetScript("OnShow", function()
+    if self.widgetContainer then
+      SetWidgetsAlpha(self, false)
+    end
+  end)
+  self.ItemContextOverlay:SetScript("OnHide", function()
+    if self.widgetContainer then
+      SetWidgetsAlpha(self, self.BGR.matchesSearch)
+    end
+  end)
 end
 
 function BaganatorRetailLiveItemButtonMixin:UpdateTextures()
@@ -530,7 +543,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
     self.BGR.matchesSearch = result
   end
   self:SetMatchesSearch(result)
-  SetWidgetsAlpha(self, result)
+  SetWidgetsAlpha(self, result and not self.ItemContextOverlay:IsShown())
 end
 
 function BaganatorRetailLiveItemButtonMixin:ClearNewItem()
