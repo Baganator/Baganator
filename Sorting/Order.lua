@@ -258,7 +258,9 @@ end
 local function GetPositionStores(bagIDsAvailable, bagSizes)
   local stores = {}
   for _, bagID in ipairs(bagIDsAvailable) do
-    stores[bagID] = {first = 1, last = bagSizes[bagID]}
+    if bagSizes[bagID] then
+      stores[bagID] = {first = 1, last = bagSizes[bagID]}
+    end
   end
 
   return stores
