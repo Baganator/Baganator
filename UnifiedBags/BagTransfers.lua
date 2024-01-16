@@ -12,6 +12,13 @@ local function RegisterTransferCondition(condition, tooltipText)
   table.insert(addonTable.BagTransferShowConditions, { condition = condition, tooltipText = tooltipText })
 end
 
+local playerInteractionManagerChecking = CreateFrame("Frame")
+playerInteractionManagerChecking:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
+playerInteractionManagerChecking:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
+playerInteractionManagerChecking:SetScript("OnEvent", function()
+  addonTable.BagTransferActivationCallback()
+end)
+
 local isBankOpen = false
 do
   local BankCheck = CreateFrame("Frame")
@@ -121,6 +128,42 @@ RegisterBagTransfer(
   function(button) return button == "RightButton" and sendMailShowing and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) end,
   {
     ClearMailAttachments,
+  },
+  false
+)
+
+local function AddToScrapper(getMatches, characterName, callback)
+  local matches = getMatches()
+  for _, item in ipairs(matches) do
+    local location = ItemLocation:CreateFromBagAndSlot(item.bagID, item.slotID)
+    if C_Item.DoesItemExist(location) and C_Item.CanScrapItem(location) then
+      C_Container.UseContainerItem(item.bagID, item.slotID)
+    end
+  end
+  callback(Baganator.Constants.SortStatus.Complete)
+end
+
+local function ClearScrapper(_, _, callback)
+  C_ScrappingMachineUI.RemoveAllScrapItems()
+  callback(Baganator.Constants.SortStatus.Complete)
+end
+
+RegisterTransferCondition(function()
+  return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine)
+end, BAGANATOR_L_TRANSFER)
+
+RegisterBagTransfer(
+  function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
+  {
+    AddToScrapper,
+  },
+  false
+)
+
+RegisterBagTransfer(
+  function(button) return button == "RightButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
+  {
+    ClearScrapper,
   },
   false
 )
