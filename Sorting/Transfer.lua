@@ -98,23 +98,6 @@ function Baganator.Sorting.Transfer(bagIDs, toMove, targets, reverseTargets)
     end
   end
 
-  -- Remove items in the targets slots into the reverseTargets slots if any
-  if #targets > 0 and #reverseTargets > 0 then
-    for _, item in ipairs(targets) do
-      if item.itemID ~= nil then
-        local source, target, swapLocked = GetSwap(bagChecks, item, reverseTargets, targets)
-        if source and target then
-          C_Container.PickupContainerItem(source.bagID, source.slotID)
-          C_Container.PickupContainerItem(target.bagID, target.slotID)
-          ClearCursor()
-          moved = true
-        elseif swapLocked then
-          locked = true
-        end
-      end
-    end
-  end
-
   if moved then
     return Baganator.Constants.SortStatus.WaitingMove
   elseif locked then
