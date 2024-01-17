@@ -26,7 +26,7 @@
       </Button>
       <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp">
         <KeyValues>
-          <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_BANK_VIEW_TOOLTIP_TEXT" type="global"/>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_BANK_VIEW_TOOLTIP_TEXT_SHORT" type="global"/>
         </KeyValues>
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.SortButton" relativePoint="LEFT"/>
