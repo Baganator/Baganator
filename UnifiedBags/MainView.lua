@@ -780,18 +780,11 @@ function BaganatorMainViewMixin:GetMatches()
   return matches
 end
 
-function BaganatorMainViewMixin:RunActions(actions)
-  if #actions == 0 then
-    return
-  end
-
-  local getMatches = function() return self:GetMatches() end
-  actions[1](getMatches, self.liveCharacter, function(status)
+function BaganatorMainViewMixin:RunAction(action)
+  action(self:GetMatches(), self.liveCharacter, function(status)
     self.transferManager:Apply(status, function()
-      self:RunActions(actions)
+      self:RunAction(action)
     end, function()
-      table.remove(actions, 1)
-      self:RunActions(actions)
     end)
   end)
 end
@@ -807,7 +800,7 @@ function BaganatorMainViewMixin:Transfer(button, force)
         StaticPopup_Show(self.confirmTransferAllDialogName)
         break
       else
-        self:RunActions(CopyTable(transferDetails.actions))
+        self:RunAction(transferDetails.action)
         break
       end
     end

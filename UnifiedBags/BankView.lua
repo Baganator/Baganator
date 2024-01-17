@@ -361,18 +361,6 @@ function BaganatorBankOnlyViewMixin:RemoveSearchMatches(callback)
   end)
 end
 
-function BaganatorBankOnlyViewMixin:SaveToBag(callback)
-  local characterData = BAGANATOR_DATA.Characters[self.liveCharacter]
-
-  local status = Baganator.Sorting.SaveToView(characterData.bank, Baganator.Constants.AllBankIndexes, characterData.bags, Baganator.Constants.AllBagIndexes)
-
-  self.transferManager:Apply(status, function()
-    self:SaveToBag(callback)
-  end, function()
-    callback()
-  end)
-end
-
 function BaganatorBankOnlyViewMixin:Transfer(button)
   if self.SearchBox:GetText() == "" then
     StaticPopup_Show(self.confirmTransferAllDialogName)

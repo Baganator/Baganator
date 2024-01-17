@@ -4,8 +4,8 @@ addonTable.BagTransfers = {}
 addonTable.BagTransferShowConditions = {}
 addonTable.BagTransferActivationCallback = function() end
 
-local function RegisterBagTransfer(condition, actions, confirmOnAll)
-  table.insert(addonTable.BagTransfers, { condition = condition, actions = actions, confirmOnAll = confirmOnAll})
+local function RegisterBagTransfer(condition, action, confirmOnAll)
+  table.insert(addonTable.BagTransfers, { condition = condition, action = action, confirmOnAll = confirmOnAll})
 end
 
 local function RegisterTransferCondition(condition, tooltipText)
@@ -32,13 +32,7 @@ do
   end)
 end
 
-local function MergeBankStacks(_, characterName, callback)
-  local characterData = BAGANATOR_DATA.Characters[characterName]
-  Baganator.Sorting.CombineStacks(characterData.bank, Baganator.Constants.AllBankIndexes, callback)
-end
-
-local function TransferToBank(getMatches, characterName, callback)
-  local matches = getMatches()
+local function TransferToBank(matches, characterName, callback)
   local emptyBankSlots = Baganator.Sorting.GetEmptySlots(BAGANATOR_DATA.Characters[characterName].bank, Baganator.Constants.AllBankIndexes)
   local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
   tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
@@ -53,15 +47,11 @@ end, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT)
 
 RegisterBagTransfer(
   function(button) return button == "LeftButton" and isBankOpen end,
-  {
-    TransferToBank,
-    MergeBankStacks,
-  },
+  TransferToBank,
   true
 )
 
-local function TransferToMail(getMatches, characterName, callback)
-  local matches = getMatches()
+local function TransferToMail(matches, characterName, callback)
   local status = Baganator.Sorting.TransferToMail(matches)
   callback(status)
 end
@@ -71,20 +61,18 @@ hooksecurefunc("SetSendMailShowing", function(state)
   sendMailShowing = state
   addonTable.BagTransferActivationCallback()
 end)
-RegisterBagTransfer(
-  function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and sendMailShowing end,
-  {
-    TransferToMail,
-  },
-  true
-)
-
 
 RegisterTransferCondition(function()
   return sendMailShowing and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo)
 end, BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT)
-local function AddToScrapper(getMatches, characterName, callback)
-  local matches = getMatches()
+
+RegisterBagTransfer(
+  function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and sendMailShowing end,
+  TransferToMail,
+  true
+)
+
+local function AddToScrapper(matches, characterName, callback)
   for _, item in ipairs(matches) do
     local location = ItemLocation:CreateFromBagAndSlot(item.bagID, item.slotID)
     if C_Item.DoesItemExist(location) and C_Item.CanScrapItem(location) then
@@ -100,8 +88,6 @@ end, BAGANATOR_L_TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT)
 
 RegisterBagTransfer(
   function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
-  {
-    AddToScrapper,
-  },
+  AddToScrapper,
   false
 )
