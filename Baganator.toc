@@ -38,8 +38,6 @@ Sorting\Plugins.lua
 Sorting\ModeCheck.lua
 Sorting\Transfer.lua
 Sorting\TransferToMail.lua
-Sorting\StackLimit.lua
-Sorting\SaveToView.lua
 
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua

@@ -37,7 +37,7 @@ local function IsLocked(item)
   return C_Item.DoesItemExist(itemLocation) and C_Item.IsLocked(itemLocation)
 end
 
-local function GetSwap(bagChecks, source, targets, reverseTargets)
+local function GetSwap(bagChecks, source, targets)
   if IsLocked(source) then
     return nil, nil, true
   end
@@ -56,8 +56,6 @@ local function GetSwap(bagChecks, source, targets, reverseTargets)
           local incoming = CheckFromTo(bagChecks, item, source)
           if incoming then
             return source, item, false
-          else
-            return GetSwap(bagChecks, item, reverseTargets, targets)
           end
         end
       end
@@ -72,8 +70,7 @@ end
 -- bagIDs: The IDs of bags involved with taking or receiving items
 -- toMove: Items requested to move {itemID: number, bagID: number, slotID: number}
 -- targets: Slots for the items to move to (empty or not)
--- reverseTargets: Item slots to move target slot items into to make space.
-function Baganator.Sorting.Transfer(bagIDs, toMove, targets, reverseTargets)
+function Baganator.Sorting.Transfer(bagIDs, toMove, targets)
   if InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
     return Baganator.Constants.SortStatus.Complete
   end
@@ -82,12 +79,11 @@ function Baganator.Sorting.Transfer(bagIDs, toMove, targets, reverseTargets)
 
   -- Prioritise special bags
   targets = SortChecksFirst(bagChecks, targets)
-  reverseTargets = SortChecksFirst(bagChecks, reverseTargets)
 
   local locked, moved = false, false
   -- Move items if possible
   for _, item in ipairs(toMove) do
-    local source, target, swapLocked = GetSwap(bagChecks, item, targets, reverseTargets)
+    local source, target, swapLocked = GetSwap(bagChecks, item, targets)
     if source and target then
       C_Container.PickupContainerItem(source.bagID, source.slotID)
       C_Container.PickupContainerItem(target.bagID, target.slotID)
@@ -95,23 +91,6 @@ function Baganator.Sorting.Transfer(bagIDs, toMove, targets, reverseTargets)
       moved = true
     elseif swapLocked then
       locked = true
-    end
-  end
-
-  -- Remove items in the targets slots into the reverseTargets slots if any
-  if #targets > 0 and #reverseTargets > 0 then
-    for _, item in ipairs(targets) do
-      if item.itemID ~= nil then
-        local source, target, swapLocked = GetSwap(bagChecks, item, reverseTargets, targets)
-        if source and target then
-          C_Container.PickupContainerItem(source.bagID, source.slotID)
-          C_Container.PickupContainerItem(target.bagID, target.slotID)
-          ClearCursor()
-          moved = true
-        elseif swapLocked then
-          locked = true
-        end
-      end
     end
   end
 

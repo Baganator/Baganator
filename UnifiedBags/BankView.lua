@@ -352,7 +352,7 @@ function BaganatorBankOnlyViewMixin:RemoveSearchMatches(callback)
   local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
   tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
 
-  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBagSlots, {})
+  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBagSlots)
 
   self.transferManager:Apply(status, function()
     self:RemoveSearchMatches(callback)
@@ -374,15 +374,9 @@ function BaganatorBankOnlyViewMixin:SaveToBag(callback)
 end
 
 function BaganatorBankOnlyViewMixin:Transfer(button)
-  if IsShiftKeyDown() then
-    self:CombineStacks(function() end)
-  elseif button == "RightButton" then
-    self:SaveToBag(function() end)
+  if self.SearchBox:GetText() == "" then
+    StaticPopup_Show(self.confirmTransferAllDialogName)
   else
-    if self.SearchBox:GetText() == "" then
-      StaticPopup_Show(self.confirmTransferAllDialogName)
-    else
-      self:RemoveSearchMatches(function() end)
-    end
+    self:RemoveSearchMatches(function() end)
   end
 end

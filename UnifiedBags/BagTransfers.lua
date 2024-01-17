@@ -32,12 +32,6 @@ do
   end)
 end
 
-local function SaveBank(getMatches, characterName, callback)
-  local characterData = BAGANATOR_DATA.Characters[characterName]
-  local status = Baganator.Sorting.SaveToView(characterData.bags, Baganator.Constants.AllBagIndexes, characterData.bank, Baganator.Constants.AllBankIndexes)
-  callback(status)
-end
-
 local function MergeBankStacks(_, characterName, callback)
   local characterData = BAGANATOR_DATA.Characters[characterName]
   Baganator.Sorting.CombineStacks(characterData.bank, Baganator.Constants.AllBankIndexes, callback)
@@ -49,41 +43,13 @@ local function TransferToBank(getMatches, characterName, callback)
   local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
   tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
 
-  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBankSlots, {})
-  callback(status)
-end
-
-local function MergeAllStacks(_, characterName, callback)
-  local bags, bagIDs = Baganator.Sorting.GetMergedBankBags(characterName)
-  Baganator.Sorting.CombineStacks(bags, bagIDs, callback)
-end
-
-local function ApplyStackLimit(_, characterName, callback)
-  local status = Baganator.Sorting.ApplyStackLimit(1)
+  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBankSlots)
   callback(status)
 end
 
 RegisterTransferCondition(function()
   return isBankOpen
 end, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT)
-
-RegisterBagTransfer(
-  function(button) return IsShiftKeyDown() and isBankOpen and button == "LeftButton" end,
-  {
-    MergeAllStacks,
-    ApplyStackLimit,
-  },
-  false
-)
-
-RegisterBagTransfer(
-  function(button) return button == "RightButton" and isBankOpen end,
-  {
-    SaveBank,
-    MergeBankStacks,
-  },
-  false
-)
 
 RegisterBagTransfer(
   function(button) return button == "LeftButton" and isBankOpen end,
@@ -113,25 +79,10 @@ RegisterBagTransfer(
   true
 )
 
-local function ClearMailAttachments(_, _, callback)
-  for i = 1, ATTACHMENTS_MAX_SEND do
-    local _, itemID = ClickSendMailItemButton(i, true)
-  end
-  callback(Baganator.Constants.SortStatus.Complete)
-end
 
 RegisterTransferCondition(function()
   return sendMailShowing and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo)
 end, BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT)
-
-RegisterBagTransfer(
-  function(button) return button == "RightButton" and sendMailShowing and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) end,
-  {
-    ClearMailAttachments,
-  },
-  false
-)
-
 local function AddToScrapper(getMatches, characterName, callback)
   local matches = getMatches()
   for _, item in ipairs(matches) do
@@ -143,11 +94,6 @@ local function AddToScrapper(getMatches, characterName, callback)
   callback(Baganator.Constants.SortStatus.Complete)
 end
 
-local function ClearScrapper(_, _, callback)
-  C_ScrappingMachineUI.RemoveAllScrapItems()
-  callback(Baganator.Constants.SortStatus.Complete)
-end
-
 RegisterTransferCondition(function()
   return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine)
 end, BAGANATOR_L_TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT)
@@ -156,14 +102,6 @@ RegisterBagTransfer(
   function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
   {
     AddToScrapper,
-  },
-  false
-)
-
-RegisterBagTransfer(
-  function(button) return button == "RightButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
-  {
-    ClearScrapper,
   },
   false
 )
