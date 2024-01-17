@@ -15,6 +15,10 @@ local function GetLocationsByItemID(bags, bagIDs)
 end
 
 function Baganator.Sorting.SaveToView(from, fromIDs, to, toIDs)
+  if InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
+    return Baganator.Constants.SortStatus.Complete
+  end
+
   local allFrom = GetLocationsByItemID(from, fromIDs)
   local allTo = GetLocationsByItemID(to, toIDs)
 

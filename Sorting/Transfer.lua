@@ -74,6 +74,10 @@ end
 -- targets: Slots for the items to move to (empty or not)
 -- reverseTargets: Item slots to move target slot items into to make space.
 function Baganator.Sorting.Transfer(bagIDs, toMove, targets, reverseTargets)
+  if InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
+    return Baganator.Constants.SortStatus.Complete
+  end
+
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(bagIDs)
 
   -- Prioritise special bags

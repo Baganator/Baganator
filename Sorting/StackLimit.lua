@@ -74,6 +74,10 @@ end
 -- Set the bag to have exactly X (stackLimit) stacks of everything the player
 -- possesses in the bag and bank.
 function Baganator.Sorting.ApplyStackLimit(stackLimit)
+  if InCombatLockdown() then -- Breaks during combat due to Blizzard restrictions
+    return Baganator.Constants.SortStatus.Complete
+  end
+
   local mergedBags, mergedIDs = Baganator.Sorting.GetMergedBankBags(Baganator.Utilities.GetCharacterFullName())
   local map = GetLocationsByItemID(mergedBags, mergedIDs)
 

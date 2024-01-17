@@ -324,7 +324,7 @@ end
 -- bagChecks: Any special bag requirements for placing items in a specific bag
 function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
   if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
-    return
+    return Baganator.Constants.SortStatus.Complete
   end
 
   if ignoreCount == nil then
