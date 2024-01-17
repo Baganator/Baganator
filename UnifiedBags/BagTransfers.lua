@@ -53,9 +53,28 @@ local function TransferToBank(getMatches, characterName, callback)
   callback(status)
 end
 
+local function MergeAllStacks(_, characterName, callback)
+  local bags, bagIDs = Baganator.Sorting.GetMergedBankBags(characterName)
+  Baganator.Sorting.CombineStacks(bags, bagIDs, callback)
+end
+
+local function ApplyStackLimit(_, characterName, callback)
+  local status = Baganator.Sorting.ApplyStackLimit(1)
+  callback(status)
+end
+
 RegisterTransferCondition(function()
   return isBankOpen
 end, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT)
+
+RegisterBagTransfer(
+  function(button) return IsShiftKeyDown() and isBankOpen and button == "LeftButton" end,
+  {
+    MergeAllStacks,
+    ApplyStackLimit,
+  },
+  false
+)
 
 RegisterBagTransfer(
   function(button) return button == "RightButton" and isBankOpen end,
