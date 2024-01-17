@@ -65,7 +65,7 @@ end
 
 RegisterTransferCondition(function()
   return isBankOpen
-end, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT_SHORT)
+end, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT)
 
 RegisterBagTransfer(
   function(button) return IsShiftKeyDown() and isBankOpen and button == "LeftButton" end,
