@@ -29,13 +29,13 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp">
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.SortButton" relativePoint="LEFT"/>
         </Anchors>
         <Scripts>
           <OnClick>
-            self:GetParent():Transfer(button)
+            self:GetParent():Transfer()
           </OnClick>
         </Scripts>
       </Button>

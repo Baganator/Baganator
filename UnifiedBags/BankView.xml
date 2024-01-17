@@ -24,7 +24,7 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp">
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700">
         <KeyValues>
           <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_BANK_VIEW_TOOLTIP_TEXT" type="global"/>
         </KeyValues>

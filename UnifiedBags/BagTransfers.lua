@@ -1,15 +1,10 @@
 local addonName, addonTable = ...
 
 addonTable.BagTransfers = {}
-addonTable.BagTransferShowConditions = {}
 addonTable.BagTransferActivationCallback = function() end
 
-local function RegisterBagTransfer(condition, action, confirmOnAll)
-  table.insert(addonTable.BagTransfers, { condition = condition, action = action, confirmOnAll = confirmOnAll})
-end
-
-local function RegisterTransferCondition(condition, tooltipText)
-  table.insert(addonTable.BagTransferShowConditions, { condition = condition, tooltipText = tooltipText })
+local function RegisterBagTransfer(condition, action, confirmOnAll, tooltipText)
+  table.insert(addonTable.BagTransfers, { condition = condition, action = action, confirmOnAll = confirmOnAll, tooltipText = tooltipText})
 end
 
 local playerInteractionManagerChecking = CreateFrame("Frame")
@@ -41,14 +36,10 @@ local function TransferToBank(matches, characterName, callback)
   callback(status)
 end
 
-RegisterTransferCondition(function()
-  return isBankOpen
-end, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT)
-
 RegisterBagTransfer(
-  function(button) return button == "LeftButton" and isBankOpen end,
+  function(button) return isBankOpen end,
   TransferToBank,
-  true
+  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT
 )
 
 local function TransferToMail(matches, characterName, callback)
@@ -62,14 +53,10 @@ hooksecurefunc("SetSendMailShowing", function(state)
   addonTable.BagTransferActivationCallback()
 end)
 
-RegisterTransferCondition(function()
-  return sendMailShowing and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo)
-end, BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT)
-
 RegisterBagTransfer(
-  function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and sendMailShowing end,
+  function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and sendMailShowing end,
   TransferToMail,
-  true
+  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT
 )
 
 local function AddToScrapper(matches, characterName, callback)
@@ -82,12 +69,8 @@ local function AddToScrapper(matches, characterName, callback)
   callback(Baganator.Constants.SortStatus.Complete)
 end
 
-RegisterTransferCondition(function()
-  return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine)
-end, BAGANATOR_L_TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT)
-
 RegisterBagTransfer(
-  function(button) return button == "LeftButton" and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
+  function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
   AddToScrapper,
-  false
+  false, BAGANATOR_L_TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT
 )
