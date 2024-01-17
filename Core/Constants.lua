@@ -136,3 +136,9 @@ if Baganator.Constants.IsRetail or not IsMacClient() then
   tAppendAll(Baganator.Constants.SampleSearchTerms, setTerms)
 end
 Baganator.Constants.KeyItemFamily = 256
+Baganator.Constants.AccountBoundTooltipLines = {
+  ITEM_BIND_TO_BNETACCOUNT,
+  ITEM_BNETACCOUNTBOUND,
+  ITEM_BIND_TO_ACCOUNT,
+  ITEM_ACCOUNTBOUND,
+}

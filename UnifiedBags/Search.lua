@@ -99,7 +99,7 @@ local function BindOnAccountCheck(details)
 
   if details.tooltipInfoSpell then
     for _, row in ipairs(details.tooltipInfoSpell.lines) do
-      if row.leftText == ITEM_BIND_TO_BNETACCOUNT or row.leftText == ITEM_BNETACCOUNTBOUND then
+      if tIndexOf(Baganator.Constants.AccountBoundTooltipLines, row.leftText) ~= nil then
         return true
       end
     end
