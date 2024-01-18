@@ -130,3 +130,14 @@ function Baganator.API.IsCornerWidgetActive(id)
   end
   return false
 end
+
+addonTable.ItemSetSources = {}
+
+function Baganator.API.RegisterItemSetSource(label, id, getter)
+  assert(type(label) == "string" and type(id) == "string" and type(getter) == "function")
+  table.insert(addonTable.ItemSetSources, {
+    label = label,
+    id = id,
+    getter = getter,
+  })
+end

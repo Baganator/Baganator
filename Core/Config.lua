@@ -58,7 +58,7 @@ Baganator.Config.Options = {
   AUTO_OPEN = "auto_open",
 
   ENABLE_UNIFIED_BAGS = "enable_unified_bags",
-  ENABLE_EQUIPMENT_SET_INFO = "enable_equipment_set_info_2",
+  ENABLE_EQUIPMENT_SET_INFO = "enable_equipment_set_info_3",
 }
 
 Baganator.Config.Defaults = {
@@ -113,9 +113,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
 
   [Baganator.Config.Options.ENABLE_UNIFIED_BAGS] = true,
-  -- Option is disabled on classic WoW for Macs because there is a crash when
-  -- all 19 set item slots are occupied, see https://github.com/Stanzilla/WoWUIBugs/issues/511
-  [Baganator.Config.Options.ENABLE_EQUIPMENT_SET_INFO] = (Baganator.Constants.IsRetail or not IsMacClient()),
+  [Baganator.Config.Options.ENABLE_EQUIPMENT_SET_INFO] = true,
 }
 
 Baganator.Config.IsCharacterSpecific = {

@@ -1,3 +1,5 @@
+local _, addonTable = ...
+
 BaganatorEquipmentSetTrackerMixin = {}
 
 function BaganatorEquipmentSetTrackerMixin:OnLoad()
@@ -7,6 +9,10 @@ function BaganatorEquipmentSetTrackerMixin:OnLoad()
     "PLAYER_LOGIN",
   })
   self.equipmentSetInfo = {}
+
+  Baganator.API.RegisterItemSetSource(BAGANATOR_L_BLIZZARD, "blizzard", function(itemLocation, guid)
+    return self.equipmentSetInfo[guid]
+  end)
 end
 
 function BaganatorEquipmentSetTrackerMixin:QueueScan()
@@ -24,8 +30,9 @@ end
 
 -- Determine the GUID of all accessible items in an equipment set
 function BaganatorEquipmentSetTrackerMixin:ScanEquipmentSets()
+  -- Option is disabled on classic WoW for Macs because there is a crash when
+  -- all 19 set item slots are occupied, see https://github.com/Stanzilla/WoWUIBugs/issues/511
   if IsMacClient() and not Baganator.Constants.IsRetail then
-    -- May crash on Macs when 19 slots in use, so turn the feature off
     return
   end
 
@@ -83,7 +90,19 @@ function BaganatorEquipmentSetTrackerMixin:ScanEquipmentSets()
 end
 
 function BaganatorEquipmentSetTrackerMixin:Get(location)
-  local guid = C_Item.DoesItemExist(location) and C_Item.GetItemGUID(location)
+  local guid = C_Item.DoesItemExist(location) and C_Item.GetItemGUID(location) or nil
 
-  return self.equipmentSetInfo[guid]
+  local results = {}
+  for _, source in ipairs(addonTable.ItemSetSources) do
+    local new = source.getter(location, guid)
+    if new and #new > 0 then
+      tAppendAll(results, new)
+    end
+  end
+
+  if #results > 0 then
+    return results
+  else
+    return nil
+  end
 end
