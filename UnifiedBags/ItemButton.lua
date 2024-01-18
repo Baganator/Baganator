@@ -121,6 +121,9 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     for _, callback in ipairs(itemCallbacks) do
       callback(self, data)
     end
+    if self.BGRUpdateQuests then
+      self:BGRUpdateQuests()
+    end
   else
     local item = Item:CreateFromItemLink(itemLink)
     self.BGR.itemInfoWaiting = true
@@ -141,6 +144,9 @@ local function GetExtraInfo(self, itemID, itemLink, data)
 
       for _, callback in ipairs(itemCallbacks) do
         callback(self, data)
+      end
+      if self.BGRUpdateQuests then
+        self:BGRUpdateQuests()
       end
     end)
   end
@@ -480,10 +486,6 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   local noValue = cacheData.hasNoValue or (info and info.hasNoValue);
   local itemID = info and info.itemID;
   local isBound = info and info.isBound;
-  local questInfo = C_Container.GetContainerItemQuestInfo(self:GetBagID(), self:GetID());
-  local isQuestItem = questInfo.isQuestItem;
-  local questID = questInfo.questID;
-  local isActive = questInfo.isActive;
 
   ClearItemButtonOverlay(self);
 
@@ -497,7 +499,6 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   SetItemButtonDesaturated(self, locked);
 
   self:UpdateExtended();
-  self:UpdateQuestItem(isQuestItem, questID, isActive);
   self:UpdateNewItem(quality);
   self:UpdateJunkItem(quality, noValue);
   self:UpdateItemContextMatching();
@@ -505,6 +506,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self:SetReadable(readable);
   self:CheckUpdateTooltip(tooltipOwner);
   self:SetMatchesSearch(true)
+
   SetWidgetsAlpha(self, true)
   ReparentOverlays(self)
 
@@ -516,6 +518,8 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.setInfo = cacheData.setInfo
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
   self.BGR.hasNoValue = noValue
+
+  self:BGRUpdateQuests()
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
@@ -533,6 +537,14 @@ end
 
 function BaganatorRetailLiveItemButtonMixin:BGRUpdateCooldown()
   self:UpdateCooldown(self.BGR.itemLink);
+end
+
+function BaganatorRetailLiveItemButtonMixin:BGRUpdateQuests()
+  local questInfo = C_Container.GetContainerItemQuestInfo(self:GetBagID(), self:GetID());
+  local isQuestItem = questInfo.isQuestItem;
+  local questID = questInfo.questID;
+  local isActive = questInfo.isActive;
+  self:UpdateQuestItem(isQuestItem, questID, isActive);
 end
 
 function BaganatorRetailLiveItemButtonMixin:SetItemFiltered(text)
@@ -748,6 +760,11 @@ function BaganatorClassicLiveItemButtonMixin:BGRUpdateCooldown()
   end
 end
 
+
+function BaganatorClassicLiveItemButtonMixin:BGRUpdateQuests()
+  UpdateQuestItemClassic(self)
+end
+
 function BaganatorClassicLiveItemButtonMixin:OnLeave()
   if self:GetParent():GetID() == -1 then
     GameTooltip_Hide()
@@ -806,7 +823,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   
   ContainerFrameItemButton_SetForceExtended(self, false);
 
-  UpdateQuestItemClassic(self)
+  self:BGRUpdateQuests()
 
   if ( texture ) then
     ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);

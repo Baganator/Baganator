@@ -266,6 +266,12 @@ end
 
 BaganatorLiveBagLayoutMixin = {}
 
+local LIVE_LAYOUT_EVENTS = {
+  "BAG_UPDATE_COOLDOWN",
+  "UNIT_QUEST_LOG_CHANGED",
+  "QUEST_ACCEPTED",
+}
+
 function BaganatorLiveBagLayoutMixin:OnLoad()
   if Baganator.Constants.IsRetail then
     self.buttonPool = CreateFramePool("ItemButton", self, "BaganatorRetailLiveItemButtonTemplate")
@@ -316,11 +322,22 @@ function BaganatorLiveBagLayoutMixin:OnEvent(eventName, ...)
     self:UpdateLockForItem(bagID, slotID)
   elseif eventName == "BAG_UPDATE_COOLDOWN" then
     self:UpdateCooldowns()
+  elseif eventName == "UNIT_QUEST_LOG_CHANGED" then
+    local unit = ...
+    if unit == "player" then
+      for _, button in ipairs(self.buttons) do
+        button:BGRUpdateQuests()
+      end
+    end
+  elseif eventName == "QUEST_ACCEPTED" then
+    for _, button in ipairs(self.buttons) do
+      button:BGRUpdateQuests()
+    end
   end
 end
 
 function BaganatorLiveBagLayoutMixin:OnShow()
-  self:RegisterEvent("BAG_UPDATE_COOLDOWN")
+  FrameUtil.RegisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
   local start = debugprofilestop()
   self:UpdateCooldowns()
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
@@ -352,7 +369,7 @@ function BaganatorLiveBagLayoutMixin:OnShow()
 end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
-  self:UnregisterEvent("BAG_UPDATE_COOLDOWN")
+  FrameUtil.UnregisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
   local start = debugprofilestop()
   for _, button in ipairs(self.buttons) do
     button:ClearNewItem()
