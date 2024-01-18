@@ -80,6 +80,7 @@ Baganator.Constants.Events = {
   "HighlightBagItems",
   "ClearHighlightBag",
 
+  "EquipmentSetsUpdated",
   "ContentRefreshRequired",
   "PluginsUpdated",
 }

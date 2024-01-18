@@ -2,7 +2,7 @@
   <Frame name="BaganatorSearchLayoutMonitorTemplate" virtual="true" mixin="BaganatorSearchLayoutMonitorMixin" parentArray="Layouts">
     <Scripts>
       <OnLoad method="OnLoad"/>
-:   </Scripts>
+    </Scripts>
   </Frame>
 
   <Frame name="BaganatorCachedBagLayoutTemplate" virtual="true" mixin="BaganatorCachedBagLayoutMixin" parentArray="Layouts">

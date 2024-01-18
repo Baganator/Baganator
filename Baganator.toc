@@ -48,6 +48,8 @@ UnifiedBags\ContainerSlots.xml
 UnifiedBags\Components.xml
 UnifiedBags\Layouts.lua
 UnifiedBags\Layouts.xml
+UnifiedBags\EquipmentSetTracker.lua
+UnifiedBags\EquipmentSetTracker.xml
 UnifiedBags\BankView.lua
 UnifiedBags\BankView.xml
 UnifiedBags\MoneyDisplay.lua

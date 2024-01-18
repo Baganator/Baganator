@@ -356,7 +356,6 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self.BGR.itemLink = details.itemLink
   self.BGR.itemID = details.itemID
   self.BGR.itemName = ""
-  self.BGR.setInfo = details.setInfo
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetHyperlink(details.itemLink) end
 
   SetStaticInfo(self, details)
@@ -515,9 +514,9 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemLink = cacheData.itemLink
   self.BGR.itemID = cacheData.itemID
   self.BGR.itemNameLower = nil
-  self.BGR.setInfo = cacheData.setInfo
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
   self.BGR.hasNoValue = noValue
+  self.BGR.setInfo = Baganator.UnifiedBags.EquipmentSetTracker:Get(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()))
 
   self:BGRUpdateQuests()
 
@@ -629,7 +628,6 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   self.BGR.itemID = details.itemID
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
-  self.BGR.setInfo = details.setInfo
   self.BGR.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(details.itemLink) end) end
   
   SetItemButtonTexture(self, details.iconTexture or self.emptySlotFilepath);
@@ -791,7 +789,6 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemID = cacheData.itemID
   self.BGR.itemName = ""
   self.BGR.itemNameLower = nil
-  self.BGR.setInfo = cacheData.setInfo
   self.BGR.tooltipGetter = function()
     return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
       if self:GetParent():GetID() == -1 then
@@ -801,6 +798,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
       end
     end)
   end
+  self.BGR.setInfo = Baganator.UnifiedBags.EquipmentSetTracker:Get(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()))
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()
