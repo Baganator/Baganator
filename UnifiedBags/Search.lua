@@ -127,6 +127,24 @@ local function UseCheck(details)
   end
 end
 
+local function OpenCheck(details)
+  if not details.itemLink:find("item:", nil, true) then
+    return false
+  end
+
+  GetTooltipInfoSpell(details)
+
+  local usableSeen = false
+  if details.tooltipInfoSpell then
+    for _, row in ipairs(details.tooltipInfoSpell.lines) do
+      if row.leftText == ITEM_OPENABLE then
+        return true
+      end
+    end
+    return false
+  end
+end
+
 local function SaveBaseStats(details)
   if not Baganator.Utilities.IsEquipment(details.itemLink) then
     details.baseItemStats = {}
@@ -171,6 +189,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck,
   [BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck,
   [BAGANATOR_L_KEYWORD_USE] = UseCheck,
+  [BAGANATOR_L_KEYWORD_OPEN] = OpenCheck,
 }
 
 if Baganator.Constants.IsRetail then

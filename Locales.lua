@@ -132,6 +132,7 @@ L["KEYWORD_AXE"] = "axe"
 L["KEYWORD_MACE"] = "mace"
 L["KEYWORD_SWORD"] = "sword"
 L["KEYWORD_USE"] = "use"
+L["KEYWORD_OPEN"] = "open"
 
 L["SEARCH_TRY_X"] = "Search, try %s"
 
