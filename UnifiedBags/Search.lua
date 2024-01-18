@@ -107,6 +107,26 @@ local function BindOnAccountCheck(details)
   end
 end
 
+local function UseCheck(details)
+  if not details.itemLink:find("item:", nil, true) then
+    return false
+  end
+
+  GetTooltipInfoSpell(details)
+
+  local usableSeen = false
+  if details.tooltipInfoSpell then
+    for _, row in ipairs(details.tooltipInfoSpell.lines) do
+      if row.leftColor.r == 0 and row.leftColor.g == 1 and row.leftColor.b == 0 and row.leftText:match("^" .. USE_COLON) then
+        usableSeen = true
+      elseif row.leftColor.r == 1 and row.leftColor.g < 0.5 and row.leftColor.b < 0.5 then
+        return false
+      end
+    end
+    return usableSeen
+  end
+end
+
 local function SaveBaseStats(details)
   if not Baganator.Utilities.IsEquipment(details.itemLink) then
     details.baseItemStats = {}
@@ -150,6 +170,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_TRASH] = JunkCheck,
   [BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck,
   [BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck,
+  [BAGANATOR_L_KEYWORD_USE] = UseCheck,
 }
 
 if Baganator.Constants.IsRetail then

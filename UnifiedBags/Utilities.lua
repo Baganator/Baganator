@@ -102,9 +102,9 @@ if Baganator.Constants.IsClassic then
 
       local entry = {
         leftText = leftFontString:GetText(),
-        --leftColor = {leftFontString:GetTextColor()},
+        leftColor = CreateColor(leftFontString:GetTextColor()),
         rightText = rightFontString:GetText(),
-        --rightColor = {rightFontString:GetTextColor()}
+        rightColor = CreateColor(rightFontString:GetTextColor())
       }
       if entry.leftText or entry.rightText then
         table.insert(dump, entry)
