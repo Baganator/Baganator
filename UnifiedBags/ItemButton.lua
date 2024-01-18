@@ -477,7 +477,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   local quality = (info and info.quality) or cacheData.quality;
   local readable = info and info.IsReadable;
   local itemLink = info and info.hyperlink;
-  local noValue = info and info.hasNoValue;
+  local noValue = cacheData.hasNoValue or (info and info.hasNoValue);
   local itemID = info and info.itemID;
   local isBound = info and info.isBound;
   local questInfo = C_Container.GetContainerItemQuestInfo(self:GetBagID(), self:GetID());
@@ -796,7 +796,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   quality = info and info.quality;
   readable = info and info.isReadable;
   isFiltered = info and info.isFiltered;
-  noValue = info and info.hasNoValue;
+  noValue = cacheData.hasNoValue or (info and info.hasNoValue);
   itemID = info and info.itemID;
   
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
