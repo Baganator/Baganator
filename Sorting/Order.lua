@@ -384,8 +384,8 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
       end
     end
   else
-    groupA = tFilter(sortedItems, function(item) return item.quality ~= Enum.ItemQuality.Poor end, true)
-    groupB = tFilter(sortedItems, function(item) return item.quality == Enum.ItemQuality.Poor end, true)
+    groupA = tFilter(sortedItems, function(item) return item.hasNoValue or item.quality ~= Enum.ItemQuality.Poor end, true)
+    groupB = tFilter(sortedItems, function(item) return not item.hasNoValue and item.quality == Enum.ItemQuality.Poor end, true)
   end
 
   if isReverse then

@@ -156,7 +156,7 @@ local function SetStaticInfo(self, details)
   end
 
   if not iconSettings.usingJunkPlugin and self.JunkIcon then
-    self.BGR.isJunk = details.quality == Enum.ItemQuality.Poor
+    self.BGR.isJunk = not self.BGR.hasNoValue and details.quality == Enum.ItemQuality.Poor
     if iconSettings.markJunk and self.BGR.isJunk then
       self.BGR.persistIconGrey = true
       self.icon:SetDesaturated(true)
@@ -515,6 +515,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemNameLower = nil
   self.BGR.setInfo = cacheData.setInfo
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
+  self.BGR.hasNoValue = noValue
 
   SetStaticInfo(self, cacheData)
   if texture ~= nil then
@@ -769,6 +770,8 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
     info = nil
   end
 
+  local noValue = info and info.hasNoValue
+
   self.BGR.itemLink = cacheData.itemLink
   self.BGR.itemID = cacheData.itemID
   self.BGR.itemName = ""
@@ -786,7 +789,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()
-  
+
   texture = info and info.iconFileID;
   itemCount = info and info.stackCount;
   locked = info and info.isLocked;
@@ -827,6 +830,8 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   self.searchOverlay:SetShown(false);
   SetWidgetsAlpha(self, true)
 
+  self.BGR.hasNoValue = noValue
+ 
   -- Back to Baganator stuff:
   SetStaticInfo(self, cacheData)
   if cacheData.iconTexture ~= nil then

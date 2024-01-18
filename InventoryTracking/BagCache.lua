@@ -279,6 +279,7 @@ function BaganatorBagCacheMixin:OnUpdate()
       quality = slotInfo.quality,
       isBound = slotInfo.isBound,
       setInfo = self.equipmentSetInfo[itemGUID],
+      hasNoValue = slotInfo.hasNoValue or nil,
     }
   end
 
