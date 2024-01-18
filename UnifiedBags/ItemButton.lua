@@ -770,8 +770,6 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
     info = nil
   end
 
-  local noValue = info and info.hasNoValue
-
   self.BGR.itemLink = cacheData.itemLink
   self.BGR.itemID = cacheData.itemID
   self.BGR.itemName = ""
@@ -790,14 +788,14 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()
 
-  texture = info and info.iconFileID;
-  itemCount = info and info.stackCount;
-  locked = info and info.isLocked;
-  quality = info and info.quality;
-  readable = info and info.isReadable;
-  isFiltered = info and info.isFiltered;
-  noValue = cacheData.hasNoValue or (info and info.hasNoValue);
-  itemID = info and info.itemID;
+  local texture = info and info.iconFileID;
+  local itemCount = info and info.stackCount;
+  local locked = info and info.isLocked;
+  local quality = info and info.quality;
+  local readable = info and info.isReadable;
+  local isFiltered = info and info.isFiltered;
+  local noValue = cacheData.hasNoValue or (info and info.hasNoValue);
+  local itemID = info and info.itemID;
   
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonQuality(self, quality, itemID);
