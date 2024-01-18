@@ -53,11 +53,13 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
   if eventName == "GUILDBANKBAGSLOTS_CHANGED" then
     self:SetScript("OnUpdate", self.OnUpdate)
   elseif eventName == "GUILDBANK_UPDATE_MONEY" then
-    local key = GetGuildKey()
-    local data = BAGANATOR_DATA.Guilds[key]
-    data.money = GetGuildBankMoney()
+    if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
+      local key = GetGuildKey()
+      local data = BAGANATOR_DATA.Guilds[key]
+      data.money = GetGuildBankMoney()
 
-    Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
+      Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
+    end
   end
 end
 
