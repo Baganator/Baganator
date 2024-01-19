@@ -59,6 +59,15 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     return
   end
 
+  -- Used to ease adding to battle pet tooltip which doesn't have AddDoubleLine
+  local function AddDoubleLine(left, right, ...)
+    if tooltip.AddDoubleLine then
+      tooltip:AddDoubleLine(left, right, ...)
+    else
+      tooltip:AddLine(left .. " " .. right)
+    end
+  end
+
   local result = "  "
   local bagCount, bankCount, mailCount, equippedCount, guildCount = 0, 0, 0, 0, 0
   local seenRealms = {}
@@ -125,7 +134,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if s.className then
       character = RAID_CLASS_COLORS[s.className]:WrapTextInColorCode(character)
     end
-    tooltip:AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
+    AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
   end
   if #tooltipInfo.characters > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
@@ -138,7 +147,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if appendRealm then
       guild = guild .. "-" .. s.realmNormalized
     end
-    tooltip:AddDoubleLine("  " .. guild, WHITE_FONT_COLOR:WrapTextInColorCode(output))
+    AddDoubleLine("  " .. guild, WHITE_FONT_COLOR:WrapTextInColorCode(output))
   end
   if #tooltipInfo.guilds > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
