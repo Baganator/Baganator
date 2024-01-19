@@ -100,11 +100,15 @@ local function GetExtraInfo(self, itemID, itemLink, data)
   if itemLink:find("battlepet:", nil, true) then
     self.itemInfoWaiting = false
     self.BGR.itemInfoWaiting = false
-    local petID = tonumber(itemLink:match("battlepet:(%d+)"))
-    self.BGR.itemName = C_PetJournal.GetPetInfoBySpeciesID(petID)
+    local petID, level = itemLink:match("battlepet:(%d+):(%d*)")
+
+    self.BGR.itemName = C_PetJournal.GetPetInfoBySpeciesID(tonumber(petID))
     self.BGR.isCraftingReagent = false
     self.BGR.classID = Enum.ItemClass.Battlepet
     self.BGR.isCosmetic = false
+    if level and level ~= "" then
+      self.BGR.itemLevel = tonumber(level)
+    end
 
   elseif C_Item.IsItemDataCachedByID(itemID) then
     self.BGR.itemInfoWaiting = false

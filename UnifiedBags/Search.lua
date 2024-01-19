@@ -326,7 +326,9 @@ local function BinarySmartSearch(text)
 end
 
 local function ItemLevelPatternCheck(details, text)
-  if not Baganator.Utilities.IsEquipment(details.itemLink) then
+  -- Special check for details.itemLevel as pets may have one assigned for searhing
+  -- despite not being equipment.
+  if not details.itemLevel and not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
@@ -336,7 +338,7 @@ local function ItemLevelPatternCheck(details, text)
 end
 
 local function ItemLevelRangePatternCheck(details, text)
-  if not Baganator.Utilities.IsEquipment(details.itemLink) then
+  if not details.itemLevel and not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
@@ -346,7 +348,7 @@ local function ItemLevelRangePatternCheck(details, text)
 end
 
 local function ItemLevelMinPatternCheck(details, text)
-  if not Baganator.Utilities.IsEquipment(details.itemLink) then
+  if not details.itemLevel and not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
@@ -356,7 +358,7 @@ local function ItemLevelMinPatternCheck(details, text)
 end
 
 local function ItemLevelMaxPatternCheck(details, text)
-  if not Baganator.Utilities.IsEquipment(details.itemLink) then
+  if not details.itemLevel and not Baganator.Utilities.IsEquipment(details.itemLink) then
     return false
   end
   details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
