@@ -132,7 +132,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_EQUIPMENT_SET, "equipment_set", f
   return details.setInfo ~= nil
 end, function(itemButton)
   local EquipmentSet = itemButton:CreateTexture(nil, "ARTWORK")
-  EquipmentSet:SetTexture("interface\\groupframe\\ui-group-maintankicon")
+  EquipmentSet:SetTexture("interface\\addons\\baganator\\assets\\equipment-set-shield")
   EquipmentSet:SetSize(15, 15)
   return EquipmentSet
 end)
