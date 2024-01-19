@@ -522,7 +522,7 @@ function BaganatorRetailLiveItemButtonMixin:SetItemDetails(cacheData)
   self.BGR.itemNameLower = nil
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
   self.BGR.hasNoValue = noValue
-  self.BGR.setInfo = Baganator.UnifiedBags.EquipmentSetTracker:Get(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()))
+  self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()))
 
   self:BGRUpdateQuests()
 
@@ -804,7 +804,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
       end
     end)
   end
-  self.BGR.setInfo = Baganator.UnifiedBags.EquipmentSetTracker:Get(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()))
+  self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()))
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()

@@ -153,10 +153,6 @@ local function HideDefaultBags()
   BankFrame:SetScript("OnEvent", nil)
 end
 
-local function SetupEquipmentSetTracker()
-  Baganator.UnifiedBags.EquipmentSetTracker = CreateFrame("Frame", nil, UIParent, "BaganatorEquipmentSetTrackerTemplate")
-end
-
 function Baganator.UnifiedBags.Initialize()
   Baganator.UnifiedBags.Search.Initialize()
 
@@ -173,6 +169,4 @@ function Baganator.UnifiedBags.Initialize()
     local tokenWidth = info and info.width or 50
     BackpackTokenFrame:SetWidth(tokenWidth * 3) -- Support tracking up to 3 currencies
   end
-
-  SetupEquipmentSetTracker()
 end
