@@ -1,9 +1,9 @@
 BaganatorItemSummariesMixin = {}
 
 function BaganatorItemSummariesMixin:OnLoad()
-  if BAGANATOR_SUMMARIES == nil then
+  if BAGANATOR_SUMMARIES == nil or BAGANATOR_SUMMARIES.Version < 3 then
     BAGANATOR_SUMMARIES = {
-      Version = 2,
+      Version = 3,
       Characters = {
         ByRealm = {},
         Pending = {},
@@ -13,17 +13,12 @@ function BaganatorItemSummariesMixin:OnLoad()
         Pending = {},
       },
     }
-  end
-  if BAGANATOR_SUMMARIES.Version == 1 then
-    BAGANATOR_SUMMARIES.Characters = {
-      ByRealm = BAGANATOR_SUMMARIES.ByRealm,
-      Pending = BAGANATOR_SUMMARIES.Pending,
-    }
-    BAGANATOR_SUMMARIES.Guilds = {
-      ByRealm = {},
-      Pending = {},
-    }
-    BAGANATOR_SUMMARIES.Version = 2
+    for character, data in pairs(BAGANATOR_DATA.Characters) do
+      BAGANATOR_SUMMARIES.Characters.Pending[character] = true
+    end
+    for guild, data in pairs(BAGANATOR_DATA.Guilds) do
+      BAGANATOR_SUMMARIES.Guilds.Pending[guild] = true
+    end
   end
   self.SV = BAGANATOR_SUMMARIES
   Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate", self.CharacterCacheUpdate, self)
