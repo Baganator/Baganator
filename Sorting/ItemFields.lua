@@ -236,3 +236,34 @@ end
 keysMapping["sortedInvSlotID"] = function(self)
   return sortedMap.invSlotID[self.invSlotID] or (self.invSlotID + 200)
 end
+
+local PlaceLastItemIDs = {
+  1199,
+  5232,
+  16892,
+  16893,
+  16895,
+  16896,
+  5512,
+  19004,
+  19005,
+  5511,
+  19006,
+  19007,
+  5509,
+  19008,
+  19009,
+  5510,
+  19010,
+  19011,
+  9421,
+  19012,
+  19013,
+}
+local PlaceLastItemIDMap = {}
+for _, itemID in ipairs(PlaceLastItemIDs) do
+  PlaceLastItemIDMap[itemID] = 1000
+end
+keysMapping["placeLast"] = function(self)
+  return PlaceLastItemIDMap[self.itemID] or 1
+end

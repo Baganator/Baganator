@@ -18,6 +18,7 @@ local itemMetatable = {
 local allSortKeys = {
   ["quality"] = {
     "priority",
+    "placeLast",
     "quality",
     "sortedClassID",
     "sortedInvSlotID",
@@ -32,6 +33,7 @@ local allSortKeys = {
   },
   ["quality-legacy"] = {
     "priority",
+    "placeLast",
     "quality",
     "classID",
     "subClassID",
@@ -41,6 +43,7 @@ local allSortKeys = {
   },
   ["type"] = {
     "priority",
+    "placeLast",
     "sortedClassID",
     "sortedInvSlotID",
     "sortedSubClassID",
@@ -55,6 +58,7 @@ local allSortKeys = {
   },
   ["type-legacy"] = {
     "priority",
+    "placeLast",
     "classID",
     "subClassID",
     "itemID",
