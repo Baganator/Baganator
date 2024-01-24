@@ -160,7 +160,8 @@ function BaganatorRetailBankButtonMixin:Init()
   self.needPurchase = true
 
   local _, texture = GetInventorySlotInfo("Bag1")
-  self.icon:SetTexture(texture)
+  self:SetItemButtonTexture(texture)
+  self:SetItemButtonQuality(nil)
   if self:GetID() > GetNumBankSlots() then
     SetItemButtonTextureVertexColor(self, 1.0,0.1,0.1)
     return
@@ -205,7 +206,8 @@ function BaganatorClassicBankButtonMixin:Init()
   SetItemButtonCount(self, C_Container.GetContainerNumFreeSlots(Baganator.Constants.AllBankIndexes[self:GetID() + 1]))
 
   local _, texture = GetInventorySlotInfo("Bag1")
-  self.icon:SetTexture(texture)
+  SetItemButtonTexture(self, texture)
+  SetItemButtonQuality(self, nil)
   if self:GetID() > GetNumBankSlots() then
     SetItemButtonTextureVertexColor(self, 1.0,0.1,0.1)
     return
