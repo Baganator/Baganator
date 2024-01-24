@@ -664,14 +664,15 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
     layout:ApplySearch(searchText)
   end
 
-  local sideSpacing, topSpacing, dividerOffset = 13, 14, 2
+  local sideSpacing, topSpacing, dividerOffset, endPadding = 13, 14, 2, 0
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
     dividerOffset = 1
+    endPadding = 3
   end
 
-  local bagHeight = activeBag:GetHeight() + topSpacing/2
+  local bagHeight = activeBag:GetHeight() + topSpacing / 2
 
   local function ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
     local lastCollapsible
@@ -684,7 +685,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
         divider:Hide()
         layout:Hide()
       else
-        divider:SetPoint("BOTTOM", layout, "TOP", 0, topSpacing/2 + dividerOffset)
+        divider:SetPoint("BOTTOM", layout, "TOP", 0, topSpacing / 2 + dividerOffset)
         divider:SetPoint("LEFT", layout)
         divider:SetPoint("RIGHT", layout)
         divider:SetShown(layout:GetHeight() > 0)
@@ -699,7 +700,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
         end
       end
     end
-    return addedHeight
+    return addedHeight + endPadding
   end
 
   bagHeight = bagHeight + ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
@@ -754,8 +755,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
       else
-        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6 - buttonTopOffset)
-        button:SetPoint("LEFT", activeBag, -2, - buttonTopOffset)
+        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
+        button:SetPoint("LEFT", activeBag, -2, 0)
       end
       lastButton = button
     end
@@ -770,8 +771,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
       else
-        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6 - buttonTopOffset)
-        button:SetPoint("LEFT", activeBank, -2, - buttonTopOffset)
+        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
+        button:SetPoint("LEFT", activeBank, -2, 0)
       end
       lastButton = button
     end
