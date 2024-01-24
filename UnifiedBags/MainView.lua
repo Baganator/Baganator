@@ -741,6 +741,10 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   self:HideExtraTabs()
 
+  local buttonTopOffset = 0
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+    buttonTopOffset = 1
+  end
   local lastButton = nil
   for index, layout in ipairs(activeBagCollapsibles) do
     local button = self.CollapsingBags[index].button
@@ -750,8 +754,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
       else
-        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
-        button:SetPoint("LEFT", activeBag, -2, -2)
+        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6 - buttonTopOffset)
+        button:SetPoint("LEFT", activeBag, -2, - buttonTopOffset)
       end
       lastButton = button
     end
@@ -766,8 +770,8 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
       else
-        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
-        button:SetPoint("LEFT", activeBank, -2, -2)
+        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6 - buttonTopOffset)
+        button:SetPoint("LEFT", activeBank, -2, - buttonTopOffset)
       end
       lastButton = button
     end
