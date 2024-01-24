@@ -14,7 +14,7 @@ local function OnBagSlotClick(self)
 end
 
 local function ShowBagSlotTooltip(self)
-  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", self:GetID())
+  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   GameTooltip:SetInventoryItem("player", GetBagInventorySlot(self))
   GameTooltip:Show()
@@ -134,7 +134,7 @@ local function OnBankSlotClick(self)
 end
 
 local function ShowBankSlotTooltip(self)
-  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", Baganator.Constants.AllBankIndexes[self:GetID() + 1])
+  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Baganator.Constants.AllBankIndexes[self:GetID() + 1]] = true})
 
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   if self.needPurchase then

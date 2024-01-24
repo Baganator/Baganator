@@ -173,6 +173,17 @@ L["TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT"] = "Place scrappable items into the
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG"] = "Do you want to transfer ALL items in your bags?"
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK"] = "Do you want to transfer ALL items from the bank?"
 
+L["SOUL"] = "Soul"
+L["HERBALISM"] = "Herbalism"
+L["ENCHANTING"] = "Enchanting"
+L["ENGINEERING"] = "Engineering"
+L["GEMS"] = "Gems"
+L["MINING"] = "Mining"
+L["LEATHERWORKING"] = "Leatherworking"
+L["INSCRIPTION"] = "Inscription"
+L["FISHING"] = "Fishing"
+L["COOKING"] = "Cooking"
+
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 

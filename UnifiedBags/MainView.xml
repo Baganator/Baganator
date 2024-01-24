@@ -103,13 +103,6 @@
           <Anchor point="RIGHT" x="-13" y="0"/>
         </Anchors>
       </EditBox>
-      <Button parentKey="ToggleReagentsButton" inherits="BaganatorToggleReagentsButtonTemplate">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleReagents()
-          </OnClick>
-        </Scripts>
-      </Button>
       <Button parentKey="ToggleReagentsBankButton" inherits="BaganatorToggleReagentsButtonTemplate">
         <Scripts>
           <OnClick>
@@ -119,14 +112,6 @@
       </Button>
 
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
-      <Frame parentKey="ReagentBagLive" inherits="BaganatorLiveBagLayoutTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BagLive" relativePoint="BOTTOMLEFT" y="-14"/>
-        </Anchors>
-        <Frames>
-          <Frame inherits="BaganatorBagDividerTemplate"/>
-        </Frames>
-      </Frame>
       <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="ReagentBankLive" inherits="BaganatorLiveBagLayoutTemplate">
         <Anchors>
@@ -138,15 +123,6 @@
       </Frame>
 
       <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
-
-      <Frame parentKey="ReagentBagCached" inherits="BaganatorCachedBagLayoutTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BagCached" relativePoint="BOTTOMLEFT" y="-14"/>
-        </Anchors>
-        <Frames>
-          <Frame inherits="BaganatorBagDividerTemplate"/>
-        </Frames>
-      </Frame>
 
       <Frame parentKey="BankCached" inherits="BaganatorCachedBagLayoutTemplate"/>
       <Frame parentKey="ReagentBankCached" inherits="BaganatorCachedBagLayoutTemplate">

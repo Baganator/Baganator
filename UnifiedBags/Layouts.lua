@@ -49,7 +49,6 @@ local RefreshContentSettings = {
   Baganator.Config.Options.JUNK_PLUGIN,
 }
 
-local classicCachedObjectCounter = 0
 
 local function FlowButtons(self, rowWidth)
   local iconPadding = 4
@@ -85,14 +84,7 @@ local function FlowButtons(self, rowWidth)
 end
 
 function BaganatorCachedBagLayoutMixin:OnLoad()
-  if Baganator.Constants.IsRetail then
-    self.buttonPool = CreateFramePool("ItemButton", self, "BaganatorRetailCachedItemButtonTemplate")
-  else
-    self.buttonPool = CreateObjectPool(function(pool)
-      classicCachedObjectCounter = classicCachedObjectCounter + 1
-      return CreateFrame("Button", "BGRCachedItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicCachedItemButtonTemplate")
-    end, FramePool_HideAndClearAnchors)
-  end
+  self.buttonPool = Baganator.UnifiedBags.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.buttonsByBag = {}
@@ -232,10 +224,10 @@ function BaganatorCachedBagLayoutMixin:ApplySearch(text)
 end
 
 function BaganatorCachedBagLayoutMixin:OnShow()
-  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, highlightBagID)
+  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, highlightBagIDs)
     for bagID, bag in pairs(self.buttonsByBag) do
       for slotID, button in ipairs(bag) do
-        button:BGRSetHighlight(bagID == highlightBagID)
+        button:BGRSetHighlight(highlightBagIDs[bagID])
       end
     end
   end, self)
@@ -273,15 +265,7 @@ local LIVE_LAYOUT_EVENTS = {
 }
 
 function BaganatorLiveBagLayoutMixin:OnLoad()
-  if Baganator.Constants.IsRetail then
-    self.buttonPool = CreateFramePool("ItemButton", self, "BaganatorRetailLiveItemButtonTemplate")
-  else
-    self.buttonPool = CreateObjectPool(function(pool)
-      classicCachedObjectCounter = classicCachedObjectCounter + 1
-      return CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicLiveItemButtonTemplate")
-    end, FramePool_HideAndClearAnchors)
-  end
-
+  self.buttonPool = Baganator.UnifiedBags.GetLiveItemButtonPool(self)
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByBag = {}
@@ -293,19 +277,8 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
   self:RegisterEvent("ITEM_LOCK_CHANGED")
 end
 
-
-function BaganatorLiveBagLayoutMixin:PreallocateButtons(buttonCount)
-  self.pendingAllocations = true
-  -- Avoid allocating during combat
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LOGIN")
-  frame:SetScript("OnEvent", function()
-    self.pendingAllocations = false
-    for i = 1, buttonCount do
-      self.buttonPool:Acquire()
-    end
-    self.buttonPool:ReleaseAll()
-  end)
+function BaganatorLiveBagLayoutMixin:SetPool(buttonPool)
+  self.buttonPool = buttonPool
 end
 
 function BaganatorLiveBagLayoutMixin:UpdateCooldowns()
@@ -344,9 +317,9 @@ function BaganatorLiveBagLayoutMixin:OnShow()
     print("update cooldowns show", debugprofilestop() - start)
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, bagID)
+  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, bagIDs)
     for _, button in ipairs(self.buttons) do
-      button:BGRSetHighlight(button:GetParent():GetID() == bagID)
+      button:BGRSetHighlight(bagIDs[button:GetParent():GetID()])
     end
   end, self)
 
@@ -409,12 +382,17 @@ function BaganatorLiveBagLayoutMixin:UpdateLockForItem(bagID, slotID)
   end
 end
 
-function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWidth)
-  self.buttonPool:ReleaseAll()
+function BaganatorLiveBagLayoutMixin:Deallocate()
   self.indexFramesPool:ReleaseAll()
-
-  self.bagSizesUsed = {}
+  for _, button in ipairs(self.buttons) do
+    self.buttonPool:Release(button)
+  end
   self.buttons = {}
+  self.bagSizesUsed = {}
+end
+
+function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWidth)
+  self:Deallocate()
 
   for index, bagID in ipairs(indexes) do
     if indexesToUse[index] then
@@ -442,7 +420,7 @@ end
 
 function BaganatorLiveBagLayoutMixin:CompareButtonIndexes(indexes, indexesToUse)
   for index, bagID in ipairs(indexes) do
-    if indexesToUse[index] and self.bagSizesUsed[index] ~= C_Container.GetContainerNumSlots(bagID) then
+    if indexesToUse[index] and self.bagSizesUsed[index] ~= C_Container.GetContainerNumSlots(bagID) or (self.buttonsByBag[bagID] and not indexesToUse[index]) then
       return true
     end
   end

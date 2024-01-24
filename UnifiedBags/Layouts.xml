@@ -32,11 +32,11 @@
         if Baganator.Constants.IsRetail then
           self.Divider:SetAtlas("activities-divider", true)
         else
-          self.Divider:SetTexture("Interface\\Common\\UI-TooltipDivider")
-          self.Divider:ClearAllPoints()
+          self.Divider:SetAtlas("battlefieldminimap-border-top")
           self.Divider:SetHeight(15)
-          self.Divider:SetPoint("LEFT", 0, 8)
-          self.Divider:SetPoint("RIGHT")
+          self.Divider:ClearAllPoints()
+          self.Divider:SetPoint("TOPLEFT", 0, 6)
+          self.Divider:SetPoint("TOPRIGHT", 0, 6)
         end
       </OnLoad>
     </Scripts>
@@ -44,8 +44,8 @@
       <Layer level="BACKGROUND">
         <Texture parentKey="Divider">
           <Anchors>
-            <Anchor point="TOPLEFT" y="10"/>
-            <Anchor point="TOPRIGHT" y="10"/>
+            <Anchor point="TOPLEFT"/>
+            <Anchor point="TOPRIGHT"/>
           </Anchors>
         </Texture>
       </Layer>

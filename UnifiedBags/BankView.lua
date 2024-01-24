@@ -210,6 +210,10 @@ function BaganatorBankOnlyViewMixin:SetLiveCharacter(character)
   self.liveCharacter = character
 end
 
+function BaganatorBankOnlyViewMixin:AllocateBags(character)
+  local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bags", Baganator.Constants.AllBagIndexes, Baganator.Constants.BagSlotsCount)
+end
+
 function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   self:UpdateBagSlots()
 

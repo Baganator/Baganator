@@ -45,6 +45,7 @@ UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua
 UnifiedBags\ItemButton.xml
 UnifiedBags\ItemButtonDataEvents.lua
+UnifiedBags\Pools.lua
 UnifiedBags\ContainerSlots.lua
 UnifiedBags\ContainerSlots.xml
 UnifiedBags\Components.xml
@@ -57,6 +58,7 @@ UnifiedBags\MoneyDisplay.lua
 UnifiedBags\CharacterSelect.lua
 UnifiedBags\CharacterSelect.xml
 UnifiedBags\BagTransfers.lua
+UnifiedBags\CollapsingBagSections.lua
 UnifiedBags\MainView.lua
 UnifiedBags\MainView.xml
 UnifiedBags\Search.lua
