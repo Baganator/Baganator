@@ -44,5 +44,7 @@ function Baganator.UnifiedBags.GetCollapsingBagSectionsPool(self)
     details.cached:ClearAllPoints()
     details.divider:Hide()
     details.divider:ClearAllPoints()
+    details.button:Hide()
+    details.button:ClearAllPoints()
   end)
 end

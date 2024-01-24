@@ -870,7 +870,7 @@ function BaganatorMainViewMixin:GetMatches()
   local matches = {}
   tAppendAll(matches, self.BagLive.SearchMonitor:GetMatches())
   for _, layouts in ipairs(self.CollapsingBags) do
-    tAppendAll(layouts.live, self.BagLive.SearchMonitor:GetMatches())
+    tAppendAll(matches, layouts.live.SearchMonitor:GetMatches())
   end
   return matches
 end
