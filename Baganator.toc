@@ -18,6 +18,8 @@ Core\Utilities.lua
 Core\SlashCmd.lua
 Core\Main.lua
 
+Data\ConjuredItems.lua
+
 InventoryTracking\Utilities.lua
 InventoryTracking\BagCache.lua
 InventoryTracking\MailCache.lua
