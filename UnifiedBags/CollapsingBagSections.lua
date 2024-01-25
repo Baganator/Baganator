@@ -38,7 +38,7 @@ function Baganator.UnifiedBags.GetCollapsingBagDetails(character, section, index
   local seenIndexes = {}
 
   for index = 1, slotsCount do
-    if containerInfo[index].itemID ~= nil then
+    if containerInfo[index] and containerInfo[index].itemID ~= nil then
       local classID, subClassID = select(6, GetItemInfoInstant(containerInfo[index].itemID))
       local icon = ContainerTypeToIcon[subClassID]
       local bagIndex = index + 1
