@@ -57,7 +57,11 @@
           <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" y="-14"/>
         </Anchors>
         <Frames>
-          <Frame inherits="BaganatorBagDividerTemplate"/>
+          <Frame inherits="BaganatorBagDividerTemplate">
+            <Anchors>
+              <Anchor point="BOTTOM" relativePoint="TOP" x="0" y="9"/>
+            </Anchors>
+          </Frame>
         </Frames>
       </Frame>
 
