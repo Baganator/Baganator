@@ -82,6 +82,8 @@ L["SHOW_TRANSFER_BUTTON"] = "Show Transfer button"
 L["TRANSFERS"] = "Transfers"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
+L["INVENTORY"] = "Inventory"
+L["TOTAL_X"] = "Total: %s"
 L["BAGS_X"] = "Bags: %s"
 L["BANKS_X"] = "Banks: %s"
 L["MAILS_X"] = "Mails: %s"

@@ -94,23 +94,8 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     appendRealm = true
   end
 
-  local entries = {}
-  if bagCount > 0 then
-    table.insert(entries, BAGANATOR_L_BAGS_X:format(bagCount))
-  end
-  if bankCount > 0 then
-    table.insert(entries, BAGANATOR_L_BANKS_X:format(bankCount))
-  end
-  if mailCount > 0 then
-    table.insert(entries, BAGANATOR_L_MAILS_X:format(mailCount))
-  end
-  if equippedCount > 0 then
-    table.insert(entries, BAGANATOR_L_EQUIPPED_X:format(equippedCount))
-  end
-  if guildCount > 0 then
-    table.insert(entries, BAGANATOR_L_GUILDS_X:format(guildCount))
-  end
-  tooltip:AddLine(BAGANATOR_L_INVENTORY_TOTALS_COLON .. " " .. WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
+  local totals = bagCount + bankCount + mailCount + equippedCount + guildCount
+  AddDoubleLine(BAGANATOR_L_INVENTORY, WHITE_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_TOTAL_X:format(totals)))
 
   for index = 1, math.min(#tooltipInfo.characters, Baganator.Config.Get("tooltips_character_limit")) do
     local s = tooltipInfo.characters[index]
