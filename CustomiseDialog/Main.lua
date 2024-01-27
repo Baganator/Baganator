@@ -411,6 +411,7 @@ function BaganatorCustomiseDialogMixin:SetIndex(index)
   self.Views[index]:Show()
 
   PanelTemplates_SetTab(self, index)
+  self.lastIndex = index
 end
 
 function BaganatorCustomiseDialogMixin:SetupWindow()
@@ -617,6 +618,6 @@ function BaganatorCustomiseDialogMixin:RefreshOptions()
 end
 
 function BaganatorCustomiseDialogMixin:OnShow()
-  self:SetIndex(1)
+  self:SetIndex(self.lastIndex or 1)
   self:RefreshOptions()
 end
