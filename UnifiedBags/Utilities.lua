@@ -158,3 +158,11 @@ function Baganator.Utilities.AddBagTransferManager(self)
     Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.transferManager)
   end)
 end
+
+-- Prevent coin icons getting offset on varying screen resolutions by removing
+-- the coin icon offset
+function Baganator.Utilities.GetMoneyString(amount, splitThousands)
+  local result = GetMoneyString(amount, splitThousands)
+  result = result:gsub("0:0:2:0", "12"):gsub("|T", " |T")
+  return result
+end

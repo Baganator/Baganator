@@ -782,7 +782,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 end
 
 function BaganatorMainViewMixin:UpdateCurrencies(character)
-  self.Money:SetText(GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))
+  self.Money:SetText(Baganator.Utilities.GetMoneyString(BAGANATOR_DATA.Characters[character].money, true))
 
   local characterCurrencies = BAGANATOR_DATA.Characters[character].currencies
 

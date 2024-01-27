@@ -139,7 +139,7 @@ local function ShowBankSlotTooltip(self)
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   if self.needPurchase then
     GameTooltip:SetText(BANK_BAG_PURCHASE)
-    GameTooltip:AddLine(GetMoneyString(GetBankSlotCost(GetNumBankSlots()), true), 1, 1, 1)
+    GameTooltip:AddLine(Baganator.Utilities.GetMoneyString(GetBankSlotCost(GetNumBankSlots()), true), 1, 1, 1)
   else
     GameTooltip:SetInventoryItem("player", GetBankInventorySlot(self))
   end

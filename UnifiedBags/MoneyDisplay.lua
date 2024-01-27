@@ -19,12 +19,12 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
       if characterInfo.className then
         characterName = RAID_CLASS_COLORS[characterInfo.className]:WrapTextInColorCode(characterName)
       end
-      table.insert(lines, {left = characterName, right = GetMoneyString(money, true)})
+      table.insert(lines, {left = characterName, right = Baganator.Utilities.GetMoneyString(money, true)})
       total = total + money
     end
   end
 
-  GameTooltip:AddDoubleLine(BAGANATOR_L_REALM_WIDE_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true)))
+  GameTooltip:AddDoubleLine(BAGANATOR_L_REALM_WIDE_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(Baganator.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
@@ -37,7 +37,7 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
 
   local lines = {}
   local function AddRealm(realmName, realmCount, realmTotal)
-    table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = GetMoneyString(realmTotal, true)})
+    table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = Baganator.Utilities.GetMoneyString(realmTotal, true)})
   end
   local total = 0
   local realmTotal = 0
@@ -61,7 +61,7 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
   end
   AddRealm(currentRealm, realmCount, realmTotal)
 
-  GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(GetMoneyString(total, true)))
+  GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(Baganator.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
