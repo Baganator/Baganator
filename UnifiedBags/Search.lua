@@ -58,6 +58,10 @@ local function SwordCheck(details)
   return details.classID == Enum.ItemClass.Weapon and (details.subClassID == Enum.ItemWeaponSubclass.Sword2H or details.subClassID == Enum.ItemWeaponSubclass.Sword1H)
 end
 
+local function MountCheck(details)
+  return details.classID == Enum.ItemClass.Miscellaneous and details.subClassID == Enum.ItemMiscellaneousSubclass.Mount
+end
+
 local function GetTooltipInfoSpell(details)
   if details.tooltipInfoSpell then
     return
@@ -190,6 +194,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck,
   [BAGANATOR_L_KEYWORD_USE] = UseCheck,
   [BAGANATOR_L_KEYWORD_OPEN] = OpenCheck,
+  [MOUNT:lower()] = MountCheck,
 }
 
 if Baganator.Constants.IsRetail then

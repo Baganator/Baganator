@@ -115,6 +115,7 @@ Baganator.Constants.SampleSearchTerms = {
   BAGANATOR_L_KEYWORD_REPUTATION,
   BAGANATOR_L_KEYWORD_AXE,
   BAGANATOR_L_KEYWORD_SWORD,
+  MOUNT:lower(),
 }
 if not Baganator.Constants.IsEra then
   local socketSearchTerms = {
