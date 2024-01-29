@@ -291,7 +291,7 @@ end
 
 function BaganatorLiveBagLayoutMixin:UpdateQuests()
   for _, button in ipairs(self.buttons) do
-    if button.BGR.itemID then
+    if button.BGR.isQuestItem then
       local item = Item:CreateFromItemID(button.BGR.itemID)
       item:ContinueOnItemLoad(function()
         button:BGRUpdateQuests()
