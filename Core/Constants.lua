@@ -35,7 +35,7 @@ Baganator.Constants = {
   MaxPinnedCurrencies = 3,
 }
 
-if Baganator.Constants.IsWrath then
+if not Baganator.Constants.IsRetail then
   table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.Keyring)
 end
 if Baganator.Constants.IsRetail then

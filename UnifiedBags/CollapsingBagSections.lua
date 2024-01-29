@@ -62,7 +62,7 @@ function Baganator.UnifiedBags.GetCollapsingBagDetails(character, section, index
           (bagID == Enum.BagIndex.Reagentbank and #characterInfo.bank[bagIndex] > 0)
         ) then
         inSlots["reagentBag"] = {bagIndex}
-      elseif Baganator.Constants.IsWrath and bagID == Enum.BagIndex.Keyring then
+      elseif bagID == Enum.BagIndex.Keyring then
         inSlots["keyring"] = {bagIndex}
       else
         table.insert(mainBags, bagIndex)
