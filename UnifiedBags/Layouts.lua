@@ -289,6 +289,17 @@ function BaganatorLiveBagLayoutMixin:UpdateCooldowns()
   end
 end
 
+function BaganatorLiveBagLayoutMixin:UpdateQuests()
+  for _, button in ipairs(self.buttons) do
+    if button.BGR.itemID then
+      local item = Item:CreateFromItemID(button.BGR.itemID)
+      item:ContinueOnItemLoad(function()
+        button:BGRUpdateQuests()
+      end)
+    end
+  end
+end
+
 function BaganatorLiveBagLayoutMixin:OnEvent(eventName, ...)
   if eventName == "ITEM_LOCK_CHANGED" then
     local bagID, slotID = ...
@@ -298,14 +309,10 @@ function BaganatorLiveBagLayoutMixin:OnEvent(eventName, ...)
   elseif eventName == "UNIT_QUEST_LOG_CHANGED" then
     local unit = ...
     if unit == "player" then
-      for _, button in ipairs(self.buttons) do
-        button:BGRUpdateQuests()
-      end
+      self:UpdateQuests()
     end
   elseif eventName == "QUEST_ACCEPTED" then
-    for _, button in ipairs(self.buttons) do
-      button:BGRUpdateQuests()
-    end
+    self:UpdateQuests()
   end
 end
 
@@ -316,6 +323,7 @@ function BaganatorLiveBagLayoutMixin:OnShow()
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("update cooldowns show", debugprofilestop() - start)
   end
+  self:UpdateQuests()
 
   Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, bagIDs)
     for _, button in ipairs(self.buttons) do
