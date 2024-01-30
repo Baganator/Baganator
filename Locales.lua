@@ -80,7 +80,7 @@ L["ITEMS_FLASH_ON_ALT_CLICK"] = "Flash all the same items on [Alt]+Click"
 L["REDUCE_SPACING_BETWEEN_UI_COMPONENTS"] = "Reduce spacing between UI components"
 L["SHOW_TRANSFER_BUTTON"] = "Show Transfer button"
 L["TRANSFERS"] = "Transfers"
-L["SHOW_BUTTONS_ON_ALT"] = "Only show buttons in bags when Alt is held down"
+L["SHOW_BUTTONS_ON_ALT"] = "Only show bag buttons when Alt is held down"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["INVENTORY"] = "Inventory"
