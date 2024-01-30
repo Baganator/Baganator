@@ -187,7 +187,7 @@ function BaganatorRetailBankButtonMixin:Init()
   self:SetItemButtonTexture(info.iconFileID)
   self:SetItemButtonQuality(info.quality)
   Item:CreateFromItemID(info.itemID):ContinueOnItemLoad(function()
-    self:SetItemButtonQuality(C_Item.GetItemQuality(info.itemID))
+    self:SetItemButtonQuality(C_Item.GetItemQualityByID(info.itemID))
   end)
 end
 
@@ -236,7 +236,7 @@ function BaganatorClassicBankButtonMixin:Init()
   SetItemButtonTexture(self, info.iconFileID)
   SetItemButtonQuality(self, info.quality)
   Item:CreateFromItemID(info.itemID):ContinueOnItemLoad(function()
-    SetItemButtonQuality(self, C_Item.GetItemQuality(info.itemID))
+    SetItemButtonQuality(self, C_Item.GetItemQualityByID(info.itemID))
   end)
 end
 
