@@ -68,6 +68,11 @@ local WINDOW_OPTIONS = {
     option = "reduce_spacing",
   },
   {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_BUTTONS_ON_ALT,
+    option = "show_buttons_on_alt",
+  },
+  {
     type = "header",
     text = BAGANATOR_L_JUNK_DETECTION,
     level = 2,

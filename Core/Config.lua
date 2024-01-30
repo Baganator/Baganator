@@ -52,6 +52,7 @@ Baganator.Config.Options = {
   MAIN_VIEW_SHOW_BAG_SLOTS = "main_view_show_bag_slots",
   BANK_ONLY_VIEW_POSITION = "bank_only_view_position",
   BANK_ONLY_VIEW_SHOW_BAG_SLOTS = "bank_only_view_show_bag_slots",
+  SHOW_BUTTONS_ON_ALT = "show_buttons_on_alt",
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
@@ -100,6 +101,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.AUTO_OPEN] = {},
   [Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
+  [Baganator.Config.Options.SHOW_BUTTONS_ON_ALT] = false,
   [Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = false,
   [Baganator.Config.Options.REDUCE_SPACING] = false,
   [Baganator.Config.Options.SORT_METHOD] = "type",

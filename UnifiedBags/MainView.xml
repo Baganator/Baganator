@@ -14,12 +14,12 @@
           <Anchor point="RIGHT" relativePoint="LEFT"/>
         </Anchors>
       </Frame>
-      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700">
+      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
         </Anchors>
       </Button>
-      <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true">
+      <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true" parentArray="AllFixedButtons">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
         </Anchors>
@@ -29,7 +29,7 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700">
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.SortButton" relativePoint="LEFT"/>
         </Anchors>
@@ -39,7 +39,7 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleBankButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700">
+      <Button parentKey="ToggleBankButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="TopButtons">
         <KeyValues>
           <KeyValue key="tooltipHeader" value="BAGANATOR_L_BANK" type="global"/>
         </KeyValues>
@@ -64,7 +64,7 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleAllCharacters" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700">
+      <Button parentKey="ToggleAllCharacters" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="TopButtons">
         <KeyValues>
           <KeyValue key="tooltipHeader" value="BAGANATOR_L_ALL_CHARACTERS" type="global"/>
         </KeyValues>
@@ -87,7 +87,7 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700">
+      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700" parentArray="TopButtons">
         <Anchors>
           <Anchor point="TOPLEFT" relativeKey="$parent.ToggleAllCharacters" relativePoint="TOPRIGHT"/>
         </Anchors>
@@ -103,13 +103,6 @@
           <Anchor point="RIGHT" x="-13" y="0"/>
         </Anchors>
       </EditBox>
-      <Button parentKey="ToggleReagentsBankButton" inherits="BaganatorToggleReagentsButtonTemplate">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleReagents()
-          </OnClick>
-        </Scripts>
-      </Button>
 
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate"/>

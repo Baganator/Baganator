@@ -117,6 +117,8 @@ function BaganatorMainViewMixin:OnLoad()
       end
     elseif settingName == Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
       self:UpdateBagSlots()
+    elseif settingName == Baganator.Config.Options.SHOW_BUTTONS_ON_ALT then
+      self:UpdateAllButtons()
     end
   end)
 
@@ -190,6 +192,7 @@ function BaganatorMainViewMixin:OnShow()
     end)
   end
   self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
+  self:RegisterEvent("MODIFIER_STATE_CHANGED")
 
   PlaySound(SOUNDKIT.IG_BACKPACK_OPEN);
 end
@@ -198,6 +201,7 @@ function BaganatorMainViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.UnifiedBags.Search.ClearCache()
   self.CharacterSelect:Hide()
+  self:UnregisterEvent("MODIFIER_STATE_CHANGED")
 
   PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE);
 end
@@ -291,6 +295,8 @@ function BaganatorMainViewMixin:OnEvent(eventName)
       SetItemButtonDesaturated(button, false)
       button:Enable()
     end
+  elseif eventName == "MODIFIER_STATE_CHANGED" then
+    self:UpdateAllButtons()
   end
 end
 
@@ -733,12 +739,16 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.SearchBox:SetPoint("RIGHT", -sideSpacing, 0)
   self.SearchBox:SetPoint("BOTTOMLEFT", activeBag, "TOPLEFT", 5, 3)
   self.ToggleBankButton:ClearAllPoints()
-  self.ToggleBankButton:SetPoint("TOP")
+  self.ToggleBankButton:SetPoint("TOP", self)
   self.ToggleBankButton:SetPoint("LEFT", activeBag, -sideSpacing + 2, 0)
   self:SetSize(
     activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2 + (activeBank and (activeBank:GetWidth() + sideSpacing * 1 + Baganator.Constants.ButtonFrameOffset - 2) or 0),
     height + 74
   )
+
+  self.AllButtons = {}
+  tAppendAll(self.AllButtons, self.AllFixedButtons)
+  tAppendAll(self.AllButtons, self.TopButtons)
 
   self:HideExtraTabs()
 
@@ -759,6 +769,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
         button:SetPoint("LEFT", activeBag, -2, 0)
       end
       lastButton = button
+      table.insert(self.AllButtons, button)
     end
   end
 
@@ -774,9 +785,12 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
         button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
         button:SetPoint("LEFT", activeBank, -2, 0)
       end
+      table.insert(self.AllButtons, button)
       lastButton = button
     end
   end
+
+  self:UpdateAllButtons()
 
   self:UpdateCurrencies(character)
 end
@@ -869,6 +883,20 @@ function BaganatorMainViewMixin:UpdateTransferButton()
     end
   end
   self.TransferButton:Hide()
+end
+
+local hiddenParent = CreateFrame("Frame")
+hiddenParent:Hide()
+
+function BaganatorMainViewMixin:UpdateAllButtons()
+  local parent = self
+  if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
+    parent = hiddenParent
+  end
+  for _, button in ipairs(self.AllButtons) do
+    button:SetParent(parent)
+    button:SetFrameLevel(700)
+  end
 end
 
 function BaganatorMainViewMixin:GetMatches()
