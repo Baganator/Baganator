@@ -314,10 +314,7 @@ function BaganatorMainViewMixin:CreateBagSlots()
     local bb = GetBagSlotButton()
     table.insert(self.liveBagSlots, bb)
     bb:SetID(index)
-    if #self.liveBagSlots == 1 then
-      bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.ToggleBankButton, "LEFT", 2, 0)
-    else
+    if #self.liveBagSlots ~= 1 then
       bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
     end
   end
@@ -346,10 +343,7 @@ function BaganatorMainViewMixin:CreateBagSlots()
     bb:HookScript("OnLeave", function(self)
       Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     end)
-    if #self.cachedBagSlots == 1 then
-      bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -15, 0)
-    else
+    if #self.cachedBagSlots ~= 1 then
       bb:SetPoint("TOPLEFT", self.cachedBagSlots[#self.cachedBagSlots - 1], "TOPRIGHT")
     end
   end
@@ -738,9 +732,15 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.SearchBox:ClearAllPoints()
   self.SearchBox:SetPoint("RIGHT", -sideSpacing, 0)
   self.SearchBox:SetPoint("BOTTOMLEFT", activeBag, "TOPLEFT", 5, 3)
-  self.ToggleBankButton:ClearAllPoints()
-  self.ToggleBankButton:SetPoint("TOP", self)
-  self.ToggleBankButton:SetPoint("LEFT", activeBag, -sideSpacing + 2, 0)
+  self.TopButtons[1]:ClearAllPoints()
+  self.TopButtons[1]:SetPoint("TOP", self)
+  self.TopButtons[1]:SetPoint("LEFT", activeBag, -sideSpacing + 2, 0)
+  self.cachedBagSlots[1]:ClearAllPoints()
+  self.cachedBagSlots[1]:SetPoint("BOTTOM", self, "TOP")
+  self.cachedBagSlots[1]:SetPoint("LEFT", activeBag, -sideSpacing + 4, 0)
+  self.liveBagSlots[1]:ClearAllPoints()
+  self.liveBagSlots[1]:SetPoint("BOTTOM", self, "TOP")
+  self.liveBagSlots[1]:SetPoint("LEFT", activeBag, -sideSpacing + 4, 0)
   self:SetSize(
     activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2 + (activeBank and (activeBank:GetWidth() + sideSpacing * 1 + Baganator.Constants.ButtonFrameOffset - 2) or 0),
     height + 74
