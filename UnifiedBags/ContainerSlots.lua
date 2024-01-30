@@ -36,6 +36,12 @@ function BaganatorRetailBagSlotButtonMixin:Init()
   end
 
   self:SetItemButtonTexture(texture)
+  local itemID = GetInventoryItemID("player", inventorySlot)
+  if itemID ~= nil then
+    Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+      self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
+    end)
+  end
   self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
   self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(self:GetID()))
 end
@@ -77,6 +83,12 @@ function BaganatorClassicBagSlotButtonMixin:Init()
   end
 
   SetItemButtonTexture(self, texture)
+  local itemID = GetInventoryItemID("player", inventorySlot)
+  if itemID ~= nil then
+    Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+      SetItemButtonQuality(self, GetInventoryItemQuality("player", inventorySlot))
+    end)
+  end
   SetItemButtonQuality(self, GetInventoryItemQuality("player", inventorySlot))
 end
 
@@ -174,6 +186,9 @@ function BaganatorRetailBankButtonMixin:Init()
   end
   self:SetItemButtonTexture(info.iconFileID)
   self:SetItemButtonQuality(info.quality)
+  Item:CreateFromItemID(info.itemID):ContinueOnItemLoad(function()
+    self:SetItemButtonQuality(C_Item.GetItemQuality(info.itemID))
+  end)
 end
 
 function BaganatorRetailBankButtonMixin:OnClick()
@@ -220,6 +235,9 @@ function BaganatorClassicBankButtonMixin:Init()
   end
   SetItemButtonTexture(self, info.iconFileID)
   SetItemButtonQuality(self, info.quality)
+  Item:CreateFromItemID(info.itemID):ContinueOnItemLoad(function()
+    SetItemButtonQuality(self, C_Item.GetItemQuality(info.itemID))
+  end)
 end
 
 function BaganatorClassicBankButtonMixin:OnClick()
