@@ -10,7 +10,7 @@ function Baganator.Sorting.GetBagUsageChecks(bagIDs)
       return (select(17, GetItemInfo(item.itemID)))
     end
   end
-  if Baganator.Constants.IsWrath and tIndexOf(bagIDs, Enum.BagIndex.Keyring) ~= nil then
+  if not Baganator.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.Keyring) ~= nil then
     bagChecks[Enum.BagIndex.Keyring] = function(item)
       local itemFamily = item.itemID and GetItemFamily(item.itemID)
       return itemFamily == Baganator.Constants.KeyItemFamily or item.classID == Enum.ItemClass.Key
