@@ -138,10 +138,26 @@ local function OpenCheck(details)
 
   GetTooltipInfoSpell(details)
 
-  local usableSeen = false
   if details.tooltipInfoSpell then
     for _, row in ipairs(details.tooltipInfoSpell.lines) do
       if row.leftText == ITEM_OPENABLE then
+        return true
+      end
+    end
+    return false
+  end
+end
+
+local function ManuscriptCheck(details)
+  if not details.itemLink:find("item:", nil, true) then
+    return false
+  end
+
+  GetTooltipInfoSpell(details)
+
+  if details.tooltipInfoSpell then
+    for _, row in ipairs(details.tooltipInfoSpell.lines) do
+      if row.leftText:lower():find(BAGANATOR_L_KEYWORD_MANUSCRIPT, nil, true) then
         return true
       end
     end
@@ -172,6 +188,15 @@ local function SocketCheck(details)
   return false
 end
 
+local function ToyCheck(details)
+  if not C_Item.IsItemDataCachedByID(details.itemID) then
+    C_Item.RequestLoadItemDataByID(details.itemID)
+    return nil
+  end
+
+  return C_ToyBox.GetToyInfo(details.itemID) ~= nil
+end
+
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
@@ -199,6 +224,8 @@ local KEYWORDS_TO_CHECK = {
 
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_COSMETIC] = CosmeticCheck
+  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_MANUSCRIPT] = ManuscriptCheck
+  KEYWORDS_TO_CHECK[TOY:lower()] = ToyCheck
 end
 
 local sockets = {

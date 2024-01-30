@@ -132,6 +132,8 @@ if Baganator.Constants.IsRetail then
     BAGANATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
     BAGANATOR_L_KEYWORD_COSMETIC,
     BAGANATOR_L_KEYWORD_REAGENT,
+    BAGANATOR_L_KEYWORD_MANUSCRIPT,
+    TOY:lower(),
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
 end
