@@ -57,11 +57,12 @@ function Baganator.UnifiedBags.GetCollapsingBagDetails(character, section, index
   for bagIndex, bagID in ipairs(indexes) do
     if not seenIndexes[bagIndex] then
       seenIndexes[bagIndex] = true
-      if Baganator.Constants.IsRetail and (
-          bagID == Enum.BagIndex.ReagentBag or
-          (bagID == Enum.BagIndex.Reagentbank and #characterInfo.bank[bagIndex] > 0)
-        ) then
+      if Baganator.Constants.IsRetail and bagID == Enum.BagIndex.ReagentBag then
         inSlots["reagentBag"] = {bagIndex}
+      elseif Baganator.Constants.IsRetail and bagID == Enum.BagIndex.Reagentbank then
+        if #characterInfo.bank[bagIndex] > 0 then
+          inSlots["reagentBag"] = {bagIndex}
+        end
       elseif bagID == Enum.BagIndex.Keyring then
         inSlots["keyring"] = {bagIndex}
       else
