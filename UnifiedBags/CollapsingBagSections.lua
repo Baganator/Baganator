@@ -1,21 +1,21 @@
 local ContainerTypeToIcon = {
   [0] = nil, -- regular bag
-  [1] = {type = "file", value="interface/icons/inv_spiritshard_01", tooltipHeader=BAGANATOR_L_SOUL}, -- soulbag
-  [2] = {type = "file", value="interface/icons/inv_misc_bag_cenarionherbbag", tooltipHeader=BAGANATOR_L_HERBALISM}, --herb
-  [3] = {type = "file", value="interface/icons/inv_enchant_disenchant", tooltipHeader=BAGANATOR_L_ENCHANTING}, --enchant
-  [4] = {type = "file", value="interface/icons/trade_engineering", tooltipHeader=BAGANATOR_L_ENGINEERING}, --engineering
-  [5] = {type = "file", value="interface/icons/inv_misc_gem_ruby_02", tooltipHeader=BAGANATOR_L_GEMS}, -- gem
-  [6] = {type = "file", value="interface/icons/trade_mining", tooltipHeader=BAGANATOR_L_MINING}, -- mining
-  [7] = {type = "file", value="interface/icons/trade_leatherworking", tooltipHeader=BAGANATOR_L_LEATHERWORKING}, -- leatherworking
-  [8] = {type = "file", value="interface/icons/inv_inscription_parchment", tooltipHeader=BAGANATOR_L_INSCRIPTION}, -- inscription
-  [9] = {type = "file", value="interface/icons/trade_fishing", tooltipHeader=BAGANATOR_L_FISHING}, -- fishing
-  [10] = {type = "file", value="interface/icons/inv_misc_food_150_cookie", tooltipHeader=BAGANATOR_L_COOKING}, -- cooking
+  [1] = {type = "file", value="interface\\icons\\inv_spiritshard_01", tooltipHeader=BAGANATOR_L_SOUL}, -- soulbag
+  [2] = {type = "file", value="interface\\icons\\inv_misc_bag_cenarionherbbag", tooltipHeader=BAGANATOR_L_HERBALISM}, --herb
+  [3] = {type = "file", value="interface\\icons\\inv_enchant_disenchant", tooltipHeader=BAGANATOR_L_ENCHANTING}, --enchant
+  [4] = {type = "file", value="interface\\icons\\trade_engineering", tooltipHeader=BAGANATOR_L_ENGINEERING}, --engineering
+  [5] = {type = "file", value="interface\\icons\\inv_misc_gem_ruby_02", tooltipHeader=BAGANATOR_L_GEMS}, -- gem
+  [6] = {type = "file", value="interface\\icons\\trade_mining", tooltipHeader=BAGANATOR_L_MINING}, -- mining
+  [7] = {type = "file", value="interface\\icons\\trade_leatherworking", tooltipHeader=BAGANATOR_L_LEATHERWORKING}, -- leatherworking
+  [8] = {type = "file", value="interface\\icons\\inv_inscription_parchment", tooltipHeader=BAGANATOR_L_INSCRIPTION}, -- inscription
+  [9] = {type = "file", value="interface\\icons\\trade_fishing", tooltipHeader=BAGANATOR_L_FISHING}, -- fishing
+  [10] = {type = "file", value="interface\\icons\\inv_misc_food_150_cookie", tooltipHeader=BAGANATOR_L_COOKING}, -- cooking
 }
 
 local keyedTextures = {
-  quiver = {type = "file", value="interface/addons/baganator/assets/ability_hunter_wildquiver", tooltipHeader=AMMOSLOT},
+  quiver = {type = "file", value="interface\\addons\\baganator\\assets\\ability_hunter_wildquiver", tooltipHeader=AMMOSLOT},
   reagentBag = {type = "atlas", value="Professions_Tracking_Herb", tooltipHeader = BAGANATOR_L_REAGENTS},
-  keyring = {type = "file", value="interface/addons/baganator/assets/spell_nature_moonkey", tooltipHeader = BAGANATOR_L_KEYS},
+  keyring = {type = "file", value="interface\\addons\\baganator\\assets\\spell_nature_moonkey", tooltipHeader = BAGANATOR_L_KEYS},
 }
 for subClassType, textureDetails in pairs(ContainerTypeToIcon) do
   keyedTextures[subClassType] = textureDetails
