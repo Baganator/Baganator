@@ -759,7 +759,6 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   local lastButton = nil
   for index, layout in ipairs(activeBagCollapsibles) do
     local button = self.CollapsingBags[index].button
-    local key = self.CollapsingBags[index].key
     button:SetShown(layout:GetHeight() > 0)
     if button:IsShown() then
       if lastButton then
@@ -776,7 +775,6 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   local lastButton = nil
   for index, layout in ipairs(activeBankCollapsibles) do
     local button = self.CollapsingBankBags[index].button
-    local key = self.CollapsingBankBags[index].key
     button:SetShown(self.viewBankShown and layout:GetHeight() > 0)
     if button:IsShown() then
       if lastButton then
