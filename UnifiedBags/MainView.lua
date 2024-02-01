@@ -576,24 +576,12 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   local characterData = BAGANATOR_DATA.Characters[character]
 
-  -- Used to change the alignment of the title based on the current layout
-  local titleOffset = Baganator.Constants.IsClassic and 60 or 0
-  local titleText = _G[self:GetName() .. "TitleText"]
-
   if not characterData then
     self:SetTitle("")
   elseif self.viewBankShown then
     self:SetTitle(BAGANATOR_L_XS_BANK_AND_BAGS:format(characterData.details.character))
-
-    -- Left aligned
-    titleText:SetPoint("LEFT", Baganator.Constants.ButtonFrameOffset + 15 + titleOffset, 0)
-    titleText:SetPoint("RIGHT", self.ToggleBankButton, "LEFT", -15, 0)
   else
     self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
-
-    -- Centred
-    titleText:SetPoint("LEFT", titleOffset, 0)
-    titleText:SetPoint("RIGHT", -titleOffset, 0)
   end
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
@@ -739,6 +727,22 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.liveBagSlots[1]:ClearAllPoints()
   self.liveBagSlots[1]:SetPoint("BOTTOM", self, "TOP")
   self.liveBagSlots[1]:SetPoint("LEFT", activeBag, -sideSpacing + 4, 0)
+
+
+  -- Used to change the alignment of the title based on the current layout
+  local titleOffset = Baganator.Constants.IsClassic and 60 or 0
+  local titleText = _G[self:GetName() .. "TitleText"]
+
+  if self.viewBankShown then
+    -- Left aligned
+    titleText:SetPoint("LEFT", Baganator.Constants.ButtonFrameOffset + 15 + titleOffset, 0)
+    titleText:SetPoint("RIGHT", activeBag, "LEFT", -sideSpacing + 2, 0)
+  else
+    -- Centred
+    titleText:SetPoint("LEFT", titleOffset, 0)
+    titleText:SetPoint("RIGHT", -titleOffset, 0)
+  end
+
   self:SetSize(
     activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2 + (activeBank and (activeBank:GetWidth() + sideSpacing * 1 + Baganator.Constants.ButtonFrameOffset - 2) or 0),
     height + 74
