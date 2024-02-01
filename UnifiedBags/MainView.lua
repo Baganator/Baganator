@@ -131,6 +131,12 @@ function BaganatorMainViewMixin:OnLoad()
     self:UpdateForCharacter(character, self.liveCharacter == character)
   end)
 
+  Baganator.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+    if self:IsVisible() and self.lastCharacter ~= nil then
+      self:UpdateForCharacter(self.lastCharacter, self.isLive)
+    end
+  end)
+
   Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
     self.tabsSetup = false
     if self.lastCharacter == character then
@@ -213,8 +219,7 @@ function BaganatorMainViewMixin:AllocateBags(character)
     self.CollapsingBags = Baganator.UnifiedBags.AllocateCollapsingSections(
       character, "bags", Baganator.Constants.AllBagIndexes,
       newDetails, self.CollapsingBags,
-      self.CollapsingBagSectionsPool, self.liveItemButtonPool,
-      function() self:UpdateForCharacter(self.lastCharacter, self.isLive) end)
+      self.CollapsingBagSectionsPool, self.liveItemButtonPool)
     self.lastBagDetails = newDetails
   end
 end
@@ -225,8 +230,7 @@ function BaganatorMainViewMixin:AllocateBankBags(character)
     self.CollapsingBankBags = Baganator.UnifiedBags.AllocateCollapsingSections(
       character, "bank", Baganator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,
-      self.CollapsingBagSectionsPool, self.unallocatedItemButtonPool,
-      function() self:UpdateForCharacter(self.lastCharacter, self.isLive) end)
+      self.CollapsingBagSectionsPool, self.unallocatedItemButtonPool)
     self.lastBankBagDetails = newDetails
   end
 end
@@ -885,6 +889,10 @@ local hiddenParent = CreateFrame("Frame")
 hiddenParent:Hide()
 
 function BaganatorMainViewMixin:UpdateAllButtons()
+  if not self.AllButtons then
+    return
+  end
+
   local parent = self
   if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
     parent = hiddenParent

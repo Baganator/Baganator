@@ -108,7 +108,7 @@ function Baganator.UnifiedBags.AllocateCollapsingSections(character, section, ba
     layouts.button:SetScript("OnClick", function()
       local state = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)
       state[info.key] = not state[info.key]
-      refreshCallback()
+      Baganator.CallbackRegistry:TriggerEvent("SpecialBagToggled")
     end)
 
     table.insert(CollapsingBags, layouts)

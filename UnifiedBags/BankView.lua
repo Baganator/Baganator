@@ -66,6 +66,12 @@ function BaganatorBankOnlyViewMixin:OnLoad()
     end
   end)
 
+  Baganator.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+    if self:IsVisible() and self.liveCharacter ~= nil then
+      self:UpdateForCharacter(self.liveCharacter)
+    end
+  end)
+
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
@@ -378,6 +384,10 @@ local hiddenParent = CreateFrame("Frame")
 hiddenParent:Hide()
 
 function BaganatorBankOnlyViewMixin:UpdateAllButtons()
+  if not self.AllButtons then
+    return
+  end
+
   local parent = self
   if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
     parent = hiddenParent

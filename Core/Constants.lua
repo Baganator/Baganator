@@ -71,6 +71,7 @@ Baganator.Constants.Events = {
   "BagShow",
   "BagHide",
   "CharacterSelect",
+  "SpecialBagToggled",
 
   "ShowCustomise",
   "ResetFramePositions",
