@@ -374,6 +374,9 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   self.SearchBox:SetWidth(math.min(300, self.BankLive:GetWidth() - 5))
 end
 
+local hiddenParent = CreateFrame("Frame")
+hiddenParent:Hide()
+
 function BaganatorBankOnlyViewMixin:UpdateAllButtons()
   local parent = self
   if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
