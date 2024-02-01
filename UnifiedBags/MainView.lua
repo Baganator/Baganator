@@ -594,12 +594,6 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
   self:UpdateTransferButton()
-  self.TransferButton:ClearAllPoints()
-  if self.SortButton:IsShown() then
-    self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
-  else
-    self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
-  end
 
   local showReagents = Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS)
 
@@ -650,19 +644,19 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
   end
 
   local bagWidth = Baganator.Config.Get(Baganator.Config.Options.BAG_VIEW_WIDTH)
+  local bankWidth = Baganator.Config.Get(Baganator.Config.Options.BANK_VIEW_WIDTH)
 
   activeBag:ShowCharacter(character, "bags", Baganator.Constants.AllBagIndexes, self.lastBagDetails.mainIndexesToUse, bagWidth)
-  activeBag:ApplySearch(searchText)
 
   for index, layout in ipairs(activeBagCollapsibles) do
     layout:ShowCharacter(character, "bags", Baganator.Constants.AllBagIndexes, self.CollapsingBags[index].indexesToUse, bagWidth)
-    layout:ApplySearch(searchText)
   end
 
   for index, layout in ipairs(activeBankCollapsibles) do
-    layout:ShowCharacter(character, "bank", Baganator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bagWidth)
-    layout:ApplySearch(searchText)
+    layout:ShowCharacter(character, "bank", Baganator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
   end
+
+  self:ApplySearch(searchText)
 
   local sideSpacing, topSpacing, dividerOffset, endPadding = 13, 14, 2, 0
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
@@ -752,10 +746,6 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   self:HideExtraTabs()
 
-  local buttonTopOffset = 0
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
-    buttonTopOffset = 1
-  end
   local lastButton = nil
   for index, layout in ipairs(activeBagCollapsibles) do
     local button = self.CollapsingBags[index].button
@@ -869,10 +859,18 @@ function BaganatorMainViewMixin:CombineStacks(callback)
 end
 
 function BaganatorMainViewMixin:UpdateTransferButton()
+  self.TransferButton:ClearAllPoints()
+  if self.SortButton:IsShown() then
+    self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
+  else
+    self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
+  end
+
   if not Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON) then
     self.TransferButton:Hide()
     return
   end
+
   for _, info in ipairs(addonTable.BagTransfers) do
     if info.condition() then
       self.TransferButton:Show()
