@@ -131,10 +131,10 @@ function Baganator.UnifiedBags.SetupCollapsingBagSection(layouts, info, bagIDs)
     layouts.indexesToUse[index] = true
     layouts.bagIDsToUse[bagIDs[index]] = true
   end
-  layouts.button:HookScript("OnEnter", function(self)
+  layouts.button:SetScript("OnEnter", function(self)
     Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", layouts.bagIDsToUse)
   end)
-  layouts.button:HookScript("OnLeave", function(self)
+  layouts.button:SetScript("OnLeave", function(self)
     Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
   end)
 end
