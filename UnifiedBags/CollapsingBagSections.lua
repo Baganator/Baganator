@@ -133,8 +133,17 @@ function Baganator.UnifiedBags.SetupCollapsingBagSection(layouts, info, bagIDs)
   end
   layouts.button:SetScript("OnEnter", function(self)
     Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", layouts.bagIDsToUse)
+
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText(self.tooltipHeader)
+    if self.tooltipText then
+      GameTooltip:AddLine(self.tooltipText, 1, 1, 1, true)
+    end
+    GameTooltip:Show()
   end)
   layouts.button:SetScript("OnLeave", function(self)
     Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+
+    GameTooltip:Hide()
   end)
 end
