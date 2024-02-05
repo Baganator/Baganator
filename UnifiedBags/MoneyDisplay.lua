@@ -29,6 +29,8 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
+  GameTooltip_AddBlankLineToTooltip(GameTooltip)
+  GameTooltip:AddLine(BAGANATOR_L_HOLD_SHIFT_TO_SHOW_ACCOUNT_TOTAL, 0, 1, 0)
   GameTooltip:Show()
 end
 
