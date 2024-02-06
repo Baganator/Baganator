@@ -58,6 +58,10 @@ local function SwordCheck(details)
   return details.classID == Enum.ItemClass.Weapon and (details.subClassID == Enum.ItemWeaponSubclass.Sword2H or details.subClassID == Enum.ItemWeaponSubclass.Sword1H)
 end
 
+local function StaffCheck(details)
+  return details.classID == Enum.ItemClass.Weapon and (details.subClassID == Enum.ItemWeaponSubclass.Stave)
+end
+
 local function MountCheck(details)
   return details.classID == Enum.ItemClass.Miscellaneous and details.subClassID == Enum.ItemMiscellaneousSubclass.Mount
 end
@@ -207,6 +211,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_AXE] = AxeCheck,
   [BAGANATOR_L_KEYWORD_MACE] = MaceCheck,
   [BAGANATOR_L_KEYWORD_SWORD] = SwordCheck,
+  [BAGANATOR_L_KEYWORD_STAFF] = StaffCheck,
   [BAGANATOR_L_KEYWORD_REAGENT] = ReagentCheck,
   [BAGANATOR_L_KEYWORD_FOOD] = FoodCheck,
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
@@ -296,6 +301,22 @@ for _, slot in ipairs(inventorySlots) do
   if text ~= nil then
     KEYWORDS_TO_CHECK[text:lower()] = function(details) return details.invType == slot end
   end
+end
+
+KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_OFF_HAND] = function(details)
+  return details.invType == "INVTYPE_HOLDABLE" or details.invType == "INVTYPE_SHIELD"
+end
+
+local moreSlotMappings = {
+  [BAGANATOR_L_KEYWORD_HELM] = "INVTYPE_HEAD",
+  [BAGANATOR_L_KEYWORD_CLOAK] = "INVTYPE_CLOAK",
+  [BAGANATOR_L_KEYWORD_BRACERS] = "INVTYPE_WRIST",
+  [BAGANATOR_L_KEYWORD_BELT] = "INVTYPE_WAIST",
+  [BAGANATOR_L_KEYWORD_BOOTS] = "INVTYPE_FEET",
+}
+
+for keyword, slot in pairs(moreSlotMappings) do
+  KEYWORDS_TO_CHECK[keyword] = function(details) return details.invType == slot end
 end
 
 local TextToExpansion = {
@@ -591,6 +612,12 @@ function Baganator.UnifiedBags.Search.Initialize()
     2, -- leather
     3, -- mail
     4, -- plate
+    6, -- shield
+    7, -- libram
+    8, -- idol
+    9, -- totem
+    10,-- sigil
+    11,-- relic
   }
   for _, subClass in ipairs(armorTypesToCheck) do
     local keyword = GetItemSubClassInfo(Enum.ItemClass.Armor, subClass)
