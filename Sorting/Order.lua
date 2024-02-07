@@ -133,7 +133,7 @@ local function RemoveIgnoredSlotsFromOneList(list, bagIDs, bagChecks, isEnd, lef
   if isEnd then
     while left > 0 and #list > offset do
       local item = list[#list - offset]
-      if bagChecks[bagIDs[item.from.bagIndex]] then
+      if bagChecks.checks[bagIDs[item.from.bagIndex]] then
         offset = offset + 1
       else
         table.remove(list, #list - offset)
@@ -143,7 +143,7 @@ local function RemoveIgnoredSlotsFromOneList(list, bagIDs, bagChecks, isEnd, lef
   else
     while left > 0 and #list > offset do
       local item = list[1 + offset]
-      if bagChecks[bagIDs[item.from.bagIndex]] then
+      if bagChecks.checks[bagIDs[item.from.bagIndex]] then
         offset = offset + 1
       else
         table.remove(list, 1 + offset)
@@ -210,33 +210,25 @@ function Baganator.Sorting.OrderOneListOffline(list)
 end
 
 local function GetUsableBags(bagIDs, indexesToUse, bagChecks, isReverse)
-  -- Arrange bag ids order so the sort applies in the right order
-  local preSortedIndexes = {}
-  if isReverse then
-    for index = #bagIDs, 1, -1 do
-      table.insert(preSortedIndexes, index)
-    end
-  else
-    for index = 1, #bagIDs do
-      table.insert(preSortedIndexes, index)
-    end
-  end
-
   local sortedBagIndexes = {}
-
-  -- Prioritise special bags (reagent, herbalist, etc)
-  for _, bagIndex in pairs(preSortedIndexes) do
-    if bagChecks[bagIDs[bagIndex]] then
-      table.insert(sortedBagIndexes, bagIndex)
-    end
+  -- Arrange bag ids order so the sort applies in the right order
+  for i = 1, #bagIDs do
+    table.insert(sortedBagIndexes, i)
   end
 
-  -- Any contents
-  for _, bagIndex in pairs(preSortedIndexes) do
-    if not bagChecks[bagIDs[bagIndex]] then
-      table.insert(sortedBagIndexes, bagIndex)
+  table.sort(sortedBagIndexes, function(a, b)
+    local aOrder = bagChecks.sortOrder[bagIDs[a]]
+    local bOrder = bagChecks.sortOrder[bagIDs[b]]
+    if aOrder == bOrder then
+      if isReverse then
+        return a > b
+      else
+        return a < b
+      end
+    else
+      return aOrder < bOrder
     end
-  end
+  end)
 
   local bagIDsAvailable = {}
   local bagSizes = {}
@@ -361,7 +353,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
   local bagStores = GetPositionStores(bagIDsAvailable, bagSizes)
 
   if ignoreCount > 0 then
-    RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, ignoreAtEnd, ignoreCount)
+    RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks.checks, bagIDsAvailable, ignoreAtEnd, ignoreCount)
 
     bagIDsAvailable = tFilter(bagIDsAvailable, function(a) return bagStores[a] ~= nil end, true)
     bagIDsInverted = tFilter(bagIDsInverted, function(a) return bagStores[a] ~= nil end, true)
@@ -401,7 +393,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
 
   for index, item in ipairs(groupB) do
     for bagIndex, bagID in ipairs(bagIDsInverted) do
-      if not bagChecks[bagID] or bagChecks[bagID](item) then
+      if not bagChecks.checks[bagID] or bagChecks.checks[bagID](item) then
         local slot = bagStores[bagID].last
         QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
         bagStores[bagID].last = slot - 1
@@ -416,7 +408,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
   bagIDsAvailable = tFilter(bagIDsAvailable, function(bagID) return tIndexOf(bagIDsInverted, bagID) ~= nil end, true)
   for index, item in ipairs(groupA) do
     for bagIndex, bagID in ipairs(bagIDsAvailable) do
-      if not bagChecks[bagID] or bagChecks[bagID](item) then
+      if not bagChecks.checks[bagID] or bagChecks.checks[bagID](item) then
         local slot = bagStores[bagID].first
         QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
         bagStores[bagID].first = slot + 1

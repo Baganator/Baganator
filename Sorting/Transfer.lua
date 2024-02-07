@@ -6,14 +6,12 @@ local function SortChecksFirst(bagChecks, items)
   end
 
   table.sort(indexes, function(a, b)
-    local aCheck = bagChecks[items[a].bagID]
-    local bCheck = bagChecks[items[b].bagID]
-    if aCheck and not bCheck then
-      return true
-    elseif bCheck and not aCheck then
-      return false
-    else
+    local aOrder = bagChecks.sortOrder[items[a].bagID]
+    local bOrder = bagChecks.sortOrder[items[b].bagID]
+    if aOrder == bOrder then
       return a < b
+    else
+      return aOrder < bOrder
     end
   end)
 
@@ -26,7 +24,7 @@ end
 
 -- Check source can be contained in target when its available
 local function CheckFromTo(bagChecks, source, target)
-  return not bagChecks[target.bagID] or bagChecks[target.bagID](source)
+  return not bagChecks.checks[target.bagID] or bagChecks.checks[target.bagID](source)
 end
 
 local function IsLocked(item)
