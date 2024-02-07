@@ -202,10 +202,6 @@ local function SearchCheck(self, text)
     return
   end
 
-  if text ~= "" then
-    self.BGR.itemNameLower = self.BGR.itemNameLower or self.BGR.itemName:lower()
-  end
-  local currentBGR = self.BGR
   return Baganator.UnifiedBags.Search.CheckItem(self.BGR, text)
 end
 

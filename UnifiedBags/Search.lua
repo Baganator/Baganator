@@ -76,14 +76,10 @@ local function GetTooltipInfoSpell(details)
     C_Spell.RequestLoadSpellData(spellID)
     return
   end
-  details.tooltipInfoSpell = details.tooltipGetter()
+  details.tooltipInfoSpell = details.tooltipGetter() or {lines={}}
 end
 
 local function ReputationCheck(details)
-  if not details.itemLink:find("item:", nil, true) then
-    return false
-  end
-
   GetTooltipInfoSpell(details)
 
   if details.tooltipInfoSpell then
@@ -99,7 +95,7 @@ local function ReputationCheck(details)
 end
 
 local function BindOnAccountCheck(details)
-  if not details.isBound or not details.itemLink:find("item:", nil, true) then
+  if not details.isBound then
     return false
   end
 
@@ -116,10 +112,6 @@ local function BindOnAccountCheck(details)
 end
 
 local function UseCheck(details)
-  if not details.itemLink:find("item:", nil, true) then
-    return false
-  end
-
   GetTooltipInfoSpell(details)
 
   local usableSeen = false
@@ -153,10 +145,6 @@ local function OpenCheck(details)
 end
 
 local function ManuscriptCheck(details)
-  if not details.itemLink:find("item:", nil, true) then
-    return false
-  end
-
   GetTooltipInfoSpell(details)
 
   if details.tooltipInfoSpell then
@@ -428,15 +416,50 @@ local patterns = {
   ["^%<%d+$"] = ItemLevelMinPatternCheck,
 }
 
+local function GetTooltipSpecialTerms(details)
+  if details.searchKeywords then
+    return
+  end
+
+  GetTooltipInfoSpell(details)
+
+  if not details.tooltipInfoSpell then
+    return
+  end
+
+  details.searchKeywords = {details.itemName:lower()}
+  for _, line in ipairs(details.tooltipInfoSpell.lines) do
+    local color, term = line.leftText:match("^|cFF(......)([^\n]*)|r$")
+    if term and color ~= "808080" then
+      table.insert(details.searchKeywords, term:lower())
+    end
+  end
+end
+
 local function MatchesText(details, searchString)
-  return details.itemNameLower:find(searchString, nil, true) ~= nil
+  GetTooltipSpecialTerms(details)
+
+  if not details.searchKeywords then
+    return nil
+  end
+
+  for _, term in ipairs(details.searchKeywords) do
+    if term:find(searchString, nil, true) ~= nil then
+      return true
+    end
+  end
+  return false
 end
 
 local function PatternSearch(searchString)
   for pat, check in pairs(patterns) do
     if searchString:match(pat) then
       return function(...)
-        return MatchesText(...) or check(...)
+        local match = MatchesText(...)
+        if match == nil then
+          return nil
+        end
+        return match or check(...)
       end
     end
   end
@@ -461,7 +484,10 @@ local function ApplyKeyword(searchString)
       -- Work through each keyword that matches the search string and check if
       -- the details match the keyword's criteria
       local check = function(details)
-        if MatchesText(details, searchString) then
+        local matches = MatchesText(details, searchString)
+        if matches == nil then
+          return nil
+        elseif matches then
           return true
         end
         -- Cache results for each keyword to speed up continuing searches
@@ -501,7 +527,7 @@ local function ApplyKeyword(searchString)
     if patternChecker then
       matches[searchString] = patternChecker
       return function(details)
-        return MatchesText(details, searchString) or patternChecker(details, searchString)
+        return patternChecker(details, searchString)
       end
     end
 
