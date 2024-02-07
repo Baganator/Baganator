@@ -79,7 +79,7 @@ local function GetTooltipInfoSpell(details)
   details.tooltipInfoSpell = details.tooltipGetter() or {lines={}}
 end
 
-local function ReputationCheck(details)
+--[[local function ReputationCheck(details)
   GetTooltipInfoSpell(details)
 
   if details.tooltipInfoSpell then
@@ -92,7 +92,7 @@ local function ReputationCheck(details)
   else
     return nil
   end
-end
+end]]
 
 local function BindOnAccountCheck(details)
   if not details.isBound then
@@ -144,7 +144,7 @@ local function OpenCheck(details)
   end
 end
 
-local function ManuscriptCheck(details)
+--[[local function ManuscriptCheck(details)
   GetTooltipInfoSpell(details)
 
   if details.tooltipInfoSpell then
@@ -155,7 +155,7 @@ local function ManuscriptCheck(details)
     end
     return false
   end
-end
+end]]
 
 local function SaveBaseStats(details)
   if not Baganator.Utilities.IsEquipment(details.itemLink) then
@@ -208,7 +208,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_SOCKET] = SocketCheck,
   [BAGANATOR_L_KEYWORD_JUNK] = JunkCheck,
   [BAGANATOR_L_KEYWORD_TRASH] = JunkCheck,
-  [BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck,
+  --[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck,
   [BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck,
   [BAGANATOR_L_KEYWORD_USE] = UseCheck,
   [BAGANATOR_L_KEYWORD_OPEN] = OpenCheck,
@@ -217,7 +217,7 @@ local KEYWORDS_TO_CHECK = {
 
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_COSMETIC] = CosmeticCheck
-  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_MANUSCRIPT] = ManuscriptCheck
+  --KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_MANUSCRIPT] = ManuscriptCheck
   KEYWORDS_TO_CHECK[TOY:lower()] = ToyCheck
 end
 
@@ -432,6 +432,11 @@ local function GetTooltipSpecialTerms(details)
     local color, term = line.leftText:match("^|cFF(......)([^\n]*)|r$")
     if term and color ~= "808080" then
       table.insert(details.searchKeywords, term:lower())
+    else
+      local match = line.leftText:match("^" .. USE_COLON .. "(.*)$") or line.leftText:match("^" .. ITEM_SPELL_TRIGGER_ONEQUIP .. "(.*)$")
+      if details.classID ~= Enum.ItemClass.Recipe and match then
+        table.insert(details.searchKeywords, match:lower())
+      end
     end
   end
 end
