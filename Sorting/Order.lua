@@ -257,7 +257,7 @@ local function GetPositionStores(bagIDsAvailable, bagSizes)
 end
 
 local function RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, isEnd, left)
-  local regularBags = tFilter(bagIDsAvailable, function(bagID) return not bagChecks[bagID] end, true)
+  local regularBags = tFilter(bagIDsAvailable, function(bagID) return not bagChecks.checks[bagID] end, true)
 
   if isEnd then
     for index = #regularBags, 1, -1 do
@@ -353,7 +353,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
   local bagStores = GetPositionStores(bagIDsAvailable, bagSizes)
 
   if ignoreCount > 0 then
-    RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks.checks, bagIDsAvailable, ignoreAtEnd, ignoreCount)
+    RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, ignoreAtEnd, ignoreCount)
 
     bagIDsAvailable = tFilter(bagIDsAvailable, function(a) return bagStores[a] ~= nil end, true)
     bagIDsInverted = tFilter(bagIDsInverted, function(a) return bagStores[a] ~= nil end, true)
