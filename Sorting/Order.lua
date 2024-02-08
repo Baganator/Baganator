@@ -333,6 +333,8 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
   local bagIDsAvailable, bagSizes = GetUsableBags(bagIDs, indexesToUse, bagChecks, false)
   local bagIDsInverted = GetUsableBags(bagIDs, indexesToUse, bagChecks, true)
 
+  local numBagsAffected = #bagIDsAvailable
+
   local oneList = ConvertToOneList(bags, indexesToUse)
 
   if ignoreCount > 0 then
@@ -364,6 +366,15 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     start = debugprofilestop()
   end
 
+  for _, item in ipairs(sortedItems) do
+    item.specialisedBags = 0
+    for bagID, check in pairs(bagChecks.checks) do
+      if check(item) then
+        item.specialisedBags = item.specialisedBags + 1
+      end
+    end
+  end
+
   local junkPlugin = addonTable.JunkPlugins[Baganator.Config.Get("junk_plugin")]
   local groupA, groupB
   if junkPlugin then
@@ -391,34 +402,55 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     start = debugprofilestop()
   end
 
-  for index, item in ipairs(groupB) do
-    for bagIndex, bagID in ipairs(bagIDsInverted) do
-      if not bagChecks.checks[bagID] or bagChecks.checks[bagID](item) then
-        local slot = bagStores[bagID].last
-        QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
-        bagStores[bagID].last = slot - 1
-        if bagStores[bagID].first == slot then
-          table.remove(bagIDsInverted, bagIndex)
+  local function SweepBackwards(group, specialsOnly)
+    for index, item in ipairs(group) do
+      for bagIndex, bagID in ipairs(bagIDsInverted) do
+        if (not specialsOnly and not bagChecks.checks[bagID]) or (bagChecks.checks[bagID] and bagChecks.checks[bagID](item)) then
+          item.processed = true
+          local slot = bagStores[bagID].last
+          QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
+          bagStores[bagID].last = slot - 1
+          if bagStores[bagID].first == slot then
+            table.remove(bagIDsInverted, bagIndex)
+          end
+          break
         end
-        break
       end
     end
   end
 
-  bagIDsAvailable = tFilter(bagIDsAvailable, function(bagID) return tIndexOf(bagIDsInverted, bagID) ~= nil end, true)
-  for index, item in ipairs(groupA) do
-    for bagIndex, bagID in ipairs(bagIDsAvailable) do
-      if not bagChecks.checks[bagID] or bagChecks.checks[bagID](item) then
-        local slot = bagStores[bagID].first
-        QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
-        bagStores[bagID].first = slot + 1
-        if bagStores[bagID].last == slot then
-          table.remove(bagIDsAvailable, bagIndex)
+  local function SweepForwards(group, specialsOnly)
+    for index, item in ipairs(group) do
+      for bagIndex, bagID in ipairs(bagIDsAvailable) do
+        if (not specialsOnly and not bagChecks.checks[bagID]) or (bagChecks.checks[bagID] and bagChecks.checks[bagID](item)) then
+          item.processed = true
+          local slot = bagStores[bagID].first
+          QueueSwap(item, bagID, slot, bagIDs, moveQueue0, moveQueue1)
+          bagStores[bagID].first = slot + 1
+          if bagStores[bagID].last == slot then
+            table.remove(bagIDsAvailable, bagIndex)
+          end
+          break
         end
-        break
       end
     end
   end
+
+  for i = 1, numBagsAffected do
+    local group = tFilter(groupB, function(item) return item.specialisedBags == i end, true)
+    SweepBackwards(group, true)
+  end
+
+  SweepBackwards(tFilter(groupB, function(item) return not item.processed end, true), false)
+
+  bagIDsAvailable = tFilter(bagIDsAvailable, function(bagID) return tIndexOf(bagIDsInverted, bagID) ~= nil end, true)
+
+  for i = 1, numBagsAffected do
+    local group = tFilter(groupA, function(item) return item.specialisedBags == i end, true)
+    SweepForwards(group, true)
+  end
+
+  SweepForwards(tFilter(groupA, function(item) return not item.processed end, true))
 
   if showTimers then
     print("sort queues ready", debugprofilestop() - start)
