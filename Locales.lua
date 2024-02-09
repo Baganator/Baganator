@@ -102,6 +102,8 @@ L["SHOW_IN_TOOLTIPS"] = "Show in tooltips"
 
 L["BOE"] = "BoE"
 L["BOA"] = "BoA"
+L["TL"] = "TL"
+L["TRADEABLE_LOOT_TL"] = "Tradeable Loot (TL)"
 L["JUNK"] = "Junk"
 L["ADD_A_CORNER_ITEM"] = "Add a corner item"
 L["ICON_CORNER_PRIORITIES_EXPLANATION"] = "Choose what information should be shown in each corner of the icon on an item's button and prioritise the most wanted information."
