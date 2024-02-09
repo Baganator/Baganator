@@ -314,6 +314,11 @@ end
 -- bagIDs: Corresponding bag IDs for the bag contents
 -- indexesToUse: Select specific bags
 -- bagChecks: Any special bag requirements for placing items in a specific bag
+-- isReverse: Should the item order be reversed
+-- ignoreAtEnd: Should the slots (if any) that are skipped for sorting be at the
+-- end of the regular bags.
+-- ignoreCount: Number of slots to ignore in the regular bag (start or end
+-- depending on ignoreAtEnd)
 function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
   if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
     return Baganator.Constants.SortStatus.Complete
@@ -366,6 +371,9 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     start = debugprofilestop()
   end
 
+  -- Detect how few (if any) specialised bags an item can fit in. This is used
+  -- to prioritise putting the item in the bags it can fit in over other items
+  -- that can also fit, but that fit in other specialised bags too.
   for _, item in ipairs(sortedItems) do
     item.specialisedBags = 0
     for bagID, check in pairs(bagChecks.checks) do
@@ -375,6 +383,8 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     end
   end
 
+  -- Split junk items for placing them at the opposite end of the bags compared
+  -- to the other items
   local junkPlugin = addonTable.JunkPlugins[Baganator.Config.Get("junk_plugin")]
   local groupA, groupB
   if junkPlugin then
@@ -402,6 +412,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     start = debugprofilestop()
   end
 
+  -- For processing groupB
   local function SweepBackwards(group, specialsOnly)
     for index, item in ipairs(group) do
       for bagIndex, bagID in ipairs(bagIDsInverted) do
@@ -419,6 +430,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     end
   end
 
+  -- For processing groupA
   local function SweepForwards(group, specialsOnly)
     for index, item in ipairs(group) do
       for bagIndex, bagID in ipairs(bagIDsAvailable) do
@@ -436,6 +448,8 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     end
   end
 
+  -- Prioritise special bags for items that can fit in them, placing items that
+  -- fit in more specialised specialised bags in the most specialised location.
   for i = 1, numBagsAffected do
     local group = tFilter(groupB, function(item) return item.specialisedBags == i end, true)
     SweepBackwards(group, true)
@@ -445,6 +459,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
 
   bagIDsAvailable = tFilter(bagIDsAvailable, function(bagID) return tIndexOf(bagIDsInverted, bagID) ~= nil end, true)
 
+  -- See comment above
   for i = 1, numBagsAffected do
     local group = tFilter(groupA, function(item) return item.specialisedBags == i end, true)
     SweepForwards(group, true)
