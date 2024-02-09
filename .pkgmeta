@@ -8,6 +8,7 @@ plain-copy:
   - CustomiseDialog
   - Sorting
   - UnifiedBags
+  - Transfers
 optional-dependencies:
   - masque
 enable-toc-creation: yes

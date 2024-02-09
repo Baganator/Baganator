@@ -1,4 +1,4 @@
-function Baganator.Sorting.TransferToMail(toMove)
+function Baganator.Transfers.AddToMail(toMove)
   if InCombatLockdown() then -- Transfers may not work during combat due to Blizzard restrictions
     return
   end

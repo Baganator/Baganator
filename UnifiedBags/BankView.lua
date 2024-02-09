@@ -469,11 +469,11 @@ function BaganatorBankOnlyViewMixin:RemoveSearchMatches(callback)
     tAppendAll(matches, layouts.live.SearchMonitor:GetMatches())
   end
 
-  local emptyBagSlots = Baganator.Sorting.GetEmptySlots(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes)
+  local emptyBagSlots = Baganator.Transfers.GetEmptySlots(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes)
   local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
   tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
 
-  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBagSlots)
+  local status = Baganator.Transfers.MoveBetweenBags(combinedIDs, matches, emptyBagSlots)
 
   self.transferManager:Apply(status, function()
     self:RemoveSearchMatches(callback)

@@ -28,11 +28,11 @@ do
 end
 
 local function TransferToBank(matches, characterName, callback)
-  local emptyBankSlots = Baganator.Sorting.GetEmptySlots(BAGANATOR_DATA.Characters[characterName].bank, Baganator.Constants.AllBankIndexes)
+  local emptyBankSlots = Baganator.Transfers.GetEmptySlots(BAGANATOR_DATA.Characters[characterName].bank, Baganator.Constants.AllBankIndexes)
   local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
   tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
 
-  local status = Baganator.Sorting.Transfer(combinedIDs, matches, emptyBankSlots)
+  local status = Baganator.Transfers.MoveBetweenBags(combinedIDs, matches, emptyBankSlots)
   callback(status)
 end
 
@@ -43,7 +43,7 @@ RegisterBagTransfer(
 )
 
 local function TransferToMail(matches, characterName, callback)
-  local status = Baganator.Sorting.TransferToMail(matches)
+  local status = Baganator.Transfers.AddToMail(matches)
   callback(status)
 end
 

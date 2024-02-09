@@ -68,7 +68,7 @@ end
 -- bagIDs: The IDs of bags involved with taking or receiving items
 -- toMove: Items requested to move {itemID: number, bagID: number, slotID: number}
 -- targets: Slots for the items to move to (empty or not)
-function Baganator.Sorting.Transfer(bagIDs, toMove, targets)
+function Baganator.Transfers.MoveBetweenBags(bagIDs, toMove, targets)
   if InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
     return Baganator.Constants.SortStatus.Complete
   end

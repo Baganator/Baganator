@@ -29,15 +29,16 @@ InventoryTracking\Tooltips.lua
 InventoryTracking\CurrencyTooltipData.lua
 InventoryTracking\Main.lua
 
-Sorting\Utilities.lua
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
 Sorting\Order.lua
 Sorting\CombineStacks.lua
 Sorting\Plugins.lua
 Sorting\ModeCheck.lua
-Sorting\Transfer.lua
-Sorting\TransferToMail.lua
+
+Transfers\Utilities.lua
+Transfers\MoveBetweenBags.lua
+Transfers\AddToMail.lua
 
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua

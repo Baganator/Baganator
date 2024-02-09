@@ -5,4 +5,5 @@ Baganator = {
   CustomiseDialog = {},
   API = {},
   Sorting = {},
+  Transfers = {},
 }
