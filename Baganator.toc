@@ -39,6 +39,7 @@ Sorting\ModeCheck.lua
 Transfers\Utilities.lua
 Transfers\MoveBetweenBags.lua
 Transfers\AddToMail.lua
+Transfers\VendorItems.lua
 
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua
