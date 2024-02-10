@@ -74,3 +74,26 @@ RegisterBagTransfer(
   AddToScrapper,
   false, BAGANATOR_L_TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT
 )
+
+local function VendorItems(matches, characterName, callback)
+  local sold = 0
+  for _, item in ipairs(matches) do
+    local location = ItemLocation:CreateFromBagAndSlot(item.bagID, item.slotID)
+    if C_Item.DoesItemExist(location) and not item.hasNoValue then
+      C_Container.UseContainerItem(item.bagID, item.slotID)
+      sold = sold + 1
+      -- Limit sold to the most that can be bought back from the merchant if
+      -- clicked by mistaked
+      if sold >= 12 then
+        return
+      end
+    end
+  end
+  callback(Baganator.Constants.SortStatus.Complete)
+end
+
+RegisterBagTransfer(
+  function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Merchant) end,
+  VendorItems,
+  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_MERCHANT_TOOLTIP_TEXT
+)

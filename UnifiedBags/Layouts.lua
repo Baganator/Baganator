@@ -555,6 +555,7 @@ function BaganatorSearchLayoutMonitorMixin:GetMatches()
         slotID = itemButton:GetID(),
         itemCount = itemButton.BGR.itemCount,
         itemID = itemButton.BGR.itemID,
+        hasNoValue = itemButton.BGR.hasNoValue,
       })
     end
   end

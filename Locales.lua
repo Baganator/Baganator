@@ -184,6 +184,7 @@ L["TRANSFER_BANK_VIEW_TOOLTIP_TEXT"] = "Move searched for items out from the ban
 L["TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT"] = "Move searched for items out from the bags into the bank."
 L["TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT"] = "Attach the searched for items to a mail for sending."
 L["TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT"] = "Place scrappable items into the scrapping machine."
+L["TRANSFER_MAIN_VIEW_MERCHANT_TOOLTIP_TEXT"] = "Sell searched for items to the merchant (max 12)."
 
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG"] = "Do you want to transfer ALL items in your bags?"
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK"] = "Do you want to transfer ALL items from the bank?"
