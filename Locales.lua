@@ -188,6 +188,7 @@ L["TRANSFER_MAIN_VIEW_MERCHANT_TOOLTIP_TEXT"] = "Sell searched for items to the 
 
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG"] = "Do you want to transfer ALL items in your bags?"
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK"] = "Do you want to transfer ALL items from the bank?"
+L["THE_MERCHANT_DOESNT_WANT_ANY_OF_THOSE_ITEMS"] = "The merchant doesn't want any of those items"
 
 L["SOUL"] = "Soul"
 L["HERBALISM"] = "Herbalism"
