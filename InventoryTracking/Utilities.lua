@@ -16,6 +16,15 @@ function Baganator.Utilities.IsEquipment(itemLink)
   return classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon or (C_AuctionHouse and classID == Enum.ItemClass.Profession)
 end
 
+function Baganator.Utilities.HasItemLevel(itemLink)
+  local classID, subClassID = select(6, GetItemInfoInstant(itemLink))
+  return classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
+    -- Profession equipment
+    or (C_AuctionHouse and classID == Enum.ItemClass.Profession)
+    -- Artifact relics and special effect stones
+    or (classID == Enum.ItemClass.Gem and (subClassID == 9 or subClassID == 11))
+end
+
 -- Order of parameters for the battle pet hyperlink string
 local battlePetTooltip = {
   "battlePetSpeciesID",

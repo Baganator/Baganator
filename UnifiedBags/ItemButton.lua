@@ -4,7 +4,6 @@ addonTable.JunkPlugins = {}
 
 Baganator.ItemButtonUtil = {}
 
-local IsEquipment = Baganator.Utilities.IsEquipment
 local equipmentSetBorder = CreateColor(198/255, 166/255, 0/255)
 
 local itemCallbacks = {}

@@ -1,6 +1,7 @@
 local iconSettings = {}
 
 local IsEquipment = Baganator.Utilities.IsEquipment
+local HasItemLevel = Baganator.Utilities.HasItemLevel
 
 local qualityColors = {
   [0] = CreateColor(157/255, 157/255, 157/255), -- Poor
@@ -46,7 +47,7 @@ local function textInit(itemButton)
 end
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
-  if IsEquipment(details.itemLink) and not details.isCosmetic then
+  if HasItemLevel(details.itemLink) and not details.isCosmetic then
     if not details.itemLevel then
       details.itemLevel = GetDetailedItemLevelInfo(details.itemLink)
     end
