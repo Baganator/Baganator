@@ -92,6 +92,7 @@ function CharacterSelectSidebarMixin:OnLoad()
       SetHideButton(frame)
       SetDeleteButton(frame)
     end
+    frame.DeleteButton:SetShown(frame.fullName ~= Baganator.BagCache.currentCharacter)
     frame:UpdateHideVisual()
     UpdateForSelection(frame)
   end)
