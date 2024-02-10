@@ -83,3 +83,12 @@ RegisterBagTransfer(
   end,
   true, BAGANATOR_L_TRANSFER_MAIN_VIEW_MERCHANT_TOOLTIP_TEXT
 )
+
+RegisterBagTransfer(
+  function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.TradePartner) end,
+  function(matches, characterName, callback)
+    local status = Baganator.Transfers.AddToTrade(matches)
+    callback(status)
+  end,
+  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_TRADE_TOOLTIP_TEXT
+)

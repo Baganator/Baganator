@@ -40,6 +40,7 @@ Transfers\Utilities.lua
 Transfers\MoveBetweenBags.lua
 Transfers\AddToMail.lua
 Transfers\VendorItems.lua
+Transfers\AddToTrade.lua
 
 UnifiedBags\Utilities.lua
 UnifiedBags\ItemButton.lua
