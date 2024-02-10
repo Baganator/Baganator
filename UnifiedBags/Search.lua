@@ -343,6 +343,32 @@ if Baganator.Constants.IsRetail then
   end
 end
 
+local BAG_TYPES = {
+  [BAGANATOR_L_SOUL] = 12,
+  [BAGANATOR_L_HERBALISM] = 6,
+  [BAGANATOR_L_ENCHANTING] = 7,
+  [BAGANATOR_L_ENGINEERING] = 8,
+  [BAGANATOR_L_GEMS] = 10,
+  [BAGANATOR_L_MINING] = 11,
+  [BAGANATOR_L_LEATHERWORKING] = 4,
+  [BAGANATOR_L_INSCRIPTION] = 5,
+  [BAGANATOR_L_FISHING] = 16,
+  [BAGANATOR_L_COOKING] = 17,
+  [BAGANATOR_L_JEWELCRAFTING] = 25,
+}
+
+for keyword, bagBit in pairs(BAG_TYPES) do
+  local bagFamily = bit.lshift(1, bagBit - 1)
+  KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+    local itemFamily = GetItemFamily(details.itemID)
+    if itemFamily == nil then
+      return
+    else
+      return bit.band(bagFamily, itemFamily) ~= 0
+    end
+  end
+end
+
 -- Sorted in initialize function later
 local sortedKeywords = {}
 

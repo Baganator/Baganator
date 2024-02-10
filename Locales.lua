@@ -199,6 +199,7 @@ L["LEATHERWORKING"] = "Leatherworking"
 L["INSCRIPTION"] = "Inscription"
 L["FISHING"] = "Fishing"
 L["COOKING"] = "Cooking"
+L["JEWELCRAFTING"] = "Jewelcrafting"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
