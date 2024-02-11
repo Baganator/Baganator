@@ -405,6 +405,10 @@ local function ItemLevelPatternCheck(details, text)
   return details.itemLevel and details.itemLevel == wantedItemLevel
 end
 
+local function ExactItemLevelPatternCheck(details, text)
+  return ItemLevelPatternCheck(details, (text:match("%d+")))
+end
+
 local function ItemLevelRangePatternCheck(details, text)
   if not details.itemLevel and not Baganator.Utilities.HasItemLevel(details.itemLink) then
     return false
@@ -437,6 +441,7 @@ end
 
 local patterns = {
   ["^%d+$"] = ItemLevelPatternCheck,
+  ["^=%d+$"] = ExactItemLevelPatternCheck,
   ["^%d+%-%d+$"] = ItemLevelRangePatternCheck,
   ["^%>%d+$"] = ItemLevelMaxPatternCheck,
   ["^%<%d+$"] = ItemLevelMinPatternCheck,
