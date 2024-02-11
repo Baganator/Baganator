@@ -147,6 +147,7 @@ L["KEYWORD_GLOVES"] = "gloves"
 L["KEYWORD_BELT"] = "belt"
 L["KEYWORD_BOOTS"] = "boots"
 L["KEYWORD_OFF_HAND"] = "off-hand"
+L["KEYWORD_AZERITE"] = "azerite"
 
 L["SEARCH_TRY_X"] = "Search, try %s"
 

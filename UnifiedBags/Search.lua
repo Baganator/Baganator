@@ -308,6 +308,12 @@ for keyword, slot in pairs(moreSlotMappings) do
   KEYWORDS_TO_CHECK[keyword] = function(details) return details.invType == slot end
 end
 
+if Baganator.Constants.IsRetail then
+  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_AZERITE] = function(details)
+    return C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(details.itemID)
+  end
+end
+
 local TextToExpansion = {
   ["classic"] = 0,
   ["vanilla"] = 0,
