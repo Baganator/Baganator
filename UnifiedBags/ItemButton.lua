@@ -444,7 +444,7 @@ function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
     end
   end)
   self:HookScript("OnLeave", function()
-    if BankFrame:IsShown() and self.BGR.isCraftingReagent then
+    if BankFrame:IsShown() and self.BGR and self.BGR.isCraftingReagent then
       BankFrame.selectedTab = 1
     end
   end)
