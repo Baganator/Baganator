@@ -217,7 +217,6 @@ function BaganatorBagCacheMixin:OnUpdate()
       itemLink = slotInfo.hyperlink,
       quality = slotInfo.quality,
       isBound = slotInfo.isBound,
-      hasNoValue = slotInfo.hasNoValue or nil,
     }
   end
 
