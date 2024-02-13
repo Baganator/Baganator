@@ -85,29 +85,55 @@ function BaganatorMailCacheMixin:OnUpdate()
 
   local start = debugprofilestop()
 
+  local function FireMailChange(attachments)
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("mail finish", debugprofilestop() - start)
+    end
+    BAGANATOR_DATA.Characters[self.currentCharacter].mail = attachments
+    Baganator.CallbackRegistry:TriggerEvent("MailCacheUpdate", self.currentCharacter)
+  end
+
   local attachments = {}
 
+  local function DoAttachment(mailIndex, attachmentIndex)
+    local name, itemID, texture, count, quality, canUse = GetInboxItem(mailIndex, attachmentIndex)
+    local itemLink = GetInboxItemLink(mailIndex, attachmentIndex)
+    if itemID == Baganator.Constants.BattlePetCageID then
+      itemLink = ExtractBattlePetLink(mailIndex, attachmentIndex) or link
+    end
+    table.insert(attachments, {
+      itemID = itemID,
+      itemCount = count,
+      iconTexture = texture,
+      itemLink = itemLink,
+      quality = quality,
+    })
+  end
+
+  local waiting = 0
+  local loopsComplete = false
   for mailIndex = 1, (GetInboxNumItems()) do
     for attachmentIndex = 1, ATTACHMENTS_MAX do
-      local link = GetInboxItemLink(mailIndex, attachmentIndex)
-      if link ~= nil then
-        local name, itemID, texture, count, quality, canUse = GetInboxItem(mailIndex, attachmentIndex)
-        if itemID == Baganator.Constants.BattlePetCageID then
-          link = ExtractBattlePetLink(mailIndex, attachmentIndex) or link
+      local name, itemID, texture, count, quality, canUse = GetInboxItem(mailIndex, attachmentIndex)
+      if itemID ~= nil then
+        if C_Item.IsItemDataCachedByID(itemID) then
+          DoAttachment(mailIndex, attachmentIndex)
+        else
+          waiting = waiting + 1
+          local item = Item:CreateFromItemID(itemID)
+          item:ContinueOnItemLoad(function()
+            DoSlot(slotIndex, itemID)
+            waiting = waiting - 1
+            if loopsComplete and waiting == 0 then
+              FireMailChange(attachments)
+            end
+          end)
         end
-        table.insert(attachments, {
-          itemLink = link,
-          itemID = itemID,
-          iconTexture = texture,
-          itemCount = count,
-        })
       end
     end
   end
-
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("mail finish", debugprofilestop() - start)
+  loopsComplete = true
+  if waiting == 0 then
+    FireMailChange(attachments)
   end
-  BAGANATOR_DATA.Characters[self.currentCharacter].mail = attachments
-  Baganator.CallbackRegistry:TriggerEvent("MailCacheUpdate", self.currentCharacter)
 end
