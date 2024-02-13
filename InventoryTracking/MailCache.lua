@@ -122,7 +122,7 @@ function BaganatorMailCacheMixin:OnUpdate()
           waiting = waiting + 1
           local item = Item:CreateFromItemID(itemID)
           item:ContinueOnItemLoad(function()
-            DoSlot(slotIndex, itemID)
+            DoAttachment(mailIndex, attachmentIndex)
             waiting = waiting - 1
             if loopsComplete and waiting == 0 then
               FireMailChange(attachments)
