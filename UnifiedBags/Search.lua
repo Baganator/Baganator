@@ -189,6 +189,27 @@ local function ToyCheck(details)
   return C_ToyBox.GetToyInfo(details.itemID) ~= nil
 end
 
+local TRADEABLE_LOOT_PATTERN = BIND_TRADE_TIME_REMAINING:gsub("([^%w])", "%%%1"):gsub("%%%%s", ".*")
+
+local function IsTradeableLoot(details)
+  if not details.isBound then
+    return false
+  end
+
+  GetTooltipInfoSpell(details)
+
+  if not details.tooltipInfoSpell then
+    return
+  end
+
+  for _, row in ipairs(details.tooltipInfoSpell.lines) do
+    if row.leftText:match(TRADEABLE_LOOT_PATTERN) then
+      return true
+    end
+  end
+  return false
+end
+
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
@@ -213,6 +234,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_USE] = UseCheck,
   [BAGANATOR_L_KEYWORD_OPEN] = OpenCheck,
   [MOUNT:lower()] = MountCheck,
+  [BAGANATOR_L_KEYWORD_TRADEABLE_LOOT] = IsTradeableLoot,
 }
 
 if Baganator.Constants.IsRetail then
