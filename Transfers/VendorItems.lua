@@ -8,7 +8,7 @@ function Baganator.Transfers.VendorItems(toSell)
       -- Limit sold to the most that can be bought back from the merchant if
       -- clicked by mistaked
       if sold >= 12 then
-        return
+        break
       end
     end
   end
