@@ -109,24 +109,37 @@ function BaganatorGuildCacheMixin:ScanBank()
   local tab = data.bank[tabIndex]
   tab.slots = {}
   if tab.isViewable then
-    for slotIndex = 1, Baganator.Constants.MaxGuildBankTabItemSlots do
+    local function DoSlot(slotIndex, itemID)
+      local itemLink = GetGuildBankItemLink(tabIndex, slotIndex)
+
+      if itemID == Baganator.Constants.BattlePetCageID then
+        local tooltipInfo = C_TooltipInfo.GetGuildBankItem(tabIndex, slotIndex)
+        itemLink = Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
+      end
+
       local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, slotIndex)
-      if texture == nil then
-        tab.slots[slotIndex] = {}
-      else
-        local itemLink = GetGuildBankItemLink(tabIndex, slotIndex)
+      tab.slots[slotIndex] = {
+        itemID = itemID,
+        iconTexture = texture,
+        itemCount = itemCount,
+        itemLink = itemLink,
+        quality = quality,
+      }
+    end
+
+    for slotIndex = 1, Baganator.Constants.MaxGuildBankTabItemSlots do
+      local itemLink = GetGuildBankItemLink(tabIndex, slotIndex)
+      tab.slots[slotIndex] = {}
+      if itemLink ~= nil then
         local itemID = GetItemInfoInstant(itemLink)
-        if itemID == Baganator.Constants.BattlePetCageID then
-          local tooltipInfo = C_TooltipInfo.GetGuildBankItem(tabIndex, slotIndex)
-          itemLink = Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
+        if C_Item.IsItemDataCachedByID(itemID) then
+          DoSlot(slotIndex, itemID)
+        else
+          local item = Item:CreateFromItemID(itemID)
+          item:ContinueOnItemLoad(function()
+            DoSlot(slotIndex, itemID)
+          end)
         end
-        tab.slots[slotIndex] = {
-          itemID = itemID,
-          iconTexture = texture,
-          itemCount = itemCount,
-          itemLink = itemLink,
-          quality = quality,
-        }
       end
     end
   end
