@@ -17,9 +17,12 @@ end
 
 function BaganatorCurrencyCacheMixin:OnEvent(eventName, ...)
   if eventName == "CURRENCY_DISPLAY_UPDATE" then
-    local currencyID, quantity = ...
+    -- We do not use the quantity argument in the event as it is wrong for
+    -- Conquest currency changes
+    local currencyID = ...
     if currencyID ~= nil then
-      BAGANATOR_DATA.Characters[self.currentCharacter].currencies[currencyID] = quantity
+      local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+      BAGANATOR_DATA.Characters[self.currentCharacter].currencies[currencyID] = info.quantity
 
       self:SetScript("OnUpdate", self.OnUpdate)
     else
