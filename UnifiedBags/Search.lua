@@ -475,6 +475,13 @@ local patterns = {
   ["^%<%d+$"] = ItemLevelMinPatternCheck,
 }
 
+-- Used to prevent equipment and use returning results based on partial words in
+-- tooltip data
+local EXCLUSIVE_KEYWORDS_NO_TOOLTIP_TEXT = {
+  [BAGANATOR_L_KEYWORD_USE] = true,
+  [BAGANATOR_L_KEYWORD_EQUIPMENT] = true,
+}
+
 local function GetTooltipSpecialTerms(details)
   if details.searchKeywords then
     return
@@ -489,12 +496,12 @@ local function GetTooltipSpecialTerms(details)
   details.searchKeywords = {details.itemName:lower()}
   for _, line in ipairs(details.tooltipInfoSpell.lines) do
     local color, term = line.leftText:match("^|cFF(......)([^\n]*)|r$")
-    if term and color ~= "808080" then
+    if term then
       table.insert(details.searchKeywords, term:lower())
     else
-      local match = line.leftText:match("^" .. USE_COLON .. "(.*)$") or line.leftText:match("^" .. ITEM_SPELL_TRIGGER_ONEQUIP .. "(.*)$")
+      local match = line.leftText:match("^" .. USE_COLON) or line.leftText:match("^" .. ITEM_SPELL_TRIGGER_ONEQUIP)
       if details.classID ~= Enum.ItemClass.Recipe and match then
-        table.insert(details.searchKeywords, match:lower())
+        table.insert(details.searchKeywords, line.leftText:lower())
       end
     end
   end
@@ -515,11 +522,19 @@ local function MatchesText(details, searchString)
   return false
 end
 
+local function MatchesTextExclusive(details, searchString)
+  if details.itemNameLower == nil then
+    details.itemNameLower = details.itemName:lower()
+  end
+
+  return details.itemNameLower:find(searchString, nil, true) ~= nil
+end
+
 local function PatternSearch(searchString)
   for pat, check in pairs(patterns) do
     if searchString:match(pat) then
       return function(...)
-        local match = MatchesText(...)
+        local match = MatchesTextExclusive(...)
         if match == nil then
           return nil
         end
@@ -545,10 +560,17 @@ local function ApplyKeyword(searchString)
   elseif not rejects[searchString] then
     local keywords = BinarySmartSearch(searchString)
     if #keywords > 0 then
+      local matchesTextToUse = MatchesText
+      for _, k in ipairs(keywords) do
+        if EXCLUSIVE_KEYWORDS_NO_TOOLTIP_TEXT[k] then
+          matchesTextToUse = MatchesTextExclusive
+          break
+        end
+      end
       -- Work through each keyword that matches the search string and check if
       -- the details match the keyword's criteria
       local check = function(details)
-        local matches = MatchesText(details, searchString)
+        local matches = matchesTextToUse(details, searchString)
         if matches == nil then
           return nil
         elseif matches then
