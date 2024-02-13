@@ -121,6 +121,10 @@ function BaganatorGuildCacheMixin:ScanBank()
     local function DoSlot(slotIndex, itemID)
       local itemLink = GetGuildBankItemLink(tabIndex, slotIndex)
 
+      if itemLink == nil then
+        return
+      end
+
       if itemID == Baganator.Constants.BattlePetCageID then
         local tooltipInfo = C_TooltipInfo.GetGuildBankItem(tabIndex, slotIndex)
         itemLink = Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)

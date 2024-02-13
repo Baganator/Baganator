@@ -97,6 +97,9 @@ function BaganatorMailCacheMixin:OnUpdate()
 
   local function DoAttachment(mailIndex, attachmentIndex)
     local name, itemID, texture, count, quality, canUse = GetInboxItem(mailIndex, attachmentIndex)
+    if itemID == nil then
+      return
+    end
     local itemLink = GetInboxItemLink(mailIndex, attachmentIndex)
     if itemID == Baganator.Constants.BattlePetCageID then
       itemLink = ExtractBattlePetLink(mailIndex, attachmentIndex) or link
