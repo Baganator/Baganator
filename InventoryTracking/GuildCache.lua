@@ -106,8 +106,17 @@ function BaganatorGuildCacheMixin:ScanBank()
   end
 
   local tabIndex = GetCurrentGuildBankTab()
+
+  local function FireGuildChange()
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("guild tab " .. tabIndex .. " took", debugprofilestop() - start)
+    end
+    Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
+  end
+
   local tab = data.bank[tabIndex]
   tab.slots = {}
+  local waiting = 0
   if tab.isViewable then
     local function DoSlot(slotIndex, itemID)
       local itemLink = GetGuildBankItemLink(tabIndex, slotIndex)
@@ -127,6 +136,7 @@ function BaganatorGuildCacheMixin:ScanBank()
       }
     end
 
+    local loopComplete = false
     for slotIndex = 1, Baganator.Constants.MaxGuildBankTabItemSlots do
       local itemLink = GetGuildBankItemLink(tabIndex, slotIndex)
       tab.slots[slotIndex] = {}
@@ -135,18 +145,21 @@ function BaganatorGuildCacheMixin:ScanBank()
         if C_Item.IsItemDataCachedByID(itemID) then
           DoSlot(slotIndex, itemID)
         else
+          waiting = waiting + 1
           local item = Item:CreateFromItemID(itemID)
           item:ContinueOnItemLoad(function()
             DoSlot(slotIndex, itemID)
+            waiting = waiting - 1
+            if loopComplete and waiting == 0 then
+              FireGuildChange()
+            end
           end)
         end
       end
     end
+    loopComplete = true
   end
-
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("guild tab " .. tabIndex .. " took", debugprofilestop() - start)
+  if waiting == 0 then
+    FireGuildChange()
   end
-
-  Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
 end
