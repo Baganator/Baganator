@@ -46,6 +46,7 @@ local function InitCurrentCharacter()
   characterData.equipped = characterData.equipped or {}
   characterData.containerInfo = characterData.containerInfo or {}
   characterData.currencies = characterData.currencies or {}
+  characterData.void = characterData.void or {}
 end
 
 local function SetupDataProcessing()
@@ -78,6 +79,13 @@ local function SetupDataProcessing()
   currencyCache:SetScript("OnEvent", currencyCache.OnEvent)
 
   Baganator.CurrencyCache = currencyCache
+
+  local voidCache = CreateFrame("Frame")
+  Mixin(voidCache, BaganatorVoidCacheMixin)
+  voidCache:OnLoad()
+  voidCache:SetScript("OnEvent", voidCache.OnEvent)
+
+  Baganator.VoidCache = voidCache
 
   local guildCache = CreateFrame("Frame")
   Mixin(guildCache, BaganatorGuildCacheMixin)

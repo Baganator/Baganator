@@ -24,6 +24,7 @@ InventoryTracking\MailCache.lua
 InventoryTracking\EquippedCache.lua
 InventoryTracking\CurrencyCache.lua
 InventoryTracking\GuildCache.lua
+InventoryTracking\VoidCache.lua
 InventoryTracking\ItemSummaries.lua
 InventoryTracking\Tooltips.lua
 InventoryTracking\CurrencyTooltipData.lua

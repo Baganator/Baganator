@@ -34,8 +34,8 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     table.sort(tooltipInfo.guilds, GuildAndRealmComparator)
   else
     table.sort(tooltipInfo.characters, function(a, b)
-      local left = a.bags + a.bank + a.mail
-      local right = b.bags + b.bank + b.mail
+      local left = a.bags + a.bank + a.mail + a.equipped + a.void
+      local right = b.bags + b.bank + b.mail + a.equipped + a.void
       if left == right then
         return CharacterAndRealmComparator(a, b)
       else
@@ -69,18 +69,15 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   end
 
   local result = "  "
-  local bagCount, bankCount, mailCount, equippedCount, guildCount = 0, 0, 0, 0, 0
+  local totals = 0
   local seenRealms = {}
 
   for index, s in ipairs(tooltipInfo.characters) do
-    bagCount = bagCount + s.bags
-    bankCount = bankCount + s.bank
-    mailCount = mailCount + s.mail
-    equippedCount = equippedCount + s.equipped
+    totals = totals + s.bags + s.bank + s.mail + s.equipped + s.void
     seenRealms[s.realmNormalized] = true
   end
   for index, s in ipairs(tooltipInfo.guilds) do
-    guildCount = guildCount + s.bank
+    totals = totals + s.bank
     seenRealms[s.realmNormalized] = true
   end
   seenRealms[GetNormalizedRealmName() or ""] = true -- ensure realm name is shown for a different realm
@@ -94,7 +91,6 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     appendRealm = true
   end
 
-  local totals = bagCount + bankCount + mailCount + equippedCount + guildCount
   AddDoubleLine(BAGANATOR_L_INVENTORY, WHITE_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_TOTAL_X:format(totals)))
 
   for index = 1, math.min(#tooltipInfo.characters, Baganator.Config.Get("tooltips_character_limit")) do
@@ -111,6 +107,9 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     end
     if s.equipped > 0 then
       table.insert(entries, BAGANATOR_L_EQUIPPED_X:format(s.equipped))
+    end
+    if s.void > 0 then
+      table.insert(entries, BAGANATOR_L_VOID_X:format(s.void))
     end
     local character = s.character
     if appendRealm then
