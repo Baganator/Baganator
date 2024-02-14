@@ -495,7 +495,7 @@ local function GetTooltipSpecialTerms(details)
 
   details.searchKeywords = {details.itemName:lower()}
   for _, line in ipairs(details.tooltipInfoSpell.lines) do
-    local color, term = line.leftText:match("^|cFF(......)([^\n]*)|r$")
+    local term = line.leftText:match("^|cFF......(.*)|r$")
     if term then
       table.insert(details.searchKeywords, term:lower())
     else
