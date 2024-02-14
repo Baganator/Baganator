@@ -31,12 +31,13 @@ function BaganatorMailCacheMixin:OnLoad()
     for index = 1, ATTACHMENTS_MAX_SEND do
       local itemLink = GetSendMailItemLink(index)
       if itemLink ~= nil then
-        local name, itemID, texture, itemCount = GetSendMailItem(index)
+        local name, itemID, texture, itemCount, quality = GetSendMailItem(index)
         table.insert(mail.items, {
           itemLink = itemLink,
           itemID = itemID,
           iconTexture = iconTexture,
           itemCount = itemCount,
+          quality = quality,
         })
       end
     end
