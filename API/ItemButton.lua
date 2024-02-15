@@ -217,6 +217,12 @@ Baganator.Utilities.OnAddonLoaded("BattlePetBreedID", function()
     local breednum = BPBID_Internal.CalculateBreedID(speciesID, rarity + 1, level, maxHealth, power, speed, false, false)
     local name = BPBID_Internal.RetrieveBreedName(breednum)
     Breed:SetText(name)
+    if iconSettings.useQualityColors then
+      local color = qualityColors[details.quality]
+      Breed:SetTextColor(color.r, color.g, color.b)
+    else
+      Breed:SetTextColor(1,1,1)
+    end
     return true
   end,
   textInit, {corner = "bottom_left", priority = 1})
@@ -226,6 +232,12 @@ if Baganator.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_LEVEL, "battle_pet_level", function(Level, details)
     if not details.itemLink:find("battlepet", nil, true) then
       return false
+    end
+    if iconSettings.useQualityColors then
+      local color = qualityColors[details.quality]
+      Level:SetTextColor(color.r, color.g, color.b)
+    else
+      Level:SetTextColor(1,1,1)
     end
     Level:SetText(details.itemLevel)
     return true
