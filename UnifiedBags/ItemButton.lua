@@ -108,6 +108,9 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     if level and level ~= "" then
       self.BGR.itemLevel = tonumber(level)
     end
+    for _, callback in ipairs(itemCallbacks) do
+      callback(self, data)
+    end
 
   elseif C_Item.IsItemDataCachedByID(itemID) then
     self.BGR.itemInfoWaiting = false
