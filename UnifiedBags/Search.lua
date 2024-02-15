@@ -279,7 +279,6 @@ local inventorySlots = {
   "INVTYPE_NECK",
   "INVTYPE_SHOULDER",
   "INVTYPE_BODY",
-  "INVTYPE_CHEST",
   "INVTYPE_WAIST",
   "INVTYPE_LEGS",
   "INVTYPE_FEET",
@@ -294,7 +293,6 @@ local inventorySlots = {
   "INVTYPE_2HWEAPON",
   "INVTYPE_BAG",
   "INVTYPE_TABARD",
-  "INVTYPE_ROBE",
   "INVTYPE_WEAPONMAINHAND",
   "INVTYPE_WEAPONOFFHAND",
   "INVTYPE_HOLDABLE",
@@ -315,6 +313,12 @@ end
 
 KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_OFF_HAND] = function(details)
   return details.invType == "INVTYPE_HOLDABLE" or details.invType == "INVTYPE_SHIELD"
+end
+
+-- Special case as INVTYPE_CHEST and INVTYPE_ROBE have the same word assigned,
+-- Chest, so do a combined check for them.
+KEYWORDS_TO_CHECK[INVTYPE_CHEST:lower()] = function(details)
+  return details.invType == "INVTYPE_CHEST" or details.invType == "INVTYPE_ROBE"
 end
 
 local moreSlotMappings = {
