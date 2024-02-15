@@ -203,3 +203,14 @@ Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
     return itemButton.CanIMogItOverlay
   end, {corner = "top_right", priority = 1})
 end)
+
+if Baganator.Constants.IsRetail then
+  Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_LEVEL, "battle_pet_level", function(Level, details)
+    if not details.itemLink:find("battlepet", nil, true) then
+      return false
+    end
+    Level:SetText(details.itemLevel)
+    return true
+  end,
+  textInit, {corner = "top_left", priority = 2})
+end
