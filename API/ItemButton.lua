@@ -209,7 +209,7 @@ Baganator.Utilities.OnAddonLoaded("BattlePetBreedID", function()
     return
   end
 
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_BREED, "battle_pet_breed_id", function(Breed, details)
+  Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_BREEDID, "battle_pet_breed_id", function(Breed, details)
     if not details.itemLink:find("battlepet", nil, true) then
       return false
     end
