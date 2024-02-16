@@ -79,8 +79,8 @@ local genders = {"unknown", "male", "female"}
 local raceCorrections = {
   ["scourge"] = "undead",
   ["zandalaritroll"] = "zandalari",
-  ["highmountaintauren"] = "highmountain"
-  ["lightforgeddraenei"] = "lightforged"
+  ["highmountaintauren"] = "highmountain",
+  ["lightforgeddraenei"] = "lightforged",
 }
 local prefix
 if Baganator.Constants.IsRetail then
