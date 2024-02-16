@@ -28,19 +28,6 @@ local expansionIDToText = {
   [9] = "DF",
 }
 
-local expansionIDToTextShort = {
-  [0] = "CC",
-  [1] = "BC",
-  [2] = "WR",
-  [3] = "CT",
-  [4] = "MP",
-  [5] = "DR",
-  [6] = "LG",
-  [7] = "BA",
-  [8] = "SL",
-  [9] = "DF",
-}
-
 Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
   iconSettings = {
     markJunk = Baganator.Config.Get("icon_grey_junk"),
@@ -169,11 +156,6 @@ end)
 if Baganator.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION, "expansion", function(Expansion, details)
     local xpacText = expansionIDToText[details.expacID]
-    Expansion:SetText(xpacText or "")
-    return xpacText ~= nil
-  end, textInit)
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION_SHORT, "expansion_short", function(Expansion, details)
-    local xpacText = expansionIDToTextShort[details.expacID]
     Expansion:SetText(xpacText or "")
     return xpacText ~= nil
   end, textInit)
