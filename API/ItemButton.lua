@@ -215,7 +215,7 @@ Baganator.Utilities.OnAddonLoaded("BattlePetBreedID", function()
     end
     local speciesID, level, rarity, maxHealth, power, speed = BattlePetToolTip_UnpackBattlePetLink(details.itemLink)
     local breednum = BPBID_Internal.CalculateBreedID(speciesID, rarity + 1, level, maxHealth, power, speed, false, false)
-    local name = BPBID_Internal.RetrieveBreedName(breednum)
+    local name = BPBID_Internal.RetrieveBreedName(breednum):gsub("/", "")
     Breed:SetText(name)
     if iconSettings.useQualityColors then
       local color = qualityColors[details.quality]
