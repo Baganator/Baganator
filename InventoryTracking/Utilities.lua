@@ -21,8 +21,8 @@ function Baganator.Utilities.HasItemLevel(itemLink)
   return classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
     -- Profession equipment
     or (C_AuctionHouse and classID == Enum.ItemClass.Profession)
-    -- Artifact relics and special effect stones
-    or (classID == Enum.ItemClass.Gem and (subClassID == 9 or subClassID == 11))
+    -- Artifact relics
+    or (classID == Enum.ItemClass.Gem and IsArtifactRelicItem and IsArtifactRelicItem(itemLink))
 end
 
 -- Order of parameters for the battle pet hyperlink string
