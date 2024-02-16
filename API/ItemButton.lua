@@ -16,14 +16,14 @@ local qualityColors = {
 }
 
 local expansionIDToText = {
-  [0] = "Cla",
+  [0] = "CC",
   [1] = "BC",
-  [2] = "W",
-  [3] = "Cata",
-  [4] = "MoP",
-  [5] = "Dra",
-  [6] = "Leg",
-  [7] = "BfA",
+  [2] = "WR",
+  [3] = "CT",
+  [4] = "MP",
+  [5] = "DR",
+  [6] = "LG",
+  [7] = "BA",
   [8] = "SL",
   [9] = "DF",
 }
