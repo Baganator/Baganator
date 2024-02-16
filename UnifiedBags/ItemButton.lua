@@ -452,17 +452,13 @@ function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
     end
   end)
 
-  -- Hide widgets when Blizzard highlights only a limited set of items
-  -- We use hooks on "Show" and "Hide" because doing it on "OnHide" causes the
-  -- client to crash on reload if a search was active.
-  hooksecurefunc(self.ItemContextOverlay, "Show", function()
+  hooksecurefunc(self, "UpdateItemContextMatching", function()
     if self.widgetContainer then
-      SetWidgetsAlpha(self, false)
-    end
-  end)
-  hooksecurefunc(self.ItemContextOverlay, "Hide", function()
-    if self.widgetContainer then
-      SetWidgetsAlpha(self, self.BGR.matchesSearch)
+      if self.ItemContextOverlay:IsShown() then
+        SetWidgetsAlpha(self, false)
+      else
+        SetWidgetsAlpha(self, not self.BGR or self.BGR.matchesSearch)
+      end
     end
   end)
 end

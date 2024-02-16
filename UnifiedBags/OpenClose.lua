@@ -16,6 +16,7 @@ local interactions = {
   [IT.Merchant] = {option = "merchant", default = true },
   [IT.TradePartner] = {option = "trade_partner", default = false },
   [IT.ScrappingMachine] = {option = "scrapping_machine", default = true },
+  [IT.Soulbind] = {option = "forge_of_bonds", default = false },
  }
 
 BaganatorOpenCloseMixin = {}

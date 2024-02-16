@@ -243,6 +243,13 @@ local OPEN_CLOSE_OPTIONS = {
     root = "auto_open",
     check = IsRetailCheck,
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_FORGE_OF_BONDS,
+    option = "forge_of_bonds",
+    root = "auto_open",
+    check = IsRetailCheck,
+  },
 }
 local SORTING_OPTIONS = {
   {
