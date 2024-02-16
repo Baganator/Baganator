@@ -19,6 +19,9 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
       if characterInfo.className then
         characterName = RAID_CLASS_COLORS[characterInfo.className]:WrapTextInColorCode(characterName)
       end
+      if characterInfo.race then
+        characterName = Baganator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
+      end
       table.insert(lines, {left = characterName, right = Baganator.Utilities.GetMoneyString(money, true)})
       total = total + money
     end

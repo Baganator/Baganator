@@ -74,3 +74,18 @@ function Baganator.Utilities.RemoveCharacter(characterName)
   end
   Baganator.CallbackRegistry:TriggerEvent("CharacterDeleted", characterName)
 end
+
+local genders = {"unknown", "male", "female"}
+local raceCorrections = {
+  ["scourge"] = "undead",
+}
+local prefix
+if Baganator.Constants.IsRetail then
+  prefix = "raceicon128"
+else
+  prefix = "raceicon"
+end
+function Baganator.Utilities.GetCharacterIcon(race, sex)
+  race = race:lower()
+  return "|A:"..prefix.."-" .. (raceCorrections[race] or race) .. "-" .. genders[sex] .. ":15:15|a"
+end

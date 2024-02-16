@@ -48,7 +48,9 @@ function Baganator.Utilities.GetAllCharacters(searchText)
         name = info.details.character,
         realmNormalized = info.details.realmNormalized,
         realm = info.details.realm,
-        className = info.details.className
+        className = info.details.className,
+        race = info.details.race,
+        sex = info.details.sex,
       })
     end
   end

@@ -57,10 +57,10 @@ function CharacterSelectSidebarMixin:OnLoad()
   local function UpdateForSelection(frame)
     if frame.fullName ~= self.selectedCharacter then
       frame:Enable()
-      frame:SetText(frame.fullName)
+      frame:SetText(frame.iconPrefix .. frame.fullName)
     else
       frame:Disable()
-      frame:SetText(arrowLeft .. " " .. frame.fullName)
+      frame:SetText(arrowLeft .. " " .. frame.iconPrefix .. frame.fullName)
     end
   end
 
@@ -70,14 +70,17 @@ function CharacterSelectSidebarMixin:OnLoad()
     frame:SetHighlightAtlas("search-highlight")
     frame:SetNormalFontObject(GameFontHighlight)
     frame.fullName = elementData.fullName
-    frame:SetText(frame.fullName)
+    frame.iconPrefix = ""
+    if elementData.race then
+      frame.iconPrefix = Baganator.Utilities.GetCharacterIcon(elementData.race, elementData.sex) .. " "
+    end
+    frame:SetText(frame.iconPrefix .. frame.fullName)
     if elementData.className then
       local classColor = RAID_CLASS_COLORS[elementData.className]
       frame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
     else
       frame:GetFontString():SetTextColor(1, 1, 1)
     end
-    --fs:SetAllPoints()
     frame:SetScript("OnClick", function()
       Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", elementData.fullName)
     end)

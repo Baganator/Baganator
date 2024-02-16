@@ -42,6 +42,8 @@ local function InitCurrentCharacter()
   local characterData = BAGANATOR_DATA.Characters[currentCharacter]
   characterData.details.className, characterData.details.class = select(2, UnitClass("player"))
   characterData.details.faction = UnitFactionGroup("player")
+  characterData.details.race = select(2, UnitRace("player"))
+  characterData.details.sex = UnitSex("player")
   characterData.mail = characterData.mail or {}
   characterData.equipped = characterData.equipped or {}
   characterData.containerInfo = characterData.containerInfo or {}

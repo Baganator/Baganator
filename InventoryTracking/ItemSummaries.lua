@@ -202,6 +202,8 @@ function BaganatorItemSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sam
             character = char,
             realmNormalized = r,
             className = characterDetails.className,
+            race = characterDetails.race,
+            sex = characterDetails.sex,
             bags = byKey.bags or 0,
             bank = byKey.bank or 0,
             mail = byKey.mail or 0,
