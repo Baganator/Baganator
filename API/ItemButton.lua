@@ -16,6 +16,19 @@ local qualityColors = {
 }
 
 local expansionIDToText = {
+  [0] = "Cla",
+  [1] = "TBC",
+  [2] = "Wra",
+  [3] = "Cat",
+  [4] = "MoP",
+  [5] = "Dra",
+  [6] = "Leg",
+  [7] = "BfA",
+  [8] = "SL",
+  [9] = "DF",
+}
+
+local expansionIDToTextShort = {
   [0] = "CC",
   [1] = "BC",
   [2] = "WR",
@@ -156,6 +169,11 @@ end)
 if Baganator.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION, "expansion", function(Expansion, details)
     local xpacText = expansionIDToText[details.expacID]
+    Expansion:SetText(xpacText or "")
+    return xpacText ~= nil
+  end, textInit)
+  Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION_SHORT, "expansion_short", function(Expansion, details)
+    local xpacText = expansionIDToTextShort[details.expacID]
     Expansion:SetText(xpacText or "")
     return xpacText ~= nil
   end, textInit)
