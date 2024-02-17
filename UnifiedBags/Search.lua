@@ -8,10 +8,6 @@ local function ReagentCheck(details)
   return details.isCraftingReagent
 end
 
-local function BindCheck(details)
-  return details.isBound
-end
-
 local function SetCheck(details)
   return details.setInfo ~= nil
 end
@@ -108,6 +104,20 @@ local function BindOnAccountCheck(details)
       end
     end
     return false
+  end
+end
+
+local function SoulboundCheck(details)
+  if not details.isBound then
+    return false
+  end
+
+  local bindOnAccount = BindOnAccountCheck(details)
+
+  if bindOnAccount == nil then
+    return
+  else
+    return not bindOnAccount
   end
 end
 
@@ -213,7 +223,7 @@ end
 local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_PET] = PetCheck,
   [BAGANATOR_L_KEYWORD_BATTLE_PET] = PetCheck,
-  [BAGANATOR_L_KEYWORD_SOULBOUND] = BindCheck,
+  [BAGANATOR_L_KEYWORD_SOULBOUND] = SoulboundCheck,
   [BAGANATOR_L_KEYWORD_BOE] = BindOnEquipCheck,
   [BAGANATOR_L_KEYWORD_EQUIPMENT] = EquipmentCheck,
   [BAGANATOR_L_KEYWORD_GEAR] = EquipmentCheck,
@@ -231,6 +241,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_TRASH] = JunkCheck,
   --[BAGANATOR_L_KEYWORD_REPUTATION] = ReputationCheck,
   [BAGANATOR_L_KEYWORD_BOA] = BindOnAccountCheck,
+  [BAGANATOR_L_KEYWORD_ACCOUNT_BOUND] = BindOnAccountCheck,
   [BAGANATOR_L_KEYWORD_USE] = UseCheck,
   [BAGANATOR_L_KEYWORD_OPEN] = OpenCheck,
   [MOUNT:lower()] = MountCheck,
