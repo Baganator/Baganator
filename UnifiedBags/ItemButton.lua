@@ -97,7 +97,6 @@ local function GetExtraInfo(self, itemID, itemLink, data)
   end
 
   if itemLink:find("battlepet:", nil, true) then
-    self.itemInfoWaiting = false
     self.BGR.itemInfoWaiting = false
     local petID, level = itemLink:match("battlepet:(%d+):(%d*)")
 
@@ -135,7 +134,11 @@ local function GetExtraInfo(self, itemID, itemLink, data)
   else
     local item = Item:CreateFromItemLink(itemLink)
     self.BGR.itemInfoWaiting = true
+    local BGR = self.BGR
     item:ContinueOnItemLoad(function()
+      if BGR ~= self.BGR then -- Check that the item button hasn't been refreshed
+        return
+      end
       self.BGR.itemInfoWaiting = false
       local itemInfo = {GetItemInfo(itemLink)}
       self.BGR.itemName = itemInfo[1]
