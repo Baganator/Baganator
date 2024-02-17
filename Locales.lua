@@ -81,6 +81,7 @@ L["REDUCE_SPACING_BETWEEN_UI_COMPONENTS"] = "Reduce spacing between UI component
 L["SHOW_TRANSFER_BUTTON"] = "Show Transfer button"
 L["TRANSFERS"] = "Transfers"
 L["SHOW_BUTTONS_ON_ALT"] = "Only show toggle buttons when Alt is held down"
+L["SHOW_CHARACTER_RACE_ICONS"] = "Show character race icons"
 
 L["INVENTORY_TOTALS_COLON"] = "Inventory Totals:"
 L["INVENTORY"] = "Inventory"

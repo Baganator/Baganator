@@ -35,6 +35,11 @@ local WINDOW_OPTIONS = {
     option = "bag_empty_space_at_top",
   },
   {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_CHARACTER_RACE_ICONS,
+    option = "show_character_race_icons",
+  },
+  {
     type = "slider",
     min = 1,
     max = 100,

@@ -118,7 +118,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if s.className then
       character = RAID_CLASS_COLORS[s.className]:WrapTextInColorCode(character)
     end
-    if s.race then
+    if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and s.race then
       character = Baganator.Utilities.GetCharacterIcon(s.race, s.sex) .. " " .. character
     end
     AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))

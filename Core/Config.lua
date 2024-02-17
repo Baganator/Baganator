@@ -21,6 +21,7 @@ Baganator.Config.Options = {
   AUTO_SORT_ON_OPEN = "auto_sort_on_open",
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
   REDUCE_SPACING = "reduce_spacing",
+  SHOW_CHARACTER_RACE_ICONS = "show_character_race_icons",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
@@ -112,6 +113,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT] = 0,
   [Baganator.Config.Options.AUTO_SORT_ON_OPEN] = false,
   [Baganator.Config.Options.JUNK_PLUGIN] = "poor_quality",
+  [Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS] = true,
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,

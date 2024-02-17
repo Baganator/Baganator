@@ -71,7 +71,7 @@ function CharacterSelectSidebarMixin:OnLoad()
     frame:SetNormalFontObject(GameFontHighlight)
     frame.fullName = elementData.fullName
     frame.iconPrefix = ""
-    if elementData.race then
+    if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and elementData.race then
       frame.iconPrefix = Baganator.Utilities.GetCharacterIcon(elementData.race, elementData.sex) .. " "
     end
     frame:SetText(frame.iconPrefix .. frame.fullName)
