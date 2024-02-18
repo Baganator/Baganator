@@ -147,3 +147,39 @@ function Baganator.UnifiedBags.SetupCollapsingBagSection(layouts, info, bagIDs)
     GameTooltip:Hide()
   end)
 end
+
+function Baganator.UnifiedBags.ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
+  local topSpacing, dividerOffset, endPadding = 14, 2, 0
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+    topSpacing = 7
+    dividerOffset = 1
+    endPadding = 3
+  end
+
+  local lastCollapsible
+  local addedHeight = 0
+  for index, layout in ipairs(activeCollapsibles) do
+    local key = originCollapsibles[index].key
+    local hidden = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)[key]
+    local divider = originCollapsibles[index].divider
+    if hidden then
+      divider:Hide()
+      layout:Hide()
+    else
+      divider:SetPoint("BOTTOM", layout, "TOP", 0, topSpacing / 2 + dividerOffset)
+      divider:SetPoint("LEFT", layout)
+      divider:SetPoint("RIGHT", layout)
+      divider:SetShown(layout:GetHeight() > 0)
+      if layout:GetHeight() > 0 then
+        addedHeight = addedHeight + layout:GetHeight() + topSpacing
+        if lastCollapsible == nil then
+          layout:SetPoint("TOP", originBag, "BOTTOM", 0, -topSpacing)
+        else
+          layout:SetPoint("TOP", lastCollapsible, "BOTTOM", 0, -topSpacing)
+        end
+        lastCollapsible = layout
+      end
+    end
+  end
+  return addedHeight + endPadding
+end

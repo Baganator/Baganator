@@ -652,46 +652,15 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   self:ApplySearch(searchText)
 
-  local sideSpacing, topSpacing, dividerOffset, endPadding = 13, 14, 2, 0
+  local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
-    dividerOffset = 1
-    endPadding = 3
   end
 
   local bagHeight = activeBag:GetHeight() + topSpacing / 2
 
-  local function ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
-    local lastCollapsible
-    local addedHeight = 0
-    for index, layout in ipairs(activeCollapsibles) do
-      local key = originCollapsibles[index].key
-      local hidden = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)[key]
-      local divider = originCollapsibles[index].divider
-      if hidden then
-        divider:Hide()
-        layout:Hide()
-      else
-        divider:SetPoint("BOTTOM", layout, "TOP", 0, topSpacing / 2 + dividerOffset)
-        divider:SetPoint("LEFT", layout)
-        divider:SetPoint("RIGHT", layout)
-        divider:SetShown(layout:GetHeight() > 0)
-        if layout:GetHeight() > 0 then
-          addedHeight = addedHeight + layout:GetHeight() + topSpacing
-          if lastCollapsible == nil then
-            layout:SetPoint("TOP", originBag, "BOTTOM", 0, -topSpacing)
-          else
-            layout:SetPoint("TOP", lastCollapsible, "BOTTOM", 0, -topSpacing)
-          end
-          lastCollapsible = layout
-        end
-      end
-    end
-    return addedHeight + endPadding
-  end
-
-  bagHeight = bagHeight + ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
+  bagHeight = bagHeight + Baganator.UnifiedBags.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
   local height = bagHeight
 
   if activeBank then
@@ -704,7 +673,7 @@ function BaganatorMainViewMixin:UpdateForCharacter(character, isLive, updatedBag
       layout:ApplySearch(searchText)
     end
 
-    local bankHeight = activeBank:GetHeight() + 6 + ArrangeCollapsibles(activeBankCollapsibles, activeBank, self.CollapsingBankBags)
+    local bankHeight = activeBank:GetHeight() + 6 + Baganator.UnifiedBags.ArrangeCollapsibles(activeBankCollapsibles, activeBank, self.CollapsingBankBags)
     height = math.max(bankHeight, height)
     activeBank:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, - (height - bankHeight)/2 - 50)
   end

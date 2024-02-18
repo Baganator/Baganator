@@ -282,47 +282,16 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   self.BuyReagentBankButton:SetShown(Baganator.Constants.IsRetail and not IsReagentBankUnlocked())
 
   -- Copied from UnifiedBags/MainView.lua
-  local sideSpacing, topSpacing, dividerOffset, endPadding = 13, 14, 2, 0
+  local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
-    dividerOffset = 1
-    endPadding = 3
   end
 
   local bankHeight = self.BankLive:GetHeight() + topSpacing / 2
 
   -- Copied from UnifiedBags/MainView.lua
-  local function ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
-    local lastCollapsible
-    local addedHeight = 0
-    for index, layout in ipairs(activeCollapsibles) do
-      local key = originCollapsibles[index].key
-      local hidden = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)[key]
-      local divider = originCollapsibles[index].divider
-      if hidden then
-        divider:Hide()
-        layout:Hide()
-      else
-        divider:SetPoint("BOTTOM", layout, "TOP", 0, topSpacing / 2 + dividerOffset)
-        divider:SetPoint("LEFT", layout)
-        divider:SetPoint("RIGHT", layout)
-        divider:SetShown(layout:GetHeight() > 0)
-        if layout:GetHeight() > 0 then
-          addedHeight = addedHeight + layout:GetHeight() + topSpacing
-          if lastCollapsible == nil then
-            layout:SetPoint("TOP", originBag, "BOTTOM", 0, -topSpacing)
-          else
-            layout:SetPoint("TOP", lastCollapsible, "BOTTOM", 0, -topSpacing)
-          end
-          lastCollapsible = layout
-        end
-      end
-    end
-    return addedHeight + endPadding
-  end
-
-  bankHeight = bankHeight + ArrangeCollapsibles(activeBankBagCollapsibles, self.BankLive, self.CollapsingBankBags)
+  bankHeight = bankHeight + Baganator.UnifiedBags.ArrangeCollapsibles(activeBankBagCollapsibles, self.BankLive, self.CollapsingBankBags)
 
   self.AllButtons = {}
   tAppendAll(self.AllButtons, self.AllFixedButtons)
