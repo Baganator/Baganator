@@ -36,10 +36,6 @@ do
       return
     end
 
-    if not Baganator.Config.Get(Baganator.Config.Options.ENABLE_EQUIPMENT_SET_INFO) then
-      return
-    end
-
     local start = debugprofilestop()
 
     local oldSetInfo = CopyTable(self.equipmentSetInfo)
