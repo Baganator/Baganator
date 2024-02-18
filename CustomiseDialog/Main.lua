@@ -446,7 +446,9 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
   end)
 
   do
-    local junkPlugins = {}
+    local junkPlugins = {
+      {label = BAGANATOR_L_POOR_QUALITY, id = "poor_quality"},
+    }
     for id, pluginDetails in pairs(addonTable.JunkPlugins) do
       table.insert(junkPlugins, {
         label = pluginDetails.label,
@@ -459,12 +461,8 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
     local dropdown = {
       type = "dropdown",
       option = "junk_plugin",
-      entries = {
-        BAGANATOR_L_POOR_QUALITY,
-      },
-      values = {
-        "poor_quality",
-      },
+      entries = {},
+      values = {},
     }
     for _, pluginInfo in ipairs(junkPlugins) do
       table.insert(dropdown.entries, pluginInfo.label)

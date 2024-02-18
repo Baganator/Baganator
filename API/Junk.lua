@@ -1,3 +1,7 @@
+Baganator.API.RegisterJunkPlugin(NONE, "none", function(bagID, slotID, ...)
+  return false
+end)
+
 Baganator.Utilities.OnAddonLoaded("Peddler", function()
   if not PeddlerAPI then
     return
