@@ -247,6 +247,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_OPEN] = OpenCheck,
   [MOUNT:lower()] = MountCheck,
   [BAGANATOR_L_KEYWORD_TRADEABLE_LOOT] = IsTradeableLoot,
+  [BAGANATOR_L_KEYWORD_TRADABLE_LOOT] = IsTradeableLoot,
 }
 
 if Baganator.Constants.IsRetail then

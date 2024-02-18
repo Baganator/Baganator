@@ -155,6 +155,7 @@ L["KEYWORD_BOOTS"] = "boots"
 L["KEYWORD_OFF_HAND"] = "off-hand"
 L["KEYWORD_AZERITE"] = "azerite"
 L["KEYWORD_TRADEABLE_LOOT"] = "tradeable loot"
+L["KEYWORD_TRADABLE_LOOT"] = "tradable loot"
 
 L["SEARCH_TRY_X"] = "Search, try %s"
 
