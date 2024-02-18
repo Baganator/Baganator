@@ -123,9 +123,6 @@ function BaganatorCachedBagLayoutMixin:MarkBagsPending(section, updatedWaiting)
 end
 
 function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesToUse, rowWidth)
-  if self.pendingAllocations then
-    error("Bag buttons not pre-allocated")
-  end
   self.buttons = {}
   self.buttonsByBag = {}
   self.buttonPool:ReleaseAll()
@@ -397,6 +394,7 @@ function BaganatorLiveBagLayoutMixin:Deallocate()
   end
   self.buttons = {}
   self.bagSizesUsed = {}
+  self.buttonsByBag = {}
 end
 
 function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWidth)
