@@ -10,6 +10,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   self.unallocatedItemButtonPool = Baganator.UnifiedBags.GetLiveItemButtonPool(self)
   self.CollapsingBagSectionsPool = Baganator.UnifiedBags.GetCollapsingBagSectionsPool(self)
   self.CollapsingBankBags = {}
+  self.bagDetailsForComparison = {}
 
   FrameUtil.RegisterFrameForEvents(self, {
     "BANKFRAME_OPENED",
@@ -228,7 +229,8 @@ end
 function BaganatorBankOnlyViewMixin:AllocateBankBags(character)
   -- Copied from UnifiedBags/MainView.lua
   local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
-  if self.lastBankBagDetails == nil or not tCompare(self.lastBankBagDetails, newDetails, 5) then
+  if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
+    self.bagDetailsForComparison.bank = CopyTable(newDetails)
     self.CollapsingBankBags = Baganator.UnifiedBags.AllocateCollapsingSections(
       character, "bank", Baganator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,

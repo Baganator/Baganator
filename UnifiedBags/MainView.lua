@@ -28,6 +28,7 @@ function BaganatorMainViewMixin:OnLoad()
   self.CollapsingBagSectionsPool = Baganator.UnifiedBags.GetCollapsingBagSectionsPool(self)
   self.CollapsingBags = {}
   self.CollapsingBankBags = {}
+  self.bagDetailsForComparison = {}
 
   -- DO NOT REMOVE
   -- Preallocating is necessary to avoid taint issues if a
@@ -214,8 +215,8 @@ end
 
 function BaganatorMainViewMixin:AllocateBags(character)
   local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bags", Baganator.Constants.AllBagIndexes, Baganator.Constants.BagSlotsCount)
-
-  if self.lastBagDetails == nil or not tCompare(self.lastBagDetails, newDetails, 15) then
+  if self.bagDetailsForComparison.bags == nil or not tCompare(self.bagDetailsForComparison.bags, newDetails, 15) then
+    self.bagDetailsForComparison.bags = CopyTable(newDetails)
     self.CollapsingBags = Baganator.UnifiedBags.AllocateCollapsingSections(
       character, "bags", Baganator.Constants.AllBagIndexes,
       newDetails, self.CollapsingBags,
@@ -226,7 +227,8 @@ end
 
 function BaganatorMainViewMixin:AllocateBankBags(character)
   local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
-  if self.lastBankBagDetails == nil or not tCompare(self.lastBankBagDetails, newDetails, 5) then
+  if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
+    self.bagDetailsForComparison.bank = CopyTable(newDetails)
     self.CollapsingBankBags = Baganator.UnifiedBags.AllocateCollapsingSections(
       character, "bank", Baganator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,
