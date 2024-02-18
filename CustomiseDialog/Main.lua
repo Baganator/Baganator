@@ -468,6 +468,9 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
       table.insert(dropdown.entries, pluginInfo.label)
       table.insert(dropdown.values, pluginInfo.id)
     end
+    if addonTable.JunkPlugins[Baganator.Config.Get("junk_plugin")] == nil then
+      Baganator.Config.ResetOne("junk_plugin")
+    end
 
     table.insert(WINDOW_OPTIONS, dropdown)
   end
