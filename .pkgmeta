@@ -9,6 +9,7 @@ plain-copy:
   - Sorting
   - UnifiedBags
   - Transfers
+  - Compatibility
 optional-dependencies:
   - masque
 enable-toc-creation: yes

@@ -80,3 +80,5 @@ API\Main.lua
 API\Junk.lua
 API\ItemButton.lua
 API\EquipmentSets.lua
+
+Compatibility\VanillaEngraving.lua
