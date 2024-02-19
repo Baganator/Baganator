@@ -805,7 +805,7 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
       end
     end)
   end
-  self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()))
+  self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()

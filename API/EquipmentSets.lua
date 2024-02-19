@@ -1,3 +1,4 @@
+-- Blizzard Equipment sets (Wrath onwards)
 do
   local BlizzardSetTracker = CreateFrame("Frame")
 
@@ -84,4 +85,49 @@ do
       Baganator.API.RequestItemButtonsRefresh()
     end
   end
+end
+
+-- ItemRack Classic
+if not Baganator.Constants.IsRetail then
+  Baganator.Utilities.OnAddonLoaded("ItemRack", function()
+    local equipmentSetInfo = {}
+    local function ItemRackUpdated()
+      for name, details in pairs(ItemRackUser.Sets) do
+        if name:sub(1, 1) ~= "~" then
+          local setInfo = {name = name, icon = details.icon}
+          for _, itemRef in pairs(details.equip) do
+            if not equipmentSetInfo[itemRef] then
+              equipmentSetInfo[itemRef] = {}
+            end
+            table.insert(equipmentSetInfo[itemRef], setInfo)
+          end
+        end
+      end
+
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+    ItemRackUpdated()
+
+    ItemRack:RegisterExternalEventListener("ITEMRACK_SET_SAVED", ItemRackUpdated)
+    ItemRack:RegisterExternalEventListener("ITEMRACK_SET_DELETED", ItemRackUpdated)
+
+    Baganator.API.RegisterItemSetSource("ItemRack", "item_rack_classic", function(itemLocation, guid, itemLink)
+      if not guid then
+        return
+      end
+
+      local id = ItemRack.GetIRString(itemLink)
+      -- Workaround for ItemRack classic not getting the run id correctly for
+      -- bag items
+      if ItemRack.AppendRuneID and C_Engraving.IsInventorySlotEngravable(itemLocation:GetBagAndSlot()) then
+        local runeInfo = C_Engraving.GetRuneForInventorySlot(itemLocation:GetBagAndSlot())
+        if runeInfo then
+          id = id .. ":runeid:" .. tostring(runeInfo.skillLineAbilityID)
+        else
+          id = id .. ":runeid:0"
+        end
+      end
+      return equipmentSetInfo[id]
+    end)
+  end)
 end
