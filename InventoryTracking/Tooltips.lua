@@ -91,25 +91,25 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     appendRealm = true
   end
 
-  AddDoubleLine(BAGANATOR_L_INVENTORY, WHITE_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_TOTAL_X:format(totals)))
+  AddDoubleLine(BAGANATOR_L_INVENTORY, LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_TOTAL_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(totals))))
 
   for index = 1, math.min(#tooltipInfo.characters, Baganator.Config.Get("tooltips_character_limit")) do
     local s = tooltipInfo.characters[index]
     local entries = {}
     if s.bags > 0 then
-      table.insert(entries, BAGANATOR_L_BAGS_X:format(s.bags))
+      table.insert(entries, BAGANATOR_L_BAGS_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.bags)))
     end
     if s.bank > 0 then
-      table.insert(entries, BAGANATOR_L_BANK_X:format(s.bank))
+      table.insert(entries, BAGANATOR_L_BANK_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.bank)))
     end
     if s.mail > 0 then
-      table.insert(entries, BAGANATOR_L_MAIL_X:format(s.mail))
+      table.insert(entries, BAGANATOR_L_MAIL_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.mail)))
     end
     if s.equipped > 0 then
-      table.insert(entries, BAGANATOR_L_EQUIPPED_X:format(s.equipped))
+      table.insert(entries, BAGANATOR_L_EQUIPPED_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.equipped)))
     end
     if s.void > 0 then
-      table.insert(entries, BAGANATOR_L_VOID_X:format(s.void))
+      table.insert(entries, BAGANATOR_L_VOID_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.void)))
     end
     local character = s.character
     if appendRealm then
@@ -121,7 +121,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and s.race then
       character = Baganator.Utilities.GetCharacterIcon(s.race, s.sex) .. " " .. character
     end
-    AddDoubleLine("  " .. character, WHITE_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
+    AddDoubleLine("  " .. character, LINK_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
   end
   if #tooltipInfo.characters > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
@@ -129,12 +129,12 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
 
   for index = 1, math.min(#tooltipInfo.guilds, Baganator.Config.Get("tooltips_character_limit")) do
     local s = tooltipInfo.guilds[index]
-    local output = BAGANATOR_L_GUILD_X:format(s.bank)
+    local output = BAGANATOR_L_GUILD_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.bank))
     local guild = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(s.guild)
     if appendRealm then
       guild = guild .. "-" .. s.realmNormalized
     end
-    AddDoubleLine("  " .. guild, WHITE_FONT_COLOR:WrapTextInColorCode(output))
+    AddDoubleLine("  " .. guild, LINK_FONT_COLOR:WrapTextInColorCode(output))
   end
   if #tooltipInfo.guilds > Baganator.Config.Get("tooltips_character_limit") then
     tooltip:AddLine("  ...")
