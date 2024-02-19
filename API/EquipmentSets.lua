@@ -92,6 +92,7 @@ if not Baganator.Constants.IsRetail then
   Baganator.Utilities.OnAddonLoaded("ItemRack", function()
     local equipmentSetInfo = {}
     local function ItemRackUpdated()
+      equipmentSetInfo = {}
       for name, details in pairs(ItemRackUser.Sets) do
         if name:sub(1, 1) ~= "~" then
           local setInfo = {name = name, icon = details.icon}
