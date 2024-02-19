@@ -109,6 +109,7 @@ L["TRADEABLE_LOOT_TL"] = "Tradeable Loot (TL)"
 L["BATTLE_PET_BREEDID"] = "Battle Pet BreedID"
 L["BATTLE_PET_LEVEL"] = "Battle Pet Level"
 L["JUNK"] = "Junk"
+L["ENGRAVED_RUNE"] = "Engraved Rune"
 L["ADD_A_CORNER_ITEM"] = "Add a corner item"
 L["ICON_CORNER_PRIORITIES_EXPLANATION"] = "Choose what information should be shown in each corner of the icon on an item's button and prioritise the most wanted information."
 

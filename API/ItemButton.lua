@@ -244,3 +244,19 @@ if Baganator.Constants.IsRetail then
   end,
   textInit, {corner = "top_left", priority = 2})
 end
+
+if C_Engraving and C_Engraving.IsEngravingEnabled() then
+  Baganator.API.RegisterCornerWidget(BAGANATOR_L_ENGRAVED_RUNE, "engraved_rune", function(RuneTexture, details)
+    if details.engravingInfo then
+      RuneTexture:SetTexture(details.engravingInfo.iconTexture)
+      return true
+    else
+      return false
+    end
+  end, function(itemButton)
+    local texture = itemButton:CreateTexture(nil, "OVERLAY")
+    texture:SetSize(16, 16)
+    texture.padding = 0
+    return texture
+  end, {corner = "top_right", priority = 1})
+end

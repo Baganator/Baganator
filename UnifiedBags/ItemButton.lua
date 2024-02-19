@@ -846,6 +846,13 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
       GameTooltip:Hide();
     end
   end
+
+  if C_Engraving and C_Engraving.IsEngravingEnabled() then
+    local bagID = self:GetParent():GetID()
+    if bagID >= 0 and C_Engraving.IsInventorySlotEngravable(bagID, self:GetID()) then
+      self.BGR.engravingInfo = C_Engraving.GetRuneForInventorySlot(bagID, self:GetID())
+    end
+  end
   
   self.searchOverlay:SetShown(false);
   SetWidgetsAlpha(self, true)
