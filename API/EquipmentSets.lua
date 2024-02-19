@@ -120,12 +120,27 @@ if not Baganator.Constants.IsRetail then
       local id = ItemRack.GetIRString(itemLink)
       -- Workaround for ItemRack classic not getting the run id correctly for
       -- bag items
-      if ItemRack.AppendRuneID and C_Engraving.IsInventorySlotEngravable(itemLocation:GetBagAndSlot()) then
-        local runeInfo = C_Engraving.GetRuneForInventorySlot(itemLocation:GetBagAndSlot())
-        if runeInfo then
-          id = id .. ":runeid:" .. tostring(runeInfo.skillLineAbilityID)
-        else
-          id = id .. ":runeid:0"
+      if ItemRack.AppendRuneID then
+        local bagID, slotID = itemLocation:GetBagAndSlot()
+        local isEngravable = false
+        local runeInfo = nil
+        if bagID == Enum.BagIndex.Bank then
+          local invID = BankButtonIDToInvSlotID(slotID)
+          isEngravable = C_Engraving.IsEquipmentSlotEngravable(invID)
+          if isEngravable then
+            runeInfo = C_Engraving.GetRuneForEquipmentSlot(invID)
+          end
+        elseif bagID >= 0 and C_Engraving.IsInventorySlotEngravable(bagID, slotID) then
+          isEngravable = true
+          runeInfo = C_Engraving.GetRuneForInventorySlot(bagID, slotID)
+        end
+
+        if isEngravable then
+          if runeInfo then
+            id = id .. ":runeid:" .. tostring(runeInfo.skillLineAbilityID)
+          else
+            id = id .. ":runeid:0"
+          end
         end
       end
       return equipmentSetInfo[id]
