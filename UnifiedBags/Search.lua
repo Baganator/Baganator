@@ -511,6 +511,7 @@ local function GetTooltipSpecialTerms(details)
   end
 
   details.searchKeywords = {details.itemName:lower()}
+
   for _, line in ipairs(details.tooltipInfoSpell.lines) do
     local term = line.leftText:match("^|cFF......(.*)|r$")
     if term then
@@ -519,6 +520,14 @@ local function GetTooltipSpecialTerms(details)
       local match = line.leftText:match("^" .. USE_COLON) or line.leftText:match("^" .. ITEM_SPELL_TRIGGER_ONEQUIP)
       if details.classID ~= Enum.ItemClass.Recipe and match then
         table.insert(details.searchKeywords, line.leftText:lower())
+      end
+    end
+  end
+
+  if details.setInfo then
+    for _, info in ipairs(details.setInfo) do
+      if type(info.name) == "string" then
+        table.insert(details.searchKeywords, info.name:lower())
       end
     end
   end
