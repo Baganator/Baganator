@@ -12,7 +12,11 @@ local function SetCheck(details)
   return details.setInfo ~= nil
 end
 
-local function EngravingCheck(details)
+local function EngravableCheck(details)
+  return details.isEngravable
+end
+
+local function EngravedCheck(details)
   return details.engravingInfo ~= nil
 end
 
@@ -241,8 +245,8 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_DRINK] = FoodCheck,
   [BAGANATOR_L_KEYWORD_POTION] = PotionCheck,
   [BAGANATOR_L_KEYWORD_SET] = SetCheck,
-  [BAGANATOR_L_KEYWORD_ENGRAVING] = EngravingCheck,
-  [BAGANATOR_L_KEYWORD_ENGRAVED] = EngravingCheck,
+  [BAGANATOR_L_KEYWORD_ENGRAVABLE] = EngravableCheck,
+  [BAGANATOR_L_KEYWORD_ENGRAVED] = EngravedCheck,
   [BAGANATOR_L_KEYWORD_SOCKET] = SocketCheck,
   [BAGANATOR_L_KEYWORD_JUNK] = JunkCheck,
   [BAGANATOR_L_KEYWORD_TRASH] = JunkCheck,

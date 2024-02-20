@@ -157,7 +157,7 @@ L["KEYWORD_OFF_HAND"] = "off-hand"
 L["KEYWORD_AZERITE"] = "azerite"
 L["KEYWORD_TRADEABLE_LOOT"] = "tradeable loot"
 L["KEYWORD_TRADABLE_LOOT"] = "tradable loot"
-L["KEYWORD_ENGRAVING"] = "engraving"
+L["KEYWORD_ENGRAVABLE"] = "engravable"
 L["KEYWORD_ENGRAVED"] = "engraved"
 
 L["SEARCH_TRY_X"] = "Search, try %s"

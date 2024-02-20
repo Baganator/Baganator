@@ -848,9 +848,17 @@ function BaganatorClassicLiveItemButtonMixin:SetItemDetails(cacheData)
   end
 
   if C_Engraving and C_Engraving.IsEngravingEnabled() then
-    local bagID = self:GetParent():GetID()
-    if bagID >= 0 and C_Engraving.IsInventorySlotEngravable(bagID, self:GetID()) then
-      self.BGR.engravingInfo = C_Engraving.GetRuneForInventorySlot(bagID, self:GetID())
+    self.BGR.isEngravable = false
+    local bagID, slotID = self:GetParent():GetID(), self:GetID()
+    if bagID == Enum.BagIndex.Bank then
+      local invID = BankButtonIDToInvSlotID(slotID)
+      self.BGR.isEngravable = C_Engraving.IsEquipmentSlotEngravable(invID)
+      if self.BGR.isEngravable then
+        self.BGR.engravingInfo = C_Engraving.GetRuneForEquipmentSlot(invID)
+      end
+    elseif bagID >= 0 and C_Engraving.IsInventorySlotEngravable(bagID, slotID) then
+      self.BGR.isEngravable = true
+      self.BGR.engravingInfo = C_Engraving.GetRuneForInventorySlot(bagID, slotID)
     end
   end
   
