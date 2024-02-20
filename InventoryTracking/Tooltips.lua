@@ -134,6 +134,9 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if appendRealm then
       guild = guild .. "-" .. s.realmNormalized
     end
+    if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) then
+      guild = Baganator.Utilities.GetGuildIcon() .. " " .. guild
+    end
     AddDoubleLine("  " .. guild, LINK_FONT_COLOR:WrapTextInColorCode(output))
   end
   if #tooltipInfo.guilds > Baganator.Config.Get("tooltips_character_limit") then
