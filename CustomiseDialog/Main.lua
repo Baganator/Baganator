@@ -68,14 +68,18 @@ local WINDOW_OPTIONS = {
     option = "bank_view_width",
   },
   {
-    type = "checkbox",
-    text = BAGANATOR_L_REDUCE_SPACING_BETWEEN_UI_COMPONENTS,
-    option = "reduce_spacing",
+    type = "slider",
+    min = 1,
+    max = 42,
+    lowText = "1",
+    highText = "42",
+    valuePattern = BAGANATOR_L_X_GUILD_COLUMNS,
+    option = "guild_view_width",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SHOW_BUTTONS_ON_ALT,
-    option = "show_buttons_on_alt",
+    text = BAGANATOR_L_REDUCE_SPACING_BETWEEN_UI_COMPONENTS,
+    option = "reduce_spacing",
   },
   {
     type = "header",
@@ -259,11 +263,6 @@ local OPEN_CLOSE_OPTIONS = {
 local SORTING_OPTIONS = {
   {
     type = "checkbox",
-    text = BAGANATOR_L_SHOW_SORT_BUTTON,
-    option = "show_sort_button_2",
-  },
-  {
-    type = "checkbox",
     text = BAGANATOR_L_AUTO_SORT_ON_OPENING_BAGS,
     option = "auto_sort_on_open",
   },
@@ -297,11 +296,27 @@ local SORTING_OPTIONS = {
     level = 2,
   },
 }
-local TRANSFERS_OPTIONS = {
+local BUTTONS_OPTIONS = {
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_BUTTONS_ON_ALT,
+    option = "show_buttons_on_alt",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_SORT_BUTTON,
+    option = "show_sort_button_2",
+  },
   {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_TRANSFER_BUTTON,
     option = "show_transfer_button",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_GUILD_BANK_BUTTON_RELOAD_REQUIRED,
+    option = "show_guild_bank_button",
+    check = NotIsEraCheck,
   },
 }
 
@@ -402,7 +417,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:SetupTooltip()
   self:SetupOpenClose()
   self:SetupSorting()
-  self:SetupTransfers()
+  self:SetupButtonsOptions()
 
   PanelTemplates_SetNumTabs(self, #self.Tabs)
 
@@ -609,13 +624,13 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   table.insert(self.lowestFrames, allFrames[#allFrames])
 end
 
-function BaganatorCustomiseDialogMixin:SetupTransfers()
+function BaganatorCustomiseDialogMixin:SetupButtonsOptions()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_TRANSFERS)
+  tab:SetText(BAGANATOR_L_BUTTONS)
 
   local frame = GetWrapperFrame(self)
 
-  local allFrames = GenerateFrames(TRANSFERS_OPTIONS, frame)
+  local allFrames = GenerateFrames(BUTTONS_OPTIONS, frame)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do

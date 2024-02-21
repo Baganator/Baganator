@@ -149,24 +149,62 @@ function Baganator.Utilities.AddBagSortManager(parent)
   parent.sortManager:SetScript("OnHide", parent.sortManager.Cancel)
 end
 
-function Baganator.Utilities.AddBagTransferManager(self)
-  self.transferManager = CreateFrame("Frame", nil, self)
-  function self.transferManager:Apply(status, retryFunc, completeFunc)
+function Baganator.Utilities.AddBagTransferManager(parent)
+  parent.transferManager = CreateFrame("Frame", nil, parent)
+  -- Tidy up all the recovery methods so they don't trigger after everything is
+  -- complete
+  Baganator.CallbackRegistry:RegisterCallback("TransferCancel", function(self)
     self:SetScript("OnUpdate", nil)
-    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self)
+    if self.modes ~= nil then
+      for _, m in ipairs(self.modes) do
+        Baganator.CallbackRegistry:UnregisterCallback(m, self)
+      end
+      self.modes = nil
+    end
+    if self.timer then
+      self.timer:Cancel()
+      self.timer = nil
+    end
+  end, parent.transferManager)
+  function parent.transferManager:Apply(status, modes, retryFunc, completeFunc)
+    Baganator.CallbackRegistry:TriggerEvent("TransferCancel")
+    self.modes = modes
     if status == Baganator.Constants.SortStatus.Complete then
       completeFunc()
     elseif status == Baganator.Constants.SortStatus.WaitingMove then
-      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-        C_Timer.After(0, retryFunc)
-      end, self)
+      local pending = #modes
+      -- Recovery method if the Blizzard APIs stop responding when moving items
+      self.timer = C_Timer.NewTimer(1, function()
+        self.timer = nil
+        Baganator.CallbackRegistry:TriggerEvent("TransferCancel")
+        retryFunc()
+      end)
+      -- Wait for all affected caches to update before moving onto the next
+      -- action
+      for _, m in ipairs(self.modes) do
+        Baganator.CallbackRegistry:RegisterCallback(m, function(_, _, _, anyChanges)
+          if anyChanges == false then
+            return
+          end
+          Baganator.CallbackRegistry:UnregisterCallback(m, self)
+          pending = pending - 1
+          if pending == 0 then
+            Baganator.CallbackRegistry:TriggerEvent("TransferCancel")
+            -- We save the timer so a TransferCancel event will be effective if
+            -- done while this timer is pending.
+            self.timer = C_Timer.NewTimer(0.1, function()
+              self.timer = nil
+              retryFunc()
+            end)
+          end
+        end, self)
+      end
     else -- waiting item data or item unlock
       self:SetScript("OnUpdate", retryFunc)
     end
   end
-  self.transferManager:SetScript("OnHide", function()
-    self.transferManager:SetScript("OnUpdate", nil)
-    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.transferManager)
+  parent.transferManager:SetScript("OnHide", function(self)
+    Baganator.CallbackRegistry:TriggerEvent("TransferCancel")
   end)
 end
 

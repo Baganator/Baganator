@@ -7,7 +7,7 @@ plain-copy:
   - InventoryTracking
   - CustomiseDialog
   - Sorting
-  - UnifiedBags
+  - UnifiedViews
   - Transfers
   - Compatibility
 optional-dependencies:

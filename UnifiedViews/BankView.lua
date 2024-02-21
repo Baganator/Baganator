@@ -227,7 +227,7 @@ function BaganatorBankOnlyViewMixin:OnHide(eventName)
 end
 
 function BaganatorBankOnlyViewMixin:AllocateBankBags(character)
-  -- Copied from UnifiedBags/MainView.lua
+  -- Copied from UnifiedBags/BagView.lua
   local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
   if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
     self.bagDetailsForComparison.bank = CopyTable(newDetails)
@@ -281,7 +281,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   self.DepositIntoReagentsBankButton:SetShown(Baganator.Constants.IsRetail and IsReagentBankUnlocked())
   self.BuyReagentBankButton:SetShown(Baganator.Constants.IsRetail and not IsReagentBankUnlocked())
 
-  -- Copied from UnifiedBags/MainView.lua
+  -- Copied from UnifiedBags/BagView.lua
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
@@ -290,7 +290,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
 
   local bankHeight = self.BankLive:GetHeight() + topSpacing / 2
 
-  -- Copied from UnifiedBags/MainView.lua
+  -- Copied from UnifiedBags/BagView.lua
   bankHeight = bankHeight + Baganator.UnifiedBags.ArrangeCollapsibles(activeBankBagCollapsibles, self.BankLive, self.CollapsingBankBags)
 
   self.AllButtons = {}
@@ -440,13 +440,11 @@ function BaganatorBankOnlyViewMixin:RemoveSearchMatches(callback)
     tAppendAll(matches, layouts.live.SearchMonitor:GetMatches())
   end
 
-  local emptyBagSlots = Baganator.Transfers.GetEmptySlots(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes)
-  local combinedIDs = CopyTable(Baganator.Constants.AllBagIndexes)
-  tAppendAll(combinedIDs, Baganator.Constants.AllBankIndexes)
+  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes)
 
-  local status = Baganator.Transfers.MoveBetweenBags(combinedIDs, matches, emptyBagSlots)
+  local status = Baganator.Transfers.FromBagsToBags(matches, Baganator.Constants.AllBagIndexes, emptyBagSlots)
 
-  self.transferManager:Apply(status, function()
+  self.transferManager:Apply(status, {"BagCacheUpdated"}, function()
     self:RemoveSearchMatches(callback)
   end, function()
     callback()

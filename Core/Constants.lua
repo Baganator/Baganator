@@ -65,6 +65,7 @@ Baganator.Constants.Events = {
   "MailCacheUpdate",
   "CurrencyCacheUpdate",
   "GuildCacheUpdate",
+  "GuildNameSet",
   "EquippedCacheUpdate",
   "VoidCacheUpdate",
 
@@ -73,6 +74,7 @@ Baganator.Constants.Events = {
   "BagHide",
   "CharacterSelect",
   "SpecialBagToggled",
+  "GuildToggle",
 
   "ShowCustomise",
   "ResetFramePositions",
@@ -85,6 +87,8 @@ Baganator.Constants.Events = {
   "EquipmentSetsUpdated",
   "ContentRefreshRequired",
   "PluginsUpdated",
+
+  "TransferCancel",
 }
 
 -- Hidden currencies for all characters tooltips as they are shared between characters

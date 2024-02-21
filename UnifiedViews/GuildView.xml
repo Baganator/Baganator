@@ -1,0 +1,63 @@
+<Ui>
+  <Frame name="BaganatorGuildViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorGuildViewMixin">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnHide method="OnHide"/>
+      <OnEvent method="OnEvent"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnDragStop method="OnDragStop"/>
+    </Scripts>
+    <Frames>
+      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllButtons">
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
+        </Anchors>
+      </Button>
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllButtons">
+        <KeyValues>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_GUILD_VIEW_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            self:GetParent():Transfer()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Frame parentKey="GuildLive" inherits="BaganatorLiveGuildLayoutTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="13" y="-50"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="GuildCached" inherits="BaganatorCachedGuildLayoutTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="13" y="-50"/>
+        </Anchors>
+      </Frame>
+
+      <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
+        <Size x="300" y="22"/>
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativeKey="$parent.GuildCached" relativePoint="TOPLEFT" x="5" y="3"/>
+        </Anchors>
+      </EditBox>
+    </Frames>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString parentKey="Money" inherits="GameFontHighlight">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" x="15" y="10"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="WithdrawalsInfo" inherits="GameFontHighlight">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" x="15" y="30"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Frame>
+</Ui>

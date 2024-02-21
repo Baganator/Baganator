@@ -24,8 +24,6 @@ local function MasqueRegistration(button)
   end
 end
 
-BaganatorCachedBagLayoutMixin = {}
-
 local ReflowSettings = {
   Baganator.Config.Options.BAG_ICON_SIZE,
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
@@ -49,8 +47,7 @@ local RefreshContentSettings = {
   Baganator.Config.Options.JUNK_PLUGIN,
 }
 
-
-local function FlowButtons(self, rowWidth)
+local function GetPaddingAndSize()
   local iconPadding = 4
 
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
@@ -58,6 +55,16 @@ local function FlowButtons(self, rowWidth)
   end
 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  return iconPadding, iconSize
+end
+
+local function ApplySizing(self, rowWidth, iconPadding, iconSize, flexDimension, staticDimension)
+  self:SetSize(rowWidth * (iconSize + iconPadding) - iconPadding, (iconPadding + iconSize) * ((flexDimension > 0 and (staticDimension + 1) or staticDimension)))
+end
+
+local function FlowButtonsRows(self, rowWidth)
+  local iconPadding, iconSize = GetPaddingAndSize()
 
   local rows, cols = 0, 0
   if Baganator.Config.Get(Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP) then
@@ -79,9 +86,35 @@ local function FlowButtons(self, rowWidth)
     end
   end
 
-  self:SetSize(rowWidth * (iconSize + iconPadding) - iconPadding, (iconPadding + iconSize) * ((cols > 0 and (rows + 1) or rows)))
+  ApplySizing(self, rowWidth, iconPadding, iconSize, cols, rows)
   self.oldRowWidth = rowWidth
 end
+
+local function FlowButtonsColumns(self, rowWidth)
+  local iconPadding, iconSize = GetPaddingAndSize()
+
+  local columnHeight = math.ceil(#self.buttons / rowWidth)
+
+  local rows, cols = 0, 0
+
+  local iconPaddingScaled = iconPadding * 37 / iconSize
+  for _, button in ipairs(self.buttons) do
+    button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
+    button:SetScale(iconSize / 37)
+    button:UpdateTextures()
+    MasqueRegistration(button)
+    rows = rows + 1
+    if rows >= columnHeight then
+      rows = 0
+      cols = cols + 1
+    end
+  end
+
+  ApplySizing(self, rowWidth, iconPadding, iconSize, cols, columnHeight - 1)
+  self.oldRowWidth = rowWidth
+end
+
+BaganatorCachedBagLayoutMixin = {}
 
 function BaganatorCachedBagLayoutMixin:OnLoad()
   self.buttonPool = Baganator.UnifiedBags.GetCachedItemButtonPool(self)
@@ -89,7 +122,7 @@ function BaganatorCachedBagLayoutMixin:OnLoad()
   self.prevState = {}
   self.buttonsByBag = {}
   self.waitingUpdate = {}
-  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorSearchLayoutMonitorTemplate")
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
 end
 
 function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
@@ -144,7 +177,7 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
     end
   end
 
-  FlowButtons(self, rowWidth)
+  FlowButtonsRows(self, rowWidth)
 end
 
 function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes, indexesToUse, rowWidth)
@@ -176,7 +209,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
     end
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
-    FlowButtons(self, rowWidth)
+    FlowButtonsRows(self, rowWidth)
   end
 
   if self.refreshContent then
@@ -206,7 +239,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
     for _ in pairs(indexesToUse) do
       c = c+ 1
     end
-    print("cached layout took", c, section, debugprofilestop() - start)
+    print("cached bag layout took", c, section, debugprofilestop() - start)
   end
 
   self.waitingUpdate = {}
@@ -269,7 +302,7 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
   self.bagSizesUsed = {}
   self.waitingUpdate = {}
   self.prevState = {}
-  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorSearchLayoutMonitorTemplate")
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
 
   self:RegisterEvent("ITEM_LOCK_CHANGED")
 end
@@ -421,7 +454,7 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
     end
   end
 
-  FlowButtons(self, rowWidth)
+  FlowButtonsRows(self, rowWidth)
 end
 
 function BaganatorLiveBagLayoutMixin:CompareButtonIndexes(indexes, indexesToUse)
@@ -465,7 +498,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
     end
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
-    FlowButtons(self, rowWidth)
+    FlowButtonsRows(self, rowWidth)
   end
 
   if self.refreshContent then
@@ -491,11 +524,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
   end
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    local c = 0
-    for _ in pairs(indexesToUse) do
-      c = c+ 1
-    end
-    print("live layout took", c, section, debugprofilestop() - start)
+    print("live bag layout took", section, debugprofilestop() - start)
   end
 
   self.prevState = {
@@ -506,6 +535,245 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
 end
 
 function BaganatorLiveBagLayoutMixin:ApplySearch(text)
+  self.SearchMonitor:StartSearch(text)
+end
+
+BaganatorCachedGuildLayoutMixin = {}
+
+function BaganatorCachedGuildLayoutMixin:OnLoad()
+  self.buttonPool = Baganator.UnifiedBags.GetCachedItemButtonPool(self)
+  self.buttons = {}
+  self.prevState = {}
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
+end
+
+function BaganatorCachedGuildLayoutMixin:InformSettingChanged(setting)
+  if tIndexOf(ReflowSettings, setting) ~= nil then
+    self.reflow = true
+  elseif tIndexOf(RefreshContentSettings, setting) ~= nil then
+    self.refreshContent = true
+  end
+end
+
+function BaganatorCachedGuildLayoutMixin:RequestContentRefresh()
+  self.refreshContent = true
+end
+
+function BaganatorCachedGuildLayoutMixin:RebuildLayout(rowWidth)
+  self.buttons = {}
+  self.buttonPool:ReleaseAll()
+
+  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  for index = 1, Baganator.Constants.MaxGuildBankTabItemSlots do
+    local button = self.buttonPool:Acquire()
+    button:Show()
+
+    table.insert(self.buttons, button)
+  end
+
+  FlowButtonsColumns(self, rowWidth)
+end
+
+function BaganatorCachedGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
+  local start = debugprofilestop()
+
+  local guildData = BAGANATOR_DATA.Guilds[guild]
+
+  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  if #self.buttons ~= Baganator.Constants.MaxGuildBankTabItemSlots then
+    self.refreshContent = true
+    self:RebuildLayout(rowWidth)
+  elseif self.reflow or rowWidth ~= self.oldRowWidth then
+    self.reflow = false
+    FlowButtonsColumns(self, rowWidth)
+  end
+
+  if not guildData then
+    return
+  end
+
+  if self.prevState.guild ~= guild or self.prevState.tabIndex ~= tabIndex then
+    self.refreshContent = true
+  end
+
+  if self.refreshContent then
+    self.refreshContent = false
+
+    local tabData = guildData.bank[tabIndex]
+
+    if tabData and #tabData.slots > 0 then
+      for index, slotInfo in ipairs(tabData.slots) do
+        self.buttons[index]:SetItemDetails(slotInfo)
+      end
+    else
+      for _, button in ipairs(self.buttons) do
+        button:SetItemDetails({})
+      end
+    end
+  end
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("cached guild layout took", tabIndex, debugprofilestop() - start)
+  end
+
+  self.prevState = {
+    guild = guild,
+    tabIndex = tabIndex,
+  }
+end
+
+function BaganatorCachedGuildLayoutMixin:ApplySearch(text)
+  self.SearchMonitor:StartSearch(text)
+end
+
+function BaganatorCachedGuildLayoutMixin:OnShow()
+  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
+    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
+      return
+    end
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemName == itemName then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
+end
+
+function BaganatorCachedGuildLayoutMixin:OnHide()
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+end
+
+BaganatorLiveGuildLayoutMixin = {}
+
+function BaganatorLiveGuildLayoutMixin:OnLoad()
+  self.buttonPool = Baganator.UnifiedBags.GetLiveGuildItemButtonPool(self)
+  self.buttons = {}
+  self.prevState = {}
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
+  --self:PreallocateButtons(Baganator.Constants.MaxGuildBankTabItemSlots)
+
+  self:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
+end
+
+function BaganatorLiveGuildLayoutMixin:PreallocateButtons(buttonCount)
+  self.pendingAllocations = true
+  -- Avoid allocating during combat
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LOGIN")
+  frame:SetScript("OnEvent", function()
+    self.pendingAllocations = false
+    for i = 1, buttonCount do
+      self.buttonPool:Acquire()
+    end
+    self.buttonPool:ReleaseAll()
+  end)
+end
+
+function BaganatorLiveGuildLayoutMixin:OnEvent(eventName, ...)
+  if eventName == "GUILDBANK_ITEM_LOCK_CHANGED" and self.prevState and self.prevState.guild ~= nil and self.prevState.guild ~= "" then
+    self.refreshContent = true
+    self:ShowGuild(self.prevState.guild, self.prevState.tabIndex, self.oldRowWidth)
+    self.SearchMonitor:StartSearch(self.SearchMonitor.text)
+  end
+end
+
+function BaganatorLiveGuildLayoutMixin:OnShow()
+  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
+    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
+      return
+    end
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemName == itemName then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
+end
+
+function BaganatorLiveGuildLayoutMixin:OnHide()
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+end
+
+function BaganatorLiveGuildLayoutMixin:InformSettingChanged(setting)
+  if tIndexOf(ReflowSettings, setting) ~= nil then
+    self.reflow = true
+  end
+  if tIndexOf(RefreshContentSettings, setting) ~= nil then
+    self.refreshContent = true
+  end
+end
+
+function BaganatorLiveGuildLayoutMixin:RequestContentRefresh()
+  self.refreshContent = true
+end
+
+function BaganatorLiveGuildLayoutMixin:RebuildLayout(rowWidth)
+  if self.pendingAllocations then
+    error("Bag buttons not pre-allocated")
+  end
+  self.buttonPool:ReleaseAll()
+  self.buttons = {}
+
+  for index = 1, Baganator.Constants.MaxGuildBankTabItemSlots do
+    local b = self.buttonPool:Acquire()
+    b:SetID(index)
+    b:Show()
+    table.insert(self.buttons, b)
+  end
+
+  FlowButtonsColumns(self, rowWidth)
+end
+
+function BaganatorLiveGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
+  local start = debugprofilestop()
+
+  local guildData = BAGANATOR_DATA.Guilds[guild]
+
+  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  if self.prevState.guild ~= guild or self.prevState.tabIndex ~= tabIndex then
+    self.refreshContent = true
+  end
+
+  if #self.buttons == 0 then
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("rebuild")
+    end
+    self:RebuildLayout(rowWidth)
+    self.refreshContent = true
+  elseif self.reflow or rowWidth ~= self.oldRowWidth then
+    self.reflow = false
+    FlowButtonsColumns(self, rowWidth)
+  end
+
+  if self.refreshContent then
+    self.refreshContent = false
+
+    local tab = guildData.bank[tabIndex] and guildData.bank[tabIndex].slots or {}
+    for index, cacheData in ipairs(tab) do
+      local button = self.buttons[index]
+      button:SetItemDetails(cacheData, tabIndex)
+    end
+    if #tab == 0 then
+      for _, button in ipairs(self.buttons) do
+        button:SetItemDetails({}, tabIndex)
+      end
+    end
+  end
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("live guild layout took", tabIndex, debugprofilestop() - start)
+  end
+
+  self.prevState = {
+    guild = guild,
+    tabIndex = tabIndex,
+  }
+end
+
+function BaganatorLiveGuildLayoutMixin:ApplySearch(text)
   self.SearchMonitor:StartSearch(text)
 end
 
@@ -544,7 +812,9 @@ function BaganatorSearchLayoutMonitorMixin:StartSearch(text)
   end
 end
 
-function BaganatorSearchLayoutMonitorMixin:GetMatches()
+BaganatorBagSearchLayoutMonitorMixin = CreateFromMixins(BaganatorSearchLayoutMonitorMixin)
+
+function BaganatorBagSearchLayoutMonitorMixin:GetMatches()
   local matches = {}
   for _, itemButton in ipairs(self:GetParent().buttons) do
     if itemButton.BGR and itemButton.BGR.itemID and itemButton.BGR.matchesSearch then
@@ -554,11 +824,26 @@ function BaganatorSearchLayoutMonitorMixin:GetMatches()
         itemCount = itemButton.BGR.itemCount,
         itemID = itemButton.BGR.itemID,
         hasNoValue = itemButton.BGR.hasNoValue,
+        isBound = itemButton.BGR.isBound,
       })
     end
   end
   return matches
 end
 
-function BaganatorSearchLayoutMonitorMixin:ClearSearch()
+BaganatorGuildSearchLayoutMonitorMixin = CreateFromMixins(BaganatorSearchLayoutMonitorMixin)
+
+function BaganatorGuildSearchLayoutMonitorMixin:GetMatches()
+  local matches = {}
+  for _, itemButton in ipairs(self:GetParent().buttons) do
+    if itemButton.BGR and itemButton.BGR.itemID and itemButton.BGR.matchesSearch then
+      table.insert(matches, {
+        tabIndex = self:GetParent().prevState.tabIndex,
+        slotID = itemButton:GetID(),
+        itemCount = itemButton.BGR.itemCount,
+        itemID = itemButton.BGR.itemID,
+      })
+    end
+  end
+  return matches
 end

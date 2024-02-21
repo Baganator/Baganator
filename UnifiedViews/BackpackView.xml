@@ -1,5 +1,5 @@
 <Ui>
-  <Frame name="BaganatorMainViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorMainViewMixin">
+  <Frame name="BaganatorBackpackViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorBackpackViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
@@ -39,48 +39,21 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleBankButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <KeyValues>
-          <KeyValue key="tooltipHeader" value="BAGANATOR_L_BANK" type="global"/>
-        </KeyValues>
-        <Layers>
-          <Layer level="ARTWORK">
-            <Texture parentKey="icon" atlas="VignetteLoot">
-              <Size x="17" y="17"/>
-              <Anchors>
-                <Anchor point="CENTER"/>
-              </Anchors>
-            </Texture>
-          </Layer>
-        </Layers>
+      <Button parentKey="ToggleBankButton" inherits="BaganatorBankButtonTemplate" frameLevel="700" parentArray="TopButtons">
         <Scripts>
-          <OnLoad>
-            if Baganator.Constants.IsClassic then
-              self.icon:SetSize(22, 22)
-            end
-          </OnLoad>
           <OnClick>
             self:GetParent():ToggleBank()
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleAllCharacters" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <KeyValues>
-          <KeyValue key="tooltipHeader" value="BAGANATOR_L_ALL_CHARACTERS" type="global"/>
-        </KeyValues>
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.ToggleBankButton" relativePoint="TOPRIGHT"/>
-        </Anchors>
-        <Layers>
-          <Layer level="ARTWORK">
-            <Texture atlas="socialqueuing-icon-group">
-              <Size x="17" y="17"/>
-              <Anchors>
-                <Anchor point="CENTER"/>
-              </Anchors>
-            </Texture>
-          </Layer>
-        </Layers>
+      <Button parentKey="ToggleGuildBankButton" inherits="BaganatorGuildBankButtonTemplate" frameLevel="700" parentArray="TopButtons">
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleGuildBank()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons">
         <Scripts>
           <OnClick>
             self:GetParent():ToggleCharacterSidebar()
@@ -88,9 +61,6 @@
         </Scripts>
       </Button>
       <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.ToggleAllCharacters" relativePoint="TOPRIGHT"/>
-        </Anchors>
         <Scripts>
           <OnClick>
             self:GetParent():ToggleBagSlots()
