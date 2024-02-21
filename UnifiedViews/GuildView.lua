@@ -226,8 +226,8 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
   end
 
   if self.isLive then
-    QueryGuildBankTab(self.currentTab);
     SetCurrentGuildBankTab(self.currentTab)
+    QueryGuildBankTab(self.currentTab);
     if GuildBankPopupFrame:IsShown() then
       self:OpenTabEditor()
     end
