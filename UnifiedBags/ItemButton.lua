@@ -442,7 +442,7 @@ function BaganatorRetailLiveItemButtonMixin:MyOnLoad()
   -- reagents
   self:HookScript("OnEnter", function()
     if BankFrame:IsShown() then
-      if self.BGR and self.BGR.isCraftingReagent and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 then
+      if self.BGR and self.BGR.isCraftingReagent and IsReagentBankUnlocked() and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 then
         BankFrame.selectedTab = 2
       else
         BankFrame.selectedTab = 1
