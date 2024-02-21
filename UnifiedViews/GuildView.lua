@@ -167,10 +167,18 @@ end
 
 function BaganatorGuildViewMixin:UpdateTabs()
   local tabScale = math.min(1, Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE) / 37)
+  -- Prevent regenerating the tabs if the base info hasn't changed since last
+  -- time. This avoids failed clicks on the tabs if done quickly.
+  if self.lastTabData and tCompare(BAGANATOR_DATA.Guilds[self.lastGuild].bank, self.lastTabData, 2) and self.lastTabScale == tabScale then
+    return
+  end
+  self.lastTabScale = tabScale
+
   self.tabsPool:ReleaseAll()
 
   local lastTab
   local tabs = {}
+  self.lastTabData = {}
   for index, tabInfo in ipairs(BAGANATOR_DATA.Guilds[self.lastGuild].bank) do
     local tabButton = self.tabsPool:Acquire()
     tabButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
@@ -196,6 +204,7 @@ function BaganatorGuildViewMixin:UpdateTabs()
     tabButton.Icon:SetDesaturated(not tabInfo.isViewable)
     lastTab = tabButton
     table.insert(tabs, tabButton)
+    table.insert(self.lastTabData, CopyTable(tabInfo, 1))
   end
 
   if self.isLive and GetNumGuildBankTabs() < MAX_BUY_GUILDBANK_TABS and IsGuildLeader() then
