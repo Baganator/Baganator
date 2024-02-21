@@ -671,6 +671,8 @@ end
 function BaganatorClassicCachedItemButtonMixin:OnClick(button)
   if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(self.BGR.itemLink)
+  elseif IsModifiedClick("DRESSUP") then
+   return DressUpItemLink(self.BGR.itemLink) or DressUpBattlePetLink(self.BGR.itemLink) or DressUpMountLink(self.BGR.itemLink)
   elseif IsAltKeyDown() then
     Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
   end
@@ -686,9 +688,14 @@ function BaganatorClassicCachedItemButtonMixin:OnEnter()
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   GameTooltip:SetHyperlink(itemLink)
   GameTooltip:Show()
+
+  if IsModifiedClick("DRESSUP") then
+    ShowInspectCursor();
+  end
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnLeave()
+  ResetCursor()
   local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
