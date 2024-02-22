@@ -141,7 +141,7 @@
   </Frame>
 
   <Frame name="BaganatorGuildLogsTemplate" virtual="true" inherits="ButtonFrameTemplate" enableMouse="true" mixin="BaganatorGuildLogsTemplateMixin">
-    <Size x="450" y="300"/>
+    <Size x="600" y="300"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnDragStart method="OnDragStart"/>

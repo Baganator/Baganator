@@ -123,6 +123,7 @@ function BaganatorGuildViewMixin:OnShow()
 end
 
 function BaganatorGuildViewMixin:OnHide()
+  self.LogsFrame:Hide()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
 end
 
