@@ -9,12 +9,12 @@
       <OnDragStop method="OnDragStop"/>
     </Scripts>
     <Frames>
-      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllButtons">
+      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="FixedButtons">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
         </Anchors>
       </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllButtons">
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="FixedButtons">
         <KeyValues>
           <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_GUILD_VIEW_TOOLTIP_TEXT" type="global"/>
         </KeyValues>
@@ -24,6 +24,78 @@
         <Scripts>
           <OnClick>
             self:GetParent():Transfer()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleTabInfoButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="LiveButtons">
+        <KeyValues>
+          <KeyValue key="tooltipHeader" value="BAGANATOR_L_TAB_INFO" type="global"/>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_GUILD_TAB_INFO_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" x="5"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture atlas="poi-workorders">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleTabInfo()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleTabLogsButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="LiveButtons">
+        <KeyValues>
+          <KeyValue key="tooltipHeader" value="BAGANATOR_L_TAB_LOGS" type="global"/>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_GUILD_TAB_LOGS_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="LEFT" relativeKey="$parent.ToggleTabInfoButton" relativePoint="RIGHT"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture atlas="GarrMission_CurrencyIcon-Salvage">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleTabLogs()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleGoldLogsButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="LiveButtons">
+        <KeyValues>
+          <KeyValue key="tooltipHeader" value="BAGANATOR_L_MONEY_LOGS" type="global"/>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_GUILD_MONEY_LOGS_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="LEFT" relativeKey="$parent.ToggleTabLogsButton" relativePoint="RIGHT"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture atlas="Auctioneer">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleMoneyLogs()
           </OnClick>
         </Scripts>
       </Button>
@@ -59,5 +131,59 @@
         </FontString>
       </Layer>
     </Layers>
+    <Frames>
+      <Frame name="$parentLogsFrame" parentKey="LogsFrame" inherits="BaganatorGuildLogsTemplate" frameStrata="DIALOG" hidden="true">
+        <Anchors>
+          <Anchor point="CENTER"/>
+        </Anchors>
+      </Frame>
+    </Frames>
+  </Frame>
+
+  <Frame name="BaganatorGuildLogsTemplate" virtual="true" inherits="ButtonFrameTemplate" enableMouse="true" mixin="BaganatorGuildLogsTemplateMixin">
+    <Size x="450" y="300"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnDragStop method="OnDragStop"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="TextContainer" mixin="ScrollingFontMixin">
+        <KeyValues>
+          <KeyValue key="fontName" value="GameFontNormal" type="string"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" y="-25" x="15"/>
+          <Anchor point="BOTTOMRIGHT" y="10" x="-15"/>
+        </Anchors>
+        <Frames>
+          <Frame parentKey="ScrollBox" setAllPoints="true" inherits="WowScrollBox">
+            <Frames>
+              <Frame parentKey="FontStringContainer" inherits="InlineHyperlinkFrameTemplate">
+                <Size y="1"/>
+                <KeyValues>
+                  <KeyValue key="scrollable" value="true" type="boolean"/>
+                </KeyValues>
+                <Layers>
+                  <Layer>
+                    <FontString parentKey="FontString" nonspacewrap="true" justifyH="LEFT" justifyV="TOP"/>
+                  </Layer>
+                </Layers>
+              </Frame>
+            </Frames>
+          </Frame>
+        </Frames>
+        <Scripts>
+          <OnLoad method="OnLoad"/>
+          <OnSizeChanged method="OnSizeChanged"/>
+        </Scripts>
+      </Frame>
+      <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
+        <Anchors>
+          <Anchor point="TOPRIGHT" y="-25" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="10"/>
+        </Anchors>
+      </EventFrame>
+    </Frames>
   </Frame>
 </Ui>

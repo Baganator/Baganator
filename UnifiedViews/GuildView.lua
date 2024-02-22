@@ -75,6 +75,7 @@ function BaganatorGuildViewMixin:OnLoad()
 
   self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
   self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
+  self:RegisterEvent("GUILDBANKLOG_UPDATE")
 
   Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
 
@@ -106,6 +107,12 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
     end
   elseif eventName == "MODIFIER_STATE_CHANGED" then
     self:UpdateAllButtons()
+  elseif eventName == "GUILDBANKLOG_UPDATE" and self.LogsFrame:IsVisible() then
+    if self.LogsFrame.showing == "tab" then
+      self.LogsFrame:ApplyTab()
+    else
+      self.LogsFrame:ApplyMoney()
+    end
   end
 end
 
@@ -235,6 +242,7 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
   for tabIndex, tab in ipairs(self.Tabs) do
     tab.SelectedTexture:SetShown(tabIndex == index)
   end
+  self.LogsFrame:Hide()
 
   if self.isLive then
     SetCurrentGuildBankTab(self.currentTab)
@@ -272,6 +280,10 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
       end
     end
   end
+  for _, button in ipairs(self.LiveButtons) do
+    button:SetShown(self.isLive)
+  end
+
   self:UpdateTabs()
 
   local active
@@ -346,6 +358,12 @@ local hiddenFrame = CreateFrame("Frame")
 hiddenFrame:Hide()
 
 function BaganatorGuildViewMixin:UpdateAllButtons()
+  if self.isLive then
+    self.AllButtons = CopyTable(self.FixedButtons, 1)
+    tAppendAll(self.AllButtons, self.LiveButtons)
+  else
+    self.AllButtons = self.FixedButtons
+  end
   local parent = self
   if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
     parent = hiddenParent
@@ -376,4 +394,119 @@ function BaganatorGuildViewMixin:Transfer(button)
   else
     self:RemoveSearchMatches(function() end)
   end
+end
+
+function BaganatorGuildViewMixin:ToggleTabInfo()
+  print("NOT YET IMPLEMENTED")
+end
+
+function BaganatorGuildViewMixin:ToggleTabLogs()
+  if self.LogsFrame.showing == "tab" and self.LogsFrame:IsShown() then
+    self.LogsFrame:Hide()
+    return
+  end
+  self.LogsFrame:Show()
+  local tabInfo = BAGANATOR_DATA.Guilds[self.lastGuild].bank[self.currentTab]
+  self.LogsFrame:SetTitle(BAGANATOR_L_ACTIVITY_FOR_X:format(tabInfo.name))
+  self.LogsFrame:ApplyTab()
+  QueryGuildBankLog(GetCurrentGuildBankTab());
+end
+
+function BaganatorGuildViewMixin:ToggleMoneyLogs()
+  if self.LogsFrame.showing == "money" and self.LogsFrame:IsShown() then
+    self.LogsFrame:Hide()
+    return
+  end
+  self.LogsFrame:Show()
+  self.LogsFrame:SetTitle(BAGANATOR_L_MONEY_LOGS)
+  self.LogsFrame:ApplyMoney()
+  QueryGuildBankLog(MAX_GUILDBANK_TABS + 1);
+end
+
+BaganatorGuildLogsTemplateMixin = {}
+function BaganatorGuildLogsTemplateMixin:OnLoad()
+  ButtonFrameTemplate_HidePortrait(self)
+  ButtonFrameTemplate_HideButtonBar(self)
+  self.Inset:Hide()
+  self:RegisterForDrag("LeftButton")
+  self:SetMovable(true)
+  ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
+end
+
+function BaganatorGuildLogsTemplateMixin:OnDragStart()
+  self:StartMoving()
+  self:SetUserPlaced(false)
+end
+
+function BaganatorGuildLogsTemplateMixin:OnDragStop()
+  self:StopMovingOrSizing()
+  self:SetUserPlaced(false)
+end
+
+function BaganatorGuildLogsTemplateMixin:ApplyTab()
+  self.showing = "tab"
+	local tab = GetCurrentGuildBankTab();
+	local numTransactions = GetNumGuildBankTransactions(tab);
+	local type, name, itemLink, count, tab1, tab2, year, month, day, hour;
+
+	local msg = "";
+	for i = numTransactions, 1, -1 do
+		type, name, itemLink, count, tab1, tab2, year, month, day, hour = GetGuildBankTransaction(tab, i);
+		if ( not name ) then
+			name = UNKNOWN;
+		end
+		name = NORMAL_FONT_COLOR_CODE..name..FONT_COLOR_CODE_CLOSE;
+		if ( type == "deposit" ) then
+			msg = msg .. format(GUILDBANK_DEPOSIT_FORMAT, name, itemLink);
+			if ( count > 1 ) then
+				msg = msg..format(GUILDBANK_LOG_QUANTITY, count);
+			end
+		elseif ( type == "withdraw" ) then
+			msg = msg .. format(GUILDBANK_WITHDRAW_FORMAT, name, itemLink);
+			if ( count > 1 ) then
+				msg = msg..format(GUILDBANK_LOG_QUANTITY, count);
+			end
+		elseif ( type == "move" ) then
+			msg = msg .. format(GUILDBANK_MOVE_FORMAT, name, itemLink, count, GetGuildBankTabInfo(tab1), GetGuildBankTabInfo(tab2));
+		end
+    msg = msg..GUILD_BANK_LOG_TIME:format(RecentTimeDate(year, month, day, hour))
+    msg = msg .. "\n"
+	end
+  self.TextContainer:SetText(msg)
+end
+
+function BaganatorGuildLogsTemplateMixin:ApplyMoney()
+  self.showing = "money"
+  local numTransactions = GetNumGuildBankMoneyTransactions();
+  local type, name, amount, year, month, day, hour;
+  local msg = ""
+  local money;
+  for i=numTransactions, 1, -1 do
+    type, name, amount, year, month, day, hour = GetGuildBankMoneyTransaction(i);
+    if ( not name ) then
+      name = UNKNOWN;
+    end
+    name = NORMAL_FONT_COLOR_CODE..name..FONT_COLOR_CODE_CLOSE;
+    money = GetDenominationsFromCopper(amount);
+    if ( type == "deposit" ) then
+      msg = msg .. format(GUILDBANK_DEPOSIT_MONEY_FORMAT, name, money);
+    elseif ( type == "withdraw" ) then
+      msg = msg .. format(GUILDBANK_WITHDRAW_MONEY_FORMAT, name, money);
+    elseif ( type == "repair" ) then
+      msg = msg .. format(GUILDBANK_REPAIR_MONEY_FORMAT, name, money);
+    elseif ( type == "withdrawForTab" ) then
+      msg = msg .. format(GUILDBANK_WITHDRAWFORTAB_MONEY_FORMAT, name, money);
+    elseif ( type == "buyTab" ) then
+      if ( amount > 0 ) then
+        msg = msg .. format(GUILDBANK_BUYTAB_MONEY_FORMAT, name, money);
+      else
+        msg = msg .. format(GUILDBANK_UNLOCKTAB_FORMAT, name);
+      end
+    elseif ( type == "depositSummary" ) then
+      msg = msg .. format(GUILDBANK_AWARD_MONEY_SUMMARY_FORMAT, money);
+    end
+    msg = msg..GUILD_BANK_LOG_TIME:format(RecentTimeDate(year, month, day, hour))
+    msg = msg .. "\n"
+  end
+  self.TextContainer:SetText(msg)
 end

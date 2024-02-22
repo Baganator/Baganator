@@ -229,6 +229,14 @@ L["UNLIMITED"] = "Unlimited"
 L["GUILD_WITHDRAW_DEPOSIT_X_X"] = "Items - Withdraw: %s | Deposit: %s"
 L["GUILD_MONEY_X_X"] = "Gold - Withdraw: %s | Total: %s"
 L["GUILD_MONEY_X"] = "Gold - Total: %s"
+L["TAB_INFO"] = "Tab Information"
+L["GUILD_TAB_INFO_TOOLTIP_TEXT"] = "See any stored information about this tab"
+L["TAB_LOGS"] = "Tab Logs"
+L["GUILD_TAB_LOGS_TOOLTIP_TEXT"] = "See withdrawals and deposits of items for this tab"
+L["MONEY_LOGS"] = "Money Logs"
+L["GUILD_MONEY_LOGS_TOOLTIP_TEXT"] = "See withdrawals and deposits of money for the guild bank"
+L["ACTIVITY_FOR_X"] = "Activity For %s"
+L["MONEY_LOGS"] = "Money Logs"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
