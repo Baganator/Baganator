@@ -169,10 +169,12 @@ function BaganatorGuildViewMixin:UpdateTabs()
   local tabScale = math.min(1, Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE) / 37)
   -- Prevent regenerating the tabs if the base info hasn't changed since last
   -- time. This avoids failed clicks on the tabs if done quickly.
-  if self.lastTabData and tCompare(BAGANATOR_DATA.Guilds[self.lastGuild].bank, self.lastTabData, 2) and self.lastTabScale == tabScale then
+  if self.lastTabData and tCompare(BAGANATOR_DATA.Guilds[self.lastGuild].bank, self.lastTabData, 2) then
+    for _, tab in ipairs(self.Tabs) do
+      tab:SetScale(tabScale)
+    end
     return
   end
-  self.lastTabScale = tabScale
 
   self.tabsPool:ReleaseAll()
 
