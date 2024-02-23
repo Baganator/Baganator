@@ -884,6 +884,7 @@ function BaganatorBackpackViewMixin:UpdateAllButtons()
     button:SetParent(parent)
     button:SetFrameLevel(700)
   end
+  self.ToggleGuildBankButton:SetEnabled(Baganator.GuildCache.currentGuild ~= nil)
 end
 
 function BaganatorBackpackViewMixin:GetMatches()
