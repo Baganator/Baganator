@@ -236,6 +236,7 @@ L["GUILD_TAB_LOGS_TOOLTIP_TEXT"] = "See withdrawals and deposits of items for th
 L["MONEY_LOGS"] = "Money Logs"
 L["GUILD_MONEY_LOGS_TOOLTIP_TEXT"] = "See withdrawals and deposits of money for the guild bank"
 L["X_LOGS"] = "%s Logs"
+L["X_INFORMATION"] = "%s Information"
 L["MONEY_LOGS"] = "Money Logs"
 L["NO_TRANSACTIONS_AVAILABLE"] = "No Transactions Available"
 

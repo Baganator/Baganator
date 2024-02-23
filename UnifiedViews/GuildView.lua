@@ -80,6 +80,8 @@ function BaganatorGuildViewMixin:OnLoad()
   self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
   self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
   self:RegisterEvent("GUILDBANKLOG_UPDATE")
+  self:RegisterEvent("GUILDBANK_UPDATE_TEXT")
+  self:RegisterEvent("GUILDBANK_TEXT_CHANGED")
 
   Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
 
@@ -117,6 +119,10 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
     else
       self.LogsFrame:ApplyMoney()
     end
+  elseif eventName == "GUILDBANK_UPDATE_TEXT" and self.TabTextFrame:IsVisible() then
+    self.TabTextFrame:ApplyTab()
+  elseif eventName == "GUILDBANK_TEXT_CHANGED" and self.TabTextFrame:IsVisible() then
+    QueryGuildBankText(GetCurrentGuildBankTab());
   end
 end
 
@@ -260,6 +266,9 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
     end
     if self.LogsFrame:IsShown() and self.LogsFrame.showing == PopupMode.Tab then
       self:ShowTabLogs()
+    end
+    if self.TabTextFrame:IsShown() then
+      self:ShowTabText()
     end
   else
     self.LogsFrame:Hide()
@@ -414,8 +423,20 @@ function BaganatorGuildViewMixin:Transfer(button)
   end
 end
 
-function BaganatorGuildViewMixin:ToggleTabInfo()
-  print("NOT YET IMPLEMENTED")
+function BaganatorGuildViewMixin:ToggleTabText()
+  if self.TabTextFrame:IsShown() then
+    self.TabTextFrame:Hide()
+    return
+  end
+  self.TabTextFrame:Show()
+  self:ShowTabText()
+end
+
+function BaganatorGuildViewMixin:ShowTabText()
+  self.TabTextFrame:Show()
+  self.TabTextFrame:ApplyTab()
+  self.TabTextFrame:ApplyTabTitle()
+  QueryGuildBankText(GetCurrentGuildBankTab());
 end
 
 function BaganatorGuildViewMixin:ToggleTabLogs()
@@ -548,4 +569,39 @@ function BaganatorGuildLogsTemplateMixin:ApplyMoney()
   end
 
   self.TextContainer:SetText(msg)
+end
+
+BaganatorGuildTabTextTemplateMixin = {}
+function BaganatorGuildTabTextTemplateMixin:OnLoad()
+  ButtonFrameTemplate_HidePortrait(self)
+  ButtonFrameTemplate_HideButtonBar(self)
+  self.Inset:Hide()
+  self:RegisterForDrag("LeftButton")
+  self:SetMovable(true)
+  ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
+
+  self.TextContainer:GetEditBox():SetMaxLetters(500)
+end
+
+function BaganatorGuildTabTextTemplateMixin:ApplyTab()
+  local currentTab = GetCurrentGuildBankTab()
+  self.TextContainer:SetText(GetGuildBankText(currentTab))
+  local canEdit = CanEditGuildTabInfo(currentTab)
+  self.SaveButton:SetShown(canEdit)
+  self.TextContainer:GetEditBox():SetEnabled(canEdit)
+end
+
+function BaganatorGuildTabTextTemplateMixin:ApplyTabTitle()
+  local tabInfo = BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
+  self:SetTitle(BAGANATOR_L_X_INFORMATION:format(tabInfo.name))
+end
+
+function BaganatorGuildTabTextTemplateMixin:OnDragStart()
+  self:StartMoving()
+  self:SetUserPlaced(false)
+end
+
+function BaganatorGuildTabTextTemplateMixin:OnDragStop()
+  self:StopMovingOrSizing()
+  self:SetUserPlaced(false)
 end
