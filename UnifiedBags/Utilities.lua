@@ -135,6 +135,7 @@ function Baganator.Utilities.AddBagSortManager(parent)
       completeFunc()
     elseif status == Baganator.Constants.SortStatus.WaitingMove then
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+        self:Cancel()
         retryFunc()
       end, self)
       self.timer = C_Timer.NewTimer(1, function()
