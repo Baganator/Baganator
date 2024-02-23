@@ -129,7 +129,7 @@ function Baganator.Utilities.AddBagSortManager(parent)
       self.timer = nil
     end
   end
-  function self.sortManager:Apply(status, retryFunc, completeFunc)
+  function parent.sortManager:Apply(status, retryFunc, completeFunc)
     self:Cancel()
     if status == Baganator.Constants.SortStatus.Complete then
       completeFunc()
@@ -145,7 +145,7 @@ function Baganator.Utilities.AddBagSortManager(parent)
       self:SetScript("OnUpdate", retryFunc)
     end
   end
-  parent.sortManager:SetScript("OnHide", self.Cancel)
+  parent.sortManager:SetScript("OnHide", parent.sortManager.Cancel)
 end
 
 function Baganator.Utilities.AddBagTransferManager(self)
