@@ -463,11 +463,11 @@ function BaganatorGuildViewMixin:ToggleTabLogs()
     self.LogsFrame:Hide()
     return
   end
-  self:HideInfoDialogs()
   self:ShowTabLogs()
 end
 
 function BaganatorGuildViewMixin:ShowTabLogs()
+  self:HideInfoDialogs()
   self.LogsFrame:Show()
   self.LogsFrame:ApplyTab()
   self.LogsFrame:ApplyTabTitle()
@@ -479,6 +479,7 @@ function BaganatorGuildViewMixin:ToggleMoneyLogs()
     self.LogsFrame:Hide()
     return
   end
+  self:HideInfoDialogs()
   self.LogsFrame:Show()
   self.LogsFrame:SetTitle(BAGANATOR_L_MONEY_LOGS)
   self.LogsFrame:ApplyMoney()
