@@ -48,6 +48,7 @@ function BaganatorBagCacheMixin:OnLoad()
 end
 
 function BaganatorBagCacheMixin:QueueCaching()
+  self.isUpdatePending = true
   self:SetScript("OnUpdate", self.OnUpdate)
 end
 
@@ -203,6 +204,7 @@ function BaganatorBagCacheMixin:OnUpdate()
     if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
       print("caching took", debugprofilestop() - start)
     end
+    self.isUpdatePending = false
     Baganator.CallbackRegistry:TriggerEvent("BagCacheUpdate", self.currentCharacter, pendingCopy)
   end
 
