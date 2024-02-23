@@ -108,8 +108,10 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
         hiddenFrame:Hide()
         GuildBankFrame:SetParent(hiddenFrame)
       end
+      self.lastGuild = Baganator.GuildCache.currentGuild
       self.isLive = true
       self:Show()
+      QueryGuildBankTab(self.currentTab);
     end
   elseif eventName == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" then
     local interactType = ...
@@ -372,7 +374,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
 
     self.TransferButton:SetShown(remainingWithdrawals == -1 or remainingWithdrawals > 0)
     self.LogsFrame:ApplyTabTitle()
-  else
+  else -- not live
     self.WithdrawalsInfo:SetText("")
     self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(BAGANATOR_DATA.Guilds[guild].money, true)))
     detailsHeight = 10
@@ -383,6 +385,10 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
 
   active:ClearAllPoints()
   active:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -50)
+
+  self.WithdrawalsInfo:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 30)
+  self.Money:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 10)
+  self.DepositButton:SetPoint("BOTTOMRIGHT", -sideSpacing + 1, 6)
 
   local height = active:GetHeight() + 6
   self:SetSize(
