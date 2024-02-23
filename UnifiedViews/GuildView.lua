@@ -34,7 +34,7 @@ function BaganatorGuildViewMixin:OnLoad()
         layout:RequestContentRefresh()
       end
     end
-    if self:IsShown() then
+    if self:IsVisible() then
       self:UpdateForGuild(guild, true)
     end
   end)
@@ -111,7 +111,6 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
       self.lastGuild = Baganator.GuildCache.currentGuild
       self.isLive = true
       self:Show()
-      print(self.currentTab)
       QueryGuildBankTab(self.currentTab);
     end
   elseif eventName == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" then

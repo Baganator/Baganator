@@ -38,7 +38,7 @@ function BaganatorBankOnlyViewMixin:OnLoad()
 
   Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
-    if self:IsShown() then
+    if self:IsVisible() then
       self:UpdateForCharacter(character, updatedBags)
     else
       self:NotifyBagUpdate(updatedBags)
