@@ -65,6 +65,7 @@ Baganator.Config.Options = {
   AUTO_OPEN = "auto_open",
 
   ENABLE_UNIFIED_BAGS = "enable_unified_bags",
+  ENABLE_GUILD_VIEW = "enable_guild_view",
 }
 
 Baganator.Config.Defaults = {
@@ -125,6 +126,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
 
   [Baganator.Config.Options.ENABLE_UNIFIED_BAGS] = true,
+  [Baganator.Config.Options.ENABLE_GUILD_VIEW] = true,
 }
 
 Baganator.Config.IsCharacterSpecific = {

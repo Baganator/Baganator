@@ -102,6 +102,12 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
   if eventName == "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" then
     local interactType = ...
     if interactType == Enum.PlayerInteractionType.GuildBanker then
+      if GuildBankFrame:GetScript("OnHide") ~= nil then
+        GuildBankFrame:SetScript("OnHide", nil)
+        local hiddenFrame = CreateFrame("Frame")
+        hiddenFrame:Hide()
+        GuildBankFrame:SetParent(hiddenFrame)
+      end
       self.isLive = true
       self:Show()
     end
@@ -133,8 +139,14 @@ function BaganatorGuildViewMixin:OnShow()
 end
 
 function BaganatorGuildViewMixin:OnHide()
-  self.LogsFrame:Hide()
+  self:HideInfoDialogs()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
+  CloseGuildBankFrame()
+end
+
+function BaganatorGuildViewMixin:HideInfoDialogs()
+  self.LogsFrame:Hide()
+  self.TabTextFrame:Hide()
 end
 
 function BaganatorGuildViewMixin:ApplySearch(text)
@@ -428,6 +440,7 @@ function BaganatorGuildViewMixin:ToggleTabText()
     self.TabTextFrame:Hide()
     return
   end
+  self:HideInfoDialogs()
   self.TabTextFrame:Show()
   self:ShowTabText()
 end
@@ -444,6 +457,7 @@ function BaganatorGuildViewMixin:ToggleTabLogs()
     self.LogsFrame:Hide()
     return
   end
+  self:HideInfoDialogs()
   self:ShowTabLogs()
 end
 

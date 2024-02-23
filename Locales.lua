@@ -34,9 +34,10 @@ L["BANK_DATA_MISSING_HINT"] = "Bank data missing. Visit a banker with %s to popu
 
 L["CUSTOMISE_BAGANATOR"] = "Customise Baganator"
 L["ENABLE_BAG_VIEWS_2"] = "Use Baganator bag/bank views (reload required)"
+L["ENABLE_GUILD_VIEW"] = "Use Baganator guild bank view (reload required)"
 L["RESET_POSITIONS"] = "Reset Positions"
-L["LOCK_BAGS_BANKS_FRAMES"] = "Lock Bags/Bank frames"
-L["CUSTOMISE_REMOVE_BORDERS"] = "Remove borders from Bags/Bank frames"
+L["LOCK_INVENTORY_FRAMES"] = "Lock inventory view frames"
+L["REMOVE_INVENTORY_BORDERS"] = "Remove borders from inventory view frames"
 L["SHOW_SORT_BUTTON"] = "Show sort button"
 L["ITEM_QUALITY"] = "Item Quality"
 L["ITEM_TYPE"] = "Item Type"
