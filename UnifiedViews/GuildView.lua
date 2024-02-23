@@ -189,9 +189,9 @@ function BaganatorGuildViewMixin:OpenTabEditor()
   if not Baganator.Constants.IsRetail then
     GuildBankPopupFrame:Update()
   end
-  GuildBankPopupFrame:ClearAllPoints()
   GuildBankPopupFrame:SetParent(self)
-  GuildBankPopupFrame:SetPoint("TOP", self)
+  GuildBankPopupFrame:ClearAllPoints()
+  GuildBankPopupFrame:SetPoint("TOP")
   GuildBankPopupFrame:SetPoint("LEFT", self.Tabs[1], "RIGHT")
 end
 
