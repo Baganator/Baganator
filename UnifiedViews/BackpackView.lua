@@ -836,7 +836,6 @@ function BaganatorBackpackViewMixin:UpdateCurrencies(character)
 end
 
 function BaganatorBackpackViewMixin:CombineStacks(callback)
-  print("stack combine")
   Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes, function(status)
     self.sortManager:Apply(status, function()
       self:CombineStacks(callback)
@@ -920,7 +919,6 @@ function BaganatorBackpackViewMixin:Transfer(force)
 end
 
 function BaganatorBackpackViewMixin:DoSort(isReverse)
-  print("sort")
   local bagsToSort = {}
   for index, bagID in ipairs(Baganator.Constants.AllBagIndexes) do
     bagsToSort[index] = true

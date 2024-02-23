@@ -131,12 +131,9 @@ function Baganator.Utilities.AddBagSortManager(parent)
   end
   function parent.sortManager:Apply(status, retryFunc, completeFunc)
     self:Cancel()
-    print("in")
     if status == Baganator.Constants.SortStatus.Complete then
-      print("completed")
       completeFunc()
     elseif status == Baganator.Constants.SortStatus.WaitingMove then
-      print("move")
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         self:Cancel()
         retryFunc()
@@ -146,7 +143,6 @@ function Baganator.Utilities.AddBagSortManager(parent)
         retryFunc()
       end)
     else -- waiting item data or item unlock
-      print("id")
       self:SetScript("OnUpdate", retryFunc)
     end
   end

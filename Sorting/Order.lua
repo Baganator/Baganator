@@ -346,15 +346,6 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
 
   local oneList = ConvertToOneList(bags, indexesToUse)
 
-  print("here")
-  for _, item in ipairs(oneList) do
-    local location = ItemLocation:CreateFromBagAndSlot(bagIDs[item.from.bagIndex], item.from.slot)
-    if (not C_Item.DoesItemExist(location) and item.itemID) or (C_Item.DoesItemExist(location) and C_Item.GetItemID(location) ~= item.itemID) then
-      print("drop")
-      return Baganator.Constants.SortStatus.WaitingMove
-    end
-  end
-
   if ignoreCount > 0 then
     RemoveIgnoredSlotsFromOneList(oneList, bagIDs, bagChecks, ignoreAtEnd, ignoreCount)
   end
@@ -490,9 +481,6 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
   -- Move items that have a blank slot as the target
   for _, move in ipairs(moveQueue0) do
     if not C_Item.IsLocked(move[1]) then
-      if move[4] ~= C_Item.GetItemID(move[1]) then
-        print("Miss")
-      end
       C_Container.PickupContainerItem(move[1]:GetBagAndSlot())
       C_Container.PickupContainerItem(move[2]:GetBagAndSlot())
       ClearCursor()
@@ -505,9 +493,6 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
   -- Move items that will replace existing items
   for _, move in ipairs(moveQueue1) do
     if not C_Item.IsLocked(move[1]) and not C_Item.IsLocked(move[2]) then
-      if move[4] ~= C_Item.GetItemID(move[1]) then
-        print("Miss")
-      end
       C_Container.PickupContainerItem(move[1]:GetBagAndSlot())
       C_Container.PickupContainerItem(move[2]:GetBagAndSlot())
       ClearCursor()
