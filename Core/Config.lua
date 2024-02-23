@@ -57,6 +57,7 @@ Baganator.Config.Options = {
   BANK_ONLY_VIEW_POSITION = "bank_only_view_position",
   BANK_ONLY_VIEW_SHOW_BAG_SLOTS = "bank_only_view_show_bag_slots",
   GUILD_VIEW_POSITION = "guild_view_position",
+  GUILD_VIEW_DIALOG_POSITION = "guild_view_dialog_position",
   SHOW_BUTTONS_ON_ALT = "show_buttons_on_alt",
 
   DEBUG = "debug",
@@ -93,6 +94,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
   [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
   [Baganator.Config.Options.GUILD_VIEW_POSITION] = {"LEFT", 20, 0},
+  [Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION] = {"CENTER", 0, 0},
   [Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT] = false,
   [Baganator.Config.Options.TOOLTIPS_CONNECTED_REALMS_ONLY] = true,
   [Baganator.Config.Options.TOOLTIPS_SORT_BY_NAME] = false,

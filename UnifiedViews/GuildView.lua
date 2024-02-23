@@ -111,6 +111,7 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
       self.lastGuild = Baganator.GuildCache.currentGuild
       self.isLive = true
       self:Show()
+      print(self.currentTab)
       QueryGuildBankTab(self.currentTab);
     end
   elseif eventName == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" then
@@ -176,7 +177,7 @@ function BaganatorGuildViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_POSITION, {point, x, y})
+  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), relativePoint, x, y})
 end
 
 function BaganatorGuildViewMixin:OpenTabEditor()
@@ -492,7 +493,13 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
   self.Inset:Hide()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
+  self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
+end
+
+function BaganatorGuildLogsTemplateMixin:OnShow()
+  self:ClearAllPoints()
+  self:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStart()
@@ -503,6 +510,8 @@ end
 function BaganatorGuildLogsTemplateMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
+  local point, _, relativePoint, x, y = self:GetPoint(1)
+  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), relativePoint, x, y})
 end
 
 function BaganatorGuildLogsTemplateMixin:ApplyTabTitle()
@@ -598,9 +607,16 @@ function BaganatorGuildTabTextTemplateMixin:OnLoad()
   self.Inset:Hide()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
+  self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
 
   self.TextContainer:GetEditBox():SetMaxLetters(500)
+end
+
+function BaganatorGuildTabTextTemplateMixin:OnShow()
+  self:ClearAllPoints()
+  print(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
+  self:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
 end
 
 function BaganatorGuildTabTextTemplateMixin:ApplyTab()
@@ -624,4 +640,6 @@ end
 function BaganatorGuildTabTextTemplateMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
+  local point, _, relativePoint, x, y = self:GetPoint(1)
+  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), relativePoint, x, y})
 end

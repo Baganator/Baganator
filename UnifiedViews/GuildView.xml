@@ -169,6 +169,7 @@
     <Size x="500" y="300"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
       <OnDragStart method="OnDragStart"/>
       <OnDragStop method="OnDragStop"/>
     </Scripts>
@@ -216,6 +217,7 @@
     <Size x="500" y="300"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
       <OnDragStart method="OnDragStart"/>
       <OnDragStop method="OnDragStop"/>
     </Scripts>
