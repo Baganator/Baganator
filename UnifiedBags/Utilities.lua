@@ -119,25 +119,33 @@ if Baganator.Constants.IsClassic then
   end
 end
 
-function Baganator.Utilities.AddBagSortManager(self)
-  self.sortManager = CreateFrame("Frame", nil, self)
-  function self.sortManager:Apply(status, retryFunc, completeFunc)
+function Baganator.Utilities.AddBagSortManager(parent)
+  parent.sortManager = CreateFrame("Frame", nil, parent)
+  function parent.sortManager:Cancel()
     self:SetScript("OnUpdate", nil)
     Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self)
+    if self.timer then
+      self.timer:Cancel()
+      self.timer = nil
+    end
+  end
+  function self.sortManager:Apply(status, retryFunc, completeFunc)
+    self:Cancel()
     if status == Baganator.Constants.SortStatus.Complete then
       completeFunc()
     elseif status == Baganator.Constants.SortStatus.WaitingMove then
       Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         retryFunc()
       end, self)
+      self.timer = C_Timer.NewTimer(1, function()
+        self:Cancel()
+        retryFunc()
+      end)
     else -- waiting item data or item unlock
       self:SetScript("OnUpdate", retryFunc)
     end
   end
-  self.sortManager:SetScript("OnHide", function()
-    self.sortManager:SetScript("OnUpdate", nil)
-    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self.sortManager)
-  end)
+  parent.sortManager:SetScript("OnHide", self.Cancel)
 end
 
 function Baganator.Utilities.AddBagTransferManager(self)
