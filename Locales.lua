@@ -235,8 +235,9 @@ L["TAB_LOGS"] = "Tab Logs"
 L["GUILD_TAB_LOGS_TOOLTIP_TEXT"] = "See withdrawals and deposits of items for this tab"
 L["MONEY_LOGS"] = "Money Logs"
 L["GUILD_MONEY_LOGS_TOOLTIP_TEXT"] = "See withdrawals and deposits of money for the guild bank"
-L["ACTIVITY_FOR_X"] = "Activity For %s"
+L["X_LOGS"] = "%s Logs"
 L["MONEY_LOGS"] = "Money Logs"
+L["NO_TRANSACTIONS_AVAILABLE"] = "No Transactions Available"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@

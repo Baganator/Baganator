@@ -132,6 +132,26 @@
       </Layer>
     </Layers>
     <Frames>
+      <Button parentKey="DepositButton" text="DEPOSIT" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="LiveButtons">
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" x="-15" y="6"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GuildBankFrameDepositButtonMixin.OnClick(self, button, down)
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="WithdrawButton" text="WITHDRAW" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="LiveButtons">
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.DepositButton" relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GuildBankFrameWithdrawButtonMixin.OnClick(self, button, down)
+          </OnClick>
+        </Scripts>
+      </Button>
       <Frame name="$parentLogsFrame" parentKey="LogsFrame" inherits="BaganatorGuildLogsTemplate" frameStrata="DIALOG" hidden="true">
         <Anchors>
           <Anchor point="CENTER"/>
@@ -141,7 +161,7 @@
   </Frame>
 
   <Frame name="BaganatorGuildLogsTemplate" virtual="true" inherits="ButtonFrameTemplate" enableMouse="true" mixin="BaganatorGuildLogsTemplateMixin">
-    <Size x="600" y="300"/>
+    <Size x="500" y="300"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnDragStart method="OnDragStart"/>

@@ -1,3 +1,7 @@
+local PopupMode = {
+  Tab = "tab",
+  Money = "money",
+}
 BaganatorGuildViewMixin = {}
 
 function BaganatorGuildViewMixin:OnLoad()
@@ -108,7 +112,7 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
   elseif eventName == "MODIFIER_STATE_CHANGED" then
     self:UpdateAllButtons()
   elseif eventName == "GUILDBANKLOG_UPDATE" and self.LogsFrame:IsVisible() then
-    if self.LogsFrame.showing == "tab" then
+    if self.LogsFrame.showing == PopupMode.Tab then
       self.LogsFrame:ApplyTab()
     else
       self.LogsFrame:ApplyMoney()
@@ -174,7 +178,11 @@ function BaganatorGuildViewMixin:OpenTabEditor()
 end
 
 function BaganatorGuildViewMixin:UpdateTabs()
-  local tabScale = math.min(1, Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE) / 37)
+  local tabScaleFactor = 37
+  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+    tabScaleFactor = 40
+  end
+  local tabScale = math.min(1, Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE) / tabScaleFactor)
   -- Prevent regenerating the tabs if the base info hasn't changed since last
   -- time. This avoids failed clicks on the tabs if done quickly.
   if self.lastTabData and tCompare(BAGANATOR_DATA.Guilds[self.lastGuild].bank, self.lastTabData, 2) then
@@ -243,7 +251,6 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
   for tabIndex, tab in ipairs(self.Tabs) do
     tab.SelectedTexture:SetShown(tabIndex == index)
   end
-  self.LogsFrame:Hide()
 
   if self.isLive then
     SetCurrentGuildBankTab(self.currentTab)
@@ -251,6 +258,11 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
     if GuildBankPopupFrame:IsShown() then
       self:OpenTabEditor()
     end
+    if self.LogsFrame:IsShown() and self.LogsFrame.showing == PopupMode.Tab then
+      self:ShowTabLogs()
+    end
+  else
+    self.LogsFrame:Hide()
   end
 end
 
@@ -329,18 +341,23 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     local withdrawMoney = GetGuildBankWithdrawMoney()
     if not CanWithdrawGuildBankMoney() then
       withdrawMoney = 0
+      self.WithdrawButton:Disable()
+    else
+      self.WithdrawButton:Enable()
     end
     local guildMoney = GetGuildBankMoney()
     self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X_X:format(GetMoneyString(math.min(withdrawMoney, guildMoney), true), GetMoneyString(guildMoney, true)))
     detailsHeight = 30
 
     self.TransferButton:SetShown(remainingWithdrawals == -1 or remainingWithdrawals > 0)
+    self.LogsFrame:ApplyTabTitle()
   else
     self.WithdrawalsInfo:SetText("")
     self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(BAGANATOR_DATA.Guilds[guild].money, true)))
     detailsHeight = 10
 
     self.TransferButton:Hide()
+    self.LogsFrame:Hide()
   end
 
   active:ClearAllPoints()
@@ -402,19 +419,22 @@ function BaganatorGuildViewMixin:ToggleTabInfo()
 end
 
 function BaganatorGuildViewMixin:ToggleTabLogs()
-  if self.LogsFrame.showing == "tab" and self.LogsFrame:IsShown() then
+  if self.LogsFrame.showing == PopupMode.Tab and self.LogsFrame:IsShown() then
     self.LogsFrame:Hide()
     return
   end
+  self:ShowTabLogs()
+end
+
+function BaganatorGuildViewMixin:ShowTabLogs()
   self.LogsFrame:Show()
-  local tabInfo = BAGANATOR_DATA.Guilds[self.lastGuild].bank[self.currentTab]
-  self.LogsFrame:SetTitle(BAGANATOR_L_ACTIVITY_FOR_X:format(tabInfo.name))
   self.LogsFrame:ApplyTab()
+  self.LogsFrame:ApplyTabTitle()
   QueryGuildBankLog(GetCurrentGuildBankTab());
 end
 
 function BaganatorGuildViewMixin:ToggleMoneyLogs()
-  if self.LogsFrame.showing == "money" and self.LogsFrame:IsShown() then
+  if self.LogsFrame.showing == PopupMode.Money and self.LogsFrame:IsShown() then
     self.LogsFrame:Hide()
     return
   end
@@ -444,15 +464,24 @@ function BaganatorGuildLogsTemplateMixin:OnDragStop()
   self:SetUserPlaced(false)
 end
 
+function BaganatorGuildLogsTemplateMixin:ApplyTabTitle()
+  if self.showing ~= PopupMode.Tab then return
+  end
+
+  local tabInfo = BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
+  self:SetTitle(BAGANATOR_L_X_LOGS:format(tabInfo.name))
+end
+
 function BaganatorGuildLogsTemplateMixin:ApplyTab()
-  self.showing = "tab"
+  self.showing = PopupMode.Tab
+
+  -- Code for logs copied from Blizzard lua dumps and modified
 	local tab = GetCurrentGuildBankTab();
 	local numTransactions = GetNumGuildBankTransactions(tab);
-	local type, name, itemLink, count, tab1, tab2, year, month, day, hour;
 
 	local msg = "";
 	for i = numTransactions, 1, -1 do
-		type, name, itemLink, count, tab1, tab2, year, month, day, hour = GetGuildBankTransaction(tab, i);
+		local type, name, itemLink, count, tab1, tab2, year, month, day, hour = GetGuildBankTransaction(tab, i);
 		if ( not name ) then
 			name = UNKNOWN;
 		end
@@ -473,22 +502,26 @@ function BaganatorGuildLogsTemplateMixin:ApplyTab()
     msg = msg..GUILD_BANK_LOG_TIME:format(RecentTimeDate(year, month, day, hour))
     msg = msg .. "\n"
 	end
+
+  if numTransactions == 0 then
+    msg = BAGANATOR_L_NO_TRANSACTIONS_AVAILABLE
+  end
+
   self.TextContainer:SetText(msg)
 end
 
 function BaganatorGuildLogsTemplateMixin:ApplyMoney()
-  self.showing = "money"
+  self.showing = PopupMode.Money
+  -- Code for logs copied from Blizzard lua dumps and modified
   local numTransactions = GetNumGuildBankMoneyTransactions();
-  local type, name, amount, year, month, day, hour;
   local msg = ""
-  local money;
   for i=numTransactions, 1, -1 do
-    type, name, amount, year, month, day, hour = GetGuildBankMoneyTransaction(i);
+    local type, name, amount, year, month, day, hour = GetGuildBankMoneyTransaction(i);
     if ( not name ) then
       name = UNKNOWN;
     end
     name = NORMAL_FONT_COLOR_CODE..name..FONT_COLOR_CODE_CLOSE;
-    money = GetDenominationsFromCopper(amount);
+    local money = GetDenominationsFromCopper(amount);
     if ( type == "deposit" ) then
       msg = msg .. format(GUILDBANK_DEPOSIT_MONEY_FORMAT, name, money);
     elseif ( type == "withdraw" ) then
@@ -509,5 +542,10 @@ function BaganatorGuildLogsTemplateMixin:ApplyMoney()
     msg = msg..GUILD_BANK_LOG_TIME:format(RecentTimeDate(year, month, day, hour))
     msg = msg .. "\n"
   end
+
+  if numTransactions == 0 then
+    msg = BAGANATOR_L_NO_TRANSACTIONS_AVAILABLE
+  end
+
   self.TextContainer:SetText(msg)
 end
