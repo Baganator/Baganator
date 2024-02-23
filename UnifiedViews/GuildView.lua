@@ -233,7 +233,7 @@ function BaganatorGuildViewMixin:UpdateTabs()
     else
       tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     end
-    tabButton.SelectedTexture:SetShown(index == self.currentTab)
+    tabButton.SelectedTexture:Hide()
     tabButton:SetID(index)
     tabButton:SetScale(tabScale)
     tabButton:Show()
@@ -265,12 +265,19 @@ function BaganatorGuildViewMixin:UpdateTabs()
   self.Tabs = tabs
 end
 
+function BaganatorGuildViewMixin:HighlightCurrentTab()
+  if not self.Tabs then
+    return
+  end
+  for tabIndex, tab in ipairs(self.Tabs) do
+    tab.SelectedTexture:SetShown(tabIndex == self.currentTab)
+  end
+end
+
 function BaganatorGuildViewMixin:SetCurrentTab(index)
   Baganator.CallbackRegistry:TriggerEvent("TransferCancel")
   self.currentTab = index
-  for tabIndex, tab in ipairs(self.Tabs) do
-    tab.SelectedTexture:SetShown(tabIndex == index)
-  end
+  self:HighlightCurrentTab()
 
   if self.isLive then
     SetCurrentGuildBankTab(self.currentTab)
@@ -321,6 +328,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   end
 
   self:UpdateTabs()
+  self:HighlightCurrentTab()
 
   local active
 
