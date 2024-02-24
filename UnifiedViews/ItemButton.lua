@@ -427,6 +427,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   local itemID = info and info.itemID;
   local isBound = info and info.isBound;
 
+
   ClearItemButtonOverlay(self);
 
   self:SetHasItem(texture);
@@ -824,6 +825,8 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   SetWidgetsAlpha(self, true)
 
   GetInfo(self, cacheData, function()
+    self.BGR.isBound = cacheData.isBound
+
     self:BGRUpdateQuests()
     self.BGR.tooltipGetter = function()
       return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
