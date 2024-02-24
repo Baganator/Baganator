@@ -193,8 +193,9 @@ function BaganatorGuildViewMixin:OpenTabEditor()
   end
   GuildBankPopupFrame:SetParent(self)
   GuildBankPopupFrame:ClearAllPoints()
-  GuildBankPopupFrame:SetPoint("TOP")
-  GuildBankPopupFrame:SetPoint("LEFT", self.Tabs[1], "RIGHT")
+  GuildBankPopupFrame:SetClampedToScreen(true)
+  GuildBankPopupFrame:SetFrameStrata("DIALOG")
+  GuildBankPopupFrame:SetPoint("LEFT", self, "RIGHT", self.Tabs[1]:GetWidth(), 0)
 end
 
 function BaganatorGuildViewMixin:UpdateTabs()
