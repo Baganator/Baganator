@@ -300,9 +300,9 @@ local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
   if fromBag ~= bagID or fromSlot ~= slotID then
     if C_Item.DoesItemExist(source) then
       if not C_Item.DoesItemExist(target) then
-        table.insert(moveQueue0, {source, target, item.itemLink, item.itemID})
+        table.insert(moveQueue0, {source, target, item.itemLink})
       else
-        table.insert(moveQueue1, {source, target, item.itemLink, item.itemID})
+        table.insert(moveQueue1, {source, target, item.itemLink})
       end
     end
   end
