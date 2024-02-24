@@ -117,6 +117,10 @@ if not Baganator.Constants.IsRetail then
         return
       end
 
+      if not Baganator.Utilities.IsEquipment(itemLink) then
+        return
+      end
+
       local id = ItemRack.GetIRString(itemLink)
       -- Workaround for ItemRack classic not getting the run id correctly for
       -- bag items
