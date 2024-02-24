@@ -1,0 +1,252 @@
+<Ui>
+  <Frame name="BaganatorGuildViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorGuildViewMixin">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnHide method="OnHide"/>
+      <OnEvent method="OnEvent"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnDragStop method="OnDragStop"/>
+    </Scripts>
+    <Frames>
+      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="FixedButtons">
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
+        </Anchors>
+      </Button>
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="FixedButtons">
+        <KeyValues>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_GUILD_VIEW_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            self:GetParent():Transfer()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleTabTextButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="LiveButtons">
+        <KeyValues>
+          <KeyValue key="tooltipHeader" value="BAGANATOR_L_TAB_INFO" type="global"/>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_GUILD_TAB_INFO_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" x="5"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture atlas="poi-workorders">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleTabText()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleTabLogsButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="LiveButtons">
+        <KeyValues>
+          <KeyValue key="tooltipHeader" value="BAGANATOR_L_TAB_LOGS" type="global"/>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_GUILD_TAB_LOGS_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="LEFT" relativeKey="$parent.ToggleTabTextButton" relativePoint="RIGHT"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture atlas="GarrMission_CurrencyIcon-Salvage">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleTabLogs()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleGoldLogsButton" inherits="BaganatorTooltipIconButtonTemplate" frameLevel="700" parentArray="LiveButtons">
+        <KeyValues>
+          <KeyValue key="tooltipHeader" value="BAGANATOR_L_MONEY_LOGS" type="global"/>
+          <KeyValue key="tooltipText" value="BAGANATOR_L_GUILD_MONEY_LOGS_TOOLTIP_TEXT" type="global"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="LEFT" relativeKey="$parent.ToggleTabLogsButton" relativePoint="RIGHT"/>
+        </Anchors>
+        <Layers>
+          <Layer level="ARTWORK">
+            <Texture atlas="Auctioneer">
+              <Size x="17" y="17"/>
+              <Anchors>
+                <Anchor point="CENTER"/>
+              </Anchors>
+            </Texture>
+          </Layer>
+        </Layers>
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleMoneyLogs()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Frame parentKey="GuildLive" inherits="BaganatorLiveGuildLayoutTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="13" y="-50"/>
+        </Anchors>
+      </Frame>
+      <Frame parentKey="GuildCached" inherits="BaganatorCachedGuildLayoutTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="13" y="-50"/>
+        </Anchors>
+      </Frame>
+
+      <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
+        <Size x="300" y="22"/>
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" relativeKey="$parent.GuildCached" relativePoint="TOPLEFT" x="5" y="3"/>
+        </Anchors>
+      </EditBox>
+    </Frames>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString parentKey="Money" inherits="GameFontHighlight">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" x="15" y="10"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="WithdrawalsInfo" inherits="GameFontHighlight">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" x="15" y="30"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <Button parentKey="DepositButton" text="DEPOSIT" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="LiveButtons">
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" x="-15" y="6"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GuildBankFrameDepositButtonMixin.OnClick(self, button, down)
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="WithdrawButton" text="WITHDRAW" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="LiveButtons">
+        <Anchors>
+          <Anchor point="RIGHT" relativeKey="$parent.DepositButton" relativePoint="LEFT"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GuildBankFrameWithdrawButtonMixin.OnClick(self, button, down)
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Frame name="$parentLogsFrame" parentKey="LogsFrame" inherits="BaganatorGuildLogsTemplate" frameStrata="DIALOG" hidden="true">
+        <Anchors>
+          <Anchor point="CENTER"/>
+        </Anchors>
+      </Frame>
+      <Frame name="$parentTabTextFrame" parentKey="TabTextFrame" inherits="BaganatorGuildTabTextTemplate" frameStrata="DIALOG" hidden="true">
+        <Anchors>
+          <Anchor point="CENTER"/>
+        </Anchors>
+      </Frame>
+    </Frames>
+  </Frame>
+
+  <Frame name="BaganatorGuildLogsTemplate" virtual="true" inherits="ButtonFrameTemplate" enableMouse="true" mixin="BaganatorGuildLogsTemplateMixin">
+    <Size x="500" y="300"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnDragStop method="OnDragStop"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="TextContainer" mixin="ScrollingFontMixin">
+        <KeyValues>
+          <KeyValue key="fontName" value="GameFontNormal" type="string"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" y="-25" x="15"/>
+          <Anchor point="BOTTOMRIGHT" y="10" x="-15"/>
+        </Anchors>
+        <Frames>
+          <Frame parentKey="ScrollBox" setAllPoints="true" inherits="WowScrollBox">
+            <Frames>
+              <Frame parentKey="FontStringContainer" inherits="InlineHyperlinkFrameTemplate">
+                <Size y="1"/>
+                <KeyValues>
+                  <KeyValue key="scrollable" value="true" type="boolean"/>
+                </KeyValues>
+                <Layers>
+                  <Layer>
+                    <FontString parentKey="FontString" nonspacewrap="true" justifyH="LEFT" justifyV="TOP"/>
+                  </Layer>
+                </Layers>
+              </Frame>
+            </Frames>
+          </Frame>
+        </Frames>
+        <Scripts>
+          <OnLoad method="OnLoad"/>
+          <OnSizeChanged method="OnSizeChanged"/>
+        </Scripts>
+      </Frame>
+      <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
+        <Anchors>
+          <Anchor point="TOPRIGHT" y="-25" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="10"/>
+        </Anchors>
+      </EventFrame>
+    </Frames>
+  </Frame>
+
+  <Frame name="BaganatorGuildTabTextTemplate" virtual="true" inherits="ButtonFrameTemplate" enableMouse="true" mixin="BaganatorGuildTabTextTemplateMixin">
+    <Size x="500" y="300"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnDragStop method="OnDragStop"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="TextContainer" inherits="ScrollingEditBoxTemplate">
+        <KeyValues>
+          <KeyValue key="fontName" value="GameFontNormal" type="string"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" y="-25" x="15"/>
+          <Anchor point="BOTTOMRIGHT" y="40" x="-15"/>
+        </Anchors>
+      </Frame>
+      <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
+        <Anchors>
+          <Anchor point="TOPRIGHT" y="-25" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="40"/>
+        </Anchors>
+      </EventFrame>
+      <Button parentKey="SaveButton" text="SAVE" inherits="UIPanelDynamicResizeButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" x="-15" y="6"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            SetGuildBankText(GetCurrentGuildBankTab(), self:GetParent().TextContainer:GetInputText())
+          </OnClick>
+        </Scripts>
+      </Button>
+    </Frames>
+  </Frame>
+</Ui>

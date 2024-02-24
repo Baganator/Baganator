@@ -1,5 +1,5 @@
-local function SetupView()
-  local mainView = CreateFrame("Frame", "Baganator_MainViewFrame", UIParent, "BaganatorMainViewTemplate")
+local function SetupBagBankView()
+  local mainView = CreateFrame("Frame", "Baganator_BackpackViewFrame", UIParent, "BaganatorBackpackViewTemplate")
   mainView:SetClampedToScreen(true)
   mainView:SetUserPlaced(false)
 
@@ -34,6 +34,7 @@ local function SetupView()
   local function ResetPositions()
     Baganator.Config.ResetOne(Baganator.Config.Options.MAIN_VIEW_POSITION)
     Baganator.Config.ResetOne(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)
+    Baganator.Config.ResetOne(Baganator.Config.Options.GUILD_VIEW_POSITION)
     SetPositions()
   end
 
@@ -50,7 +51,7 @@ local function SetupView()
   end)
 
   local lastToggleTime = 0
-  local function ToggleMainView()
+  local function ToggleBackpackView()
     if GetTime() == lastToggleTime then
       return
     end
@@ -63,7 +64,7 @@ local function SetupView()
   end
 
   if not Baganator.Config.Get(Baganator.Config.Options.INVERTED_BAG_SHORTCUTS) then
-    hooksecurefunc("ToggleAllBags", ToggleMainView)
+    hooksecurefunc("ToggleAllBags", ToggleBackpackView)
   end
 
   Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
@@ -106,7 +107,7 @@ local function SetupView()
     table.insert(bagButtons, KeyRingButton)
   end
   for _, b in ipairs(bagButtons) do
-    b:HookScript("OnClick", ToggleMainView)
+    b:HookScript("OnClick", ToggleBackpackView)
   end
 
   hooksecurefunc("ToggleBackpack", function()
@@ -116,7 +117,45 @@ local function SetupView()
     if stack:match("OpenAllBags") or stack:match("CloseAllBags") then
       return
     end
-    ToggleMainView()
+    ToggleBackpackView()
+  end)
+end
+
+local function SetupGuildView()
+  local guildView = CreateFrame("Frame", "Baganator_GuildViewFrame", UIParent, "BaganatorGuildViewTemplate")
+  guildView:SetClampedToScreen(true)
+  guildView:SetUserPlaced(false)
+
+  Baganator.CallbackRegistry:RegisterCallback("GuildToggle", function()
+    if not next(BAGANATOR_DATA.Guilds) then
+      return
+    end
+    guildView:SetShown(not guildView:IsShown())
+    local guild = Baganator.GuildCache.currentGuild or next(BAGANATOR_DATA.Guilds)
+    guildView:UpdateForGuild(guild, C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
+  end)
+
+  table.insert(UISpecialFrames, guildView:GetName())
+
+  local function SetPositions()
+    guildView:HideInfoDialogs()
+    guildView:ClearAllPoints()
+    guildView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_POSITION)))
+  end
+
+  local function ResetPositions()
+    Baganator.Config.ResetOne(Baganator.Config.Options.GUILD_VIEW_POSITION)
+    Baganator.Config.ResetOne(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)
+    SetPositions()
+  end
+
+  local success = pcall(SetPositions) -- work around broken values
+  if not success then
+    ResetPositions()
+  end
+
+  Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
+    ResetPositions()
   end)
 end
 
@@ -156,17 +195,20 @@ end
 function Baganator.UnifiedBags.Initialize()
   Baganator.UnifiedBags.Search.Initialize()
 
-  SetupView()
+  SetupBagBankView()
   HideDefaultBags()
 
   Baganator.InitializeOpenClose()
-
-  --Baganator.ItemButtonUtil.ImportOrInjectSettings()
-  Baganator.ItemButtonUtil.UpdateSettings()
 
   if BackpackTokenFrame then
     local info = C_XMLUtil.GetTemplateInfo("BackpackTokenTemplate")
     local tokenWidth = info and info.width or 50
     BackpackTokenFrame:SetWidth(tokenWidth * 3) -- Support tracking up to 3 currencies
   end
+
+  if Baganator.Config.Get(Baganator.Config.Options.ENABLE_GUILD_VIEW) then
+    SetupGuildView()
+  end
+
+  Baganator.ItemButtonUtil.UpdateSettings()
 end

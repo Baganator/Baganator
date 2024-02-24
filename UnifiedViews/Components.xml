@@ -17,6 +17,44 @@
     </Scripts>
   </Button>
 
+  <CheckButton name="BaganatorRightSideTabButtonTemplate" virtual="true" scale="0.8">
+    <Size>
+      <AbsDimension x="32" y="32"/>
+    </Size>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture file="Interface\SpellBook\SpellBook-SkillLineTab">
+          <Size>
+            <AbsDimension x="64" y="64"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT">
+              <Offset>
+                <AbsDimension x="-3" y="11"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="ARTWORK">
+        <Texture parentKey="SelectedTexture" file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
+        <Texture parentKey="Icon" alphaMode="ADD" setAllPoints="true"/>
+      </Layer>
+    </Layers>
+    <NormalTexture/>
+    <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
+    <Scripts>
+      <OnEnter>
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(self.tabName)
+        GameTooltip:Show()
+      </OnEnter>
+      <OnLeave>
+        GameTooltip:Hide()
+      </OnLeave>
+    </Scripts>
+  </CheckButton>
+
   <Button name="BaganatorTooltipIconButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
     <Size x="32" y="22"/>
     <Scripts>
@@ -154,5 +192,66 @@
         end
       </OnLoad>
     </Scripts>
+  </Button>
+
+  <Button name="BaganatorAllCharactersButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true">
+    <KeyValues>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_ALL_CHARACTERS" type="global"/>
+    </KeyValues>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture atlas="socialqueuing-icon-group">
+          <Size x="17" y="17"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
+
+  <Button name="BaganatorBankButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true">
+    <KeyValues>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_BANK" type="global"/>
+    </KeyValues>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="icon" atlas="VignetteLoot">
+          <Size x="17" y="17"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnLoad>
+        if Baganator.Constants.IsClassic then
+          self.icon:SetSize(22, 22)
+        end
+      </OnLoad>
+    </Scripts>
+  </Button>
+
+  <Button name="BaganatorGuildBankButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true">
+    <KeyValues>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_GUILD_BANK" type="global"/>
+    </KeyValues>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture atlas="communities-guildbanner-background">
+          <Size x="12" y="12"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+        <Texture atlas="communities-guildbanner-border">
+          <Size x="12" y="12"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
   </Button>
 </Ui>

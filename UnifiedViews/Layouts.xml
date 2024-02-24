@@ -1,5 +1,11 @@
 <Ui>
-  <Frame name="BaganatorSearchLayoutMonitorTemplate" virtual="true" mixin="BaganatorSearchLayoutMonitorMixin" parentArray="Layouts">
+  <Frame name="BaganatorBagSearchLayoutMonitorTemplate" virtual="true" mixin="BaganatorBagSearchLayoutMonitorMixin">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+    </Scripts>
+  </Frame>
+
+  <Frame name="BaganatorGuildSearchLayoutMonitorTemplate" virtual="true" mixin="BaganatorGuildSearchLayoutMonitorMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
     </Scripts>
@@ -13,7 +19,24 @@
     </Scripts>
   </Frame>
 
+  <Frame name="BaganatorCachedGuildLayoutTemplate" virtual="true" mixin="BaganatorCachedGuildLayoutMixin" parentArray="Layouts">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnHide method="OnHide"/>
+    </Scripts>
+  </Frame>
+
   <Frame name="BaganatorLiveBagLayoutTemplate" virtual="true" mixin="BaganatorLiveBagLayoutMixin" parentArray="Layouts">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnHide method="OnHide"/>
+      <OnEvent method="OnEvent"/>
+    </Scripts>
+  </Frame>
+
+  <Frame name="BaganatorLiveGuildLayoutTemplate" virtual="true" mixin="BaganatorLiveGuildLayoutMixin" parentArray="Layouts">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>

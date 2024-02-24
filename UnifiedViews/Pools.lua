@@ -13,11 +13,11 @@ end
 
 function Baganator.UnifiedBags.GetLiveItemButtonPool(self)
   if Baganator.Constants.IsRetail then
-    return CreateFramePool("ItemButton", self, "BaganatorRetailLiveItemButtonTemplate")
+    return CreateFramePool("ItemButton", self, "BaganatorRetailLiveContainerItemButtonTemplate")
   else
     return CreateObjectPool(function(pool)
       classicCachedObjectCounter = classicCachedObjectCounter + 1
-      return CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicLiveItemButtonTemplate")
+      return CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicLiveContainerItemButtonTemplate")
     end, FramePool_HideAndClearAnchors)
   end
 end
@@ -47,4 +47,33 @@ function Baganator.UnifiedBags.GetCollapsingBagSectionsPool(self)
     details.button:Hide()
     details.button:ClearAllPoints()
   end)
+end
+
+function Baganator.UnifiedBags.GetLiveGuildItemButtonPool(parent)
+  if Baganator.Constants.IsRetail then
+    return CreateFramePool("ItemButton", parent, "BaganatorRetailLiveGuildItemButtonTemplate")
+  else
+    return CreateObjectPool(function(pool)
+      classicCachedObjectCounter = classicCachedObjectCounter + 1
+      return CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, parent, "BaganatorClassicLiveGuildItemButtonTemplate")
+    end, FramePool_HideAndClearAnchors)
+  end
+end
+
+function Baganator.UnifiedBags.GetTabButtonPool(parent)
+  if Baganator.Constants.IsRetail then
+    return CreateFramePool("Button", parent, "BaganatorRetailTabButtonTemplate")
+  else
+    return CreateObjectPool(function(pool)
+      classicCachedObjectCounter = classicCachedObjectCounter + 1
+      return CreateFrame("Button", "BGRUnifiedBagsTabButton" .. classicCachedObjectCounter, parent, "BaganatorClassicTabButtonTemplate")
+    end, FramePool_HideAndClearAnchors)
+  end
+end
+
+function Baganator.UnifiedBags.GetSideTabButtonPool(parent)
+  return CreateObjectPool(function(pool)
+    classicCachedObjectCounter = classicCachedObjectCounter + 1
+    return CreateFrame("Button", "BGRUnifiedBagsTabButton" .. classicCachedObjectCounter, parent, "BaganatorRightSideTabButtonTemplate")
+  end, FramePool_HideAndClearAnchors)
 end

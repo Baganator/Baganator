@@ -1,0 +1,53 @@
+<Ui>
+  <ItemButton name="BaganatorRetailCachedItemButtonTemplate" virtual="true" mixin="BaganatorRetailCachedItemButtonMixin">
+    <Scripts>
+      <OnClick method="OnClick"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
+    </Scripts>
+  </ItemButton>
+
+  <ItemButton name="BaganatorRetailLiveContainerItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate">
+    <Scripts>
+      <OnLoad inherit="prepend">
+        Mixin(self, BaganatorRetailLiveContainerItemButtonMixin)
+        self:MyOnLoad()
+      </OnLoad>
+    </Scripts>
+  </ItemButton>
+
+  <ItemButton name="BaganatorRetailLiveGuildItemButtonTemplate" virtual="true" inherits="GuildBankItemButtonTemplate">
+    <Scripts>
+      <OnLoad inherit="prepend">
+        Mixin(self, BaganatorRetailLiveGuildItemButtonMixin)
+        self:MyOnLoad()
+      </OnLoad>
+    </Scripts>
+  </ItemButton>
+
+  <Button name="BaganatorClassicCachedItemButtonTemplate" virtual="true" inherits="ItemButtonTemplate" mixin="BaganatorClassicCachedItemButtonMixin">
+    <Scripts>
+      <OnClick method="OnClick"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
+    </Scripts>
+  </Button>
+
+  <Button name="BaganatorClassicLiveContainerItemButtonTemplate" virtual="true" inherits="ContainerFrameItemButtonTemplate">
+    <Scripts>
+      <OnLoad inherit="prepend">
+        Mixin(self, BaganatorClassicLiveContainerItemButtonMixin)
+        self:MyOnLoad()
+      </OnLoad>
+    </Scripts>
+  </Button>
+
+  <Button name="BaganatorClassicLiveGuildItemButtonTemplate" virtual="true" inherits="GuildBankItemButtonTemplate">
+    <Scripts>
+      <OnLoad inherit="prepend">
+        Mixin(self, BaganatorClassicLiveGuildItemButtonMixin)
+        self:MyOnLoad()
+      </OnLoad>
+    </Scripts>
+  </Button>
+</Ui>
