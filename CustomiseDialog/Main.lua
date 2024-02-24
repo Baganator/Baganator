@@ -11,6 +11,11 @@ end
 local WINDOW_OPTIONS = {
   {
     type = "checkbox",
+    text = BAGANATOR_L_LOCK_INVENTORY_FRAMES,
+    option = "lock_frames",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_ENABLE_BAG_VIEWS_2,
     option = "enable_unified_bags",
   },
@@ -19,11 +24,6 @@ local WINDOW_OPTIONS = {
     text = BAGANATOR_L_ENABLE_GUILD_VIEW,
     option = "enable_guild_view",
     check = NotIsEraCheck,
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_LOCK_INVENTORY_FRAMES,
-    option = "lock_frames",
   },
   {
     type = "checkbox",
@@ -459,7 +459,7 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
   local frame = GetWrapperFrame(self)
 
   frame.ResetFramePositions = CreateFrame("Button", nil, frame, "UIPanelDynamicResizeButtonTemplate")
-  frame.ResetFramePositions:SetPoint("TOPRIGHT", frame, -20, -88)
+  frame.ResetFramePositions:SetPoint("TOPRIGHT", frame, -20, -8)
   frame.ResetFramePositions:SetText(BAGANATOR_L_RESET_POSITIONS)
   DynamicResizeButton_Resize(frame.ResetFramePositions)
   frame.ResetFramePositions:SetScript("OnClick", function()
