@@ -30,6 +30,9 @@ InventoryTracking\Tooltips.lua
 InventoryTracking\CurrencyTooltipData.lua
 InventoryTracking\Main.lua
 
+Search\BaseInfo.lua
+Search\CheckItem.lua
+
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
 Sorting\Order.lua
@@ -67,7 +70,6 @@ UnifiedViews\BagTransfers.lua
 UnifiedViews\CollapsingBagSections.lua
 UnifiedViews\BackpackView.lua
 UnifiedViews\BackpackView.xml
-UnifiedViews\Search.lua
 UnifiedViews\OpenClose.lua
 UnifiedViews\Main.lua
 

@@ -1,6 +1,7 @@
 Baganator = {
   Utilities = {},
   InventoryTracking = {},
+  Search = {},
   UnifiedBags = {},
   CustomiseDialog = {},
   API = {},

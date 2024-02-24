@@ -223,7 +223,7 @@ function BaganatorBankOnlyViewMixin:OnHide(eventName)
 
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
-  Baganator.UnifiedBags.Search.ClearCache()
+  Baganator.Search.ClearCache()
 end
 
 function BaganatorBankOnlyViewMixin:AllocateBankBags(character)

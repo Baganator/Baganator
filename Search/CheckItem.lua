@@ -1,5 +1,3 @@
-Baganator.UnifiedBags.Search = {}
-
 local function PetCheck(details)
   return details.classID == Enum.ItemClass.Battlepet or (details.classID == Enum.ItemClass.Miscellaneous and details.subClassID == Enum.ItemMiscellaneousSubclass.CompanionPet)
 end
@@ -711,7 +709,7 @@ local function ApplyCombinedTerms(fullSearchString)
   end
 end
 
-function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
+function Baganator.Search.CheckItem(details, searchString)
   local check = matches[searchString]
   if not check then
     check = ApplyCombinedTerms(searchString)
@@ -721,12 +719,12 @@ function Baganator.UnifiedBags.Search.CheckItem(details, searchString)
   return check(details, searchString)
 end
 
-function Baganator.UnifiedBags.Search.ClearCache()
+function Baganator.Search.ClearCache()
   matches = {}
   rejects = {}
 end
 
-function Baganator.UnifiedBags.Search.Initialize()
+function Baganator.Search.Initialize()
   for i = 0, Enum.ItemClassMeta.NumValues-1 do
     local name = GetItemClassInfo(i)
     if name then

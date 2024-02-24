@@ -193,8 +193,6 @@ local function HideDefaultBags()
 end
 
 function Baganator.UnifiedBags.Initialize()
-  Baganator.UnifiedBags.Search.Initialize()
-
   SetupBagBankView()
   HideDefaultBags()
 

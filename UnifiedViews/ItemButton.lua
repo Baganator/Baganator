@@ -90,37 +90,31 @@ local function GetExpansion(self, itemInfo)
   return itemInfo[15]
 end
 
--- Load item data late
-local function GetExtraInfo(self, itemID, itemLink, data)
-  if itemLink:find("keystone:", nil, true) then
-    itemLink = "item:" .. itemID
-  end
+local function GetInfo(self, cacheData, earlyCallback)
+  earlyCallback = earlyCallback or function() end
+  Baganator.Search.GetBaseInfo(cacheData, function(info)
+    self.BGR = info
+    earlyCallback()
 
-  if itemLink:find("battlepet:", nil, true) then
-    self.BGR.itemInfoWaiting = false
-    local petID, level = itemLink:match("battlepet:(%d+):(%d*)")
-
-    self.BGR.itemName = C_PetJournal.GetPetInfoBySpeciesID(tonumber(petID))
-    self.BGR.isCraftingReagent = false
-    self.BGR.classID = Enum.ItemClass.Battlepet
-    self.BGR.isCosmetic = false
-    if level and level ~= "" then
-      self.BGR.itemLevel = tonumber(level)
+    for plugin, widget in pairs(self.cornerPlugins) do
+      widget:Hide()
     end
-    for _, callback in ipairs(itemCallbacks) do
-      callback(self, data)
+    if not iconSettings.usingJunkPlugin and self.JunkIcon then
+      self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
+      if iconSettings.markJunk and self.BGR.isJunk then
+        self.BGR.persistIconGrey = true
+        self.icon:SetDesaturated(true)
+      end
     end
 
-  elseif C_Item.IsItemDataCachedByID(itemID) then
-    self.BGR.itemInfoWaiting = false
-    local itemInfo = {GetItemInfo(itemLink)}
-    self.BGR.itemName = itemInfo[1]
-    self.BGR.isCraftingReagent = itemInfo[17]
-    self.BGR.classID = itemInfo[12]
-    self.BGR.subClassID = itemInfo[13]
-    self.BGR.invType = itemInfo[9]
-    self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
-    self.BGR.expacID = GetExpansion(self, itemInfo)
+    if self.BaganatorBagHighlight then
+      self.BaganatorBagHighlight:Hide()
+    end
+  end,
+  function(info)
+    if self.BGR ~= info then -- Check that the item button hasn't been refreshed
+      return
+    end
     if self.BGR.isCosmetic then
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
@@ -131,58 +125,10 @@ local function GetExtraInfo(self, itemID, itemLink, data)
     if self.BGRUpdateQuests then
       self:BGRUpdateQuests()
     end
-  else
-    local item = Item:CreateFromItemLink(itemLink)
-    self.BGR.itemInfoWaiting = true
-    local BGR = self.BGR
-    item:ContinueOnItemLoad(function()
-      if BGR ~= self.BGR then -- Check that the item button hasn't been refreshed
-        return
-      end
-      self.BGR.itemInfoWaiting = false
-      local itemInfo = {GetItemInfo(itemLink)}
-      self.BGR.itemName = itemInfo[1]
-      self.BGR.isCraftingReagent = itemInfo[17]
-      self.BGR.classID = itemInfo[12]
-      self.BGR.subClassID = itemInfo[13]
-      self.BGR.invType = itemInfo[9]
-      self.BGR.isCosmetic = IsCosmeticItem and IsCosmeticItem(itemLink)
-      self.BGR.expacID = GetExpansion(self, itemInfo)
-      if self.BGR.isCosmetic then
-        self.IconOverlay:SetAtlas("CosmeticIconFrame")
-        self.IconOverlay:Show();
-      end
-
-      for _, callback in ipairs(itemCallbacks) do
-        callback(self, data)
-      end
-      if self.BGRUpdateQuests then
-        self:BGRUpdateQuests()
-      end
-    end)
-  end
+  end)
 end
 
 local function SetStaticInfo(self, details)
-  self.BGR.isBound = details.isBound
-  self.BGR.quality = details.quality
-  self.BGR.itemCount = details.itemCount
-
-  for plugin, widget in pairs(self.cornerPlugins) do
-    widget:Hide()
-  end
-
-  if not iconSettings.usingJunkPlugin and self.JunkIcon then
-    self.BGR.isJunk = not self.BGR.hasNoValue and details.quality == Enum.ItemQuality.Poor
-    if iconSettings.markJunk and self.BGR.isJunk then
-      self.BGR.persistIconGrey = true
-      self.icon:SetDesaturated(true)
-    end
-  end
-
-  if self.BaganatorBagHighlight then
-    self.BaganatorBagHighlight:Hide()
-  end
 
   if iconSettings.equipmentSetBorder and self.BGR.setInfo then
     self.IconBorder:Show()
@@ -207,7 +153,7 @@ local function SearchCheck(self, text)
     return
   end
 
-  return Baganator.UnifiedBags.Search.CheckItem(self.BGR, text)
+  return Baganator.Search.CheckItem(self.BGR, text)
 end
 
 -- Used to fade widgets when the item doesn't match the current search/context
@@ -351,8 +297,6 @@ function BaganatorRetailCachedItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
-  self.BGR = {}
-
   self:SetItemButtonTexture(details.iconTexture)
   self:SetItemButtonQuality(details.quality)
   self:SetItemButtonCount(details.itemCount)
@@ -360,15 +304,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   SetItemButtonDesaturated(self, false);
   ReparentOverlays(self)
 
-  self.BGR.itemLink = details.itemLink
-  self.BGR.itemID = details.itemID
-  self.BGR.itemName = ""
-  self.BGR.tooltipGetter = function() return C_TooltipInfo.GetHyperlink(details.itemLink) end
-
-  SetStaticInfo(self, details)
-  if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, self.BGR.itemLink, details)
-  end
+  GetInfo(self, details)
 end
 
 function BaganatorRetailCachedItemButtonMixin:BGRStartFlashing()
@@ -514,21 +450,13 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   SetWidgetsAlpha(self, true)
   ReparentOverlays(self)
 
-  self.BGR = {}
-  self.BGR.itemName = ""
-  self.BGR.itemLink = cacheData.itemLink
-  self.BGR.itemID = cacheData.itemID
-  self.BGR.itemNameLower = nil
-  self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
-  self.BGR.hasNoValue = noValue
-  self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()))
-
-  self:BGRUpdateQuests()
-
-  SetStaticInfo(self, cacheData)
-  if texture ~= nil then
-    GetExtraInfo(self, itemID, cacheData.itemLink, cacheData)
-  end
+  GetInfo(self, cacheData, function()
+    self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
+    self.BGR.isBound = cacheData.isBound
+    self.BGR.hasNoValue = noValue
+    self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()))
+    self:BGRUpdateQuests()
+  end)
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRStartFlashing()
@@ -591,7 +519,7 @@ function BaganatorRetailLiveGuildItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
-  self.BGR = {}
+  GetInfo(self, cacheData)
 
   local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, self:GetID());
 
@@ -602,11 +530,6 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   itemCount = itemCount == 0 and cacheData.itemCount or itemCount
   quality = quality or cacheData.quality
 
-  self.BGR.itemLink = cacheData.itemLink
-  self.BGR.itemID = cacheData.itemID
-  self.BGR.itemName = ""
-  self.BGR.itemNameLower = nil
-  self.BGR.setInfo = cacheData.setInfo
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetGuildBankItem(tab, self:GetID()) end
 
   SetItemButtonTexture(self, texture);
@@ -616,12 +539,6 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   self:SetMatchesSearch(true);
 
   SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, self:GetID()));
-
-  -- Back to Baganator stuff:
-  SetStaticInfo(self, cacheData)
-  if cacheData.iconTexture ~= nil then
-    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData)
-  end
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:BGRStartFlashing()
@@ -701,23 +618,16 @@ function BaganatorClassicCachedItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
-  self.BGR = {}
-  self.BGR.itemLink = details.itemLink
-  self.BGR.itemID = details.itemID
-  self.BGR.itemName = ""
-  self.BGR.itemNameLower = nil
-  self.BGR.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(details.itemLink) end) end
+  GetInfo(self, details, function()
+    self.BGR.isBound = details.isBound
+    self.BGR.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(details.itemLink) end) end
+  end)
 
   SetItemButtonTexture(self, details.iconTexture or self.emptySlotFilepath);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
   ApplyQualityBorderClassic(self, details.quality)
   SetItemButtonCount(self, details.itemCount);
   SetItemButtonDesaturated(self, false)
-
-  SetStaticInfo(self, details)
-  if details.iconTexture ~= nil then
-    GetExtraInfo(self, details.itemID, details.itemLink, details)
-  end
 end
 
 function BaganatorClassicCachedItemButtonMixin:BGRStartFlashing()
@@ -864,27 +774,13 @@ function BaganatorClassicLiveContainerItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
-  self.BGR = {}
+
   local info = C_Container.GetContainerItemInfo(self:GetParent():GetID(), self:GetID())
 
   if cacheData.itemLink == nil then
     info = nil
   end
 
-  self.BGR.itemLink = cacheData.itemLink
-  self.BGR.itemID = cacheData.itemID
-  self.BGR.itemName = ""
-  self.BGR.itemNameLower = nil
-  self.BGR.tooltipGetter = function()
-    return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
-      if self:GetParent():GetID() == -1 then
-        tooltip:SetInventoryItem("player", self:GetInventorySlot())
-      else
-        tooltip:SetBagItem(self:GetParent():GetID(), self:GetID())
-      end
-    end)
-  end
-  self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
 
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()
@@ -907,8 +803,6 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   
   ContainerFrameItemButton_SetForceExtended(self, false);
 
-  self:BGRUpdateQuests()
-
   if ( texture ) then
     ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
     self.hasItem = 1;
@@ -925,32 +819,40 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
       GameTooltip:Hide();
     end
   end
-
-  if C_Engraving and C_Engraving.IsEngravingEnabled() then
-    self.BGR.isEngravable = false
-    local bagID, slotID = self:GetParent():GetID(), self:GetID()
-    if bagID == Enum.BagIndex.Bank then
-      local invID = BankButtonIDToInvSlotID(slotID)
-      self.BGR.isEngravable = C_Engraving.IsEquipmentSlotEngravable(invID)
-      if self.BGR.isEngravable then
-        self.BGR.engravingInfo = C_Engraving.GetRuneForEquipmentSlot(invID)
-      end
-    elseif bagID >= 0 and C_Engraving.IsInventorySlotEngravable(bagID, slotID) then
-      self.BGR.isEngravable = true
-      self.BGR.engravingInfo = C_Engraving.GetRuneForInventorySlot(bagID, slotID)
-    end
-  end
   
   self.searchOverlay:SetShown(false);
   SetWidgetsAlpha(self, true)
 
-  self.BGR.hasNoValue = noValue
- 
-  -- Back to Baganator stuff:
-  SetStaticInfo(self, cacheData)
-  if cacheData.iconTexture ~= nil then
-    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData)
-  end
+  GetInfo(self, cacheData, function()
+    self:BGRUpdateQuests()
+    self.BGR.tooltipGetter = function()
+      return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
+        if self:GetParent():GetID() == -1 then
+          tooltip:SetInventoryItem("player", self:GetInventorySlot())
+        else
+          tooltip:SetBagItem(self:GetParent():GetID(), self:GetID())
+        end
+      end)
+    end
+    self.BGR.setInfo = Baganator.UnifiedBags.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+
+    if C_Engraving and C_Engraving.IsEngravingEnabled() then
+      self.BGR.isEngravable = false
+      local bagID, slotID = self:GetParent():GetID(), self:GetID()
+      if bagID == Enum.BagIndex.Bank then
+        local invID = BankButtonIDToInvSlotID(slotID)
+        self.BGR.isEngravable = C_Engraving.IsEquipmentSlotEngravable(invID)
+        if self.BGR.isEngravable then
+          self.BGR.engravingInfo = C_Engraving.GetRuneForEquipmentSlot(invID)
+        end
+      elseif bagID >= 0 and C_Engraving.IsInventorySlotEngravable(bagID, slotID) then
+        self.BGR.isEngravable = true
+        self.BGR.engravingInfo = C_Engraving.GetRuneForInventorySlot(bagID, slotID)
+      end
+    end
+
+    self.BGR.hasNoValue = noValue
+  end)
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:BGRStartFlashing()
@@ -998,7 +900,7 @@ function BaganatorClassicLiveGuildItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
-  self.BGR = {}
+  GetInfo(cacheData)
 
   local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, self:GetID());
 
@@ -1009,11 +911,6 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   itemCount = itemCount == 0 and cacheData.itemCount or itemCount
   quality = quality or cacheData.quality
 
-  self.BGR.itemLink = cacheData.itemLink
-  self.BGR.itemID = cacheData.itemID
-  self.BGR.itemName = ""
-  self.BGR.itemNameLower = nil
-  self.BGR.setInfo = cacheData.setInfo
   self.BGR.tooltipGetter = function()
     return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
         tooltip:SetGuildBankItem(tab, self:GetID())
