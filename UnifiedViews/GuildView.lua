@@ -198,7 +198,7 @@ function BaganatorGuildViewMixin:OpenTabEditor()
   GuildBankPopupFrame:SetPoint("LEFT", self, "RIGHT", self.Tabs[1]:GetWidth(), 0)
 end
 
-function BaganatorGuildViewMixin:UpdateTabs()
+function BaganatorGuildViewMixin:UpdateTabs(guildData)
   local tabScaleFactor = 37
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     tabScaleFactor = 40
@@ -210,7 +210,7 @@ function BaganatorGuildViewMixin:UpdateTabs()
     -- Need to add/remove the purchase tab button
     (not self.isLive or not IsGuildLeader() or self.purchaseTabAdded) and (self.isLive or not self.purchaseTabAdded) and
     -- Changed tabs
-    self.lastTabData and tCompare(BAGANATOR_DATA.Guilds[self.lastGuild].bank, self.lastTabData, 2) then
+    self.lastTabData and tCompare(guildData.bank, self.lastTabData, 2) then
     for _, tab in ipairs(self.Tabs) do
       tab:SetScale(tabScale)
     end
@@ -222,7 +222,7 @@ function BaganatorGuildViewMixin:UpdateTabs()
   local lastTab
   local tabs = {}
   self.lastTabData = {}
-  for index, tabInfo in ipairs(BAGANATOR_DATA.Guilds[self.lastGuild].bank) do
+  for index, tabInfo in ipairs(guildData.bank) do
     local tabButton = self.tabsPool:Acquire()
     tabButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     tabButton.Icon:SetTexture(tabInfo.iconTexture)
@@ -335,7 +335,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     button:SetShown(self.isLive)
   end
 
-  self:UpdateTabs()
+  self:UpdateTabs(guildData)
   self:HighlightCurrentTab()
 
   local active
@@ -357,7 +357,9 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   -- 300 is the default searchbox width
   self.SearchBox:SetWidth(math.min(300, active:GetWidth() - 5))
 
-  self.Tabs[1]:SetPoint("LEFT", active, "LEFT")
+  if guildData.bank[1] then
+    self.Tabs[1]:SetPoint("LEFT", active, "LEFT")
+  end
 
   local sideSpacing = 13
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
