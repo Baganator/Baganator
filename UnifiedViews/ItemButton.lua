@@ -900,8 +900,6 @@ function BaganatorClassicLiveGuildItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
-  GetInfo(cacheData)
-
   local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, self:GetID());
 
   if cacheData.itemLink == nil then
@@ -911,12 +909,6 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   itemCount = itemCount == 0 and cacheData.itemCount or itemCount
   quality = quality or cacheData.quality
 
-  self.BGR.tooltipGetter = function()
-    return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
-        tooltip:SetGuildBankItem(tab, self:GetID())
-    end)
-  end
-
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
@@ -925,10 +917,13 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   self.searchOverlay:SetShown(false);
   SetWidgetsAlpha(self, true)
 
-  SetStaticInfo(self, cacheData)
-  if cacheData.iconTexture ~= nil then
-    GetExtraInfo(self, cacheData.itemID, cacheData.itemLink, cacheData)
-  end
+  GetInfo(self, cacheData, function()
+    self.BGR.tooltipGetter = function()
+      return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
+          tooltip:SetGuildBankItem(tab, self:GetID())
+      end)
+    end
+  end)
 end
 
 function BaganatorClassicLiveGuildItemButtonMixin:BGRStartFlashing()
