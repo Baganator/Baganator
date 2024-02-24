@@ -5,6 +5,7 @@ ignore:
 plain-copy:
   - Core
   - InventoryTracking
+  - Search
   - CustomiseDialog
   - Sorting
   - UnifiedViews
