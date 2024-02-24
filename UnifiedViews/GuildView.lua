@@ -11,7 +11,7 @@ function BaganatorGuildViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  self.tabsPool = Baganator.UnifiedBags.GetSideTabButtonPool(self)
+  self.tabsPool = Baganator.UnifiedViews.GetSideTabButtonPool(self)
   self.currentTab = 1
 
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)

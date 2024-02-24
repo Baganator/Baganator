@@ -117,7 +117,7 @@ end
 BaganatorCachedBagLayoutMixin = {}
 
 function BaganatorCachedBagLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedBags.GetCachedItemButtonPool(self)
+  self.buttonPool = Baganator.UnifiedViews.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.buttonsByBag = {}
@@ -295,7 +295,7 @@ local LIVE_LAYOUT_EVENTS = {
 }
 
 function BaganatorLiveBagLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedBags.GetLiveItemButtonPool(self)
+  self.buttonPool = Baganator.UnifiedViews.GetLiveItemButtonPool(self)
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByBag = {}
@@ -541,7 +541,7 @@ end
 BaganatorCachedGuildLayoutMixin = {}
 
 function BaganatorCachedGuildLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedBags.GetCachedItemButtonPool(self)
+  self.buttonPool = Baganator.UnifiedViews.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
@@ -648,7 +648,7 @@ end
 BaganatorLiveGuildLayoutMixin = {}
 
 function BaganatorLiveGuildLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedBags.GetLiveGuildItemButtonPool(self)
+  self.buttonPool = Baganator.UnifiedViews.GetLiveGuildItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")

@@ -7,8 +7,8 @@ function BaganatorBankOnlyViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  self.unallocatedItemButtonPool = Baganator.UnifiedBags.GetLiveItemButtonPool(self)
-  self.CollapsingBagSectionsPool = Baganator.UnifiedBags.GetCollapsingBagSectionsPool(self)
+  self.unallocatedItemButtonPool = Baganator.UnifiedViews.GetLiveItemButtonPool(self)
+  self.CollapsingBagSectionsPool = Baganator.UnifiedViews.GetCollapsingBagSectionsPool(self)
   self.CollapsingBankBags = {}
   self.bagDetailsForComparison = {}
 
@@ -227,11 +227,11 @@ function BaganatorBankOnlyViewMixin:OnHide(eventName)
 end
 
 function BaganatorBankOnlyViewMixin:AllocateBankBags(character)
-  -- Copied from UnifiedBags/BagView.lua
-  local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
+  -- Copied from UnifiedViews/BagView.lua
+  local newDetails = Baganator.UnifiedViews.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
   if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
     self.bagDetailsForComparison.bank = CopyTable(newDetails)
-    self.CollapsingBankBags = Baganator.UnifiedBags.AllocateCollapsingSections(
+    self.CollapsingBankBags = Baganator.UnifiedViews.AllocateCollapsingSections(
       character, "bank", Baganator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,
       self.CollapsingBagSectionsPool, self.unallocatedItemButtonPool,
@@ -281,7 +281,7 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
   self.DepositIntoReagentsBankButton:SetShown(Baganator.Constants.IsRetail and IsReagentBankUnlocked())
   self.BuyReagentBankButton:SetShown(Baganator.Constants.IsRetail and not IsReagentBankUnlocked())
 
-  -- Copied from UnifiedBags/BagView.lua
+  -- Copied from UnifiedViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
@@ -290,8 +290,8 @@ function BaganatorBankOnlyViewMixin:UpdateForCharacter(character, updatedBags)
 
   local bankHeight = self.BankLive:GetHeight() + topSpacing / 2
 
-  -- Copied from UnifiedBags/BagView.lua
-  bankHeight = bankHeight + Baganator.UnifiedBags.ArrangeCollapsibles(activeBankBagCollapsibles, self.BankLive, self.CollapsingBankBags)
+  -- Copied from UnifiedViews/BagView.lua
+  bankHeight = bankHeight + Baganator.UnifiedViews.ArrangeCollapsibles(activeBankBagCollapsibles, self.BankLive, self.CollapsingBankBags)
 
   self.AllButtons = {}
   tAppendAll(self.AllButtons, self.AllFixedButtons)

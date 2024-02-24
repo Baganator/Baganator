@@ -22,10 +22,10 @@ function BaganatorBackpackViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  self.liveItemButtonPool = Baganator.UnifiedBags.GetLiveItemButtonPool(self)
-  self.unallocatedItemButtonPool = Baganator.UnifiedBags.GetLiveItemButtonPool(self)
+  self.liveItemButtonPool = Baganator.UnifiedViews.GetLiveItemButtonPool(self)
+  self.unallocatedItemButtonPool = Baganator.UnifiedViews.GetLiveItemButtonPool(self)
   self.BagLive:SetPool(self.liveItemButtonPool)
-  self.CollapsingBagSectionsPool = Baganator.UnifiedBags.GetCollapsingBagSectionsPool(self)
+  self.CollapsingBagSectionsPool = Baganator.UnifiedViews.GetCollapsingBagSectionsPool(self)
   self.CollapsingBags = {}
   self.CollapsingBankBags = {}
   self.bagDetailsForComparison = {}
@@ -49,7 +49,7 @@ function BaganatorBackpackViewMixin:OnLoad()
   self.blizzardBankOpen = false
   self.viewBankShown = false
 
-  self.tabsPool = Baganator.UnifiedBags.GetTabButtonPool(self)
+  self.tabsPool = Baganator.UnifiedViews.GetTabButtonPool(self)
 
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
@@ -218,10 +218,10 @@ function BaganatorBackpackViewMixin:OnHide()
 end
 
 function BaganatorBackpackViewMixin:AllocateBags(character)
-  local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bags", Baganator.Constants.AllBagIndexes, Baganator.Constants.BagSlotsCount)
+  local newDetails = Baganator.UnifiedViews.GetCollapsingBagDetails(character, "bags", Baganator.Constants.AllBagIndexes, Baganator.Constants.BagSlotsCount)
   if self.bagDetailsForComparison.bags == nil or not tCompare(self.bagDetailsForComparison.bags, newDetails, 15) then
     self.bagDetailsForComparison.bags = CopyTable(newDetails)
-    self.CollapsingBags = Baganator.UnifiedBags.AllocateCollapsingSections(
+    self.CollapsingBags = Baganator.UnifiedViews.AllocateCollapsingSections(
       character, "bags", Baganator.Constants.AllBagIndexes,
       newDetails, self.CollapsingBags,
       self.CollapsingBagSectionsPool, self.liveItemButtonPool)
@@ -230,10 +230,10 @@ function BaganatorBackpackViewMixin:AllocateBags(character)
 end
 
 function BaganatorBackpackViewMixin:AllocateBankBags(character)
-  local newDetails = Baganator.UnifiedBags.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
+  local newDetails = Baganator.UnifiedViews.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
   if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
     self.bagDetailsForComparison.bank = CopyTable(newDetails)
-    self.CollapsingBankBags = Baganator.UnifiedBags.AllocateCollapsingSections(
+    self.CollapsingBankBags = Baganator.UnifiedViews.AllocateCollapsingSections(
       character, "bank", Baganator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,
       self.CollapsingBagSectionsPool, self.unallocatedItemButtonPool)
@@ -668,7 +668,7 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
 
   local bagHeight = activeBag:GetHeight() + topSpacing / 2
 
-  bagHeight = bagHeight + Baganator.UnifiedBags.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
+  bagHeight = bagHeight + Baganator.UnifiedViews.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
   local height = bagHeight
 
   if activeBank then
@@ -681,7 +681,7 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
       layout:ApplySearch(searchText)
     end
 
-    local bankHeight = activeBank:GetHeight() + 6 + Baganator.UnifiedBags.ArrangeCollapsibles(activeBankCollapsibles, activeBank, self.CollapsingBankBags)
+    local bankHeight = activeBank:GetHeight() + 6 + Baganator.UnifiedViews.ArrangeCollapsibles(activeBankCollapsibles, activeBank, self.CollapsingBankBags)
     height = math.max(bankHeight, height)
     activeBank:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, - (height - bankHeight)/2 - 50)
   end
