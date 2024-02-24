@@ -205,7 +205,11 @@ function BaganatorGuildViewMixin:UpdateTabs()
   local tabScale = math.min(1, Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE) / tabScaleFactor)
   -- Prevent regenerating the tabs if the base info hasn't changed since last
   -- time. This avoids failed clicks on the tabs if done quickly.
-  if self.lastTabData and tCompare(BAGANATOR_DATA.Guilds[self.lastGuild].bank, self.lastTabData, 2) then
+  if
+    -- Need to add/remove the purchase tab button
+    (not self.isLive or not IsGuildLeader() or self.purchaseTabAdded) and (self.isLive or not self.purchaseTabAdded) and
+    -- Changed tabs
+    self.lastTabData and tCompare(BAGANATOR_DATA.Guilds[self.lastGuild].bank, self.lastTabData, 2) then
     for _, tab in ipairs(self.Tabs) do
       tab:SetScale(tabScale)
     end
@@ -260,6 +264,9 @@ function BaganatorGuildViewMixin:UpdateTabs()
     tabButton:SetEnabled(true)
     tabButton.Icon:SetDesaturated(false)
     table.insert(tabs, tabButton)
+    self.purchaseTabAdded = true
+  else
+    self.purchaseTabAdded = false
   end
 
   self.Tabs = tabs
