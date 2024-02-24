@@ -176,7 +176,7 @@ function BaganatorGuildViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), relativePoint, x, y})
+  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_POSITION, {point, UIParent:GetName(), x, y})
 end
 
 function BaganatorGuildViewMixin:OpenTabEditor()
@@ -625,7 +625,6 @@ end
 
 function BaganatorGuildTabTextTemplateMixin:OnShow()
   self:ClearAllPoints()
-  print(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
   self:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
 end
 
@@ -653,5 +652,5 @@ function BaganatorGuildTabTextTemplateMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), relativePoint, x, y})
+  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), x, y})
 end
