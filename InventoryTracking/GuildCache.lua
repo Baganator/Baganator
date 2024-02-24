@@ -52,6 +52,8 @@ end
 
 function BaganatorGuildCacheMixin:OnLoad()
   FrameUtil.RegisterFrameForEvents(self, {
+    "PLAYER_INTERACTION_MANAGER_FRAME_SHOW",
+    "PLAYER_INTERACTION_MANAGER_FRAME_HIDE",
     "GUILDBANKBAGSLOTS_CHANGED",
     "GUILDBANK_UPDATE_TABS",
     "GUILDBANK_UPDATE_MONEY",
@@ -63,8 +65,15 @@ function BaganatorGuildCacheMixin:OnLoad()
 end
 
 function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
-  if eventName == "GUILDBANKBAGSLOTS_CHANGED" or eventName == "GUILDBANK_UPDATE_TABS" then
+  if eventName == "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" then
+    local interactionType = ...
+    if interactionType == Enum.PlayerInteractionType.GuildBanker then
+      self:ScanGeneralTabInfo()
+    end
+  elseif eventName == "GUILDBANKBAGSLOTS_CHANGED" then
     self:SetScript("OnUpdate", self.OnUpdate)
+  elseif eventName == "GUILDBANK_UPDATE_TABS" then
+    self:ScanGeneralTabInfo()
   elseif eventName == "GUILDBANK_UPDATE_MONEY" then
     if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
       local key = GetGuildKey()
@@ -73,7 +82,8 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
 
       Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
     end
-  else -- guild status update
+  -- Potential change to guild name
+  elseif eventName == "GUILD_ROSTER_UPDATE" or eventName == "PLAYER_GUILD_UPDATE" then
     self.currentGuild = GetGuildKey()
     if self.currentGuild then
       Baganator.CallbackRegistry:TriggerEvent("GuildNameSet", self.currentGuild)
@@ -85,11 +95,11 @@ function BaganatorGuildCacheMixin:OnUpdate()
   self:SetScript("OnUpdate", nil)
 
   if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
-    self:ScanBank()
+    self:ScanBankTab()
   end
 end
 
-function BaganatorGuildCacheMixin:ScanBank()
+function BaganatorGuildCacheMixin:ScanGeneralTabInfo()
   local start = debugprofilestop()
 
   local data = BAGANATOR_DATA.Guilds[self.currentGuild]
@@ -97,6 +107,7 @@ function BaganatorGuildCacheMixin:ScanBank()
   data.money = GetGuildBankMoney()
 
   local numTabs = GetNumGuildBankTabs()
+
   if numTabs == 0 then
     data.bank = {}
     if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
@@ -118,6 +129,22 @@ function BaganatorGuildCacheMixin:ScanBank()
     tab.name = name
     tab.iconTexture = icon
   end
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("guild general", debugprofilestop() - start)
+  end
+  Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", self.currentGuild)
+end
+
+function BaganatorGuildCacheMixin:ScanBankTab()
+  local start = debugprofilestop()
+
+  local numTabs = GetNumGuildBankTabs()
+  if numTabs == 0 then
+    return
+  end
+
+  local data = BAGANATOR_DATA.Guilds[self.currentGuild]
 
   local tabIndex = GetCurrentGuildBankTab()
 
