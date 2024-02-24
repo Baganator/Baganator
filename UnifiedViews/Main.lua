@@ -138,12 +138,14 @@ local function SetupGuildView()
   table.insert(UISpecialFrames, guildView:GetName())
 
   local function SetPositions()
+    guildView:HideInfoDialogs()
     guildView:ClearAllPoints()
     guildView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_POSITION)))
   end
 
   local function ResetPositions()
     Baganator.Config.ResetOne(Baganator.Config.Options.GUILD_VIEW_POSITION)
+    Baganator.Config.ResetOne(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)
     SetPositions()
   end
 
