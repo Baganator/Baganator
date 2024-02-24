@@ -206,7 +206,7 @@ function Baganator.UnifiedBags.Initialize()
     BackpackTokenFrame:SetWidth(tokenWidth * 3) -- Support tracking up to 3 currencies
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.ENABLE_GUILD_VIEW) then
+  if not Baganator.Constants.IsEra and Baganator.Config.Get(Baganator.Config.Options.ENABLE_GUILD_VIEW) then
     SetupGuildView()
   end
 
