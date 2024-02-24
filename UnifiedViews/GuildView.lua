@@ -194,7 +194,7 @@ function BaganatorGuildViewMixin:OpenTabEditor()
   GuildBankPopupFrame:SetParent(self)
   GuildBankPopupFrame:ClearAllPoints()
   GuildBankPopupFrame:SetClampedToScreen(true)
-  GuildBankPopupFrame:SetFrameStrata("DIALOG")
+  GuildBankPopupFrame:SetFrameLevel(999)
   GuildBankPopupFrame:SetPoint("LEFT", self, "RIGHT", self.Tabs[1]:GetWidth(), 0)
 end
 
