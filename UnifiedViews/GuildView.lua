@@ -511,8 +511,10 @@ function BaganatorGuildLogsTemplateMixin:OnShow()
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStart()
-  self:StartMoving()
-  self:SetUserPlaced(false)
+  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+    self:StartMoving()
+    self:SetUserPlaced(false)
+  end
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStop()
@@ -641,8 +643,10 @@ function BaganatorGuildTabTextTemplateMixin:ApplyTabTitle()
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnDragStart()
-  self:StartMoving()
-  self:SetUserPlaced(false)
+  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+    self:StartMoving()
+    self:SetUserPlaced(false)
+  end
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnDragStop()
