@@ -13,7 +13,6 @@ Baganator.Config.Options = {
   HIDE_SPECIAL_CONTAINER = "hide_special_container",
   SHOW_SORT_BUTTON = "show_sort_button_2",
   SHOW_TRANSFER_BUTTON = "show_transfer_button",
-  SHOW_TRANSFER_BUTTON = "show_guild_bank_button",
   SHOW_GUILD_BANK_BUTTON = "show_guild_bank_button",
   SORT_METHOD = "sort_method",
   REVERSE_GROUPS_SORT_ORDER = "reverse_groups_sort_order",
