@@ -615,6 +615,7 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
   for _, layouts in ipairs(self.CollapsingBankBags) do
     layouts.live:SetShown(self.viewBankShown and (isLive and self.blizzardBankOpen))
     layouts.divider:SetShown(self.viewBankShown)
+    layouts.button:SetShown(self.viewBankShown)
     layouts.cached:SetShown(self.viewBankShown and (not isLive or not self.blizzardBankOpen))
   end
 
