@@ -31,9 +31,9 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   local junkPlugin = addonTable.JunkPlugins[junkPluginID]
   if junkPlugin and junkPluginID ~= "poor_quality" then
     iconSettings.usingJunkPlugin = true
-    table.insert(itemCallbacks, function(self, data)
+    table.insert(itemCallbacks, function(self)
       if self.JunkIcon then
-        self.BGR.isJunk = junkPlugin.callback(self:GetParent():GetID(), self:GetID(), data.itemID, data.itemLink)
+        self.BGR.isJunk = junkPlugin.callback(self:GetParent():GetID(), self:GetID(), self.BGR.itemID, self.BGR.itemLink)
         if iconSettings.markJunk and self.BGR.isJunk then
           self.BGR.persistIconGrey = true
           self.icon:SetDesaturated(true)
@@ -120,7 +120,7 @@ local function GetInfo(self, cacheData, earlyCallback)
       self.IconOverlay:Show();
     end
     for _, callback in ipairs(itemCallbacks) do
-      callback(self, data)
+      callback(self)
     end
     if self.BGRUpdateQuests then
       self:BGRUpdateQuests()
