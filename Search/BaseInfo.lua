@@ -34,7 +34,7 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
   info.itemName = ""
 
   if cacheData.itemLink:find("keystone:", nil, true) then
-    cacheData.itemLink = "item:" .. cacheData.itemID
+    info.itemLink = "item:" .. cacheData.itemID
   end
 
   if cacheData.itemLink:find("battlepet:", nil, true) then
