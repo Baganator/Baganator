@@ -1,5 +1,7 @@
 if QueryGuildBankTab then
   hooksecurefunc("QueryGuildBankTab", function(tabIndex)
-    SetCurrentGuildBankTab(tabIndex)
+    if IsAddOnLoaded("BagSync") then
+      SetCurrentGuildBankTab(tabIndex)
+    end
   end)
 end

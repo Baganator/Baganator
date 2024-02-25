@@ -29,7 +29,7 @@ function BaganatorGuildViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate",  function(_, guild, tabIndex, anyChanges)
-    if anyChanges then
+    if anyChanges and tabIndex == GetCurrentGuildBankTab() then
       for _, layout in ipairs(self.Layouts) do
         layout:RequestContentRefresh()
       end
@@ -111,7 +111,6 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
       self.lastGuild = Baganator.GuildCache.currentGuild
       self.isLive = true
       self:Show()
-      QueryGuildBankTab(self.currentTab);
     end
   elseif eventName == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" then
     local interactType = ...

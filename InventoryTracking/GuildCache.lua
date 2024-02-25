@@ -70,6 +70,9 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
     if interactionType == Enum.PlayerInteractionType.GuildBanker then
       self:ScanGeneralTabInfo()
     end
+    if not IsAddOnLoaded("BagSync") then -- BagSync already does this scan
+      self:DoFullTabScan()
+    end
   elseif eventName == "GUILDBANKBAGSLOTS_CHANGED" then
     self:SetScript("OnUpdate", self.OnUpdate)
   elseif eventName == "GUILDBANK_UPDATE_TABS" then
@@ -91,11 +94,37 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
   end
 end
 
+function BaganatorGuildCacheMixin:DoFullTabScan()
+  local bank = BAGANATOR_DATA.Guilds[self.currentGuild].bank
+  if GetNumGuildBankTabs() > 0 then
+    local originalTab = GetCurrentGuildBankTab()
+    for tabIndex = 1, GetNumGuildBankTabs() do
+      if bank[tabIndex].isViewable and tabIndex ~= originalTab then
+        QueryGuildBankTab(tabIndex)
+      end
+    end
+    if bank[originalTab].isViewable then
+      QueryGuildBankTab(originalTab)
+    end
+    self.fullScan = true
+  end
+end
+
 function BaganatorGuildCacheMixin:OnUpdate()
   self:SetScript("OnUpdate", nil)
 
   if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
-    self:ScanBankTab()
+    if self.fullScan then
+      for tabIndex = 1, GetNumGuildBankTabs() do
+        local _, _, isViewable = GetGuildBankTabInfo(tabIndex)
+        if isViewable then
+          self:ScanBankTab(tabIndex)
+        end
+      end
+      self.fullScan = false
+    else
+      self:ScanBankTab(GetCurrentGuildBankTab())
+    end
   end
 end
 
@@ -136,7 +165,7 @@ function BaganatorGuildCacheMixin:ScanGeneralTabInfo()
   Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", self.currentGuild)
 end
 
-function BaganatorGuildCacheMixin:ScanBankTab()
+function BaganatorGuildCacheMixin:ScanBankTab(tabIndex)
   local start = debugprofilestop()
 
   local numTabs = GetNumGuildBankTabs()
@@ -145,8 +174,6 @@ function BaganatorGuildCacheMixin:ScanBankTab()
   end
 
   local data = BAGANATOR_DATA.Guilds[self.currentGuild]
-
-  local tabIndex = GetCurrentGuildBankTab()
 
   local tab = data.bank[tabIndex]
   local oldSlots = tab.slots
