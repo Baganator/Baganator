@@ -89,7 +89,6 @@ function BaganatorBackpackViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    self.settingChanged = true
     if not self.lastCharacter then
       return
     end

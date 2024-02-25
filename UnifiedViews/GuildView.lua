@@ -53,7 +53,6 @@ function BaganatorGuildViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    self.settingChanged = true
     if not self.lastGuild then
       return
     end
@@ -68,6 +67,8 @@ function BaganatorGuildViewMixin:OnLoad()
       if self:IsShown() then
         self:UpdateForGuild(self.lastGuild, self.isLive)
       end
+    elseif settingName == Baganator.Config.Options.SHOW_TRANSFER_BUTTON then
+      self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
     elseif settingName == Baganator.Config.Options.SHOW_BUTTONS_ON_ALT then
       self:UpdateAllButtons()
     end
@@ -390,9 +391,11 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X_X:format(GetMoneyString(math.min(withdrawMoney, guildMoney), true), GetMoneyString(guildMoney, true)))
     detailsHeight = 30
 
-    self.TransferButton:SetShown(remainingWithdrawals == -1 or remainingWithdrawals > 0)
+    self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
+    self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
     self.LogsFrame:ApplyTabTitle()
   else -- not live
+    self.wouldShowTransferButton = false
     self.WithdrawalsInfo:SetText("")
     self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(BAGANATOR_DATA.Guilds[guild].money, true)))
     detailsHeight = 10
