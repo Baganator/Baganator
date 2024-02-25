@@ -57,7 +57,7 @@ function BaganatorGuildViewMixin:OnLoad()
       return
     end
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsShown() then
+      if self:IsVisible() then
         Baganator.Utilities.ApplyVisuals(self)
       end
     elseif tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
@@ -517,9 +517,18 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
   self:SetMovable(true)
   self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
+
+  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+      if self:IsVisible() then
+        Baganator.Utilities.ApplyVisuals(self)
+      end
+    end
+  end)
 end
 
 function BaganatorGuildLogsTemplateMixin:OnShow()
+  Baganator.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
   self:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
 end
@@ -635,9 +644,18 @@ function BaganatorGuildTabTextTemplateMixin:OnLoad()
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
 
   self.TextContainer:GetEditBox():SetMaxLetters(500)
+
+  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+      if self:IsVisible() then
+        Baganator.Utilities.ApplyVisuals(self)
+      end
+    end
+  end)
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnShow()
+  Baganator.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
   self:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
 end
