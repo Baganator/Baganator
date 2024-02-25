@@ -32,11 +32,6 @@ local WINDOW_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_CUSTOMISE_SHOW_TABS,
-    option = "show_recents_tabs_main_view",
-  },
-  {
-    type = "checkbox",
     text = BAGANATOR_L_PLACE_BAG_ROW_WITH_MISSING_SLOTS_AT_THE_TOP,
     option = "bag_empty_space_at_top",
   },
@@ -303,6 +298,11 @@ local SORTING_OPTIONS = {
   },
 }
 local BUTTONS_OPTIONS = {
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_CUSTOMISE_SHOW_TABS,
+    option = "show_recents_tabs_main_view",
+  },
   {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_BUTTONS_ON_ALT,

@@ -105,8 +105,11 @@ function BaganatorBackpackViewMixin:OnLoad()
       end
     elseif settingName == Baganator.Config.Options.SHOW_RECENTS_TABS then
       local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
-      for _, tab in ipairs(self.Tabs) do
+      for index, tab in ipairs(self.Tabs) do
         tab:SetShown(isShown)
+        if tab.details == self.lastCharacter then
+          PanelTemplates_SetTab(self, index)
+        end
       end
     elseif settingName == Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
       self:UpdateBagSlots()
