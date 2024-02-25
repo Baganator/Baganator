@@ -17,8 +17,13 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
   info.itemID = cacheData.itemID
   info.quality = cacheData.quality
   info.itemCount = cacheData.itemCount
+  info.isBound = cacheData.isBound
 
-  info.tooltipGetter = function() return info.itemLink and C_TooltipInfo.GetHyperlink(info.itemLink) end
+  if C_TooltipInfo then
+    info.tooltipGetter = function() return C_TooltipInfo.GetHyperlink(info.itemLink) end
+  else
+    info.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(info.itemLink) end) end
+  end
 
   earlyCallback(info)
 

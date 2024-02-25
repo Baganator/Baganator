@@ -453,7 +453,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
-    self.BGR.isBound = cacheData.isBound
     self.BGR.hasNoValue = noValue
     self.BGR.setInfo = Baganator.UnifiedViews.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()))
     self:BGRUpdateQuests()
@@ -619,10 +618,7 @@ function BaganatorClassicCachedItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
-  GetInfo(self, details, function()
-    self.BGR.isBound = details.isBound
-    self.BGR.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(details.itemLink) end) end
-  end)
+  GetInfo(self, details)
 
   SetItemButtonTexture(self, details.iconTexture or self.emptySlotFilepath);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
@@ -825,8 +821,6 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   SetWidgetsAlpha(self, true)
 
   GetInfo(self, cacheData, function()
-    self.BGR.isBound = cacheData.isBound
-
     self:BGRUpdateQuests()
     self.BGR.tooltipGetter = function()
       return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
