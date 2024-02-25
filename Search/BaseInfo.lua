@@ -33,13 +33,13 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
 
   info.itemName = ""
 
-  if cacheData.itemLink:find("keystone:", nil, true) then
-    info.itemLink = "item:" .. cacheData.itemID
+  if info.itemLink:find("keystone:", nil, true) then
+    info.itemLink = "item:" .. info.itemID
   end
 
-  if cacheData.itemLink:find("battlepet:", nil, true) then
+  if info.itemLink:find("battlepet:", nil, true) then
     info.itemInfoWaiting = false
-    local petID, level = cacheData.itemLink:match("battlepet:(%d+):(%d*)")
+    local petID, level = info.itemLink:match("battlepet:(%d+):(%d*)")
 
     info.itemName = C_PetJournal.GetPetInfoBySpeciesID(tonumber(petID))
     info.isCraftingReagent = false
@@ -50,29 +50,29 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
     end
     callback(info)
 
-  elseif C_Item.IsItemDataCachedByID(cacheData.itemID) then
+  elseif C_Item.IsItemDataCachedByID(info.itemID) then
     info.itemInfoWaiting = false
-    local itemInfo = {GetItemInfo(cacheData.itemLink)}
+    local itemInfo = {GetItemInfo(info.itemLink)}
     info.itemName = itemInfo[1]
     info.isCraftingReagent = itemInfo[17]
     info.classID = itemInfo[12]
     info.subClassID = itemInfo[13]
     info.invType = itemInfo[9]
-    info.isCosmetic = IsCosmeticItem and IsCosmeticItem(cacheData.itemLink)
+    info.isCosmetic = IsCosmeticItem and IsCosmeticItem(info.itemLink)
     info.expacID = GetExpansion(info, itemInfo)
     callback(info)
   else
-    local item = Item:CreateFromItemLink(cacheData.itemLink)
+    local item = Item:CreateFromItemLink(info.itemLink)
     info.itemInfoWaiting = true
     item:ContinueOnItemLoad(function()
       info.itemInfoWaiting = false
-      local itemInfo = {GetItemInfo(cacheData.itemLink)}
+      local itemInfo = {GetItemInfo(info.itemLink)}
       info.itemName = itemInfo[1]
       info.isCraftingReagent = itemInfo[17]
       info.classID = itemInfo[12]
       info.subClassID = itemInfo[13]
       info.invType = itemInfo[9]
-      info.isCosmetic = IsCosmeticItem and IsCosmeticItem(cacheData.itemLink)
+      info.isCosmetic = IsCosmeticItem and IsCosmeticItem(info.itemLink)
       info.expacID = GetExpansion(info, itemInfo)
       callback(info)
     end)
