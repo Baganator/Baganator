@@ -305,6 +305,7 @@ end
 
 function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   guild = guild or ""
+  Baganator.Utilities.ApplyVisuals(self)
 
   local guildWidth = Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_WIDTH)
 
@@ -416,12 +417,13 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   self:UpdateAllButtons()
 end
 
-local hiddenFrame = CreateFrame("Frame")
-hiddenFrame:Hide()
+local hiddenParent = CreateFrame("Frame")
+hiddenParent:Hide()
 
 function BaganatorGuildViewMixin:UpdateAllButtons()
   if self.isLive then
-    self.AllButtons = CopyTable(self.FixedButtons, 1)
+    self.AllButtons = {}
+    tAppendAll(self.AllButtons, self.FixedButtons)
     tAppendAll(self.AllButtons, self.LiveButtons)
   else
     self.AllButtons = self.FixedButtons
