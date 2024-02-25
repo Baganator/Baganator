@@ -19,7 +19,7 @@
     </Scripts>
   </Frame>
 
-  <Frame name="BaganatorCachedGuildLayoutTemplate" virtual="true" mixin="BaganatorCachedGuildLayoutMixin" parentArray="Layouts">
+  <Frame name="BaganatorCachedGuildLayoutTemplate" virtual="true" mixin="BaganatorGeneralGuildLayoutMixin" parentArray="Layouts">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
