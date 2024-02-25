@@ -785,6 +785,17 @@ function Baganator.Search.Initialize()
     end
   end
 
+  if C_PetJournal then
+    for subClass = 0, 9 do
+      local keyword = GetItemSubClassInfo(Enum.ItemClass.Battlepet, subClass)
+      if keyword ~= nil then
+        KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+          return details.classID == Enum.ItemClass.Battlepet and details.subClassID == subClass
+        end
+      end
+    end
+  end
+
   for key in pairs(KEYWORDS_TO_CHECK) do
     table.insert(sortedKeywords, key)
   end

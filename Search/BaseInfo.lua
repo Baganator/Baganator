@@ -41,9 +41,11 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
     info.itemInfoWaiting = false
     local petID, level = info.itemLink:match("battlepet:(%d+):(%d*)")
 
-    info.itemName = C_PetJournal.GetPetInfoBySpeciesID(tonumber(petID))
+    local itemName, _, petType = C_PetJournal.GetPetInfoBySpeciesID(tonumber(petID))
+    info.itemName = itemName
     info.isCraftingReagent = false
     info.classID = Enum.ItemClass.Battlepet
+    info.subClassID = petType - 1
     info.isCosmetic = false
     if level and level ~= "" then
       info.itemLevel = tonumber(level)
