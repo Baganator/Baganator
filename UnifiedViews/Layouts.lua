@@ -652,23 +652,8 @@ function BaganatorLiveGuildLayoutMixin:OnLoad()
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
-  --self:PreallocateButtons(Baganator.Constants.MaxGuildBankTabItemSlots)
 
   self:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
-end
-
-function BaganatorLiveGuildLayoutMixin:PreallocateButtons(buttonCount)
-  self.pendingAllocations = true
-  -- Avoid allocating during combat
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LOGIN")
-  frame:SetScript("OnEvent", function()
-    self.pendingAllocations = false
-    for i = 1, buttonCount do
-      self.buttonPool:Acquire()
-    end
-    self.buttonPool:ReleaseAll()
-  end)
 end
 
 function BaganatorLiveGuildLayoutMixin:OnEvent(eventName, ...)
@@ -710,9 +695,6 @@ function BaganatorLiveGuildLayoutMixin:RequestContentRefresh()
 end
 
 function BaganatorLiveGuildLayoutMixin:RebuildLayout(rowWidth)
-  if self.pendingAllocations then
-    error("Bag buttons not pre-allocated")
-  end
   self.buttonPool:ReleaseAll()
   self.buttons = {}
 

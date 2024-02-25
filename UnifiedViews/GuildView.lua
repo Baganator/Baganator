@@ -34,8 +34,8 @@ function BaganatorGuildViewMixin:OnLoad()
         layout:RequestContentRefresh()
       end
     end
-    if self:IsVisible() then
-      self:UpdateForGuild(guild, true)
+    if self:IsVisible() and self.isLive then
+      self:UpdateForGuild(guild, self.isLive)
     end
   end)
 
