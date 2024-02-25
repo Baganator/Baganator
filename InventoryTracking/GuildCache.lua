@@ -69,9 +69,9 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
     local interactionType = ...
     if interactionType == Enum.PlayerInteractionType.GuildBanker then
       self:ScanGeneralTabInfo()
-    end
-    if not IsAddOnLoaded("BagSync") then -- BagSync already does this scan
-      self:DoFullTabScan()
+      if not IsAddOnLoaded("BagSync") then -- BagSync already does this scan
+        self:DoFullTabScan()
+      end
     end
   elseif eventName == "GUILDBANKBAGSLOTS_CHANGED" then
     self:SetScript("OnUpdate", self.OnUpdate)
