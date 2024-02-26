@@ -12,6 +12,4 @@ function Baganator.Search.GetBaseInfoFromList(cachedItems, callback)
       end
     end)
   end
-
-  return results
 end

@@ -45,6 +45,7 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
   earlyCallback(info)
 
   if info.itemLink == nil then
+    callback(info)
     return
   end
 

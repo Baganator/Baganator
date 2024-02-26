@@ -199,13 +199,14 @@ function BaganatorGuildViewMixin:ApplySearch(text)
         if #matches > 0 then
           self.Tabs[index].Icon:SetAlpha(1)
         else
-          self.Tabs[index].Icon:SetAlpha(0.1)
+          self.Tabs[index].Icon:SetAlpha(0.3)
         end
       end)
     end
     if self.otherTabsCache[index] == nil then
-      self.otherTabsCache[index] = Baganator.Search.GetBaseInfoFromList(
+      Baganator.Search.GetBaseInfoFromList(
         tab.slots, function(baseInfoItems)
+          self.otherTabsCache[index] = baseInfoItems
           ProcessTab()
         end
       )

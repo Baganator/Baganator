@@ -115,6 +115,9 @@ local function GetInfo(self, cacheData, earlyCallback)
     if self.BGR ~= info then -- Check that the item button hasn't been refreshed
       return
     end
+    if self.BGR.itemLink == nil then
+      return
+    end
     if self.BGR.isCosmetic then
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
