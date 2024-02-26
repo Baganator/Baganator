@@ -113,6 +113,19 @@ local function BindOnAccountCheck(details)
   end
 end
 
+local function BindOnUseCheck(details)
+  GetTooltipInfoSpell(details)
+
+  if details.tooltipInfoSpell then
+    for _, row in ipairs(details.tooltipInfoSpell.lines) do
+      if row.leftText == ITEM_BIND_ON_USE then
+        return true
+      end
+    end
+    return false
+  end
+end
+
 local function SoulboundCheck(details)
   if not details.isBound then
     return false
@@ -232,6 +245,7 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_SOULBOUND] = SoulboundCheck,
   [BAGANATOR_L_KEYWORD_BOP] = SoulboundCheck,
   [BAGANATOR_L_KEYWORD_BOE] = BindOnEquipCheck,
+  [BAGANATOR_L_KEYWORD_BOU] = BindOnUseCheck,
   [BAGANATOR_L_KEYWORD_EQUIPMENT] = EquipmentCheck,
   [BAGANATOR_L_KEYWORD_GEAR] = EquipmentCheck,
   [BAGANATOR_L_KEYWORD_AXE] = AxeCheck,
