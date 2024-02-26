@@ -109,6 +109,7 @@ L["SHOW_IN_TOOLTIPS"] = "Show in tooltips"
 
 L["BOE"] = "BoE"
 L["BOA"] = "BoA"
+L["BOU"] = "BoU"
 L["TL"] = "TL"
 L["TRADEABLE_LOOT_TL"] = "Tradeable Loot (TL)"
 L["BATTLE_PET_BREEDID"] = "Battle Pet BreedID"
