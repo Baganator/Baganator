@@ -151,7 +151,7 @@ local function IsTradeableLoot(details)
   return false
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_TRADEABLE_LOOT_TL, "tl", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_TRADEABLE_LOOT, "tl", function(BindingText, details)
   if IsTradeableLoot(details) then
     BindingText:SetText(BAGANATOR_L_TL)
     if iconSettings.useQualityColors then
