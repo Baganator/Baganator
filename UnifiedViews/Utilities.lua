@@ -182,8 +182,12 @@ function Baganator.Utilities.AddBagTransferManager(parent)
       -- Wait for all affected caches to update before moving onto the next
       -- action
       for _, m in ipairs(self.modes) do
-        Baganator.CallbackRegistry:RegisterCallback(m, function(_, _, _, anyChanges)
-          if anyChanges == false then
+        Baganator.CallbackRegistry:RegisterCallback(m, function(_, _, affected)
+          local anyChanges = false
+          for _, changed in pairs(affected) do
+            anyChanges = anyChanges or changed
+          end
+          if not anyChanges then
             return
           end
           Baganator.CallbackRegistry:UnregisterCallback(m, self)

@@ -91,4 +91,3 @@ API\ItemButton.lua
 API\EquipmentSets.lua
 
 Compatibility\VanillaEngraving.lua
-Compatibility\GuildScans.lua

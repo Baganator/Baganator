@@ -34,14 +34,18 @@ function BaganatorGuildViewMixin:OnLoad()
     Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate",  function(_, guild, tabIndex, anyChanges)
-    if tabIndex ~= nil then
-      for _, layout in ipairs(self.Layouts) do
-        layout:RequestContentRefresh()
+  Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate",  function(_, guild, changes)
+    if changes then
+      for tabIndex, isChanged in pairs(changes) do
+        if isChanged then
+          self.otherTabsCache[tabIndex] = nil
+          if tabIndex == self.currentTab then
+            for _, layout in ipairs(self.Layouts) do
+              layout:RequestContentRefresh()
+            end
+          end
+        end
       end
-    end
-    if anyChanges then
-      self.otherTabsCache[tabIndex] = nil
     end
     if self:IsVisible() and self.isLive then
       self:UpdateForGuild(guild, self.isLive)
@@ -335,13 +339,7 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
 
   if self.isLive then
     SetCurrentGuildBankTab(self.currentTab)
-    if Baganator.GuildCache:IsFullScanInProgress() then
-      Baganator.CallbackRegistry:RegisterCallback("GuildFullCacheUpdate", function()
-        QueryGuildBankTab(self.currentTab);
-      end, self)
-    else
-      QueryGuildBankTab(self.currentTab);
-    end
+    Baganator.GuildCache:StartFullBankScan()
     if GuildBankPopupFrame:IsShown() then
       self:OpenTabEditor()
     end

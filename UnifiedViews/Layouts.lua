@@ -545,6 +545,7 @@ function BaganatorGeneralGuildLayoutMixin:OnLoad()
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
+  self.layoutType = "cached"
 end
 
 function BaganatorGeneralGuildLayoutMixin:ApplySearch(text)
@@ -631,7 +632,7 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   end
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("cached guild layout took", tabIndex, debugprofilestop() - start)
+    print(self.layoutType .. " guild layout took", tabIndex, debugprofilestop() - start)
   end
 
   self.prevState = {
@@ -647,6 +648,7 @@ function BaganatorLiveGuildLayoutMixin:OnLoad()
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
+  self.layoutType = "live"
 
   self:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
 end
