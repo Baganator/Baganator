@@ -13,6 +13,12 @@ function BaganatorGuildViewMixin:OnLoad()
 
   self.tabsPool = Baganator.UnifiedViews.GetSideTabButtonPool(self)
   self.currentTab = 1
+  self.otherTabsCache = {}
+  self.searchMonitors = {}
+
+  for i = 1, MAX_GUILDBANK_TABS do
+    table.insert(self.searchMonitors, CreateFrame("Frame", nil, self, "BaganatorOfflineListSearchTemplate"))
+  end
 
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
@@ -29,10 +35,13 @@ function BaganatorGuildViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate",  function(_, guild, tabIndex, anyChanges)
-    if anyChanges and tabIndex == GetCurrentGuildBankTab() then
+    if tabIndex ~= nil then
       for _, layout in ipairs(self.Layouts) do
         layout:RequestContentRefresh()
       end
+    end
+    if anyChanges then
+      self.otherTabsCache[tabIndex] = nil
     end
     if self:IsVisible() and self.isLive then
       self:UpdateForGuild(guild, self.isLive)
@@ -143,6 +152,7 @@ end
 function BaganatorGuildViewMixin:OnHide()
   self:HideInfoDialogs()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
+  Baganator.CallbackRegistry:UnregisterCallback("GuildFullCacheUpdate", self)
   CloseGuildBankFrame()
 end
 
@@ -158,10 +168,46 @@ function BaganatorGuildViewMixin:ApplySearch(text)
     return
   end
 
+  for _, monitor in ipairs(self.searchMonitors) do
+    monitor:Stop()
+  end
+
   if self.isLive then
     self.GuildLive:ApplySearch(text)
   else
     self.GuildCached:ApplySearch(text)
+  end
+
+  if text == "" then
+    for _, tabButton in ipairs(self.Tabs) do
+      tabButton.Icon:SetAlpha(1)
+    end
+    return
+  end
+
+  -- Highlight tabs with items that match
+
+  local guildData = BAGANATOR_DATA.Guilds[self.lastGuild]
+
+  for index, tab in ipairs(guildData.bank) do
+    local function ProcessTab()
+      self.searchMonitors[index]:StartSearch(self.otherTabsCache[index], text, function(matches)
+        if #matches > 0 then
+          self.Tabs[index].Icon:SetAlpha(1)
+        else
+          self.Tabs[index].Icon:SetAlpha(0.1)
+        end
+      end)
+    end
+    if self.otherTabsCache[index] == nil then
+      self.otherTabsCache[index] = Baganator.Search.GetBaseInfoFromList(
+        tab.slots, function(baseInfoItems)
+          ProcessTab()
+        end
+      )
+    else
+      ProcessTab()
+    end
   end
 end
 
@@ -289,7 +335,13 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
 
   if self.isLive then
     SetCurrentGuildBankTab(self.currentTab)
-    QueryGuildBankTab(self.currentTab);
+    if Baganator.GuildCache:IsFullScanInProgress() then
+      Baganator.CallbackRegistry:RegisterCallback("GuildFullCacheUpdate", function()
+        QueryGuildBankTab(self.currentTab);
+      end, self)
+    else
+      QueryGuildBankTab(self.currentTab);
+    end
     if GuildBankPopupFrame:IsShown() then
       self:OpenTabEditor()
     end

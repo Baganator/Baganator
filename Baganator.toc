@@ -32,6 +32,9 @@ InventoryTracking\Main.lua
 
 Search\BaseInfo.lua
 Search\CheckItem.lua
+Search\OfflineList.lua
+Search\OfflineList.xml
+Search\Utilities.lua
 
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua

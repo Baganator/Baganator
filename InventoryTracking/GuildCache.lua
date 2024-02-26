@@ -62,6 +62,7 @@ function BaganatorGuildCacheMixin:OnLoad()
   })
 
   self.currentGuild = GetGuildKey()
+  self.firstOpen = true
 end
 
 function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
@@ -70,8 +71,12 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
     if interactionType == Enum.PlayerInteractionType.GuildBanker then
       self:ScanGeneralTabInfo()
       if not IsAddOnLoaded("BagSync") then -- BagSync already does this scan
-        self:DoFullTabScan()
+        self:InitFullTabScan()
+        if not self.firstOpen then
+          self:DoNextFullScanStep()
+        end
       end
+      self.firstOpen = false
     end
   elseif eventName == "GUILDBANKBAGSLOTS_CHANGED" then
     self:SetScript("OnUpdate", self.OnUpdate)
@@ -94,19 +99,40 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
   end
 end
 
-function BaganatorGuildCacheMixin:DoFullTabScan()
+function BaganatorGuildCacheMixin:InitFullTabScan()
   local bank = BAGANATOR_DATA.Guilds[self.currentGuild].bank
   if GetNumGuildBankTabs() > 0 then
+    self.toScan = {}
     local originalTab = GetCurrentGuildBankTab()
     for tabIndex = 1, GetNumGuildBankTabs() do
       if bank[tabIndex].isViewable and tabIndex ~= originalTab then
-        QueryGuildBankTab(tabIndex)
+        table.insert(self.toScan, tabIndex)
       end
     end
     if bank[originalTab].isViewable then
-      QueryGuildBankTab(originalTab)
+      table.insert(self.toScan, originalTab)
     end
-    self.fullScan = true
+  end
+
+  Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", function(_, guild, tabIndex)
+    if tabIndex == nil then
+      return
+    end
+    self:DoNextFullScanStep()
+  end, self)
+end
+
+function BaganatorGuildCacheMixin:IsFullScanInProgress()
+  return self.scanIndex ~= nil
+end
+
+function BaganatorGuildCacheMixin:DoNextFullScanStep()
+  self.scanIndex = table.remove(self.toScan, 1)
+  if self.scanIndex ~= nil then
+    QueryGuildBankTab(self.scanIndex)
+  else
+    Baganator.CallbackRegistry:UnregisterCallback("GuildCacheUpdate", self)
+    Baganator.CallbackRegistry:TriggerEvent("GuildFullCacheUpdate")
   end
 end
 
@@ -114,14 +140,8 @@ function BaganatorGuildCacheMixin:OnUpdate()
   self:SetScript("OnUpdate", nil)
 
   if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
-    if self.fullScan then
-      for tabIndex = 1, GetNumGuildBankTabs() do
-        local _, _, isViewable = GetGuildBankTabInfo(tabIndex)
-        if isViewable then
-          self:ScanBankTab(tabIndex)
-        end
-      end
-      self.fullScan = false
+    if self.scanIndex then
+      self:ScanBankTab(self.scanIndex)
     else
       self:ScanBankTab(GetCurrentGuildBankTab())
     end

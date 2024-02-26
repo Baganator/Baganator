@@ -69,6 +69,8 @@ Baganator.Constants.Events = {
   "EquippedCacheUpdate",
   "VoidCacheUpdate",
 
+  "GuildFullCacheUpdate", -- full scan of guild bank
+
   "SearchTextChanged",
   "BagShow",
   "BagHide",

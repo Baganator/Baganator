@@ -1,3 +1,20 @@
+local ticker
+local pending = {}
+
+local function RerequestItemData()
+  for info in pairs(pending) do
+    if C_Item.IsItemDataCachedByID(info.itemID) then
+      pending[info] = nil
+    else
+      C_Item.RequestLoadItemDataByID(info.itemID)
+    end
+  end
+  if not next(pending) then
+    ticker:Cancel()
+    ticker = nil
+  end
+end
+
 local function GetExpansion(info, itemInfo)
   if ItemVersion then
     local details = ItemVersion.API:getItemVersion(info.itemID, true)
@@ -20,9 +37,9 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
   info.isBound = cacheData.isBound
 
   if C_TooltipInfo then
-    info.tooltipGetter = function() return C_TooltipInfo.GetHyperlink(info.itemLink) end
+    info.tooltipGetter = function() return C_TooltipInfo.GetHyperlink(cacheData.itemLink) end
   else
-    info.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(info.itemLink) end) end
+    info.tooltipGetter = function() return Baganator.Utilities.DumpClassicTooltip(function(t) t:SetHyperlink(cacheData.itemLink) end) end
   end
 
   earlyCallback(info)
@@ -66,8 +83,10 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
   else
     local item = Item:CreateFromItemLink(info.itemLink)
     info.itemInfoWaiting = true
+    pending[info] = true
     item:ContinueOnItemLoad(function()
       info.itemInfoWaiting = false
+      pending[info] = nil
       local itemInfo = {GetItemInfo(info.itemLink)}
       info.itemName = itemInfo[1]
       info.isCraftingReagent = itemInfo[17]
@@ -78,6 +97,12 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
       info.expacID = GetExpansion(info, itemInfo)
       callback(info)
     end)
+  end
+
+  if info.itemInfoWaiting then
+    if not ticker then
+      ticker = C_Timer.NewTicker(0.1, RerequestItemData)
+    end
   end
 
   return info
