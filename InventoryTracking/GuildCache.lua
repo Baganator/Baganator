@@ -50,13 +50,16 @@ local function GetGuildKey()
   return key
 end
 
+local GUILD_OPEN_EVENTS = {
+  "GUILDBANKBAGSLOTS_CHANGED",
+  "GUILDBANK_UPDATE_TABS",
+  "GUILDBANK_UPDATE_MONEY",
+}
+
 function BaganatorGuildCacheMixin:OnLoad()
   FrameUtil.RegisterFrameForEvents(self, {
     "PLAYER_INTERACTION_MANAGER_FRAME_SHOW",
     "PLAYER_INTERACTION_MANAGER_FRAME_HIDE",
-    "GUILDBANKBAGSLOTS_CHANGED",
-    "GUILDBANK_UPDATE_TABS",
-    "GUILDBANK_UPDATE_MONEY",
     "GUILD_ROSTER_UPDATE",
     "PLAYER_GUILD_UPDATE",
   })
@@ -69,27 +72,36 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
   if eventName == "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" then
     local interactionType = ...
     if interactionType == Enum.PlayerInteractionType.GuildBanker then
+      FrameUtil.RegisterFrameForEvents(self, GUILD_OPEN_EVENTS)
       self:ScanGeneralTabInfo()
       if not IsAddOnLoaded("BagSync") then -- BagSync already does this scan
         self:InitFullTabScan()
+        -- On the first opening in a session the Blizzard UI will do a query for
+        -- the current tab, causing a GuildCacheUpdate event to fire due to us
+        -- response, which will then call self:DoNextFullScanStep()
+        -- On later openings we'll need to call self:DoNextFullScanStep
+        -- ourselves without waiting for a GuildCacheUpdate event
         if not self.firstOpen then
           self:DoNextFullScanStep()
         end
       end
       self.firstOpen = false
     end
+  elseif eventName == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" then
+    local interactionType = ...
+    if interactionType == Enum.PlayerInteractionType.GuildBanker then
+      FrameUtil.UnregisterFrameForEvents(self, GUILD_OPEN_EVENTS)
+    end
   elseif eventName == "GUILDBANKBAGSLOTS_CHANGED" then
     self:SetScript("OnUpdate", self.OnUpdate)
   elseif eventName == "GUILDBANK_UPDATE_TABS" then
     self:ScanGeneralTabInfo()
   elseif eventName == "GUILDBANK_UPDATE_MONEY" then
-    if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
-      local key = GetGuildKey()
-      local data = BAGANATOR_DATA.Guilds[key]
-      data.money = GetGuildBankMoney()
+    local key = GetGuildKey()
+    local data = BAGANATOR_DATA.Guilds[key]
+    data.money = GetGuildBankMoney()
 
-      Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
-    end
+    Baganator.CallbackRegistry:TriggerEvent("GuildCacheUpdate", key)
   -- Potential change to guild name
   elseif eventName == "GUILD_ROSTER_UPDATE" or eventName == "PLAYER_GUILD_UPDATE" then
     self.currentGuild = GetGuildKey()
@@ -100,6 +112,7 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
 end
 
 function BaganatorGuildCacheMixin:InitFullTabScan()
+  self.fullScanStart = debugprofilestop()
   local bank = BAGANATOR_DATA.Guilds[self.currentGuild].bank
   if GetNumGuildBankTabs() > 0 then
     self.toScan = {}
@@ -131,6 +144,9 @@ function BaganatorGuildCacheMixin:DoNextFullScanStep()
   if self.scanIndex ~= nil then
     QueryGuildBankTab(self.scanIndex)
   else
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("guild full scan complete", debugprofilestop() - self.fullScanStart)
+    end
     Baganator.CallbackRegistry:UnregisterCallback("GuildCacheUpdate", self)
     Baganator.CallbackRegistry:TriggerEvent("GuildFullCacheUpdate")
   end
