@@ -199,7 +199,7 @@ function BaganatorGuildViewMixin:ApplySearch(text)
         if #matches > 0 then
           self.Tabs[index].Icon:SetAlpha(1)
         else
-          self.Tabs[index].Icon:SetAlpha(0.3)
+          self.Tabs[index].Icon:SetAlpha(0.2)
         end
       end)
     end
