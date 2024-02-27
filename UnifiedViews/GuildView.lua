@@ -156,7 +156,6 @@ end
 function BaganatorGuildViewMixin:OnHide()
   self:HideInfoDialogs()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
-  Baganator.CallbackRegistry:UnregisterCallback("GuildFullCacheUpdate", self)
   CloseGuildBankFrame()
 end
 
