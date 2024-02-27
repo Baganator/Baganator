@@ -166,6 +166,7 @@ L["KEYWORD_TRADEABLE_LOOT"] = "tradeable loot"
 L["KEYWORD_TRADABLE_LOOT"] = "tradable loot"
 L["KEYWORD_ENGRAVABLE"] = "engravable"
 L["KEYWORD_ENGRAVED"] = "engraved"
+L["KEYWORD_RELIC"] = "relic"
 
 L["SEARCH_TRY_X"] = "Search, try %s"
 

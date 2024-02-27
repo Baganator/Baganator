@@ -68,6 +68,10 @@ local function MountCheck(details)
   return details.classID == Enum.ItemClass.Miscellaneous and details.subClassID == Enum.ItemMiscellaneousSubclass.Mount
 end
 
+local function RelicCheck(details)
+  return details.classID == Enum.ItemClass.Gem and details.subClassID == Enum.ItemGemSubclass.Artifactrelic
+end
+
 local function GetTooltipInfoSpell(details)
   if details.tooltipInfoSpell then
     return
@@ -270,12 +274,22 @@ local KEYWORDS_TO_CHECK = {
   [MOUNT:lower()] = MountCheck,
   [BAGANATOR_L_KEYWORD_TRADEABLE_LOOT] = IsTradeableLoot,
   [BAGANATOR_L_KEYWORD_TRADABLE_LOOT] = IsTradeableLoot,
+  [BAGANATOR_L_KEYWORD_RELIC] = RelicCheck,
 }
 
 if Baganator.Constants.IsRetail then
   KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_COSMETIC] = CosmeticCheck
   --KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_MANUSCRIPT] = ManuscriptCheck
   KEYWORDS_TO_CHECK[TOY:lower()] = ToyCheck
+end
+
+local function AddKeyword(keyword, check)
+  local old = KEYWORDS_TO_CHECK[keyword]
+  if old then
+    KEYWORDS_TO_CHECK[keyword] = function(...) return old(...) or check(...) end
+  else
+    KEYWORDS_TO_CHECK[keyword] = check
+  end
 end
 
 local sockets = {
@@ -299,13 +313,13 @@ local sockets = {
 for _, key in ipairs(sockets) do
   local global = _G[key]
   if global then
-    KEYWORDS_TO_CHECK[global:lower()] = function(details)
+    AddKeyword(global:lower(), function(details)
       SaveBaseStats(details)
       if details.baseItemStats then
         return details.baseItemStats[key] ~= nil
       end
       return nil
-    end
+    end)
   end
 end
 
@@ -338,23 +352,19 @@ local inventorySlots = {
   "INVTYPE_RELIC",
   "INVTYPE_PROFESSION_TOOL",
   "INVTYPE_PROFESSION_GEAR",
+  "INVTYPE_CHEST",
+  "INVTYPE_ROBE",
 }
 for _, slot in ipairs(inventorySlots) do
   local text = _G[slot]
   if text ~= nil then
-    KEYWORDS_TO_CHECK[text:lower()] = function(details) return details.invType == slot end
+    AddKeyword(text:lower(),  function(details) return details.invType == slot end)
   end
 end
 
-KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_OFF_HAND] = function(details)
+AddKeyword(BAGANATOR_L_KEYWORD_OFF_HAND, function(details)
   return details.invType == "INVTYPE_HOLDABLE" or details.invType == "INVTYPE_SHIELD"
-end
-
--- Special case as INVTYPE_CHEST and INVTYPE_ROBE have the same word assigned,
--- Chest, so do a combined check for them.
-KEYWORDS_TO_CHECK[INVTYPE_CHEST:lower()] = function(details)
-  return details.invType == "INVTYPE_CHEST" or details.invType == "INVTYPE_ROBE"
-end
+end)
 
 local moreSlotMappings = {
   [BAGANATOR_L_KEYWORD_HELM] = "INVTYPE_HEAD",
@@ -366,13 +376,13 @@ local moreSlotMappings = {
 }
 
 for keyword, slot in pairs(moreSlotMappings) do
-  KEYWORDS_TO_CHECK[keyword] = function(details) return details.invType == slot end
+  AddKeyword(keyword, function(details) return details.invType == slot end)
 end
 
 if Baganator.Constants.IsRetail then
-  KEYWORDS_TO_CHECK[BAGANATOR_L_KEYWORD_AZERITE] = function(details)
+  AddKeyword(BAGANATOR_L_KEYWORD_AZERITE, function(details)
     return C_AzeriteEmpoweredItem.IsAzeriteEmpoweredItemByID(details.itemID)
-  end
+  end)
 end
 
 local TextToExpansion = {
@@ -400,13 +410,13 @@ local TextToExpansion = {
 for key, quality in pairs(Enum.ItemQuality) do
   local term = _G["ITEM_QUALITY" .. quality .. "_DESC"]
   if term then
-    KEYWORDS_TO_CHECK[term:lower()] = function(details) return details.quality == quality end
+    AddKeyword(term:lower(), function(details) return details.quality == quality end)
   end
 end
 
 if Baganator.Constants.IsRetail then
   for key, expansionID in pairs(TextToExpansion) do
-    KEYWORDS_TO_CHECK[key] = function(details) return details.expacID == expansionID end
+    AddKeyword(key, function(details) return details.expacID == expansionID end)
   end
 end
 
@@ -426,14 +436,14 @@ local BAG_TYPES = {
 
 for keyword, bagBit in pairs(BAG_TYPES) do
   local bagFamily = bit.lshift(1, bagBit - 1)
-  KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+  AddKeyword(keyword:lower(), function(details)
     local itemFamily = GetItemFamily(details.itemID)
     if itemFamily == nil then
       return
     else
       return bit.band(bagFamily, itemFamily) ~= 0
     end
-  end
+  end)
 end
 
 -- Sorted in initialize function later
@@ -582,11 +592,7 @@ local function PatternSearch(searchString)
   for pat, check in pairs(patterns) do
     if searchString:match(pat) then
       return function(...)
-        local match = MatchesTextExclusive(...)
-        if match == nil then
-          return nil
-        end
-        return match or check(...)
+        return MatchesTextExclusive(...) or check(...)
       end
     end
   end
@@ -742,12 +748,10 @@ function Baganator.Search.Initialize()
   for i = 0, Enum.ItemClassMeta.NumValues-1 do
     local name = GetItemClassInfo(i)
     if name then
-      if not KEYWORDS_TO_CHECK[name:lower()] then
-        local classID = i
-        KEYWORDS_TO_CHECK[name:lower()] = function(details)
-          return details.classID == classID
-        end
-      end
+      local classID = i
+      AddKeyword(name:lower(), function(details)
+        return details.classID == classID
+      end)
     end
   end
 
@@ -762,9 +766,9 @@ function Baganator.Search.Initialize()
   for _, subClass in ipairs(tradeGoodsToCheck) do
     local keyword = GetItemSubClassInfo(7, subClass)
     if keyword ~= nil then
-      KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+      AddKeyword(keyword:lower(), function(details)
         return details.classID == 7 and details.subClassID == subClass
-      end
+      end)
     end
   end
 
@@ -783,9 +787,9 @@ function Baganator.Search.Initialize()
   for _, subClass in ipairs(armorTypesToCheck) do
     local keyword = GetItemSubClassInfo(Enum.ItemClass.Armor, subClass)
     if keyword ~= nil then
-      KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+      AddKeyword(keyword:lower(), function(details)
         return details.classID == Enum.ItemClass.Armor and details.subClassID == subClass
-      end
+      end)
     end
   end
 
@@ -793,9 +797,9 @@ function Baganator.Search.Initialize()
   for subClass = 0, 20 do
     local keyword = GetItemSubClassInfo(Enum.ItemClass.Weapon, subClass)
     if keyword ~= nil then
-      KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+      AddKeyword(keyword:lower(), function(details)
         return details.classID == Enum.ItemClass.Weapon and details.subClassID == subClass
-      end
+      end)
     end
   end
 
@@ -803,9 +807,9 @@ function Baganator.Search.Initialize()
     for subClass = 0, 9 do
       local keyword = GetItemSubClassInfo(Enum.ItemClass.Battlepet, subClass)
       if keyword ~= nil then
-        KEYWORDS_TO_CHECK[keyword:lower()] = function(details)
+        AddKeyword(keyword:lower(), function(details)
           return details.classID == Enum.ItemClass.Battlepet and details.subClassID == subClass
-        end
+        end)
       end
     end
   end
