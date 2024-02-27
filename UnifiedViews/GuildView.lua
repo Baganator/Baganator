@@ -258,8 +258,8 @@ function BaganatorGuildViewMixin:UpdateTabs(guildData)
   -- time. This avoids failed clicks on the tabs if done quickly.
   if
     -- Need to add/remove the purchase tab button
-    ((not self.isLive and not self.purchaseTabAdded) or (self.isLive and (self.purchaseTabAdded or not IsGuildLeader()))) and
-    -- Changed tabs
+    ((not self.isLive and not self.purchaseTabAdded) or (self.isLive and (self.purchaseTabAdded or not IsGuildLeader() or GetNumGuildBankTabs() >= MAX_BUY_GUILDBANK_TABS))) and
+    -- Changed tab visual data (name, icon or visibility)
     self.lastTabData and tCompare(guildData.bank, self.lastTabData, 2) then
     for _, tab in ipairs(self.Tabs) do
       tab:SetScale(tabScale)
