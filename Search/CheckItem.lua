@@ -446,6 +446,89 @@ for keyword, bagBit in pairs(BAG_TYPES) do
   end)
 end
 
+local function SaveStats(details)
+  if not Baganator.Utilities.IsEquipment(details.itemLink) then
+    details.itemStats = {}
+    return
+  end
+
+  details.itemStats = GetItemStats(details.itemLink)
+end
+
+local function GetStatCheck(statKey)
+  return function(details)
+    SaveStats(details)
+    if not details.itemStats then
+      return
+    end
+
+    for key, value in pairs(details.itemStats) do
+      if key:find(statKey, nil, true) ~= nil then
+        return true
+      end
+    end
+    return false
+  end
+end
+
+-- Based off of GlobalStrings.db2
+local stats = {
+  "AGILITY",
+  "ATTACK_POWER",
+  "BLOCK_RATING",
+  "CORRUPTION",
+  "CRAFTING_SPEED",
+  "CR_AVOIDANCE",
+  "CRIT_MELEE_RATING",
+  "CRIT_RANGED_RATING",
+  "CRIT_RATING",
+  "CRIT_SPELL_RATING",
+  "CRIT_TAKEN_RATING",
+  "CR_LIFESTEAL",
+  "CR_MULTISTRIKE",
+  "CR_SPEED",
+  "CR_STURDINESS",
+  "DAMAGE_PER_SECOND",
+  "DEFENSE_SKILL_RATING",
+  "DEFTNESS",
+  "DODGE_RATING",
+  "EXTRA_ARMOR",
+  "FINESSE",
+  "HASTE_RATING",
+  "HEALTH_REGENERATION",
+  "HIT_MELEE_RATING",
+  "HIT_RANGED_RATING",
+  "HIT_SPELL_RATING",
+  "HIT_RATING",
+  "HIT_TAKEN_RATING",
+  "INTELLECT",
+  "MANA_REGENERATION",
+  "MANA",
+  "MASTERY_RATING",
+  "MULTICRAFT",
+  "PARRY_RATING",
+  "PERCEPTION",
+  "PVP_POWER",
+  "RANGED_ATTACK_POWER",
+  "RESILIENCE_RATING",
+  "RESOURCEFULNESS",
+  "SPELL_DAMAGE_DONE",
+  "SPELL_HEALING_DONE",
+  "SPELL_PENETRATION",
+  "SPELL_POWER",
+  "SPIRIT",
+  "STAMINA",
+  "STRENGTH",
+  "VERSATILITY",
+}
+
+for _, s in ipairs(stats) do
+  local keyword = _G["ITEM_MOD_" .. s .. "_SHORT"] or _G["ITEM_MOD_" .. s]
+  if keyword ~= nil then
+    AddKeyword(keyword:lower(), GetStatCheck(s))
+  end
+end
+
 -- Sorted in initialize function later
 local sortedKeywords = {}
 
@@ -814,6 +897,10 @@ function Baganator.Search.Initialize()
     end
   end
 
+  Baganator.Search.RebuildKeywordList()
+end
+
+function Baganator.Search.RebuildKeywordList()
   for key in pairs(KEYWORDS_TO_CHECK) do
     table.insert(sortedKeywords, key)
   end
