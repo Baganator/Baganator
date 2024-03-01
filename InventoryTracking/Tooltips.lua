@@ -173,6 +173,10 @@ function Baganator.Tooltips.AddCurrencyLines(tooltip, currencyID)
   end
   seenRealms[GetNormalizedRealmName() or ""] = true -- ensure realm name is shown for a different realm
 
+  if quantity == 0 then -- nothing to show
+    return
+  end
+
   local realmCount = 0
   for realm in pairs(seenRealms) do
     realmCount = realmCount + 1
