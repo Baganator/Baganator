@@ -1,3 +1,5 @@
+local addonName = ...
+
 function Baganator.CustomiseDialog.Initialize()
   local customiseDialog
 
@@ -24,9 +26,14 @@ function Baganator.CustomiseDialog.Initialize()
     instructions:SetPoint("CENTER", optionsFrame)
     instructions:SetText(WHITE_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_TO_OPEN_OPTIONS_X))
 
+    local version = C_AddOns.GetAddOnMetadata(addonName, "Version")
+    local versionText = optionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    versionText:SetPoint("CENTER", optionsFrame, 0, 28)
+    versionText:SetText(WHITE_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_VERSION_COLON_X:format(version)))
+
     local header = optionsFrame:CreateFontString(nil, "ARTWORK", "GameFontNormalHuge3")
     header:SetScale(3)
-    header:SetPoint("CENTER", optionsFrame, 0, 25)
+    header:SetPoint("CENTER", optionsFrame, 0, 30)
     header:SetText(LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_BAGANATOR))
 
     local template = "SharedButtonLargeTemplate"
