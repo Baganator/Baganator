@@ -123,7 +123,7 @@ function Baganator.InventoryTracking.Initialize()
 
   if TooltipDataProcessor then
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
-      if tooltip == GameTooltip or tooltip == ItemRefTooltip then
+      if tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip then
         local itemName, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
 
         -- Fix to get recipes to show the inventory data for the recipe when
@@ -136,11 +136,13 @@ function Baganator.InventoryTracking.Initialize()
           end
         end
 
-        AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
+        if itemLink then
+          AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
+        end
       end
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
-      if tooltip == GameTooltip or tooltip == ItemRefTooltip then
+      if tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip then
         local data = tooltip:GetPrimaryTooltipData()
         AddToCurrencyTooltip(tooltip, data.id)
       end
