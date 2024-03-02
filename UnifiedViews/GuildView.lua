@@ -91,11 +91,16 @@ function BaganatorGuildViewMixin:OnLoad()
     self:ApplySearch(text)
   end)
 
-  self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
-  self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
-  self:RegisterEvent("GUILDBANKLOG_UPDATE")
-  self:RegisterEvent("GUILDBANK_UPDATE_TEXT")
-  self:RegisterEvent("GUILDBANK_TEXT_CHANGED")
+  FrameUtil.RegisterFrameForEvents(self, {
+    "PLAYER_INTERACTION_MANAGER_FRAME_SHOW",
+    "PLAYER_INTERACTION_MANAGER_FRAME_HIDE",
+    "GUILDBANKLOG_UPDATE",
+    "GUILDBANK_UPDATE_TEXT",
+    "GUILDBANK_UPDATE_WITHDRAWMONEY",
+    "GUILDBANK_TEXT_CHANGED",
+    "PLAYER_REGEN_DISABLED",
+    "PLAYER_REGEN_ENABLED",
+  })
 
   Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
 
@@ -144,6 +149,14 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
     self.TabTextFrame:ApplyTab()
   elseif eventName == "GUILDBANK_TEXT_CHANGED" and self.TabTextFrame:IsVisible() then
     QueryGuildBankText(GetCurrentGuildBankTab());
+  elseif eventName == "PLAYER_REGEN_DISABLED" then
+    self.WithdrawButton:Disable()
+    self.DepositButton:Disable()
+  elseif eventName == "PLAYER_REGEN_ENABLED" then
+    self.WithdrawButton:SetEnabled(self.canWithdraw)
+    self.DepositButton:Enable()
+  elseif eventName == "GUILDBANK_UPDATE_WITHDRAWMONEY" and self:IsVisible() then
+    self:UpdateForGuild(self.lastGuild, self.isLive)
   end
 end
 
@@ -431,10 +444,12 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     end
     self.WithdrawalsInfo:SetText(BAGANATOR_L_GUILD_WITHDRAW_DEPOSIT_X_X:format(withdrawText, depositText))
     local withdrawMoney = GetGuildBankWithdrawMoney()
-    if not CanWithdrawGuildBankMoney() then
+    if not CanWithdrawGuildBankMoney() or withdrawMoney == 0 then
+      self.canWithdraw = false
       withdrawMoney = 0
       self.WithdrawButton:Disable()
     else
+      self.canWithdraw = true
       self.WithdrawButton:Enable()
     end
     local guildMoney = GetGuildBankMoney()
