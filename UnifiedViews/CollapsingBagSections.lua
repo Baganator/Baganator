@@ -13,7 +13,7 @@ local ContainerTypeToIcon = {
 }
 
 local keyedTextures = {
-  quiver = {type = "file", value="interface\\addons\\baganator\\assets\\bag_ammo", tooltipHeader=AMMOSLOT},
+  quiver = {type = "atlas", value="Ammunition", tooltipHeader=AMMOSLOT},
   reagentBag = {type = "atlas", value="Professions_Tracking_Herb", tooltipHeader = BAGANATOR_L_REAGENTS},
   keyring = {type = "file", value="interface\\addons\\baganator\\assets\\bag_keys", tooltipHeader = BAGANATOR_L_KEYS},
 }
