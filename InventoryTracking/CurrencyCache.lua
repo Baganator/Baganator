@@ -8,8 +8,7 @@ function BaganatorCurrencyCacheMixin:OnLoad()
 
   BAGANATOR_DATA.Characters[self.currentCharacter].money = GetMoney()
 
-  if not Baganator.Constants.IsEra then
-    -- no currencies available on era
+  if C_CurrencyInfo then
     self:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
     self:ScanAllCurrencies()
   end

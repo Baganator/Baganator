@@ -150,6 +150,7 @@ local TOOLTIP_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_SHOW_CURRENCY_TOOLTIPS,
     option = "show_currency_tooltips",
+    check = function() return C_CurrencyInfo ~= nil end,
   },
   {
     type = "checkbox",
