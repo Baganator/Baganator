@@ -443,7 +443,8 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
       withdrawText = FormatLargeNumber(remainingWithdrawals)
     end
     self.WithdrawalsInfo:SetText(BAGANATOR_L_GUILD_WITHDRAW_DEPOSIT_X_X:format(withdrawText, depositText))
-    local withdrawMoney = GetGuildBankWithdrawMoney()
+    local guildMoney = GetGuildBankMoney()
+    local withdrawMoney = math.min(GetGuildBankWithdrawMoney(), guildMoney)
     if not CanWithdrawGuildBankMoney() or withdrawMoney == 0 then
       self.canWithdraw = false
       withdrawMoney = 0
@@ -452,8 +453,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
       self.canWithdraw = true
       self.WithdrawButton:Enable()
     end
-    local guildMoney = GetGuildBankMoney()
-    self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X_X:format(GetMoneyString(math.min(withdrawMoney, guildMoney), true), GetMoneyString(guildMoney, true)))
+    self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X_X:format(GetMoneyString(withdrawMoney, true), GetMoneyString(guildMoney, true)))
     detailsHeight = 30
 
     self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
