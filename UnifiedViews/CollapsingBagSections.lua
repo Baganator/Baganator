@@ -1,15 +1,15 @@
 local ContainerTypeToIcon = {
   [0] = nil, -- regular bag
   [1] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_soul_shard", tooltipHeader=BAGANATOR_L_SOUL}, -- soulbag
-  [2] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_herbs", tooltipHeader=BAGANATOR_L_HERBALISM}, --herb
-  [3] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_enchant", tooltipHeader=BAGANATOR_L_ENCHANTING}, --enchant
-  [4] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_engineering", tooltipHeader=BAGANATOR_L_ENGINEERING}, --engineering
-  [5] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_gems", tooltipHeader=BAGANATOR_L_GEMS}, -- gem
-  [6] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_mining", tooltipHeader=BAGANATOR_L_MINING}, -- mining
-  [7] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_leatherworking", tooltipHeader=BAGANATOR_L_LEATHERWORKING}, -- leatherworking
-  [8] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_inscription", tooltipHeader=BAGANATOR_L_INSCRIPTION}, -- inscription
-  [9] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_fishing", tooltipHeader=BAGANATOR_L_FISHING}, -- fishing
-  [10] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_cooking", tooltipHeader=BAGANATOR_L_COOKING}, -- cooking
+  [2] = {type = "atlas", value="worldquest-icon-herbalism", tooltipHeader=BAGANATOR_L_HERBALISM, size=50}, --herb
+  [3] = {type = "atlas", value="worldquest-icon-enchanting", tooltipHeader=BAGANATOR_L_ENCHANTING, size=50}, --enchant
+  [4] = {type = "atlas", value="worldquest-icon-engineering", tooltipHeader=BAGANATOR_L_ENGINEERING, size=50}, --engineering
+  [5] = {type = "atlas", value="worldquest-icon-jewelcrafting", tooltipHeader=BAGANATOR_L_GEMS, size=50}, -- gem
+  [6] = {type = "atlas", value="worldquest-icon-mining", tooltipHeader=BAGANATOR_L_MINING, size=50}, -- mining
+  [7] = {type = "atlas", value="worldquest-icon-leatherworking", tooltipHeader=BAGANATOR_L_LEATHERWORKING, size=50}, -- leatherworking
+  [8] = {type = "atlas", value="worldquest-icon-inscription", tooltipHeader=BAGANATOR_L_INSCRIPTION, size=50}, -- inscription
+  [9] = {type = "atlas", value="worldquest-icon-fishing", tooltipHeader=BAGANATOR_L_FISHING, size=50}, -- fishing
+  [10] = {type = "atlas", value="worldquest-icon-cooking", tooltipHeader=BAGANATOR_L_COOKING, size=50}, -- cooking
 }
 
 local keyedTextures = {
@@ -118,8 +118,11 @@ end
 
 function Baganator.UnifiedViews.SetupCollapsingBagSection(layouts, info, bagIDs)
   if info.visual.type == "file" then
+    layouts.button.icon:SetSize(17, 17)
     layouts.button.icon:SetTexture(info.visual.value)
   else
+    local size = info.visual.size or 64
+    layouts.button.icon:SetSize(size/64 * 17, size/64 * 17)
     layouts.button.icon:SetAtlas(info.visual.value)
   end
   layouts.key = info.key
