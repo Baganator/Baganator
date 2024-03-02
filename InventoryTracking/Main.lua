@@ -134,6 +134,11 @@ function Baganator.InventoryTracking.Initialize()
           if newItemLink ~= nil then
             itemLink = newItemLink
           end
+        elseif info and info.getterName == "GetGuildBankItem" then
+          local newItemLink = GetGuildBankItemLink(info.getterArgs[1], info.getterArgs[2])
+          if newItemLink ~= nil then
+            itemLink = newItemLink
+          end
         end
 
         if itemLink then
