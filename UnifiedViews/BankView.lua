@@ -184,19 +184,19 @@ function BaganatorBankOnlyViewMixin:OnEvent(eventName)
       self:UpdateBagSlots()
     end
   elseif eventName == "PLAYER_REGEN_DISABLED" then
-    if not self.liveBagSlots then
+    if not self.bankBagSlots then
       return
     end
     -- Disable bank bag slots buttons in combat as pickup/drop doesn't work
-    for _, button in ipairs(self.liveBagSlots) do
+    for _, button in ipairs(self.bankBagSlots) do
       SetItemButtonDesaturated(button, true)
       button:Disable()
     end
   elseif eventName == "PLAYER_REGEN_ENABLED" then
-    if not self.liveBagSlots then
+    if not self.bankBagSlots then
       return
     end
-    for _, button in ipairs(self.liveBagSlots) do
+    for _, button in ipairs(self.bankBagSlots) do
       SetItemButtonDesaturated(button, false)
       button:Enable()
     end

@@ -150,10 +150,6 @@ StaticPopupDialogs["Baganator.ConfirmBuyBankSlot"] = {
 }
 
 local function OnBankSlotClick(self)
-  if not self:IsEnabled() then
-    return
-  end
-
   if not self.needPurchase then
     if IsModifiedClick("PICKUPITEM") then
       PickupBagFromSlot(GetBankInventorySlot(self))
