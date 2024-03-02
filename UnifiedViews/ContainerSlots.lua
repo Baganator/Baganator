@@ -51,10 +51,18 @@ function BaganatorRetailBagSlotButtonMixin:OnClick()
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnDragStart()
+  if not self:IsEnabled() then
+    return
+  end
+
   PickupBagFromSlot(GetBagInventorySlot(self))
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnReceiveDrag()
+  if not self:IsEnabled() then
+    return
+  end
+
   PutItemInBag(GetBagInventorySlot(self))
 end
 
@@ -97,10 +105,18 @@ function BaganatorClassicBagSlotButtonMixin:OnClick()
 end
 
 function BaganatorClassicBagSlotButtonMixin:OnDragStart()
+  if not self:IsEnabled() then
+    return
+  end
+
   PickupBagFromSlot(GetBagInventorySlot(self))
 end
 
 function BaganatorClassicBagSlotButtonMixin:OnReceiveDrag()
+  if not self:IsEnabled() then
+    return
+  end
+
   PutItemInBag(GetBagInventorySlot(self))
 end
 
@@ -134,6 +150,10 @@ StaticPopupDialogs["Baganator.ConfirmBuyBankSlot"] = {
 }
 
 local function OnBankSlotClick(self)
+  if not self:IsEnabled() then
+    return
+  end
+
   if not self.needPurchase then
     if IsModifiedClick("PICKUPITEM") then
       PickupBagFromSlot(GetBankInventorySlot(self))
@@ -196,10 +216,18 @@ function BaganatorRetailBankButtonMixin:OnClick()
 end
 
 function BaganatorRetailBankButtonMixin:OnDragStart()
+  if not self:IsEnabled() then
+    return
+  end
+
   PickupBagFromSlot(GetBankInventorySlot(self))
 end
 
 function BaganatorRetailBankButtonMixin:OnReceiveDrag()
+  if not self:IsEnabled() then
+    return
+  end
+
   PutItemInBag(GetBankInventorySlot(self))
 end
 
@@ -245,10 +273,18 @@ function BaganatorClassicBankButtonMixin:OnClick()
 end
 
 function BaganatorClassicBankButtonMixin:OnDragStart()
+  if not self:IsEnabled() then
+    return
+  end
+
   PickupBagFromSlot(GetBankInventorySlot(self))
 end
 
 function BaganatorClassicBankButtonMixin:OnReceiveDrag()
+  if not self:IsEnabled() then
+    return
+  end
+
   PutItemInBag(GetBankInventorySlot(self))
 end
 
