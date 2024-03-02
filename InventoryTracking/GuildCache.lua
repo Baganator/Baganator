@@ -65,6 +65,14 @@ function BaganatorGuildCacheMixin:OnLoad()
   })
 
   self.currentGuild = GetGuildKey()
+  self.lastTabPickups = {}
+
+  hooksecurefunc("PickupGuildBankItem", function(tabIndex, slotID)
+    table.insert(self.lastTabPickups, tabIndex)
+    while #self.lastTabPickups > 2 do
+      table.remove(self.lastTabPickups, 1)
+    end
+  end)
 end
 
 function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
@@ -81,7 +89,7 @@ function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
       FrameUtil.UnregisterFrameForEvents(self, GUILD_OPEN_EVENTS)
     end
   elseif eventName == "GUILDBANKBAGSLOTS_CHANGED" then
-    self:ExamineAllBankTabs()
+    self:SetScript("OnUpdate", self.OnUpdate)
   elseif eventName == "GUILDBANK_UPDATE_TABS" then
     self:ExamineGeneralTabInfo()
   elseif eventName == "GUILDBANK_UPDATE_MONEY" then
@@ -118,6 +126,32 @@ end
 
 function BaganatorGuildCacheMixin:OnUpdate()
   self:SetScript("OnUpdate", nil)
+  self:ExamineAllBankTabs()
+end
+
+function BaganatorGuildCacheMixin:ProcessTransfers(changed)
+  if next(changed) == nil then
+    return
+  end
+  if #self.lastTabPickups > 1 then
+    local indexes = {}
+    for _, tabIndex in ipairs(self.lastTabPickups) do
+      indexes[tabIndex] = true
+    end
+    indexes[GetCurrentGuildBankTab()] = nil
+    for tabIndex in pairs(changed) do
+      indexes[tabIndex] = nil
+    end
+    -- If an item has been moved from another tab that hasn't reported a change
+    -- query that tab to get the the change
+    if next(indexes) ~= nil then
+      for tabIndex in pairs(indexes) do
+        QueryGuildBankTab(tabIndex)
+      end
+      QueryGuildBankTab(GetCurrentGuildBankTab())
+    end
+    self.lastTabPickups = {}
+  end
 end
 
 function BaganatorGuildCacheMixin:ExamineGeneralTabInfo()
@@ -168,9 +202,10 @@ function BaganatorGuildCacheMixin:ExamineAllBankTabs()
   local anythingChanged = false
   for tabIndex = 1, GetNumGuildBankTabs() do
     self:ExamineBankTab(tabIndex, function(tabIndex, anyChanges)
-      changed[tabIndex] = anyChanges
+      changed[tabIndex] = anyChanges or nil
       waiting = waiting - 1
       if waiting == 0 then
+        self:ProcessTransfers(changed)
         if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
           print("guild full scan", debugprofilestop() - start)
         end
