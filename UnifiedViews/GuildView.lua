@@ -245,6 +245,7 @@ end
 function BaganatorGuildViewMixin:OpenTabEditor()
   GuildBankPopupFrame:Hide()
   if not CanEditGuildBankTabInfo(GetCurrentGuildBankTab()) then
+    UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_EDIT_GUILD_BANK_TAB_ERROR, 1.0, 0.1, 0.1, 1.0)
     return
   end
   if Baganator.Constants.IsRetail then

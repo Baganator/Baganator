@@ -244,6 +244,7 @@ L["X_LOGS"] = "%s Logs"
 L["X_INFORMATION"] = "%s Information"
 L["MONEY_LOGS"] = "Money Logs"
 L["NO_TRANSACTIONS_AVAILABLE"] = "No Transactions Available"
+L["CANNOT_EDIT_GUILD_BANK_TAB_ERROR"] = "You do not have permissions to edit this tab"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
