@@ -12,4 +12,8 @@ function Baganator.Search.GetBaseInfoFromList(cachedItems, callback)
       end
     end)
   end
+
+  if #cachedItems == 0 then
+    callback(results)
+  end
 end
