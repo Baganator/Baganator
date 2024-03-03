@@ -827,7 +827,7 @@ function Baganator.Search.ClearCache()
   rejects = {}
 end
 
-function Baganator.Search.Initialize()
+function Baganator.Search.InitializeSearchEngine()
   for i = 0, Enum.ItemClassMeta.NumValues-1 do
     local name = GetItemClassInfo(i)
     if name then
