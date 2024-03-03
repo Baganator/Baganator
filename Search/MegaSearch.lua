@@ -1,5 +1,4 @@
-local cache = {
-}
+local cache = {}
 
 local function CacheCharacter(character, callback)
   local waiting = 5 -- bags, bank, mail, equipped+containerInfo, void
@@ -85,6 +84,8 @@ local function CacheGuild(guild, callback)
 end
 
 local pendingQueries = {}
+local pending
+local toPurge = {Characters = {}, Guilds = {}}
 local managingFrame = CreateFrame("Frame")
 
 local searchMonitorPool = CreateFramePool("Frame", UIParent, "BaganatorOfflineListSearchTemplate")
@@ -97,6 +98,25 @@ local function Query(searchTerm, callback)
     searchMonitorPool:Release(monitor)
   end)
 end
+
+local function CharacterCacheUpdate(_, character)
+  if pending then
+    pending.Characters[character] = true
+    toPurge.Characters[character] = true
+  end
+end
+
+Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate", CharacterCacheUpdate)
+Baganator.CallbackRegistry:RegisterCallback("MailCacheUpdate", CharacterCacheUpdate)
+Baganator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", CharacterCacheUpdate)
+Baganator.CallbackRegistry:RegisterCallback("VoidCacheUpdate", CharacterCacheUpdate)
+
+Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", function(_, guild)
+  if pending then
+    pending.Guilds[guild] = true
+    toPurge.Guilds[guild] = true
+  end
+end)
 
 function Baganator.Search.RequestMegaSearchResults(searchTerm, callback)
   if pending == nil then
@@ -123,6 +143,8 @@ function Baganator.Search.RequestMegaSearchResults(searchTerm, callback)
       managingFrame:SetScript("OnUpdate", nil)
       return
     end
+    cache = tFilter(cache, function(item) return toPurge.Characters[item.source.character] == nil and toPurge.Guilds[item.source.guild] == nil end, true)
+    toPurge = {Characters = {}, Guilds = {}}
     managingFrame:SetScript("OnUpdate", nil)
     local waiting = 0
     local complete = false
