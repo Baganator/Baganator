@@ -937,7 +937,7 @@ function BaganatorBackpackViewMixin:DoSort(isReverse)
       bagChecks,
       isReverse,
       Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END),
-      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT)
+      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT)
     )
     self.sortManager:Apply(status, DoSortInternal, function() end)
   end

@@ -404,7 +404,9 @@ function BaganatorBankOnlyViewMixin:DoSort(isReverse)
       Baganator.Constants.AllBankIndexes,
       indexesToUse,
       bagChecks,
-      isReverse
+      isReverse,
+      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END),
+      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT)
     )
     self.sortManager:Apply(status, DoSortInternal, function() end)
   end

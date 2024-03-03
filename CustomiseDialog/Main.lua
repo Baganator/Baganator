@@ -284,8 +284,17 @@ local SORTING_OPTIONS = {
     max = 128,
     lowText = "0",
     highText = "128",
-    valuePattern = BAGANATOR_L_X_SLOTS_TO_IGNORE_WHEN_SORTING_CHARACTER_SPECIFIC,
+    valuePattern = BAGANATOR_L_X_BAG_SLOTS_TO_IGNORE_WHEN_SORTING_CHARACTER_SPECIFIC,
     option = "sort_ignore_slots_count_2",
+  },
+  {
+    type = "slider",
+    min = 0,
+    max = 500,
+    lowText = "0",
+    highText = "500",
+    valuePattern = BAGANATOR_L_X_BANK_SLOTS_TO_IGNORE_WHEN_SORTING_CHARACTER_SPECIFIC,
+    option = "sort_ignore_bank_slots_count",
   },
   {
     type = "checkbox",

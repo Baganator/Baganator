@@ -18,7 +18,8 @@ Baganator.Config.Options = {
   REVERSE_GROUPS_SORT_ORDER = "reverse_groups_sort_order",
   SORT_START_AT_BOTTOM = "sort_start_at_bottom",
   SORT_IGNORE_SLOTS_AT_END = "sort_ignore_slots_at_end",
-  SORT_IGNORE_SLOTS_COUNT = "sort_ignore_slots_count_2",
+  SORT_IGNORE_BAG_SLOTS_COUNT = "sort_ignore_slots_count_2",
+  SORT_IGNORE_BANK_SLOTS_COUNT = "sort_ignore_bank_slots_count",
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
   AUTO_SORT_ON_OPEN = "auto_sort_on_open",
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
@@ -118,7 +119,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SORT_START_AT_BOTTOM] = false,
   [Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT] = false,
   [Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END] = false,
-  [Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT] = 0,
+  [Baganator.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = 0,
+  [Baganator.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = 0,
   [Baganator.Config.Options.AUTO_SORT_ON_OPEN] = false,
   [Baganator.Config.Options.JUNK_PLUGIN] = "poor_quality",
   [Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS] = true,
@@ -131,7 +133,8 @@ Baganator.Config.Defaults = {
 }
 
 Baganator.Config.IsCharacterSpecific = {
-  [Baganator.Config.Options.SORT_IGNORE_SLOTS_COUNT] = true,
+  [Baganator.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = true,
+  [Baganator.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = true,
 }
 
 Baganator.Config.VisualsFrameOnlySettings = {
