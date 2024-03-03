@@ -11,6 +11,7 @@ function BaganatorOfflineListSearchMixin:OnUpdate()
     local result = Baganator.Search.CheckItem(details, self.searchTerm)
     if result == true then
       table.insert(self.matching, details)
+      self.pending[details] = nil
     elseif result == false then
       self.pending[details] = nil
     end
