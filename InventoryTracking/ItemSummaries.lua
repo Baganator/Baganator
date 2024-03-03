@@ -98,6 +98,24 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
     end
   end
 
+  if details.containerInfo then
+    for _, item in ipairs(details.containerInfo.bags or {}) do
+      if item.itemLink then
+        local key = Baganator.Utilities.GetItemKey(item.itemLink)
+        GenerateBase(key)
+        summary[key].equipped = summary[key].equipped + item.itemCount
+      end
+    end
+
+    for _, item in ipairs(details.containerInfo.bank or {}) do
+      if item.itemLink then
+        local key = Baganator.Utilities.GetItemKey(item.itemLink)
+        GenerateBase(key)
+        summary[key].equipped = summary[key].equipped + item.itemCount
+      end
+    end
+  end
+
   -- or because the void is a newer key that might not exist on another
   -- character yet
   for _, page in pairs(details.void or {}) do
