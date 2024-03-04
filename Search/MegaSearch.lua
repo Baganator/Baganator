@@ -138,11 +138,11 @@ function Baganator.Search.RequestMegaSearchResults(searchTerm, callback)
 
   local function PendingCheck()
     if next(pending.Characters) == nil and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_GUILD_BANKS_IN_TOOLTIPS) or next(pending.Guilds) == nil) then
+      managingFrame:SetScript("OnUpdate", nil)
       for _, query in ipairs(pendingQueries) do
         Query(unpack(query))
       end
       pendingQueries = {}
-      managingFrame:SetScript("OnUpdate", nil)
       return
     end
     cache = tFilter(cache, function(item) return toPurge.Characters[item.source.character] == nil and toPurge.Guilds[item.source.guild] == nil end, true)
@@ -186,30 +186,104 @@ function Baganator.Search.RequestMegaSearchResults(searchTerm, callback)
   end
 end
 
-function Baganator.Search.RunMegaSearchAndPrintResults(term)
-  Baganator.Search.RequestMegaSearchResults(term, function(results)
-    local anyShown = false
-    print(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SEARCHED_EVERYWHERE_COLON) .. " " .. YELLOW_FONT_COLOR:WrapTextInColorCode(term))
-    for _, r in ipairs(results) do
-      local item = r.itemLink .. BLUE_FONT_COLOR:WrapTextInColorCode("x" .. r.itemCount)
-      if r.source.character then
-        local character = r.source.character
-        local characterData = BAGANATOR_DATA.Characters[r.source.character]
-        if not characterData.details.hidden and (r.source.container ~= "equipped" or Baganator.Config.Get(Baganator.Config.Options.SHOW_EQUIPPED_ITEMS_IN_TOOLTIPS)) then
-          anyShown = true
-          local className = characterData.details.className
-          if className then
-            character = RAID_CLASS_COLORS[className]:WrapTextInColorCode(character)
-          end
-          print("   ", item, PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(r.source.container), character)
+local function MakeKey(item)
+  local lower = item.itemNameLower or item.searchKeywords[1]
+  if item.isStackable then
+    return lower .. "_" .. tostring(item.itemID) .. "_" .. tostring(item.isBound)
+  else
+    return lower .. "_" .. tostring(item.itemLink) .. "_" .. tostring(item.isBound)
+  end
+end
+
+function Baganator.Search.CombineMegaSearchResults(results)
+  local items = {}
+  local seenCharacters = {}
+  local seenGuilds = {}
+  for _, r in ipairs(results) do
+    local key = MakeKey(r)
+    if not items[key] then
+      items[key] = CopyTable(r)
+      items[key].itemCount = 0
+      items[key].sources = {}
+      seenCharacters[key] = {}
+      seenGuilds[key] = {}
+    end
+    local source = CopyTable(r.source)
+    source.itemCount = r.itemCount
+    if source.character then
+      local characterData = BAGANATOR_DATA.Characters[source.character]
+      if not characterData.details.hidden and (source.container ~= "equipped" or Baganator.Config.Get(Baganator.Config.Options.SHOW_EQUIPPED_ITEMS_IN_TOOLTIPS)) then
+        if seenCharacters[key][source.character .. "_" .. source.container] then
+          local entry = items[key].sources[seenCharacters[key][source.character .. "_" .. source.container]]
+          entry.itemCount = entry.itemCount + source.itemCount
+        else
+          table.insert(items[key].sources, source)
+          seenCharacters[key][source.character .. "_" .. source.container] = #items[key].sources
         end
-      elseif r.source.guild then
-        anyShown = true
-        print("   ", r.itemLink .. BLUE_FONT_COLOR:WrapTextInColorCode("x" .. r.itemCount), TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(r.source.guild))
+      end
+    elseif source.guild then
+      if seenGuilds[key][source.guild] then
+        local entry = items[key].sources[seenGuilds[key][source.guild]]
+        entry.itemCount = entry.itemCount + source.itemCount
+      else
+        table.insert(items[key].sources, source)
+        seenGuilds[key][source.guild] = #items[key].sources
       end
     end
-    if not anyShown then
-      print("   ", BAGANATOR_L_NO_RESULTS)
+    items[key].itemCount = items[key].itemCount + r.itemCount
+  end
+
+  local keys = {}
+  for key in pairs(items) do
+    table.insert(keys, key)
+  end
+  table.sort(keys)
+
+  local final = {}
+  for _, key in ipairs(keys) do
+    if #items[key].sources > 0 then
+      table.insert(final, items[key])
+      table.sort(items[key].sources, function(a, b)
+        if a.itemCount == b.itemCount then
+          return tostring(a.container) < tostring(b.container)
+        else
+          return a.itemCount > b.itemCount
+        end
+      end)
+    end
+  end
+
+  return final
+end
+
+local function PrintSource(indent, source)
+  local count = BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. FormatLargeNumber(source.itemCount))
+  if source.character then
+    local character = source.character
+    local characterData = BAGANATOR_DATA.Characters[source.character]
+    local className = characterData.details.className
+    if className then
+      character = RAID_CLASS_COLORS[className]:WrapTextInColorCode(character)
+    end
+    print(indent, PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(source.container) .. count, character)
+  elseif source.guild then
+    print(indent, "guild" .. count, TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(source.guild))
+  end
+end
+
+function Baganator.Search.RunMegaSearchAndPrintResults(term)
+  if term:match("|H") then
+    print("bad term")
+    return
+  end
+  Baganator.Search.RequestMegaSearchResults(term, function(results)
+    print(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SEARCHED_EVERYWHERE_COLON) .. " " .. YELLOW_FONT_COLOR:WrapTextInColorCode(term))
+    results = Baganator.Search.CombineMegaSearchResults(results)
+    for _, r in ipairs(results) do
+      print("   " .. r.itemLink, BLUE_FONT_COLOR:WrapTextInColorCode("x" .. FormatLargeNumber(r.itemCount)))
+      for _, s in ipairs(r.sources) do
+        PrintSource("       ", s)
+      end
     end
   end)
 end
