@@ -35,7 +35,7 @@ local function PotionCheck(details)
 end
 
 local function JunkCheck(details)
-  return details.isJunk
+  return details.isJunk == true
 end
 
 local function CosmeticCheck(details)
