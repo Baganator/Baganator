@@ -135,7 +135,7 @@ function Baganator.Search.RequestMegaSearchResults(searchTerm, callback)
   end
 
   local function PendingCheck()
-    if next(pending.Characters) == nil and next(pending.Guilds) == nil then
+    if next(pending.Characters) == nil and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_GUILD_BANKS_IN_TOOLTIPS) or next(pending.Guilds) == nil) then
       for _, query in ipairs(pendingQueries) do
         Query(unpack(query))
       end
@@ -158,15 +158,17 @@ function Baganator.Search.RequestMegaSearchResults(searchTerm, callback)
         end
       end)
     end
-    for guild in pairs(pending.Guilds) do
-      waiting = waiting + 1
-      CacheGuild(guild, function()
-        pending.Guilds[guild] = nil
-        waiting = waiting - 1
-        if complete and waiting == 0 then
-          managingFrame:SetScript("OnUpdate", PendingCheck)
-        end
-      end)
+    if Baganator.Config.Get(Baganator.Config.Options.SHOW_GUILD_BANKS_IN_TOOLTIPS) then
+      for guild in pairs(pending.Guilds) do
+        waiting = waiting + 1
+        CacheGuild(guild, function()
+          pending.Guilds[guild] = nil
+          waiting = waiting - 1
+          if complete and waiting == 0 then
+            managingFrame:SetScript("OnUpdate", PendingCheck)
+          end
+        end)
+      end
     end
     complete = true
     if waiting == 0 then
