@@ -159,6 +159,11 @@ local TOOLTIP_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_SHOW_EQUIPPED_ITEMS_IN_INVENTORY_TOOLTIPS,
+    option = "show_equipped_items_in_tooltips",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_SHOW_GUILD_BANKS_IN_INVENTORY_TOOLTIPS,
     option = "show_guild_banks_in_tooltips",
     check = NotIsEraCheck,

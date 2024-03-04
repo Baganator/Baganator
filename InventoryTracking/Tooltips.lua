@@ -29,6 +29,12 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
 
   local tooltipInfo = summaries:GetTooltipInfo(key, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
+  if not Baganator.Config.Get("show_equipped_items_in_tooltips") then
+    for _, char in ipairs(tooltipInfo.characters) do
+      char.equipped = 0
+    end
+  end
+
   if Baganator.Config.Get("tooltips_sort_by_name") then
     table.sort(tooltipInfo.characters, CharacterAndRealmComparator)
     table.sort(tooltipInfo.guilds, GuildAndRealmComparator)
