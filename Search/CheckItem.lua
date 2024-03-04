@@ -72,20 +72,6 @@ local function RelicCheck(details)
   return details.classID == Enum.ItemClass.Gem and details.subClassID == Enum.ItemGemSubclass.Artifactrelic
 end
 
-local function PetCollectedCheck(details)
-  local speciesID
-  if details.itemLink:match("battlepet:") then
-    speciesID = tonumber((details.itemLink:match("battlepet:(%d+)")))
-  elseif C_PetJournal.GetPetInfoByItemID(details.itemID) ~= nil then
-    speciesID = select(13, C_PetJournal.GetPetInfoByItemID(details.itemID))
-  end
-  if speciesID then
-    return C_PetJournal.GetNumCollectedInfo(speciesID) == 0
-  else
-    return false
-  end
-end
-
 local function GetTooltipInfoSpell(details)
   if details.tooltipInfoSpell then
     return
@@ -289,7 +275,6 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_TRADEABLE_LOOT] = IsTradeableLoot,
   [BAGANATOR_L_KEYWORD_TRADABLE_LOOT] = IsTradeableLoot,
   [BAGANATOR_L_KEYWORD_RELIC] = RelicCheck,
-  [BAGANATOR_L_KEYWORD_UNCOLLECTED_PET] = PetCollectedCheck,
 }
 
 if Baganator.Constants.IsRetail then
@@ -305,6 +290,24 @@ local function AddKeyword(keyword, check)
   else
     KEYWORDS_TO_CHECK[keyword] = check
   end
+end
+
+local function PetCollectedCheck(details)
+  local speciesID
+  if details.itemLink:match("battlepet:") then
+    speciesID = tonumber((details.itemLink:match("battlepet:(%d+)")))
+  elseif C_PetJournal.GetPetInfoByItemID(details.itemID) ~= nil then
+    speciesID = select(13, C_PetJournal.GetPetInfoByItemID(details.itemID))
+  end
+  if speciesID then
+    return C_PetJournal.GetNumCollectedInfo(speciesID) == 0
+  else
+    return false
+  end
+end
+
+if not Baganator.Constants.IsEra then
+  AddKeyword(BAGANATOR_L_KEYWORD_UNCOLLECTED_PET, PetCollectedCheck)
 end
 
 local sockets = {
