@@ -249,8 +249,10 @@ L["MONEY_LOGS"] = "Money Logs"
 L["NO_TRANSACTIONS_AVAILABLE"] = "No Transactions Available"
 L["CANNOT_EDIT_GUILD_BANK_TAB_ERROR"] = "You do not have permissions to edit this tab"
 
-L["SEARCH_MATCHES_COLON"] = "Search Matches:"
+L["SEARCHED_EVERYWHERE_COLON"] = "Searched Everywhere:"
 L["NO_RESULTS"] = "No Results"
+L["SEARCH_EVERYWHERE"] = "Search Everywhere"
+L["SEARCH_EVERYWHERE_TOOLTIP_TEXT_1"] = "Search all inventories including those not of the current character and print the search results to your chat.\n\nThis is a work in progress with a full UI planned for the future. Suggestions on the layout are welcome."
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@

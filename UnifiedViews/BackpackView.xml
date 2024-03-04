@@ -70,9 +70,20 @@
       <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
         <Size x="300" y="22"/>
         <Anchors>
-          <Anchor point="RIGHT" x="-13" y="0"/>
+          <Anchor point="RIGHT" x="-45" y="0"/>
         </Anchors>
       </EditBox>
+      <Button parentKey="GlobalSearchButton" inherits="BaganatorMegaSearchButtonTemplate">
+        <Anchors>
+          <Anchor point="RIGHT" x="-13" y="0"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            local text = self:GetParent().SearchBox:GetText()
+            Baganator.Search.RunMegaSearchAndPrintResults(text)
+          </OnClick>
+        </Scripts>
+      </Button>
 
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate"/>

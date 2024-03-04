@@ -245,6 +245,7 @@ end
 
 function BaganatorBackpackViewMixin:ApplySearch(text)
   self.SearchBox:SetText(text)
+  self.GlobalSearchButton:SetEnabled(text ~= "")
 
   if not self:IsVisible() then
     return
@@ -699,8 +700,10 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
   activeBag:SetPoint("TOPRIGHT", -sideSpacing, - (height - bagHeight)/2 - 50)
 
   self.SearchBox:ClearAllPoints()
-  self.SearchBox:SetPoint("RIGHT", -sideSpacing, 0)
+  self.SearchBox:SetPoint("RIGHT", -sideSpacing - 36, 0)
   self.SearchBox:SetPoint("BOTTOMLEFT", activeBag, "TOPLEFT", 5, 3)
+  self.GlobalSearchButton:ClearAllPoints()
+  self.GlobalSearchButton:SetPoint("LEFT", self.SearchBox, "RIGHT", 3, 0)
   self.TopButtons[1]:ClearAllPoints()
   self.TopButtons[1]:SetPoint("TOP", self)
   self.TopButtons[1]:SetPoint("LEFT", activeBag, -sideSpacing + 2, 0)

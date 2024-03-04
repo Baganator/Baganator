@@ -65,6 +65,7 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
     info.classID = Enum.ItemClass.Battlepet
     info.subClassID = petType - 1
     info.isCosmetic = false
+    info.isStackable = false
     if level and level ~= "" then
       info.itemLevel = tonumber(level)
     end
@@ -80,6 +81,7 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
     info.invType = itemInfo[9]
     info.isCosmetic = IsCosmeticItem and IsCosmeticItem(info.itemLink)
     info.expacID = GetExpansion(info, itemInfo)
+    info.isStackable = itemInfo[8] > 1
     callback(info)
   else
     local item = Item:CreateFromItemLink(info.itemLink)
@@ -96,6 +98,7 @@ function Baganator.Search.GetBaseInfo(cacheData, earlyCallback, callback)
       info.invType = itemInfo[9]
       info.isCosmetic = IsCosmeticItem and IsCosmeticItem(info.itemLink)
       info.expacID = GetExpansion(info, itemInfo)
+      info.isStackable = itemInfo[8] > 1
       callback(info)
     end)
   end
