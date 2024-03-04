@@ -52,6 +52,19 @@ local function SetDeleteButton(frame)
 end
 
 function CharacterSelectSidebarMixin:OnLoad()
+  ButtonFrameTemplate_HidePortrait(self)
+  ButtonFrameTemplate_HideButtonBar(self)
+  self.Inset:Hide()
+  self:SetClampedToScreen(true)
+
+  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+      if self:IsVisible() then
+        Baganator.Utilities.ApplyVisuals(self)
+      end
+    end
+  end)
+
   self:SetTitle(BAGANATOR_L_ALL_CHARACTERS)
 
   local function UpdateForSelection(frame)
@@ -122,5 +135,6 @@ function CharacterSelectSidebarMixin:UpdateList()
 end
 
 function CharacterSelectSidebarMixin:OnShow()
+  Baganator.Utilities.ApplyVisuals(self)
   self:UpdateList()
 end

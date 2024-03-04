@@ -1,5 +1,5 @@
 <Ui>
-  <Frame name="BaganatorCharacterSelectSidebarTemplate" virtual="true" mixin="CharacterSelectSidebarMixin" inherits="DefaultPanelFlatTemplate" enableMouse="true">
+  <Frame name="BaganatorCharacterSelectSidebarTemplate" virtual="true" mixin="CharacterSelectSidebarMixin" inherits="ButtonFrameTemplate" enableMouse="true">
     <Size x="320" y="400"/>
     <Scripts>
       <OnLoad method="OnLoad"/>

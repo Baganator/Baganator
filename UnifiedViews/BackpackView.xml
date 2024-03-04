@@ -9,7 +9,7 @@
       <OnDragStop method="OnDragStop"/>
     </Scripts>
     <Frames>
-      <Frame parentKey="CharacterSelect" inherits="BaganatorCharacterSelectSidebarTemplate" hidden="true">
+      <Frame name="$parentCharacterSelect" parentKey="CharacterSelect" inherits="BaganatorCharacterSelectSidebarTemplate" hidden="true" frameLevel="999">
         <Anchors>
           <Anchor point="RIGHT" relativePoint="LEFT"/>
         </Anchors>
