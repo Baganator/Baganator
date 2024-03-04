@@ -306,7 +306,7 @@ local function PetCollectedCheck(details)
   end
 end
 
-if not Baganator.Constants.IsEra then
+if Baganator.Constants.IsRetail then
   AddKeyword(BAGANATOR_L_KEYWORD_UNCOLLECTED_PET, PetCollectedCheck)
 end
 
