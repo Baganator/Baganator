@@ -29,6 +29,8 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
 
   local tooltipInfo = summaries:GetTooltipInfo(key, Baganator.Config.Get("tooltips_connected_realms_only"), Baganator.Config.Get("tooltips_faction_only"))
 
+  -- Remove any equipped information from the tooltip if the option is disabled
+  -- (and remove the character if it has none of the items not equipped)
   if not Baganator.Config.Get("show_equipped_items_in_tooltips") then
     for _, char in ipairs(tooltipInfo.characters) do
       char.equipped = 0
@@ -97,10 +99,14 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     appendRealm = true
   end
 
+  if totals == 0 then
+    return
+  end
+
   AddDoubleLine(BAGANATOR_L_INVENTORY, LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_TOTAL_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(totals))))
 
-  for index = 1, math.min(#tooltipInfo.characters, Baganator.Config.Get("tooltips_character_limit")) do
-    local s = tooltipInfo.characters[index]
+  local charactersShown = 0
+  for _, s in ipairs(tooltipInfo.characters) do
     local entries = {}
     if s.bags > 0 then
       table.insert(entries, BAGANATOR_L_BAGS_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.bags)))
@@ -127,10 +133,15 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and s.race then
       character = Baganator.Utilities.GetCharacterIcon(s.race, s.sex) .. " " .. character
     end
-    AddDoubleLine("  " .. character, LINK_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
-  end
-  if #tooltipInfo.characters > Baganator.Config.Get("tooltips_character_limit") then
-    tooltip:AddLine("  ...")
+    if #entries > 0 then
+      if charactersShown >= Baganator.Config.Get("tooltips_character_limit") then
+        tooltip:AddLine("  ...")
+        break
+      end
+      AddDoubleLine("  " .. character, LINK_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
+    else
+      charactersShown = charactersShown + 1
+    end
   end
 
   for index = 1, math.min(#tooltipInfo.guilds, Baganator.Config.Get("tooltips_character_limit")) do
