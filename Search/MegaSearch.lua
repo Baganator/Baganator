@@ -195,7 +195,7 @@ function Baganator.Search.RunMegaSearchAndPrintResults(term)
       if r.source.character then
         local character = r.source.character
         local characterData = BAGANATOR_DATA.Characters[r.source.character]
-        if not characterData.details.hidden then
+        if not characterData.details.hidden and (r.source.container ~= "equipped" or Baganator.Config.Get(Baganator.Config.Options.SHOW_EQUIPPED_ITEMS_IN_TOOLTIPS)) then
           anyShown = true
           local className = characterData.details.className
           if className then
