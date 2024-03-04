@@ -46,8 +46,10 @@ local function CacheCharacter(character, callback)
   for _, slot in pairs(characterData.equipped or {}) do
     table.insert(equippedList, slot)
   end
-  for _, slot in ipairs(characterData.containerInfo or {}) do
-    table.insert(equippedList, slot)
+  for label, containers in pairs(characterData.containerInfo or {}) do
+    for _, item in pairs(containers) do
+      table.insert(equippedList, item)
+    end
   end
 
   Baganator.Search.GetBaseInfoFromList(equippedList, function(results)
