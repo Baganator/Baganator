@@ -194,7 +194,7 @@ function Baganator.InventoryTracking.Initialize()
   end
 
   if BattlePetToolTip_Show then
-    hooksecurefunc("BattlePetToolTip_Show", function(speciesID, level, breedQuality, maxHealth, power, speed, ...)
+    local function PetTooltipShow(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, ...)
       -- Reconstitute item link from tooltip arguments
       local name, icon, petType = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
       local itemString = "battlepet"
@@ -205,7 +205,15 @@ function Baganator.InventoryTracking.Initialize()
       local quality = ITEM_QUALITY_COLORS[breedQuality].color
       local itemLink = quality:WrapTextInColorCode("|H" .. itemString .. "|h[" .. name .. "]|h")
 
-      AddToItemTooltip(BattlePetTooltip, Baganator.ItemSummaries, itemLink)
+      AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
+    end
+    hooksecurefunc("BattlePetToolTip_Show", function(...)
+      PetTooltipShow(BattlePetTooltip, ...)
+    end)
+    hooksecurefunc("FloatingBattlePet_Toggle", function(...)
+      if FloatingBattlePetTooltip:IsShown() then
+        PetTooltipShow(FloatingBattlePetTooltip, ...)
+      end
     end)
   end
 
