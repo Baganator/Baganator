@@ -90,8 +90,8 @@ else
 end
 function Baganator.Utilities.GetCharacterIcon(race, sex)
   race = race:lower()
-  return "|A:"..prefix.."-" .. (raceCorrections[race] or race) .. "-" .. genders[sex] .. ":15:15|a"
+  return "|A:"..prefix.."-" .. (raceCorrections[race] or race) .. "-" .. genders[sex] .. ":13:13|a"
 end
 function Baganator.Utilities.GetGuildIcon()
-  return "|A:communities-guildbanner-background:15:15|a"
+  return "|A:communities-guildbanner-background:13:13|a"
 end

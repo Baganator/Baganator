@@ -1,13 +1,17 @@
+local function AddItemCheck()
+  return Baganator.Config.Get(Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS) and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT) or IsShiftKeyDown()) 
+end
+
 local function AddToItemTooltip(tooltip, summaries, itemLink)
-  if Baganator.Config.Get(Baganator.Config.Options.SHOW_INVENTORY_TOOLTIPS) and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT) or IsShiftKeyDown()) then
-    Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
-  end
+  Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
+end
+
+local function AddCurrencyCheck()
+  return Baganator.Config.Get(Baganator.Config.Options.SHOW_CURRENCY_TOOLTIPS) and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT) or IsShiftKeyDown())
 end
 
 local function AddToCurrencyTooltip(tooltip, summaries, itemLink)
-  if Baganator.Config.Get(Baganator.Config.Options.SHOW_CURRENCY_TOOLTIPS) and (not Baganator.Config.Get(Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT) or IsShiftKeyDown()) then
-    Baganator.Tooltips.AddCurrencyLines(tooltip, summaries, itemLink)
-  end
+  Baganator.Tooltips.AddCurrencyLines(tooltip, summaries, itemLink)
 end
 
 local function InitializeSavedVariables()
@@ -152,7 +156,7 @@ function Baganator.InventoryTracking.Initialize()
           end
         end
 
-        if itemLink then
+        if itemLink and AddItemCheck() then
           AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
         end
       end
@@ -160,7 +164,9 @@ function Baganator.InventoryTracking.Initialize()
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
       if tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip then
         local data = tooltip:GetPrimaryTooltipData()
-        AddToCurrencyTooltip(tooltip, data.id)
+        if AddCurrencyCheck() then
+          AddToCurrencyTooltip(tooltip, data.id)
+        end
       end
     end)
   else
@@ -171,7 +177,9 @@ function Baganator.InventoryTracking.Initialize()
           return
         end
         local _, itemLink = tooltip:GetItem()
-        AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
+        if AddItemCheck() then
+          AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
+        end
         ready = false
       end)
       tooltip:HookScript("OnTooltipCleared", function(tooltip)
@@ -184,7 +192,7 @@ function Baganator.InventoryTracking.Initialize()
       local link = C_CurrencyInfo.GetCurrencyListLink(index)
       if link ~= nil then
         local currencyID = tonumber((link:match("|Hcurrency:(%d+)")))
-        if currencyID ~= nil then
+        if currencyID ~= nil and AddCurrencyCheck() then
           AddToCurrencyTooltip(tooltip, currencyID)
         end
       end
@@ -195,6 +203,14 @@ function Baganator.InventoryTracking.Initialize()
 
   if BattlePetToolTip_Show then
     local function PetTooltipShow(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, ...)
+      if not AddItemCheck() then
+        return
+      end
+
+      tooltip.Name:SetPoint("LEFT", 10, 0)
+      tooltip.PetType:ClearAllPoints()
+      tooltip.PetType:SetPoint("TOP", tooltip.Name, "BOTTOM", 0, -5)
+      tooltip.PetType:SetPoint("RIGHT", -10, 0)
       -- Reconstitute item link from tooltip arguments
       local name, icon, petType = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
       local itemString = "battlepet"
@@ -207,14 +223,21 @@ function Baganator.InventoryTracking.Initialize()
 
       AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
     end
+    -- Revert changes to the tooltip
+    local function DefaultWidth(self)
+      self:SetWidth(260)
+      self.PetType:SetPoint("BOTTOM", self.Name, 0, -5)
+    end
     hooksecurefunc("BattlePetToolTip_Show", function(...)
       PetTooltipShow(BattlePetTooltip, ...)
     end)
+    BattlePetTooltip:HookScript("OnHide", DefaultWidth)
     hooksecurefunc("FloatingBattlePet_Toggle", function(...)
       if FloatingBattlePetTooltip:IsShown() then
         PetTooltipShow(FloatingBattlePetTooltip, ...)
       end
     end)
+    FloatingBattlePetTooltip:HookScript("OnHide", DefaultWidth)
   end
 
 end
