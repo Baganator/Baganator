@@ -224,20 +224,21 @@ function Baganator.InventoryTracking.Initialize()
       AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
     end
     -- Revert changes to the tooltip
-    local function DefaultWidth(self)
+    local function DefaultSetup(self)
       self:SetWidth(260)
+      self.PetType:ClearAllPoints()
       self.PetType:SetPoint("BOTTOM", self.Name, 0, -5)
     end
     hooksecurefunc("BattlePetToolTip_Show", function(...)
       PetTooltipShow(BattlePetTooltip, ...)
     end)
-    BattlePetTooltip:HookScript("OnHide", DefaultWidth)
+    BattlePetTooltip:HookScript("OnHide", DefaultSetup)
     hooksecurefunc("FloatingBattlePet_Toggle", function(...)
       if FloatingBattlePetTooltip:IsShown() then
         PetTooltipShow(FloatingBattlePetTooltip, ...)
       end
     end)
-    FloatingBattlePetTooltip:HookScript("OnHide", DefaultWidth)
+    FloatingBattlePetTooltip:HookScript("OnHide", DefaultSetup)
   end
 
 end
