@@ -68,6 +68,7 @@ Baganator.Constants.Events = {
   "GuildNameSet",
   "EquippedCacheUpdate",
   "VoidCacheUpdate",
+  "AuctionsCacheUpdate",
 
   "SearchTextChanged",
   "BagShow",

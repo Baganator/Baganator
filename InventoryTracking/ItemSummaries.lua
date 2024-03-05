@@ -26,6 +26,7 @@ function BaganatorItemSummariesMixin:OnLoad()
   Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", self.GuildCacheUpdate, self)
   Baganator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", self.CharacterCacheUpdate, self)
   Baganator.CallbackRegistry:RegisterCallback("VoidCacheUpdate", self.CharacterCacheUpdate, self)
+  Baganator.CallbackRegistry:RegisterCallback("AuctionsCacheUpdate", self.CharacterCacheUpdate, self)
 end
 
 function BaganatorItemSummariesMixin:CharacterCacheUpdate(characterName)
@@ -54,6 +55,7 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
         mail = 0,
         equipped = 0,
         void = 0,
+        auctions = 0,
       }
     end
   end
@@ -125,6 +127,16 @@ function BaganatorItemSummariesMixin:GenerateCharacterSummary(characterName)
         GenerateBase(key)
         summary[key].void = summary[key].void + item.itemCount
       end
+    end
+  end
+
+  -- or because the mail is a newer key that might not exist on another
+  -- character yet
+  for _, item in pairs(details.auctions or {}) do
+    if item.itemLink then
+      local key = Baganator.Utilities.GetItemKey(item.itemLink)
+      GenerateBase(key)
+      summary[key].auctions = summary[key].auctions + item.itemCount
     end
   end
 
@@ -227,6 +239,7 @@ function BaganatorItemSummariesMixin:GetTooltipInfo(key, sameConnectedRealm, sam
             mail = byKey.mail or 0,
             equipped = byKey.equipped or 0,
             void = byKey.void or 0,
+            auctions = byKey.auctions or 0,
           })
         end
       end

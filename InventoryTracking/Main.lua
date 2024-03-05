@@ -22,8 +22,7 @@ end
 
 local currentCharacter
 local function InitCurrentCharacter()
-  local characterName, realm = UnitFullName("player")
-  currentCharacter = characterName .. "-" .. realm
+  currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
   if BAGANATOR_DATA.Characters[currentCharacter] == nil then
     BAGANATOR_DATA.Characters[currentCharacter] = {
@@ -49,6 +48,7 @@ local function InitCurrentCharacter()
   characterData.containerInfo = characterData.containerInfo or {}
   characterData.currencies = characterData.currencies or {}
   characterData.void = characterData.void or {}
+  characterData.auctions = characterData.auctions or {}
 end
 
 local function SetupDataProcessing()
@@ -95,6 +95,13 @@ local function SetupDataProcessing()
   guildCache:SetScript("OnEvent", guildCache.OnEvent)
 
   Baganator.GuildCache = guildCache
+
+  local auctionCache = CreateFrame("Frame")
+  Mixin(auctionCache, BaganatorAuctionCacheMixin)
+  auctionCache:OnLoad()
+  auctionCache:SetScript("OnEvent", auctionCache.OnEvent)
+
+  Baganator.AuctionCache = auctionCache
 end
 
 local function SetupItemSummaries()

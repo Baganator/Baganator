@@ -42,8 +42,8 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     table.sort(tooltipInfo.guilds, GuildAndRealmComparator)
   else
     table.sort(tooltipInfo.characters, function(a, b)
-      local left = a.bags + a.bank + a.mail + a.equipped + a.void
-      local right = b.bags + b.bank + b.mail + a.equipped + a.void
+      local left = a.bags + a.bank + a.mail + a.equipped + a.void + a.auctions
+      local right = b.bags + b.bank + b.mail + b.equipped + b.void + b.auctions
       if left == right then
         return CharacterAndRealmComparator(a, b)
       else
@@ -81,7 +81,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   local seenRealms = {}
 
   for index, s in ipairs(tooltipInfo.characters) do
-    totals = totals + s.bags + s.bank + s.mail + s.equipped + s.void
+    totals = totals + s.bags + s.bank + s.mail + s.equipped + s.void + s.auctions
     seenRealms[s.realmNormalized] = true
   end
   for index, s in ipairs(tooltipInfo.guilds) do
@@ -122,6 +122,9 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     end
     if s.void > 0 then
       table.insert(entries, BAGANATOR_L_VOID_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.void)))
+    end
+    if s.auctions > 0 then
+      table.insert(entries, BAGANATOR_L_AUCTIONS_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.auctions)))
     end
     local character = s.character
     if appendRealm then

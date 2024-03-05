@@ -42,6 +42,10 @@ local function CacheCharacter(character, callback)
     finishCheck("mail", results)
   end)
 
+  Baganator.Search.GetBaseInfoFromList(characterData.auctions or {}, function(results)
+    finishCheck("auctions", results)
+  end)
+
   local equippedList = {}
   for _, slot in pairs(characterData.equipped or {}) do
     table.insert(equippedList, slot)
