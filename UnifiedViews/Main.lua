@@ -127,12 +127,9 @@ local function SetupGuildView()
   guildView:SetUserPlaced(false)
 
   Baganator.CallbackRegistry:RegisterCallback("GuildToggle", function(_, guildName)
-    if not next(BAGANATOR_DATA.Guilds) then
-      return
-    end
-    local guild = guildName or Baganator.GuildCache.currentGuild or next(BAGANATOR_DATA.Guilds)
-    guildView:SetShown(guild ~= guildView.lastGuild or not guildView:IsShown())
-    guildView:UpdateForGuild(guild, Baganator.GuildCache.currentGuild == guild and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
+    local guildName = guildName or Baganator.GuildCache.currentGuild
+    guildView:SetShown(guildName ~= guildView.lastGuild or not guildView:IsShown())
+    guildView:UpdateForGuild(guildName, Baganator.GuildCache.currentGuild == guildName and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
   end)
 
   table.insert(UISpecialFrames, guildView:GetName())
