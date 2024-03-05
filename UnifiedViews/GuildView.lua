@@ -53,7 +53,9 @@ function BaganatorGuildViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("GuildNameSet",  function(_, guild)
-    self.lastGuild = guild
+    if guild then
+      self.lastGuild = guild
+    end
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()

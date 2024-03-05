@@ -413,7 +413,7 @@ function BaganatorBackpackViewMixin:ToggleBank()
 end
 
 function BaganatorBackpackViewMixin:ToggleGuildBank()
-  Baganator.CallbackRegistry:TriggerEvent("GuildToggle")
+  Baganator.CallbackRegistry:TriggerEvent("GuildToggle", BAGANATOR_DATA.Characters[self.lastCharacter].details.guild)
 end
 
 function BaganatorBackpackViewMixin:ToggleReagents()

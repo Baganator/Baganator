@@ -121,6 +121,10 @@ function Baganator.InventoryTracking.Initialize()
     end
   end)
 
+  Baganator.CallbackRegistry:RegisterCallback("GuildNameSet", function(_, guild)
+    BAGANATOR_DATA.Characters[Baganator.BagCache.currentCharacter].details.guild = guild
+  end)
+
   if TooltipDataProcessor then
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
       if tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip then
