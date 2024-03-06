@@ -26,15 +26,16 @@ end
 
 local currentCharacter
 local function InitCurrentCharacter()
-  currentCharacter = Baganator.Utilities.GetCharacterFullName()
+  local currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
   if BAGANATOR_DATA.Characters[currentCharacter] == nil then
+    local characterName = UnitName("player")
     BAGANATOR_DATA.Characters[currentCharacter] = {
       bags = {},
       bank = {},
       money = 0,
       details = {
-        realmNormalized = realm,
+        realmNormalized = GetNormalizedRealmName(),
         realm = GetRealmName(),
         character = characterName,
         hidden = false,
