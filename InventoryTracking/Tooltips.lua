@@ -108,7 +108,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   AddDoubleLine(BAGANATOR_L_INVENTORY, LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_TOTAL_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(totals))))
 
   local charactersShown = 0
-  for _, s in ipairs(tooltipInfo.characters) do
+  for index, s in ipairs(tooltipInfo.characters) do
     local entries = {}
     if s.bags > 0 then
       table.insert(entries, BAGANATOR_L_BAGS_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.bags)))
@@ -139,7 +139,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
       character = Baganator.Utilities.GetCharacterIcon(s.race, s.sex) .. " " .. character
     end
     if #entries > 0 then
-      if charactersShown >= Baganator.Config.Get("tooltips_character_limit") then
+      if charactersShown >= Baganator.Config.Get("tooltips_character_limit") or charactersShown >= #Baganator.Constants.KioskCharacters then
         tooltip:AddLine("  ...")
         break
       end
