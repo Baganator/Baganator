@@ -11,7 +11,6 @@ function Baganator.Search.GetGroupingKey(item)
       linkParts[i] = ""
     end
     local itemLink = table.concat(linkParts, ":")
-    print(itemLink)
     return lower .. "_" .. tostring(itemLink) .. "_" .. tostring(item.isBound)
   end
 end
