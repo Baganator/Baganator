@@ -10,6 +10,9 @@
 
 Locales.lua
 
+Libs\LibBattlePetTooltipLine\LibStub\LibStub.lua
+Libs\LibBattlePetTooltipLine\LibBattlePetTooltipLine.xml
+
 Core\Objects.lua
 Core\Locales.lua
 Core\Constants.lua

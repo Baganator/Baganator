@@ -1,5 +1,7 @@
 Baganator.Tooltips = {}
 
+local LibBattlePetTooltipLine = LibStub("LibBattlePetTooltipLine-1-0")
+
 local function CharacterAndRealmComparator(a, b)
   if a.realmNormalized == b.realmNormalized then
     return a.character < b.character
@@ -15,8 +17,6 @@ local function GuildAndRealmComparator(a, b)
     return a.realmNormalized < b.realmNormalized
   end
 end
-
-local battlePetTooltipFontStringPool = CreateFontStringPool(BattlePetTooltip, "ARTWORK", 0, "GameTooltipText")
 
 function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
   if itemLink == nil then
@@ -74,22 +74,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     if tooltip.AddDoubleLine then
       tooltip:AddDoubleLine(left, right, ...)
     elseif tooltip.PetType then
-      tooltip:AddLine(left)
-      local rightText = battlePetTooltipFontStringPool:Acquire()
-      rightText:SetParent(tooltip)
-      rightText:SetScript("OnHide", function(self)
-        battlePetTooltipFontStringPool:Release(self)
-      end)
-      rightText:Show()
-      rightText:SetPoint("TOP", tooltip.textLineAnchor)
-      rightText:SetText(right)
-      local neededWidth = rightText:GetWidth() + tooltip.textLineAnchor:GetWidth() + 60
-      rightText:SetPoint("RIGHT", tooltip, -10, 0)
-      if neededWidth > tooltip:GetWidth() then
-        tooltip:SetWidth(neededWidth)
-      end
-    else
-      tooltip:AddLine(left .. " " .. right)
+      LibBattlePetTooltipLine:AddDoubleLine(tooltip, left, right)
     end
   end
 

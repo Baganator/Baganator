@@ -203,14 +203,6 @@ function Baganator.InventoryTracking.Initialize()
 
   if BattlePetToolTip_Show then
     local function PetTooltipShow(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, ...)
-      if not AddItemCheck() then
-        return
-      end
-
-      tooltip.Name:SetPoint("LEFT", 10, 0)
-      tooltip.PetType:ClearAllPoints()
-      tooltip.PetType:SetPoint("TOP", tooltip.Name, "BOTTOM", 0, -5)
-      tooltip.PetType:SetPoint("RIGHT", -10, 0)
       -- Reconstitute item link from tooltip arguments
       local name, icon, petType = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
       local itemString = "battlepet"
@@ -223,22 +215,13 @@ function Baganator.InventoryTracking.Initialize()
 
       AddToItemTooltip(tooltip, Baganator.ItemSummaries, itemLink)
     end
-    -- Revert changes to the tooltip
-    local function DefaultSetup(self)
-      self:SetWidth(260)
-      self.PetType:ClearAllPoints()
-      self.PetType:SetPoint("BOTTOM", self.Name, 0, -5)
-    end
     hooksecurefunc("BattlePetToolTip_Show", function(...)
       PetTooltipShow(BattlePetTooltip, ...)
     end)
-    BattlePetTooltip:HookScript("OnHide", DefaultSetup)
     hooksecurefunc("FloatingBattlePet_Toggle", function(...)
       if FloatingBattlePetTooltip:IsShown() then
         PetTooltipShow(FloatingBattlePetTooltip, ...)
       end
     end)
-    FloatingBattlePetTooltip:HookScript("OnHide", DefaultSetup)
   end
-
 end
