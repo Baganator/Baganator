@@ -274,10 +274,14 @@ local function GetLink(source, searchTerm, text)
   return "|Haddon:BaganatorSearch:" .. moddedTerm .. ":" .. mode .. ":" .. source[mode] .. ":" .. source.container .. ":" .. moddedLink .. "|h" .. "[" .. text .. "]" .. "|h"
 end
 
-local function PrintSource(indent, source, searchTerm)
+local function PrintSource(indent, source, searchTerm, index)
   local count = BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. FormatLargeNumber(source.itemCount))
   if source.character then
-    local character = GetLink(source, searchTerm, source.character)
+    local character = Baganator.Constants.KioskCharacters[index]
+    if not character then
+      return
+    end
+    character = GetLink(source, searchTerm, character)
     local characterData = BAGANATOR_DATA.Characters[source.character]
     local className = characterData.details.className
     if className then
@@ -345,7 +349,7 @@ function Baganator.Search.RunMegaSearchAndPrintResults(searchTerm)
     for _, r in ipairs(results) do
       print("   " .. r.itemLink, BLUE_FONT_COLOR:WrapTextInColorCode("x" .. FormatLargeNumber(r.itemCount)))
       for _, s in ipairs(r.sources) do
-        PrintSource("       ", s, s.itemName:lower())
+        PrintSource("       ", s, s.itemName:lower(), index)
       end
     end
   end)
