@@ -35,6 +35,7 @@ InventoryTracking\Main.lua
 Search\Initialize.lua
 Search\BaseInfo.lua
 Search\CheckItem.lua
+Search\GetGroupingKey.lua
 Search\OfflineList.lua
 Search\OfflineList.xml
 Search\MegaSearch.lua

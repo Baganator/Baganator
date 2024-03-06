@@ -190,21 +190,12 @@ function Baganator.Search.RequestMegaSearchResults(searchTerm, callback)
   end
 end
 
-local function MakeKey(item)
-  local lower = item.itemNameLower or item.searchKeywords[1]
-  if item.isStackable then
-    return lower .. "_" .. tostring(item.itemID) .. "_" .. tostring(item.isBound)
-  else
-    return lower .. "_" .. tostring(item.itemLink) .. "_" .. tostring(item.isBound)
-  end
-end
-
 function Baganator.Search.CombineMegaSearchResults(results)
   local items = {}
   local seenCharacters = {}
   local seenGuilds = {}
   for _, r in ipairs(results) do
-    local key = MakeKey(r)
+    local key = Baganator.Search.GetGroupingKey(r)
     if not items[key] then
       items[key] = CopyTable(r)
       items[key].itemCount = 0
