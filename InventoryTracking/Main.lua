@@ -203,6 +203,9 @@ function Baganator.InventoryTracking.Initialize()
 
   if BattlePetToolTip_Show then
     local function PetTooltipShow(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, ...)
+      if not AddItemCheck() then
+        return
+      end
       -- Reconstitute item link from tooltip arguments
       local name, icon, petType = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
       local itemString = "battlepet"
