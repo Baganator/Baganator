@@ -170,6 +170,22 @@ function BaganatorBackpackViewMixin:OnLoad()
     end
   end)
 
+  -- Needed to get currencies to load correctly on classic versions of WoW
+  Baganator.Utilities.OnAddonLoaded("Blizzard_TokenUI", function()
+    if self:IsVisible() then
+      self:UpdateCurrencies(self.lastCharacter)
+    end
+
+    -- Wrath Classic
+    if ManageBackpackTokenFrame then
+      hooksecurefunc("ManageBackpackTokenFrame", function()
+        if self:IsVisible() then
+          self:UpdateCurrencies(self.lastCharacter)
+        end
+      end)
+    end
+  end)
+
   self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG,
