@@ -201,6 +201,8 @@ function BaganatorAuctionCacheMixin:ProcessPostedItemsQueue(itemKey)
   for auctionID, details in pairs(self.postedItemsQueue) do
     local auctionInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID)
     if auctionInfo ~= nil then
+      -- Always works when posting just one item, or when using the Auctionator
+      -- UI
       self.postedItemsQueue[auctionID] = nil
       self.postedItemsQueue[auctionID] = nil
       if C_Item.IsItemDataCachedByID(auctionInfo.itemKey.itemID) then
@@ -215,6 +217,8 @@ function BaganatorAuctionCacheMixin:ProcessPostedItemsQueue(itemKey)
         end)
       end
     elseif itemKey.itemID == details.itemID then
+      -- The Blizzard UI doesn't request all the auctions separately so we have
+      -- to guess when the auction has been created
       self.postedItemsQueue[auctionID] = nil
       local itemLink = details.itemLink
       local function DoItem()
