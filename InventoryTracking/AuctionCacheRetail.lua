@@ -90,7 +90,10 @@ function BaganatorAuctionCacheMixin:OnEvent(eventName, ...)
         else
           local item = Item:CreateFromItemID(auctionInfo.itemKey.itemID)
           item:ContinueOnItemLoad(function()
-            auctionInfo = C_AuctionHouse.GetOwnedAuctionInfo(index)
+            local auctionInfo = C_AuctionHouse.GetOwnedAuctionInfo(index)
+            if not auctionInfo then
+              return
+            end
             self:AddAuction(auctionInfo, auctionInfo.quantity)
           end)
         end
