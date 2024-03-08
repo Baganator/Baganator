@@ -204,7 +204,6 @@ function BaganatorAuctionCacheMixin:ProcessPostedItemsQueue(itemKey)
       -- Always works when posting just one item, or when using the Auctionator
       -- UI
       self.postedItemsQueue[auctionID] = nil
-      self.postedItemsQueue[auctionID] = nil
       if C_Item.IsItemDataCachedByID(auctionInfo.itemKey.itemID) then
         self:AddAuction(auctionInfo, 1)
       else
@@ -351,8 +350,8 @@ end
 
 function BaganatorAuctionCacheMixin:ClearAuctionPending()
   self.postedItemsQueue = {}
-  self.postedCommodity = {}
-  self.lastPostedItem = {}
+  self.postedCommodity = nil
+  self.lastPostedItem = nil
 
   self:UnregisterEvent("AUCTION_HOUSE_NEW_RESULTS_RECEIVED")
 end
