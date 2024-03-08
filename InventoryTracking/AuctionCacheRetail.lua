@@ -18,13 +18,31 @@ function BaganatorAuctionCacheMixin:OnLoad()
   self.currentCharacter = Baganator.Utilities.GetCharacterFullName()
 
   -- Used to detect how many of an item correspond to a particular
-  -- AUCTION_HOUSE_AUCTION_CREATED event.
-  self.postedItemCount = 1
-  hooksecurefunc(C_AuctionHouse, "PostItem", function()
-    self.postedItemCount = 1
+  -- auction created event.
+  self.posted = nil
+  hooksecurefunc(C_AuctionHouse, "PostItem", function(itemLocation)
+    local itemLink = C_Item.GetItemLink(itemLocation)
+    self.posted = {
+      itemCount = 1,
+      itemLink = C_Item.GetItemLink(itemLocation),
+      itemID = C_Item.GetItemID(itemLocation),
+    }
+    if not C_Item.IsItemDataCached(itemLocation) then
+      local item = Item:CreateFromItemLocation(itemLocation)
+      item:ContinueOnItemLoad(function()
+        if C_Item.DoesItemExist(itemLocation) then
+          self.posted.itemLink = C_Item.GetItemLink(itemLocation)
+        else
+          self.posted.itemLink = select(2, GetItemInfo(self.posted.itemLink))
+        end
+      end)
+    end
   end)
-  hooksecurefunc(C_AuctionHouse, "PostCommodity", function(_, itemCount)
-    self.postedItemCount = itemCount
+  hooksecurefunc(C_AuctionHouse, "PostCommodity", function(itemLocation, _, itemCount)
+    self.posted = {
+      itemID = C_Item.GetItemID(itemLocation),
+      itemCount = itemCount,
+    }
   end)
 end
 
@@ -101,26 +119,43 @@ function BaganatorAuctionCacheMixin:OnEvent(eventName, ...)
     end
 
   elseif eventName == "AUCTION_HOUSE_AUCTION_CREATED" then
+    if self.posted == nil then
+      return
+    end
     -- Auction created
     local auctionID = ...
-    if not auctionID then
-      return
+    local itemCount = self.posted.itemCount
+    local itemLink = self.posted.itemLink
+    local itemID = self.posted.itemID
+
+    local function DoItem()
+      local itemInfo = {GetItemInfo(itemLink or itemID)}
+      local item = {
+        itemID = itemID,
+        itemCount = itemCount,
+        iconTexture = itemInfo[10],
+        itemLink = itemLink or itemInfo[2],
+        quality = itemInfo[3],
+        isBound = false,
+      }
+      item.auctionID = auctionID
+      table.insert(
+        BAGANATOR_DATA.Characters[self.currentCharacter].auctions,
+        item
+      )
+      Baganator.CallbackRegistry:TriggerEvent("AuctionsCacheUpdate", self.currentCharacter)
     end
 
-    local auctionInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID)
-    if not auctionInfo then
-      return
-    end
-
-    if C_Item.IsItemDataCachedByID(auctionInfo.itemKey.itemID) then
-      self:AddAuction(auctionInfo, self.postedItemCount)
+    if C_Item.IsItemDataCachedByID(itemID) then
+      DoItem()
     else
-      local item = Item:CreateFromItemID(auctionInfo.itemKey.itemID)
+      local item = Item:CreateFromItemID(itemID)
       item:ContinueOnItemLoad(function()
-        auctionInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID)
-        self:AddAuction(auctionInfo, self.postedItemCount)
+        DoItem()
       end)
     end
+
+    self.posted = nil
 
   elseif eventName == "AUCTION_HOUSE_AUCTIONS_EXPIRED" or eventName == "AUCTION_CANCELED" then
     -- Expired and cancelled have the same behaviour, remove from the auctions
