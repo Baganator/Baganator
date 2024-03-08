@@ -11,6 +11,8 @@ local AUCTIONS_UPDATED_EVENTS = {
   "AUCTION_HOUSE_AUCTIONS_EXPIRED",
   "AUCTION_CANCELED",
   "AUCTION_HOUSE_SHOW_FORMATTED_NOTIFICATION",
+  "AUCTION_HOUSE_PURCHASE_COMPLETED",
+  "COMMODITY_PURCHASE_SUCCEEDED",
 }
 
 function BaganatorAuctionCacheMixin:OnLoad()
@@ -44,29 +46,76 @@ function BaganatorAuctionCacheMixin:OnLoad()
       itemCount = itemCount,
     }
   end)
+
+  -- Used to detect item details for a purchase event
+  self.purchased = nil
+  self.purchasedItemID = nil
+  self.purchasedAuctionInfo = nil
+
+  hooksecurefunc(C_AuctionHouse, "PlaceBid", function(auctionID, amount)
+    local auctionInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID)
+    auctionInfo.auctionID = auctionID
+    self.purchased {
+      auctionInfo = auctionInfo,
+      itemCount = 1,
+    }
+    -- Ensure we have a perfect item link
+    if not C_Item.IsItemDataCachedByID(auctionInfo.itemKey.itemID) then
+      local item = Item:CreateFromItemID(auctionInfo.itemKey.itemID)
+      item:ContinueOnItemLoad(function()
+        local auctionInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID)
+        if not auctionInfo then
+          if self.posted.auctionInfo.itemLink then
+            self.posted.auctionInfo.itemLink = select(2, GetItemInfo(self.posted.auctionInfo.itemLink))
+          end
+        else
+          auctionInfo.auctionID = auctionID
+          self.purchased.auctionInfo = auctionInfo
+        end
+      end)
+    end
+  end)
+  hooksecurefunc(C_AuctionHouse, "ConfirmCommoditiesPurchase", function(itemID, itemCount)
+    self.purchased = {
+      itemID = itemID,
+      itemCount = itemCount,
+    }
+  end)
 end
 
-function BaganatorAuctionCacheMixin:AddAuction(auctionInfo, itemCount)
+local function ConvertAuctionInfoToItem(auctionInfo, itemCount)
   local itemInfo = {GetItemInfo(auctionInfo.itemLink or auctionInfo.itemKey.itemID)}
   local itemLink = auctionInfo.itemLink or itemInfo[2]
   local iconTexture = itemInfo[10]
   local quality = itemInfo[3] 
+
   if auctionInfo.itemKey.itemID == Baganator.Constants.BattlePetCageID then
     local speciesIDText, qualityText = itemLink:match("battlepet:(%d+):%d+:(%d+)")
     iconTexture = select(2, C_PetJournal.GetPetInfoBySpeciesID(tonumber(speciesIDText)))
     quality = tonumber(qualityText)
   end
+
+  return {
+    itemID = auctionInfo.itemKey.itemID,
+    itemCount = itemCount,
+    iconTexture = iconTexture,
+    itemLink = itemLink,
+    quality = quality,
+    isBound = false,
+  }
+end
+
+function BaganatorAuctionCacheMixin:AddToMail(item)
+  table.insert(BAGANATOR_DATA.Characters[self.currentCharacter].mail, item)
+  Baganator.CallbackRegistry:TriggerEvent("MailCacheUpdate", self.currentCharacter)
+end
+
+function BaganatorAuctionCacheMixin:AddAuction(auctionInfo, itemCount)
+  local item = ConvertAuctionInfoToItem(auctionInfo, itemCount)
+  item.auctionID = auctionInfo.auctionID
   table.insert(
     BAGANATOR_DATA.Characters[self.currentCharacter].auctions,
-    {
-      itemID = auctionInfo.itemKey.itemID,
-      itemCount = itemCount,
-      iconTexture = iconTexture,
-      itemLink = itemLink,
-      quality = quality,
-      isBound = false,
-      auctionID = auctionInfo.auctionID,
-    }
+    item
   )
   Baganator.CallbackRegistry:TriggerEvent("AuctionsCacheUpdate", self.currentCharacter)
 end
@@ -76,8 +125,8 @@ function BaganatorAuctionCacheMixin:RemoveAuctionByID(auctionID)
     if item.auctionID == auctionID then
       table.remove(BAGANATOR_DATA.Characters[self.currentCharacter].auctions, index)
       Baganator.CallbackRegistry:TriggerEvent("AuctionsCacheUpdate", self.currentCharacter)
-      table.insert(BAGANATOR_DATA.Characters[self.currentCharacter].mail, item)
-      Baganator.CallbackRegistry:TriggerEvent("MailCacheUpdate", self.currentCharacter)
+      item.auctionID = nil
+      self:AddToMail(item)
       break
     end
   end
@@ -168,5 +217,59 @@ function BaganatorAuctionCacheMixin:OnEvent(eventName, ...)
     if notification == Enum.AuctionHouseNotification.AuctionSold or notification == Enum.AuctionHouseNotification.AuctionExpired then
       self:RemoveAuctionByID(auctionID)
     end
+
+  elseif eventName == "AUCTION_HOUSE_PURCHASE_COMPLETED" then
+    local auctionID = ...
+
+    if not self.purchased or not self.purchased.auctionInfo or self.purchased.auctionInfo.auctionID ~= auctionInfo.auctionID then
+      return
+    end
+
+    local itemCount = self.purchased.itemCount
+
+    if C_Item.IsItemDataCachedByID(auctionInfo.itemKey.itemID) then
+      local item = ConvertAuctionInfoToItem(auctionInfo, itemCount)
+      self:AddToMail(item)
+    else
+      local item = Item:CreateFromItemID(auctionInfo.itemKey.itemID)
+      item:ContinueOnItemLoad(function()
+        local item = ConvertAuctionInfoToItem(auctionInfo, itemCount)
+        self:AddToMail(item)
+      end)
+    end
+
+    self.purchased = nil
+  elseif eventName == "COMMODITY_PURCHASE_SUCCEEDED" then
+    if not self.purchased and not self.purchased.itemID then
+      return
+    end
+
+    local itemID = self.purchased.itemID
+    local itemCount = self.purchased.itemCount
+
+    local function GetItem()
+      local itemInfo = {GetItemInfo(self.purchased.itemID)}
+      return {
+        itemID = itemID,
+        itemCount = itemCount,
+        iconTexture = itemInfo[10],
+        itemLink = itemInfo[2],
+        quality = itemInfo[3],
+        isBound = false,
+      }
+    end
+
+    if C_Item.IsItemDataCachedByID(itemID) then
+      local item = GetItem()
+      self:AddToMail(item)
+    else
+      local item = Item:CreateFromItemID(itemID)
+      item:ContinueOnItemLoad(function()
+        local item = GetItem()
+        self:AddToMail(item)
+      end)
+    end
+
+    self.purchased = nil
   end
 end
