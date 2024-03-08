@@ -120,13 +120,15 @@ function BaganatorAuctionCacheMixin:AddAuction(auctionInfo, itemCount)
   Baganator.CallbackRegistry:TriggerEvent("AuctionsCacheUpdate", self.currentCharacter)
 end
 
-function BaganatorAuctionCacheMixin:RemoveAuctionByID(auctionID)
+function BaganatorAuctionCacheMixin:RemoveAuctionByID(auctionID, addToMail)
   for index, item in ipairs(BAGANATOR_DATA.Characters[self.currentCharacter].auctions) do
     if item.auctionID == auctionID then
       table.remove(BAGANATOR_DATA.Characters[self.currentCharacter].auctions, index)
       Baganator.CallbackRegistry:TriggerEvent("AuctionsCacheUpdate", self.currentCharacter)
       item.auctionID = nil
-      self:AddToMail(item)
+      if addToMail then
+        self:AddToMail(item)
+      end
       break
     end
   end
@@ -210,12 +212,12 @@ function BaganatorAuctionCacheMixin:OnEvent(eventName, ...)
     -- Expired and cancelled have the same behaviour, remove from the auctions
     -- list and add to the mail cache
     local auctionID = ...
-    self:RemoveAuctionByID(auctionID)
+    self:RemoveAuctionByID(auctionID, true)
 
   elseif eventName == "AUCTION_HOUSE_SHOW_FORMATTED_NOTIFICATION" then
     local notification, text, auctionID = ...
     if notification == Enum.AuctionHouseNotification.AuctionSold or notification == Enum.AuctionHouseNotification.AuctionExpired then
-      self:RemoveAuctionByID(auctionID)
+      self:RemoveAuctionByID(auctionID, notification ~= Enum.AuctionHouseNotification.AuctionSold)
     end
 
   elseif eventName == "AUCTION_HOUSE_PURCHASE_COMPLETED" then
