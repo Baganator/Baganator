@@ -254,11 +254,11 @@ function BaganatorAuctionCacheMixin:ProcessPostedItemsQueue(itemKey)
 end
 
 function BaganatorAuctionCacheMixin:ProcessItemPurchase(auctionID)
-  local auctionInfo = C_AuctionHouse.GetAuctionInfoByID(auctionID)
-
   if not self.purchasedItem or not self.purchasedItem.auctionInfo or self.purchasedItem.auctionInfo.auctionID ~= auctionID then
     return
   end
+
+  local auctionInfo = self.purchasedItem.auctionInfo
 
   local itemCount = self.purchasedItem.itemCount
 
