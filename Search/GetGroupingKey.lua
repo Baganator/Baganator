@@ -1,5 +1,5 @@
 function Baganator.Search.GetGroupingKey(item)
-  local lower = item.itemNameLower or item.searchKeywords[1]
+  local lower = item.itemNameLower or (item.searchKeywords and item.searchKeywords[1]) or item.itemName:lower()
   if item.classID == Enum.ItemClass.Battlepet then
     return lower .. "_" .. strjoin("-", BattlePetToolTip_UnpackBattlePetLink(item.itemLink)) .. "_" .. tostring(item.isBound)
   elseif item.isStackable then
