@@ -47,6 +47,7 @@ Search\Utilities.lua
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
 Sorting\Order.lua
+Sorting\OrderBags.lua
 Sorting\CombineStacks.lua
 Sorting\Plugins.lua
 Sorting\ModeCheck.lua
