@@ -129,13 +129,13 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
       table.insert(entries, BAGANATOR_L_AUCTIONS_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.auctions)))
     end
     local character = Baganator.Constants.KioskCharacters[index]
-    if appendRealm then
+    if character and appendRealm then
       character = character .. "-" .. s.realmNormalized
     end
-    if s.className then
+    if character and s.className then
       character = RAID_CLASS_COLORS[s.className]:WrapTextInColorCode(character)
     end
-    if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and s.race then
+    if character and Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and s.race then
       character = Baganator.Utilities.GetCharacterIcon(s.race, s.sex) .. " " .. character
     end
     if #entries > 0 then
@@ -149,10 +149,10 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     end
   end
 
-  for index = 1, math.min(#tooltipInfo.guilds, Baganator.Config.Get("tooltips_character_limit")) do
+  for index = 1, math.min(#tooltipInfo.guilds, Baganator.Config.Get("tooltips_character_limit"), #Baganator.Constants.KioskGuilds) do
     local s = tooltipInfo.guilds[index]
     local output = BAGANATOR_L_GUILD_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(s.bank))
-    local guild = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(s.guild)
+    local guild = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(Baganator.Constants.KioskGuilds[index])
     if appendRealm then
       guild = guild .. "-" .. s.realmNormalized
     end
@@ -161,7 +161,7 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
     end
     AddDoubleLine("  " .. guild, LINK_FONT_COLOR:WrapTextInColorCode(output))
   end
-  if #tooltipInfo.guilds > Baganator.Config.Get("tooltips_character_limit") then
+  if #tooltipInfo.guilds > Baganator.Config.Get("tooltips_character_limit") or #tooltipInfo.guilds > #Baganator.Constants.KioskGuilds then
     tooltip:AddLine("  ...")
   end
   tooltip:Show()

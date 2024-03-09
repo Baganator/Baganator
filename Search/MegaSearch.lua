@@ -274,10 +274,14 @@ local function GetLink(source, searchTerm, text)
   return "|Haddon:BaganatorSearch:" .. moddedTerm .. ":" .. mode .. ":" .. source[mode] .. ":" .. source.container .. ":" .. moddedLink .. "|h" .. "[" .. text .. "]" .. "|h"
 end
 
+local characterToKiosk = {}
+local guildToKiosk = {}
+
 local function PrintSource(indent, source, searchTerm, index)
   local count = BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. FormatLargeNumber(source.itemCount))
   if source.character then
-    local character = Baganator.Constants.KioskCharacters[index]
+    local character = characterToKiosk[source.character] or Baganator.Constants.KioskCharacters[index]
+    characterToKiosk[source.character] = character
     if not character then
       return
     end
@@ -289,7 +293,12 @@ local function PrintSource(indent, source, searchTerm, index)
     end
     print(indent, PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(source.container) .. count, character)
   elseif source.guild then
-    local guild = GetLink(source, searchTerm, source.guild)
+    local guild = guildToKiosk[source.guild] or Baganator.Constants.KioskGuilds[index]
+    if not guild then
+      return
+    end
+    guild = GetLink(source, searchTerm, guild)
+    guildToKiosk[source.guild] = guild
     print(indent, "guild" .. count, TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guild))
   end
 end

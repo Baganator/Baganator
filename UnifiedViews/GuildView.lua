@@ -387,7 +387,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     return
   else
     self.lastGuild = guild
-    self:SetTitle(BAGANATOR_L_XS_GUILD_BANK:format(guildData.details.guild))
+    self:SetTitle(BAGANATOR_L_XS_GUILD_BANK:format(Baganator.Constants.KioskGuilds[1]))
   end
 
   if self.isLive then

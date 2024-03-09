@@ -178,7 +178,7 @@ Baganator.Constants.KioskCharacters = {
   "Ivan",
 }
 Baganator.Constants.KioskGuilds = {
-  "TheJumpingJacks",
+  "The Jumping Jacks",
   "Overwhelmers",
-  "TheFairyHelpers",
+  "The Fairy Helpers",
 }
