@@ -172,6 +172,8 @@ L["KEYWORD_ENGRAVABLE"] = "engravable"
 L["KEYWORD_ENGRAVED"] = "engraved"
 L["KEYWORD_RELIC"] = "relic"
 L["KEYWORD_UNCOLLECTED_PET"] = "uncollected pet"
+L["KEYWORD_STACKS"] = "stacks"
+L["KEYWORD_STACKABLE"] = "stackable"
 
 L["SEARCH_TRY_X"] = "Search, try %s"
 

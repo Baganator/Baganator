@@ -72,6 +72,10 @@ local function RelicCheck(details)
   return details.classID == Enum.ItemClass.Gem and details.subClassID == Enum.ItemGemSubclass.Artifactrelic
 end
 
+local function StackableCheck(details)
+  return details.isStackable
+end
+
 local function GetTooltipInfoSpell(details)
   if details.tooltipInfoSpell then
     return
@@ -275,6 +279,8 @@ local KEYWORDS_TO_CHECK = {
   [BAGANATOR_L_KEYWORD_TRADEABLE_LOOT] = IsTradeableLoot,
   [BAGANATOR_L_KEYWORD_TRADABLE_LOOT] = IsTradeableLoot,
   [BAGANATOR_L_KEYWORD_RELIC] = RelicCheck,
+  [BAGANATOR_L_KEYWORD_STACKS] = StackableCheck,
+  [BAGANATOR_L_KEYWORD_STACKABLE] = StackableCheck,
 }
 
 if Baganator.Constants.IsRetail then
