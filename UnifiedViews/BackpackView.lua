@@ -223,7 +223,7 @@ end
 function BaganatorBackpackViewMixin:OnHide()
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   Baganator.Search.ClearCache()
-  BaganatorCharacterSelect:Hide()
+  self.CharacterSelect:Hide()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
 
   PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE);
