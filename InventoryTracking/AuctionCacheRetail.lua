@@ -342,7 +342,7 @@ function BaganatorAuctionCacheMixin:ProcessAuctionCreated(auctionID)
       end)
     end
     self.postedCommodity = nil
-  else
+  elseif self.lastPostedItem then
     self:RegisterEvent("AUCTION_HOUSE_NEW_RESULTS_RECEIVED")
     self.postedItemsQueue[auctionID] = {itemID = self.lastPostedItem.itemID, itemLink = self.lastPostedItem.itemLink}
   end
