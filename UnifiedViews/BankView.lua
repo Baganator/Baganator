@@ -432,6 +432,13 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
   if self.BuyReagentBankButton:IsShown() then
     anyButtonsOnBottom = true
     table.insert(self.AllButtons, self.BuyReagentBankButton)
+    self.BuyReagentBankButton:ClearAllPoints()
+    if lastButton then
+      self.BuyReagentBankButton:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", 5, 0)
+    else
+      self.BuyReagentBankButton:SetPoint("LEFT", activeBank, -2, 0)
+      self.BuyReagentBankButton:SetPoint("BOTTOM", 0, 6)
+    end
   end
   if self.DepositIntoReagentsBankButton:IsShown() then
     anyButtonsOnBottom = true

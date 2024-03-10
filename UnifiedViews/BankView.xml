@@ -60,10 +60,8 @@
 
       <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
         <Size x="300" y="22"/>
-        <Anchors>
-          <Anchor point="BOTTOMLEFT" relativeKey="$parent.BankLive" relativePoint="TOPLEFT" x="5" y="3"/>
-        </Anchors>
       </EditBox>
+
       <Button parentKey="DepositIntoReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_REAGENTS">
         <Scripts>
           <OnClick>
@@ -80,10 +78,6 @@
             StaticPopup_Show("CONFIRM_BUY_REAGENTBANK_TAB")
           </OnClick>
         </Scripts>
-        <Anchors>
-          <Anchor point="LEFT" relativeKey="$parent.BankLive" x="-2"/>
-          <Anchor point="BOTTOM" x="0" y="6"/>
-        </Anchors>
       </Button>
     </Frames>
     <Layers>
