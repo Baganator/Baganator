@@ -448,13 +448,14 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   activeBank:ClearAllPoints()
   activeBank:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50)
+  self.SearchBox:ClearAllPoints()
+  self.SearchBox:SetPoint("RIGHT", -sideSpacing, 0, 0)
+  self.SearchBox:SetPoint("BOTTOMLEFT", activeBank, "TOPLEFT", 5, 3)
 
   self:SetSize(
     activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2,
     bankHeight + 54
   )
-  -- 300 is the default searchbox width
-  self.SearchBox:SetWidth(math.min(300, activeBank:GetWidth() - 5))
 end
 
 local hiddenParent = CreateFrame("Frame")
