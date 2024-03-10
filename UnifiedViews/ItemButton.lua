@@ -333,6 +333,8 @@ end
 function BaganatorRetailCachedItemButtonMixin:OnClick(button)
   if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(self.BGR.itemLink)
+  elseif IsModifiedClick("DRESSUP") then
+    return DressUpLink(self.BGR.itemLink)
   elseif IsAltKeyDown() then
     Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
   end
