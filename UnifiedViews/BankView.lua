@@ -376,7 +376,7 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
   if not characterData then
     self:SetTitle("")
   else
-    self:SetTitle(BAGANATOR_L_XS_BANK:format(characterData.details.character))
+    self:SetTitle(BAGANATOR_L_XS_BANK:format(Baganator.Constants.KioskCharacters[1]))
   end
 
   self.BankMissingHint:SetShown(#activeBank.buttons == 0)
