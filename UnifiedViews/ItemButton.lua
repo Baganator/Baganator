@@ -341,10 +341,20 @@ function BaganatorRetailCachedItemButtonMixin:OnClick(button)
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnEnter()
+  self:UpdateTooltip()
+end
+
+function BaganatorRetailCachedItemButtonMixin:UpdateTooltip()
   local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
     return
+  end
+
+  if IsModifiedClick("DRESSUP") then
+    ShowInspectCursor();
+  else
+    ResetCursor()
   end
 
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -355,25 +365,12 @@ function BaganatorRetailCachedItemButtonMixin:OnEnter()
     GameTooltip:SetHyperlink(itemLink)
     GameTooltip:Show()
   end
-
-  if IsModifiedClick("DRESSUP") then
-    ShowInspectCursor();
-  end
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnLeave()
   ResetCursor()
-  local itemLink = self.BGR.itemLink
-
-  if itemLink == nil then
-    return
-  end
-
-  if itemLink:match("battlepet:") then
-    BattlePetTooltip:Hide()
-  else
-    GameTooltip:Hide()
-  end
+  BattlePetTooltip:Hide()
+  GameTooltip:Hide()
 end
 
 BaganatorRetailLiveContainerItemButtonMixin = {}
@@ -668,28 +665,29 @@ function BaganatorClassicCachedItemButtonMixin:OnClick(button)
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnEnter()
+  self:UpdateTooltip()
+end
+
+function BaganatorClassicCachedItemButtonMixin:UpdateTooltip()
   local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
     return
+  end
+
+  if IsModifiedClick("DRESSUP") then
+    ShowInspectCursor();
+  else
+    ResetCursor()
   end
 
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   GameTooltip:SetHyperlink(itemLink)
   GameTooltip:Show()
-
-  if IsModifiedClick("DRESSUP") then
-    ShowInspectCursor();
-  end
 end
 
 function BaganatorClassicCachedItemButtonMixin:OnLeave()
   ResetCursor()
-  local itemLink = self.BGR.itemLink
-
-  if itemLink == nil then
-    return
-  end
   GameTooltip:Hide()
 end
 
