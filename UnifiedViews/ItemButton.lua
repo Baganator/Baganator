@@ -355,9 +355,14 @@ function BaganatorRetailCachedItemButtonMixin:OnEnter()
     GameTooltip:SetHyperlink(itemLink)
     GameTooltip:Show()
   end
+
+  if IsModifiedClick("DRESSUP") then
+    ShowInspectCursor();
+  end
 end
 
 function BaganatorRetailCachedItemButtonMixin:OnLeave()
+  ResetCursor()
   local itemLink = self.BGR.itemLink
 
   if itemLink == nil then
