@@ -417,11 +417,12 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
     button:SetShown(layout:GetHeight() > 0)
     if button:IsShown() then
       anyButtonsOnBottom = true
+      button:ClearAllPoints()
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
       else
         button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
-        button:SetPoint("LEFT", self.BankLive, -2, 0)
+        button:SetPoint("LEFT", activeBank, -2, 0)
       end
       table.insert(self.AllButtons, button)
       lastButton = button
@@ -453,7 +454,7 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
     bankHeight + 54
   )
   -- 300 is the default searchbox width
-  self.SearchBox:SetWidth(math.min(300, self.BankLive:GetWidth() - 5))
+  self.SearchBox:SetWidth(math.min(300, activeBank:GetWidth() - 5))
 end
 
 local hiddenParent = CreateFrame("Frame")

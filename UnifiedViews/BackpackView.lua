@@ -650,6 +650,7 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
   for index, layout in ipairs(activeBagCollapsibles) do
     local button = self.CollapsingBags[index].button
     button:SetShown(layout:GetHeight() > 0)
+    button:ClearAllPoints()
     if button:IsShown() then
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
