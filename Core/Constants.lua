@@ -75,6 +75,7 @@ Baganator.Constants.Events = {
   "BagHide",
   "CharacterSelect",
   "SpecialBagToggled",
+  "BankToggle",
   "GuildToggle",
 
   "ShowCustomise",

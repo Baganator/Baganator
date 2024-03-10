@@ -1,5 +1,5 @@
 <Ui>
-  <Frame name="BaganatorBankOnlyViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorBankOnlyViewMixin">
+  <Frame name="BaganatorBankViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorBankViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnEvent method="OnEvent"/>
@@ -52,6 +52,11 @@
           <Anchor point="TOPLEFT" x="13" y="-50"/>
         </Anchors>
       </Frame>
+      <Frame parentKey="BankCached" inherits="BaganatorCachedBagLayoutTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="13" y="-50"/>
+        </Anchors>
+      </Frame>
 
       <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
         <Size x="300" y="22"/>
@@ -81,5 +86,14 @@
         </Anchors>
       </Button>
     </Frames>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString parentKey="BankMissingHint" inherits="GameFontHighlight" text="BAGANATOR_L_BANK_DATA_MISSING_HINT">
+          <Anchors>
+            <Anchor point="LEFT" x="20" y="-10"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
   </Frame>
 </Ui>

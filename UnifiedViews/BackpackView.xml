@@ -86,27 +86,7 @@
       </Button>
 
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
-      <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate"/>
-      <Frame parentKey="ReagentBankLive" inherits="BaganatorLiveBagLayoutTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BankLive" relativePoint="BOTTOMLEFT" y="-14"/>
-        </Anchors>
-        <Frames>
-          <Frame inherits="BaganatorBagDividerTemplate"/>
-        </Frames>
-      </Frame>
-
       <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
-
-      <Frame parentKey="BankCached" inherits="BaganatorCachedBagLayoutTemplate"/>
-      <Frame parentKey="ReagentBankCached" inherits="BaganatorCachedBagLayoutTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent.BankCached" relativePoint="BOTTOMLEFT" y="-14"/>
-        </Anchors>
-        <Frames>
-          <Frame inherits="BaganatorBagDividerTemplate"/>
-        </Frames>
-      </Frame>
     </Frames>
     <Layers>
       <Layer level="BACKGROUND">
@@ -128,11 +108,6 @@
         <FontString parentKey="Currency3" parentArray="Currencies" inherits="GameFontHighlight" enableMouse="true">
           <Anchors>
             <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Currency2" relativePoint="BOTTOMLEFT" x="-15" />
-          </Anchors>
-        </FontString>
-        <FontString parentKey="BankMissingHint" inherits="GameFontHighlight" text="BAGANATOR_L_BANK_DATA_MISSING_HINT">
-          <Anchors>
-            <Anchor point="LEFT" x="20"/>
           </Anchors>
         </FontString>
       </Layer>

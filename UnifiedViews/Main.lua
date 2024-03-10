@@ -1,11 +1,11 @@
 local function SetupBagBankView()
-  local mainView = CreateFrame("Frame", "Baganator_BackpackViewFrame", UIParent, "BaganatorBackpackViewTemplate")
-  mainView:SetClampedToScreen(true)
-  mainView:SetUserPlaced(false)
+  local backpackView = CreateFrame("Frame", "Baganator_BackpackViewFrame", UIParent, "BaganatorBackpackViewTemplate")
+  backpackView:SetClampedToScreen(true)
+  backpackView:SetUserPlaced(false)
 
-  local bankOnlyView = CreateFrame("Frame", "Baganator_BankOnlyViewFrame", UIParent, "BaganatorBankOnlyViewTemplate")
-  bankOnlyView:SetClampedToScreen(true)
-  bankOnlyView:SetUserPlaced(false)
+  local bankView = CreateFrame("Frame", "Baganator_BankViewFrame", UIParent, "BaganatorBankViewTemplate")
+  bankView:SetClampedToScreen(true)
+  bankView:SetUserPlaced(false)
 
   local bagButtons = {}
 
@@ -13,22 +13,22 @@ local function SetupBagBankView()
   if Baganator.Constants.IsClassic then
     UpdateButtons = function()
       for _, b in ipairs(bagButtons) do
-        b:SetChecked(mainView:IsVisible())
+        b:SetChecked(backpackView:IsVisible())
       end
     end
   else
     UpdateButtons = function()
       for _, b in ipairs(bagButtons) do
-        b.SlotHighlightTexture:SetShown(mainView:IsVisible())
+        b.SlotHighlightTexture:SetShown(backpackView:IsVisible())
       end
     end
   end
 
   local function SetPositions()
-    mainView:ClearAllPoints()
-    mainView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
-    bankOnlyView:ClearAllPoints()
-    bankOnlyView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)))
+    backpackView:ClearAllPoints()
+    backpackView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
+    bankView:ClearAllPoints()
+    bankView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)))
   end
 
   local function ResetPositions()
@@ -43,8 +43,8 @@ local function SetupBagBankView()
     ResetPositions()
   end
 
-  table.insert(UISpecialFrames, mainView:GetName())
-  table.insert(UISpecialFrames, bankOnlyView:GetName())
+  table.insert(UISpecialFrames, backpackView:GetName())
+  table.insert(UISpecialFrames, bankView:GetName())
 
   Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
@@ -55,9 +55,9 @@ local function SetupBagBankView()
     if GetTime() == lastToggleTime then
       return
     end
-    mainView:SetShown(not mainView:IsShown())
-    if mainView:IsVisible() then
-      mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
+    backpackView:SetShown(not backpackView:IsShown())
+    if backpackView:IsVisible() then
+      backpackView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
     end
     lastToggleTime = GetTime()
     UpdateButtons()
@@ -68,28 +68,28 @@ local function SetupBagBankView()
   end
 
   Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
-    mainView:Show()
-    mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
+    backpackView:Show()
+    backpackView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
     UpdateButtons()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_, ...)
-    mainView:Hide()
+    backpackView:Hide()
     UpdateButtons()
   end)
 
-  mainView:HookScript("OnHide", function()
+  backpackView:HookScript("OnHide", function()
     UpdateButtons()
   end)
 
   --Handled by OpenClose.lua
   --[[hooksecurefunc("OpenAllBags", function()
-    mainView:Show()
-    mainView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
+    backpackView:Show()
+    backpackView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
   end)
 
   hooksecurefunc("CloseAllBags", function()
-    mainView:Hide()
+    backpackView:Hide()
   end)]]
 
   -- Backpack button
@@ -118,6 +118,12 @@ local function SetupBagBankView()
       return
     end
     ToggleBackpackView()
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
+    local characterName = characterName or Baganator.BankCache.currentCharacter
+    bankView:SetShown(characterName ~= bankView.lastCharacter or not bankView:IsShown())
+    bankView:UpdateForCharacter(characterName, bankView.liveBankActive)
   end)
 end
 
