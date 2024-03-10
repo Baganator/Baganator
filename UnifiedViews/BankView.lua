@@ -259,7 +259,7 @@ function BaganatorBankViewMixin:OnEvent(eventName)
     if not self.liveBankBagSlots then
       return
     end
-    for _, button in ipairs(self.libeBankBagSlots) do
+    for _, button in ipairs(self.liveBankBagSlots) do
       SetItemButtonDesaturated(button, false)
       button:Enable()
     end
