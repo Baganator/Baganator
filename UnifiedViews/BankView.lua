@@ -81,7 +81,7 @@ function BaganatorBankViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
-    self:UpdateForCharacter(character, self.liveCharacter == character)
+    self:UpdateForCharacter(character, self.liveCharacter == character and self.liveBankActive)
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)

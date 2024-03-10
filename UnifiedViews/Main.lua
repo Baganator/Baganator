@@ -121,9 +121,9 @@ local function SetupBagBankView()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
-    local characterName = characterName or Baganator.BankCache.currentCharacter
+    local characterName = characterName or Baganator.BagCache.currentCharacter
     bankView:SetShown(characterName ~= bankView.lastCharacter or not bankView:IsShown())
-    bankView:UpdateForCharacter(characterName, bankView.liveBankActive)
+    bankView:UpdateForCharacter(characterName, bankView.liveCharacter == characterName and bankView.liveBankActive)
   end)
 end
 
