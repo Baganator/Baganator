@@ -523,13 +523,18 @@ function BaganatorRetailLiveGuildItemButtonMixin:MyOnLoad()
       DressUpLink(self.BGR.itemLink)
     end
   end)
-  hooksecurefunc(self, "UpdateTooltip", function()
-    if IsModifiedClick("DRESSUP") then
+  local function ApplyCursor()
+    if self.BGR and self.BGR.itemLink and IsModifiedClick("DRESSUP") then
       ShowInspectCursor();
     else
       ResetCursor()
     end
+  end
+  self:HookScript("OnEnter", ApplyCursor)
+  self:HookScript("OnLeave", function()
+    ResetCursor()
   end)
+  hooksecurefunc(self, "UpdateTooltip", ApplyCursor)
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:UpdateTextures()
@@ -914,13 +919,18 @@ function BaganatorClassicLiveGuildItemButtonMixin:MyOnLoad()
     end
   end)
 
-  hooksecurefunc(self, "UpdateTooltip", function()
-    if IsModifiedClick("DRESSUP") then
+  local function ApplyCursor()
+    if self.BGR and self.BGR.itemLink and IsModifiedClick("DRESSUP") then
       ShowInspectCursor();
     else
       ResetCursor()
     end
+  end
+  self:HookScript("OnEnter", ApplyCursor)
+  self:HookScript("OnLeave", function()
+    ResetCursor()
   end)
+  hooksecurefunc(self, "UpdateTooltip", ApplyCursor)
 end
 
 function BaganatorClassicLiveGuildItemButtonMixin:UpdateTextures()
