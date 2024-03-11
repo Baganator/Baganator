@@ -517,7 +517,10 @@ end
 local petCagePattern = "|cff......|Hitem:" .. Baganator.Constants.BattlePetCageID .. ".-|r"
 local function BattlePetChatEdit_InsertLink(itemLink)
   if itemLink:find("battlepet:", nil, true) then
-    local editBox = ChatEdit_GetActiveWindow()
+    local editBox = CommunitiesFrame and CommunitiesFrame.ChatEditBox and CommunitiesFrame.ChatEditBox:HasFocus() and CommunitiesFrame.ChatEditBox
+    if not editBox and ChatEdit_GetActiveWindow then
+      editBox = ChatEdit_GetActiveWindow()
+    end
     if editBox then
       local position = editBox:GetText():find(petCagePattern)
       if not position then
