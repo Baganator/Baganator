@@ -74,15 +74,19 @@ end
 
 local function CacheGuild(guild, callback)
   local guildList = {}
-  for _, tab in ipairs(BAGANATOR_DATA.Guilds[guild].bank) do
+  local linkToTabIndex = {}
+  for tabIndex, tab in ipairs(CopyTable(BAGANATOR_DATA.Guilds[guild].bank)) do
     for _, item in ipairs(tab.slots) do
+      if item.itemLink then
+        linkToTabIndex[item.itemLink] = tabIndex
+      end
       table.insert(guildList, item)
     end
   end
 
   Baganator.Search.GetBaseInfoFromList(guildList, function(results)
     for _, r in ipairs(results) do
-      r.source = {guild = guild}
+      r.source = {guild = guild, container = linkToTabIndex[r.itemLink]}
       table.insert(cache, r)
     end
     callback()
@@ -213,6 +217,8 @@ function Baganator.Search.CombineMegaSearchResults(results)
           entry.itemCount = entry.itemCount + source.itemCount
         else
           table.insert(items[key].sources, source)
+          source.itemLink = r.itemLink
+          source.itemName = r.itemName
           seenCharacters[key][source.character .. "_" .. source.container] = #items[key].sources
         end
       end
@@ -222,6 +228,8 @@ function Baganator.Search.CombineMegaSearchResults(results)
         entry.itemCount = entry.itemCount + source.itemCount
       else
         table.insert(items[key].sources, source)
+        source.itemLink = r.itemLink
+        source.itemName = r.itemName
         seenGuilds[key][source.guild] = #items[key].sources
       end
     end
@@ -251,10 +259,25 @@ function Baganator.Search.CombineMegaSearchResults(results)
   return final
 end
 
-local function PrintSource(indent, source)
+local function GetLink(source, term, text)
+  local mode
+  if source.guild then
+    mode = "guild"
+  elseif source.character then
+    mode = "character"
+  else
+    return text
+  end
+  -- Modify item link so it doesn't break the addon link
+  local moddedLink = source.itemLink:gsub(":", "("):gsub("%|",")")
+  local moddedTerm = term:gsub(":", "(")
+  return "|Haddon:BaganatorSearch:" .. moddedTerm .. ":" .. mode .. ":" .. source[mode] .. ":" .. source.container .. ":" .. moddedLink .. "|h" .. "[" .. text .. "]" .. "|h"
+end
+
+local function PrintSource(indent, source, term)
   local count = BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. FormatLargeNumber(source.itemCount))
   if source.character then
-    local character = source.character
+    local character = GetLink(source, term, source.character)
     local characterData = BAGANATOR_DATA.Characters[source.character]
     local className = characterData.details.className
     if className then
@@ -262,13 +285,57 @@ local function PrintSource(indent, source)
     end
     print(indent, PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(source.container) .. count, character)
   elseif source.guild then
-    print(indent, "guild" .. count, TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(source.guild))
+    local guild = GetLink(source, term, source.guild)
+    print(indent, "guild" .. count, TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guild))
   end
 end
 
+local dialogName = "Baganator_InventoryItemInX"
+StaticPopupDialogs[dialogName] = {
+  text = "",
+  button1 = OKAY,
+  timeout = 0,
+  hideOnEscape = 1,
+}
+
+EventRegistry:RegisterCallback("SetItemRef", function(_, link, text, button, chatFrame)
+    local linkType, addonName, searchText, mode, entity, container, itemLink = strsplit(":", link)
+    if linkType == "addon" and addonName == "BaganatorSearch" then
+      -- Revert changes to item link to make it fit in the addon link
+      itemLink = itemLink:gsub("%(", ":"):gsub("%)", "|")
+      searchText = searchText:gsub("%(", ":")
+      if mode == "character" then
+        if container == "bag" then
+          Baganator.CallbackRegistry:TriggerEvent("GuildHide")
+          Baganator.CallbackRegistry:TriggerEvent("BankHide")
+          Baganator.CallbackRegistry:TriggerEvent("BagShow", entity)
+          Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
+          Baganator.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
+        elseif container == "bank" then
+          Baganator.CallbackRegistry:TriggerEvent("GuildHide")
+          Baganator.CallbackRegistry:TriggerEvent("BagHide")
+          Baganator.CallbackRegistry:TriggerEvent("BankShow", entity)
+          Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
+          Baganator.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
+        else
+          StaticPopupDialogs[dialogName].text = BAGANATOR_L_THAT_ITEM_IS_IN_THE_X:format(container)
+          StaticPopup_Show(dialogName)
+          return
+        end
+      elseif mode == "guild" then
+        Baganator.CallbackRegistry:TriggerEvent("BagHide")
+        Baganator.CallbackRegistry:TriggerEvent("BankHide")
+        Baganator.CallbackRegistry:TriggerEvent("GuildShow", entity)
+        Baganator.CallbackRegistry:TriggerEvent("GuildSetTab", tonumber(container))
+        Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
+        Baganator.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
+      end
+    end
+end)
+
 function Baganator.Search.RunMegaSearchAndPrintResults(term)
   if term:match("|H") then
-    print("bad term")
+    Baganator.Utilities.Message(BAGANATOR_L_CANNOT_SEARCH_BY_ITEM_LINK)
     return
   end
   Baganator.Search.RequestMegaSearchResults(term, function(results)
@@ -277,7 +344,7 @@ function Baganator.Search.RunMegaSearchAndPrintResults(term)
     for _, r in ipairs(results) do
       print("   " .. r.itemLink, BLUE_FONT_COLOR:WrapTextInColorCode("x" .. FormatLargeNumber(r.itemCount)))
       for _, s in ipairs(r.sources) do
-        PrintSource("       ", s)
+        PrintSource("       ", s, s.itemName:lower())
       end
     end
   end)

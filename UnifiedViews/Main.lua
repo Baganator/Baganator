@@ -67,13 +67,14 @@ local function SetupBagBankView()
     hooksecurefunc("ToggleAllBags", ToggleBackpackView)
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, ...)
+  Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
+    characterName = characterName or Baganator.BagCache.currentCharacter
     backpackView:Show()
-    backpackView:UpdateForCharacter(Baganator.BagCache.currentCharacter, true)
+    backpackView:UpdateForCharacter(characterName, characterName == backpackView.liveCharacter)
     UpdateButtons()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_, ...)
+  Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_)
     backpackView:Hide()
     UpdateButtons()
   end)
@@ -121,9 +122,19 @@ local function SetupBagBankView()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
-    local characterName = characterName or Baganator.BagCache.currentCharacter
+    characterName = characterName or Baganator.BagCache.currentCharacter
     bankView:SetShown(characterName ~= bankView.lastCharacter or not bankView:IsShown())
     bankView:UpdateForCharacter(characterName, bankView.liveCharacter == characterName and bankView.liveBankActive)
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("BankShow", function(_, characterName)
+    characterName = characterName or Baganator.BagCache.currentCharacter
+    bankView:Show()
+    bankView:UpdateForCharacter(characterName, bankView.liveCharacter == characterName and bankView.liveBankActive)
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("BankHide", function(_, characterName)
+    bankView:Hide()
   end)
 end
 
@@ -136,6 +147,27 @@ local function SetupGuildView()
     local guildName = guildName or Baganator.GuildCache.currentGuild
     guildView:SetShown(guildName ~= guildView.lastGuild or not guildView:IsShown())
     guildView:UpdateForGuild(guildName, Baganator.GuildCache.currentGuild == guildName and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("GuildShow",  function(_, guildName)
+    guildName = guildName or Baganator.GuildCache.currentGuild
+    guildView:Show()
+    guildView:UpdateForGuild(
+      guildName,
+      guildName == Baganator.GuildCache.currentGuild and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker)
+    )
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("GuildHide",  function(_, ...)
+    guildView:Hide()
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("GuildSetTab", function(_, tabIndex)
+    guildView:SetCurrentTab(tabIndex)
+    guildView:UpdateForGuild(
+      guildView.lastGuild,
+      guildView.isLive
+    )
   end)
 
   table.insert(UISpecialFrames, guildView:GetName())

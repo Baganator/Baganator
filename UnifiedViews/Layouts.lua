@@ -278,10 +278,19 @@ function BaganatorCachedBagLayoutMixin:OnShow()
       end
     end
   end, self)
+
+  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemLink == itemLink then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
 end
 
 function BaganatorCachedBagLayoutMixin:OnHide()
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
 end
@@ -377,6 +386,14 @@ function BaganatorLiveBagLayoutMixin:OnShow()
       end
     end
   end, self)
+
+  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemLink == itemLink then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
 end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
@@ -390,6 +407,7 @@ function BaganatorLiveBagLayoutMixin:OnHide()
   end
 
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
 end
@@ -563,10 +581,19 @@ function BaganatorGeneralGuildLayoutMixin:OnShow()
       end
     end
   end, self)
+
+  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemLink == itemLink then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
 end
 
 function BaganatorGeneralGuildLayoutMixin:OnHide()
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 end
 
 function BaganatorGeneralGuildLayoutMixin:InformSettingChanged(setting)

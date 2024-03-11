@@ -256,6 +256,8 @@ L["SEARCHED_EVERYWHERE_COLON"] = "Searched Everywhere:"
 L["NO_RESULTS"] = "No Results"
 L["SEARCH_EVERYWHERE"] = "Search Everywhere"
 L["SEARCH_EVERYWHERE_TOOLTIP_TEXT_1"] = "Search all inventories including those not of the current character and print the search results to your chat.\n\nThis is a work in progress with a full UI planned for the future. Suggestions on the layout are welcome."
+L["CANNOT_SEARCH_BY_ITEM_LINK"] = "Cannot search by item link"
+L["THAT_ITEM_IS_IN_THE_X"] = "That item is in the %s"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
