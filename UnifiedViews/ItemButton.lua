@@ -514,13 +514,18 @@ function BaganatorRetailLiveContainerItemButtonMixin:ClearNewItem()
   end
 end
 
+local petCagePattern = "|cff......|Hitem:" .. Baganator.Constants.BattlePetCageID .. ".-|r"
 local function BattlePetChatEdit_InsertLink(itemLink)
   if itemLink:find("battlepet:", nil, true) then
     local editBox = ChatEdit_GetActiveWindow()
     if editBox then
-      local cursorPosition = editBox:GetCursorPosition()
-      editBox:SetText(editBox:GetText():gsub("|cff......|Hitem:" .. Baganator.Constants.BattlePetCageID .. ".-|r", itemLink))
-      editBox:SetCursorPosition(cursorPosition + 1)
+      local position = editBox:GetText():find(petCagePattern)
+      if not position then
+        return
+      end
+      editBox:SetText(editBox:GetText():gsub(petCagePattern, "", 1))
+      editBox:SetCursorPosition(position)
+      editBox:Insert(itemLink)
     else
       ChatEdit_InsertLink(itemLink)
     end
