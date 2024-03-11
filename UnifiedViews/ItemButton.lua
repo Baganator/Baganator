@@ -908,6 +908,18 @@ function BaganatorClassicLiveGuildItemButtonMixin:MyOnLoad()
       Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
       ClearCursor()
     end
+    if IsModifiedClick("DRESSUP") then
+      ClearCursor()
+      return DressUpItemLink(self.BGR.itemLink) or DressUpBattlePetLink(self.BGR.itemLink) or DressUpMountLink(self.BGR.itemLink)
+    end
+  end)
+
+  hooksecurefunc(self, "UpdateTooltip", function()
+    if IsModifiedClick("DRESSUP") then
+      ShowInspectCursor();
+    else
+      ResetCursor()
+    end
   end)
 end
 
