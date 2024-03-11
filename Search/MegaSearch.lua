@@ -275,12 +275,25 @@ local function GetLink(source, searchTerm, text)
 end
 
 local characterToKiosk = {}
+local usedCharacters = {}
 local guildToKiosk = {}
+local function GetCharacter(character)
+  if characterToKiosk[character] then
+    return characterToKiosk[character]
+  end
+  for _, c in ipairs(Baganator.Constants.KioskCharacters) do
+    if not usedCharacters[c] then
+      characterToKiosk[character] = c
+      usedCharacters[c] = true
+      return c
+    end
+  end
+end
 
 local function PrintSource(indent, source, searchTerm, index)
   local count = BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. FormatLargeNumber(source.itemCount))
   if source.character then
-    local character = characterToKiosk[source.character] or Baganator.Constants.KioskCharacters[index]
+    local character = GetCharacter(source.character)
     characterToKiosk[source.character] = character
     if not character then
       return
