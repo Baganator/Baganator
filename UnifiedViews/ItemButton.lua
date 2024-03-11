@@ -377,6 +377,10 @@ BaganatorRetailLiveContainerItemButtonMixin = {}
 
 function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   self:HookScript("OnClick", function()
+    if not self.BGR or not self.BGR.itemID then
+      return
+    end
+
     if IsAltKeyDown() then
       Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
     end
@@ -510,10 +514,27 @@ function BaganatorRetailLiveContainerItemButtonMixin:ClearNewItem()
   end
 end
 
+local function BattlePetChatEdit_InsertLink(itemLink)
+  if itemLink:find("battlepet:", nil, true) then
+    local editBox = ChatEdit_GetActiveWindow()
+    if editBox then
+      local cursorPosition = editBox:GetCursorPosition()
+      editBox:SetText(editBox:GetText():gsub("|cff......|Hitem:" .. Baganator.Constants.BattlePetCageID .. ".-|r", itemLink))
+      editBox:SetCursorPosition(cursorPosition + 1)
+    else
+      ChatEdit_InsertLink(itemLink)
+    end
+  end
+end
+
 BaganatorRetailLiveGuildItemButtonMixin = {}
 
 function BaganatorRetailLiveGuildItemButtonMixin:MyOnLoad()
   self:HookScript("OnClick", function()
+    if not self.BGR or not self.BGR.itemID then
+      return
+    end
+
     if IsAltKeyDown() then
       Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
       ClearCursor()
@@ -521,6 +542,8 @@ function BaganatorRetailLiveGuildItemButtonMixin:MyOnLoad()
     if IsModifiedClick("DRESSUP") then
       ClearCursor()
       DressUpLink(self.BGR.itemLink)
+    elseif IsModifiedClick("CHATLINK") then
+      BattlePetChatEdit_InsertLink(self.BGR.itemLink)
     end
   end)
   local function ApplyCursor()
@@ -740,6 +763,10 @@ BaganatorClassicLiveContainerItemButtonMixin = {}
 -- items
 function BaganatorClassicLiveContainerItemButtonMixin:MyOnLoad()
   self:HookScript("OnClick", function()
+    if not self.BGR or not self.BGR.itemID then
+      return
+    end
+
     if IsAltKeyDown() then
       Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
     end
@@ -909,6 +936,10 @@ BaganatorClassicLiveGuildItemButtonMixin = {}
 
 function BaganatorClassicLiveGuildItemButtonMixin:MyOnLoad()
   self:HookScript("OnClick", function()
+    if not self.BGR or not self.BGR.itemID then
+      return
+    end
+
     if IsAltKeyDown() then
       Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
       ClearCursor()
