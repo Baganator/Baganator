@@ -259,7 +259,7 @@ function Baganator.Search.CombineMegaSearchResults(results)
   return final
 end
 
-local function GetLink(source, term, text)
+local function GetLink(source, searchTerm, text)
   local mode
   if source.guild then
     mode = "guild"
@@ -270,14 +270,14 @@ local function GetLink(source, term, text)
   end
   -- Modify item link so it doesn't break the addon link
   local moddedLink = source.itemLink:gsub(":", "("):gsub("%|",")")
-  local moddedTerm = term:gsub(":", "(")
+  local moddedTerm = searchTerm:gsub(":", "(")
   return "|Haddon:BaganatorSearch:" .. moddedTerm .. ":" .. mode .. ":" .. source[mode] .. ":" .. source.container .. ":" .. moddedLink .. "|h" .. "[" .. text .. "]" .. "|h"
 end
 
-local function PrintSource(indent, source, term)
+local function PrintSource(indent, source, searchTerm)
   local count = BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. FormatLargeNumber(source.itemCount))
   if source.character then
-    local character = GetLink(source, term, source.character)
+    local character = GetLink(source, searchTerm, source.character)
     local characterData = BAGANATOR_DATA.Characters[source.character]
     local className = characterData.details.className
     if className then
@@ -285,7 +285,7 @@ local function PrintSource(indent, source, term)
     end
     print(indent, PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(source.container) .. count, character)
   elseif source.guild then
-    local guild = GetLink(source, term, source.guild)
+    local guild = GetLink(source, searchTerm, source.guild)
     print(indent, "guild" .. count, TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guild))
   end
 end
@@ -333,13 +333,14 @@ EventRegistry:RegisterCallback("SetItemRef", function(_, link, text, button, cha
     end
 end)
 
-function Baganator.Search.RunMegaSearchAndPrintResults(term)
-  if term:match("|H") then
+function Baganator.Search.RunMegaSearchAndPrintResults(searchTerm)
+  if searchTerm:match("|H") then
     Baganator.Utilities.Message(BAGANATOR_L_CANNOT_SEARCH_BY_ITEM_LINK)
     return
   end
-  Baganator.Search.RequestMegaSearchResults(term, function(results)
-    print(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SEARCHED_EVERYWHERE_COLON) .. " " .. YELLOW_FONT_COLOR:WrapTextInColorCode(term))
+  searchTerm = searchTerm:lower()
+  Baganator.Search.RequestMegaSearchResults(searchTerm, function(results)
+    print(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SEARCHED_EVERYWHERE_COLON) .. " " .. YELLOW_FONT_COLOR:WrapTextInColorCode(searchTerm))
     results = Baganator.Search.CombineMegaSearchResults(results)
     for _, r in ipairs(results) do
       print("   " .. r.itemLink, BLUE_FONT_COLOR:WrapTextInColorCode("x" .. FormatLargeNumber(r.itemCount)))
