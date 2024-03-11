@@ -274,6 +274,22 @@ local function GetLink(source, searchTerm, text)
   return "|Haddon:BaganatorSearch:" .. moddedTerm .. ":" .. mode .. ":" .. source[mode] .. ":" .. source.container .. ":" .. moddedLink .. "|h" .. "[" .. text .. "]" .. "|h"
 end
 
+local CONTAINER_TYPE_TO_TEXT = {
+  bag = BAGANATOR_L_BAGS_LOWER,
+  bank = BAGANATOR_L_BANK_LOWER,
+  mail = BAGANATOR_L_MAIL_LOWER,
+  equipped = BAGANATOR_L_EQUIPPED_LOWER,
+  void = BAGANATOR_L_VOID_LOWER,
+  auctions = BAGANATOR_L_AUCTIONS_LOWER,
+}
+
+local CONTAINER_TYPE_TO_MESSAGE = {
+  equipped = BAGANATOR_L_THAT_ITEM_IS_EQUIPPED,
+  auctions = BAGANATOR_L_THAT_ITEM_IS_LISTED_ON_THE_AUCTION_HOUSE,
+  mail = BAGANATOR_L_THAT_ITEM_IS_IN_A_MAILBOX,
+  void = BAGANATOR_L_THAT_ITEM_IS_IN_VOID_STORAGE,
+}
+
 local function PrintSource(indent, source, searchTerm)
   local count = BLUE_FONT_COLOR:WrapTextInColorCode(" x" .. FormatLargeNumber(source.itemCount))
   if source.character then
@@ -283,10 +299,10 @@ local function PrintSource(indent, source, searchTerm)
     if className then
       character = RAID_CLASS_COLORS[className]:WrapTextInColorCode(character)
     end
-    print(indent, PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(source.container) .. count, character)
+    print(indent, PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(CONTAINER_TYPE_TO_TEXT[source.container]) .. count, character)
   elseif source.guild then
     local guild = GetLink(source, searchTerm, source.guild)
-    print(indent, "guild" .. count, TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guild))
+    print(indent, BAGANATOR_L_GUILD_LOWER .. count, TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guild))
   end
 end
 
@@ -300,6 +316,7 @@ StaticPopupDialogs[dialogName] = {
 
 EventRegistry:RegisterCallback("SetItemRef", function(_, link, text, button, chatFrame)
     local linkType, addonName, searchText, mode, entity, container, itemLink = strsplit(":", link)
+    StaticPopup_Hide(dialogName)
     if linkType == "addon" and addonName == "BaganatorSearch" then
       -- Revert changes to item link to make it fit in the addon link
       itemLink = itemLink:gsub("%(", ":"):gsub("%)", "|")
@@ -318,7 +335,7 @@ EventRegistry:RegisterCallback("SetItemRef", function(_, link, text, button, cha
           Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
           Baganator.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
         else
-          StaticPopupDialogs[dialogName].text = BAGANATOR_L_THAT_ITEM_IS_IN_THE_X:format(container)
+          StaticPopupDialogs[dialogName].text = CONTAINER_TYPE_TO_MESSAGE[container]
           StaticPopup_Show(dialogName)
           return
         end

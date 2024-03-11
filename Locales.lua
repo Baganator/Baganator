@@ -257,7 +257,17 @@ L["NO_RESULTS"] = "No Results"
 L["SEARCH_EVERYWHERE"] = "Search Everywhere"
 L["SEARCH_EVERYWHERE_TOOLTIP_TEXT_1"] = "Search all inventories including those not of the current character and print the search results to your chat.\n\nThis is a work in progress with a full UI planned for the future. Suggestions on the layout are welcome."
 L["CANNOT_SEARCH_BY_ITEM_LINK"] = "Cannot search by item link"
-L["THAT_ITEM_IS_IN_THE_X"] = "That item is in the %s"
+L["THAT_ITEM_IS_EQUIPPED"] = "That item is equipped"
+L["THAT_ITEM_IS_LISTED_ON_THE_AUCTION_HOUSE"] = "That item is listed on the auction house"
+L["THAT_ITEM_IS_IN_A_MAILBOX"] = "That item is in a mailbox"
+L["THAT_ITEM_IS_IN_VOID_STORAGE"] = "That item is in void storage"
+L["BAGS_LOWER"] = "bags"
+L["BANK_LOWER"] = "bank"
+L["MAIL_LOWER"] = "mail"
+L["EQUIPPED_LOWER"] = "equipped"
+L["VOID_LOWER"] = "void"
+L["AUCTIONS_LOWER"] = "auctions"
+L["GUILD_LOWER"] = "guild"
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
