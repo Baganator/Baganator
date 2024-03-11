@@ -103,7 +103,7 @@ function BaganatorMailCacheMixin:OnUpdate()
     end
     local itemLink = GetInboxItemLink(mailIndex, attachmentIndex)
     if itemID == Baganator.Constants.BattlePetCageID then
-      itemLink = ExtractBattlePetLink(mailIndex, attachmentIndex) or link
+      itemLink, quality = ExtractBattlePetLink(mailIndex, attachmentIndex)
     end
     table.insert(attachments, {
       itemID = itemID,

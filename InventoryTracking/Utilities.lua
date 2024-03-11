@@ -54,7 +54,7 @@ function Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
 
   local name = C_PetJournal.GetPetInfoBySpeciesID(tooltipInfo.battlePetSpeciesID)
   local quality = ITEM_QUALITY_COLORS[tooltipInfo.battlePetBreedQuality].color
-  return quality:WrapTextInColorCode("|H" .. itemString .. "|h[" .. name .. "]|h")
+  return quality:WrapTextInColorCode("|H" .. itemString .. "|h[" .. name .. "]|h"), tooltipInfo.battlePetBreedQuality
 end
 
 local cachedConnectedRealms

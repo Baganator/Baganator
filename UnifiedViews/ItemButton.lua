@@ -582,7 +582,7 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   end
   texture = texture or cacheData.iconTexture
   itemCount = itemCount == 0 and cacheData.itemCount or itemCount
-  quality = quality or cacheData.quality
+  quality = cacheData.quality or quality
 
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetGuildBankItem(tab, self:GetID()) end
 

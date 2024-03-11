@@ -240,12 +240,13 @@ function BaganatorGuildCacheMixin:ExamineBankTab(tabIndex, callback)
         return
       end
 
+      local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, slotIndex)
+
       if itemID == Baganator.Constants.BattlePetCageID then
         local tooltipInfo = C_TooltipInfo.GetGuildBankItem(tabIndex, slotIndex)
-        itemLink = Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
+        itemLink, quality = Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
       end
 
-      local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, slotIndex)
       tab.slots[slotIndex] = {
         itemID = itemID,
         iconTexture = texture,
