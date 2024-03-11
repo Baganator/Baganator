@@ -355,7 +355,7 @@ function Baganator.Search.RunMegaSearchAndPrintResults(searchTerm)
   Baganator.Search.RequestMegaSearchResults(searchTerm, function(results)
     print(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SEARCHED_EVERYWHERE_COLON) .. " " .. YELLOW_FONT_COLOR:WrapTextInColorCode(searchTerm))
     results = Baganator.Search.CombineMegaSearchResults(results)
-    for _, r in ipairs(results) do
+    for index, r in ipairs(results) do
       print("   " .. r.itemLink, BLUE_FONT_COLOR:WrapTextInColorCode("x" .. FormatLargeNumber(r.itemCount)))
       for _, s in ipairs(r.sources) do
         PrintSource("       ", s, s.itemName:lower(), index)
