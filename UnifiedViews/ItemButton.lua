@@ -334,7 +334,7 @@ function BaganatorRetailCachedItemButtonMixin:OnClick(button)
   if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(self.BGR.itemLink)
   elseif IsModifiedClick("DRESSUP") then
-    return DressUpLink(self.BGR.itemLink)
+    DressUpLink(self.BGR.itemLink)
   elseif IsAltKeyDown() then
     Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
   end
@@ -517,6 +517,17 @@ function BaganatorRetailLiveGuildItemButtonMixin:MyOnLoad()
     if IsAltKeyDown() then
       Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
       ClearCursor()
+    end
+    if IsModifiedClick("DRESSUP") then
+      ClearCursor()
+      DressUpLink(self.BGR.itemLink)
+    end
+  end)
+  hooksecurefunc(self, "UpdateTooltip", function()
+    if IsModifiedClick("DRESSUP") then
+      ShowInspectCursor();
+    else
+      ResetCursor()
     end
   end)
 end

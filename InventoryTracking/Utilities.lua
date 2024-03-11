@@ -46,6 +46,12 @@ function Baganator.Utilities.RecoverBattlePetLink(tooltipInfo)
     itemString = itemString .. ":" .. tooltipInfo[key]
   end
 
+  -- Add a nil GUID and displayID so that DressUpLink will preview the battle
+  -- pet
+  local speciesID = tonumber(tooltipInfo.battlePetSpeciesID)
+  local displayID = select(12, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
+  itemString = itemString .. ":0000000000000000:" .. displayID
+
   local name = C_PetJournal.GetPetInfoBySpeciesID(tooltipInfo.battlePetSpeciesID)
   local quality = ITEM_QUALITY_COLORS[tooltipInfo.battlePetBreedQuality].color
   return quality:WrapTextInColorCode("|H" .. itemString .. "|h[" .. name .. "]|h")
