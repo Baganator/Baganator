@@ -428,10 +428,10 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     info = nil
   end
 
-  local texture = info and info.iconFileID;
+  local texture = cacheData.iconTexture or (info and info.iconFileID);
   local itemCount = info and info.stackCount;
   local locked = info and info.isLocked;
-  local quality = (info and info.quality) or cacheData.quality;
+  local quality = cacheData.quality or (info and info.quality);
   local readable = info and info.IsReadable;
   local itemLink = info and info.hyperlink;
   local noValue = info and info.hasNoValue;
@@ -580,7 +580,7 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   if cacheData.itemLink == nil then
     texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
   end
-  texture = texture or cacheData.iconTexture
+  texture = cacheData.iconTexture or texture
   itemCount = itemCount == 0 and cacheData.itemCount or itemCount
   quality = cacheData.quality or quality
 
@@ -841,10 +841,10 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   -- Copied code from Blizzard Container Frame logic
   local tooltipOwner = GameTooltip:GetOwner()
 
-  local texture = info and info.iconFileID;
+  local texture = cacheData.iconTexture or (info and info.iconFileID);
   local itemCount = info and info.stackCount;
   local locked = info and info.isLocked;
-  local quality = info and info.quality;
+  local quality = cacheData.quality or (info and info.quality);
   local readable = info and info.isReadable;
   local isFiltered = info and info.isFiltered;
   local noValue = info and info.hasNoValue;
@@ -982,9 +982,9 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   if cacheData.itemLink == nil then
     texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
   end
-  texture = texture or cacheData.iconTexture
+  texture = cacheData.iconTexture or texture
   itemCount = itemCount == 0 and cacheData.itemCount or itemCount
-  quality = quality or cacheData.quality
+  quality = cacheData.quality or quality
 
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonCount(self, itemCount);
