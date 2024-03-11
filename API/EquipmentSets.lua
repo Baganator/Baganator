@@ -31,12 +31,6 @@ do
 
   -- Determine the GUID of all accessible items in an equipment set
   function BlizzardSetTracker:ScanEquipmentSets()
-    -- Option is disabled on classic WoW for Macs because there is a crash when
-    -- all 19 set item slots are occupied, see https://github.com/Stanzilla/WoWUIBugs/issues/511
-    if IsMacClient() and not Baganator.Constants.IsRetail then
-      return
-    end
-
     local start = debugprofilestop()
 
     local oldSetInfo = CopyTable(self.equipmentSetInfo)

@@ -133,6 +133,8 @@ Baganator.Constants.SampleSearchTerms = {
   BAGANATOR_L_KEYWORD_SWORD,
   MOUNT:lower(),
   BAGANATOR_L_KEYWORD_TRADEABLE_LOOT,
+  BAGANATOR_L_KEYWORD_SET,
+  "~" .. BAGANATOR_L_KEYWORD_SET .. "&" .. BAGANATOR_L_KEYWORD_GEAR,
 }
 if not Baganator.Constants.IsEra then
   local socketSearchTerms = {
@@ -153,13 +155,6 @@ if Baganator.Constants.IsRetail then
     TOY:lower(),
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
-end
-if Baganator.Constants.IsRetail or not IsMacClient() then
-  local setTerms = {
-    BAGANATOR_L_KEYWORD_SET,
-    "~" .. BAGANATOR_L_KEYWORD_SET .. "&" .. BAGANATOR_L_KEYWORD_GEAR,
-  }
-  tAppendAll(Baganator.Constants.SampleSearchTerms, setTerms)
 end
 Baganator.Constants.KeyItemFamily = 256
 Baganator.Constants.AccountBoundTooltipLines = {
