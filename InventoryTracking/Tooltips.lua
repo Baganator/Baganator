@@ -142,8 +142,9 @@ function Baganator.Tooltips.AddItemLines(tooltip, summaries, itemLink)
       if charactersShown >= Baganator.Config.Get("tooltips_character_limit") or charactersShown >= #Baganator.Constants.KioskCharacters then
         tooltip:AddLine("  ...")
         break
+      else
+        AddDoubleLine("  " .. character, LINK_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
       end
-      AddDoubleLine("  " .. character, LINK_FONT_COLOR:WrapTextInColorCode(strjoin(", ", unpack(entries))))
     else
       charactersShown = charactersShown + 1
     end
