@@ -2,7 +2,7 @@ local function SplitLink(linkString)
   return linkString:match("^(.*)|H(.-)|h(.*)$")
 end
 
--- Assumes the item link has been refreshed since the last patch
+-- Get a key to group items in inventory summaries
 function Baganator.Utilities.GetItemKey(itemLink)
   local pre, hyperlink, post = SplitLink(itemLink)
 
@@ -13,16 +13,24 @@ end
 
 function Baganator.Utilities.IsEquipment(itemLink)
   local classID = select(6, GetItemInfoInstant(itemLink))
-  return classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon or (C_AuctionHouse and classID == Enum.ItemClass.Profession)
+  return classID ~= nil and (
+    -- Regular equipment
+    classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
+    -- Profession equipment (retail only)
+    or classID == Enum.ItemClass.Profession
+  )
 end
 
 function Baganator.Utilities.HasItemLevel(itemLink)
-  local classID, subClassID = select(6, GetItemInfoInstant(itemLink))
-  return classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
-    -- Profession equipment
-    or (C_AuctionHouse and classID == Enum.ItemClass.Profession)
-    -- Artifact relics
+  local classID = select(6, GetItemInfoInstant(itemLink))
+  return classID ~= nil and (
+    -- Regular equipment
+    classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
+    -- Profession equipment (retail only)
+    or classID == Enum.ItemClass.Profession
+    -- Legion Artifact relics (retail only)
     or (classID == Enum.ItemClass.Gem and IsArtifactRelicItem and IsArtifactRelicItem(itemLink))
+  )
 end
 
 -- Order of parameters for the battle pet hyperlink string
