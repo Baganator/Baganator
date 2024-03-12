@@ -16,12 +16,13 @@
     </Scripts>
   </ItemButton>
 
-  <ItemButton name="BaganatorRetailLiveGuildItemButtonTemplate" virtual="true" inherits="GuildBankItemButtonTemplate">
+  <ItemButton name="BaganatorRetailLiveGuildItemButtonTemplate" virtual="true" inherits="GuildBankItemButtonTemplate" mixin="BaganatorRetailLiveGuildItemButtonMixin">
     <Scripts>
-      <OnLoad inherit="prepend">
-        Mixin(self, BaganatorRetailLiveGuildItemButtonMixin)
-        self:MyOnLoad()
-      </OnLoad>
+      <OnLoad method="OnLoad"/>
+      <OnClick method="OnClick"/>
+      <OnHide method="OnHide"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
     </Scripts>
   </ItemButton>
 
@@ -42,12 +43,13 @@
     </Scripts>
   </Button>
 
-  <Button name="BaganatorClassicLiveGuildItemButtonTemplate" virtual="true" inherits="GuildBankItemButtonTemplate">
+  <Button name="BaganatorClassicLiveGuildItemButtonTemplate" virtual="true" inherits="GuildBankItemButtonTemplate" mixin="BaganatorClassicLiveGuildItemButtonMixin">
     <Scripts>
-      <OnLoad inherit="prepend">
-        Mixin(self, BaganatorClassicLiveGuildItemButtonMixin)
-        self:MyOnLoad()
-      </OnLoad>
+      <OnLoad method="OnLoad"/>
+      <OnClick method="OnClick"/>
+      <OnHide method="OnHide"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
     </Scripts>
   </Button>
 </Ui>

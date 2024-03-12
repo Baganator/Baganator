@@ -514,68 +514,90 @@ function BaganatorRetailLiveContainerItemButtonMixin:ClearNewItem()
   end
 end
 
-local petCagePattern = "|cff......|Hitem:" .. Baganator.Constants.BattlePetCageID .. ".-|r"
-local function BattlePetChatEdit_InsertLink(itemLink)
-  if itemLink:find("battlepet:", nil, true) then
-    local editBox = CommunitiesFrame and CommunitiesFrame.ChatEditBox and CommunitiesFrame.ChatEditBox:HasFocus() and CommunitiesFrame.ChatEditBox
-    if not editBox and ChatEdit_GetActiveWindow then
-      editBox = ChatEdit_GetActiveWindow()
-    end
-    if editBox then
-      local position = editBox:GetText():find(petCagePattern)
-      if not position then
-        return
+BaganatorRetailLiveGuildItemButtonMixin = {}
+
+function BaganatorRetailLiveGuildItemButtonMixin:OnLoad()
+  self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+  self:RegisterForDrag("LeftButton")
+  self.SplitStack = function(button, split)
+    SplitGuildBankItem(self.tabIndex, button:GetID(), split)
+  end
+  self.UpdateTooltip = self.OnEnter
+end
+
+function BaganatorRetailLiveGuildItemButtonMixin:OnClick(button)
+  if self.BGR and self.BGR.itemName and IsAltKeyDown() then
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+    ClearCursor()
+  end
+
+  if self.BGR and self.BGR.itemLink and HandleModifiedItemClick(self.BGR.itemLink) then
+    return
+  end
+
+  if ( IsModifiedClick("SPLITSTACK") ) then
+    if ( not CursorHasItem() ) then
+      local texture, count, locked = GetGuildBankItemInfo(self.tabIndex, self:GetID())
+      if ( not locked and count and count > 1) then
+        StackSplitFrame:OpenStackSplitFrame(count, self, "BOTTOMLEFT", "TOPLEFT")
       end
-      editBox:SetText(editBox:GetText():gsub(petCagePattern, "", 1))
-      editBox:SetCursorPosition(position)
-      editBox:Insert(itemLink)
+    end
+    return
+  end
+
+  local type, money = GetCursorInfo()
+  if ( type == "money" ) then
+    DepositGuildBankMoney(money)
+    ClearCursor()
+  elseif ( type == "guildbankmoney" ) then
+    DropCursorMoney()
+    ClearCursor()
+  else
+    if ( button == "RightButton" ) then
+      AutoStoreGuildBankItem(self.tabIndex, self:GetID())
+      self:OnLeave()
     else
-      ChatEdit_InsertLink(itemLink)
+      PickupGuildBankItem(self.tabIndex, self:GetID())
     end
   end
 end
 
-BaganatorRetailLiveGuildItemButtonMixin = {}
-
-function BaganatorRetailLiveGuildItemButtonMixin:MyOnLoad()
-  self:HookScript("OnClick", function()
-    if not self.BGR or not self.BGR.itemID then
-      return
-    end
-
-    if IsAltKeyDown() then
-      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
-      ClearCursor()
-    end
-    if IsModifiedClick("DRESSUP") then
-      ClearCursor()
-      DressUpLink(self.BGR.itemLink)
-    elseif IsModifiedClick("CHATLINK") then
-      BattlePetChatEdit_InsertLink(self.BGR.itemLink)
-    end
-  end)
-  local function ApplyCursor()
-    if self.BGR and self.BGR.itemLink and IsModifiedClick("DRESSUP") then
-      ShowInspectCursor();
-    else
-      ResetCursor()
-    end
-  end
-  self:HookScript("OnEnter", ApplyCursor)
-  self:HookScript("OnLeave", function()
+function BaganatorRetailLiveGuildItemButtonMixin:OnEnter()
+  if self.BGR and self.BGR.itemLink and IsModifiedClick("DRESSUP") then
+    ShowInspectCursor();
+  else
     ResetCursor()
-  end)
-  hooksecurefunc(self, "UpdateTooltip", ApplyCursor)
+  end
+  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+  GameTooltip:SetGuildBankItem(self.tabIndex, self:GetID())
+end
+
+function BaganatorRetailLiveGuildItemButtonMixin:OnLeave()
+  self.updateTooltipTimer = nil
+  GameTooltip_Hide()
+  ResetCursor()
+end
+
+function BaganatorRetailLiveGuildItemButtonMixin:OnHide()
+  if ( self.hasStackSplit and (self.hasStackSplit == 1) ) then
+    StackSplitFrame:Hide()
+  end
+end
+
+function BaganatorRetailLiveGuildItemButtonMixin:OnReceiveDrag()
+  PickupGuildBankItem(self.tabIndex, self:GetID())
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:UpdateTextures()
   AdjustRetailButton(self)
 end
 
-function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
+function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIndex)
   GetInfo(self, cacheData)
 
-  local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, self:GetID());
+  self.tabIndex = tabIndex
+
+  local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
 
   if cacheData.itemLink == nil then
     texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
@@ -584,7 +606,7 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   itemCount = itemCount == 0 and cacheData.itemCount or itemCount
   quality = cacheData.quality or quality
 
-  self.BGR.tooltipGetter = function() return C_TooltipInfo.GetGuildBankItem(tab, self:GetID()) end
+  self.BGR.tooltipGetter = function() return C_TooltipInfo.GetGuildBankItem(tabIndex, self:GetID()) end
 
   SetItemButtonTexture(self, texture);
   SetItemButtonCount(self, itemCount);
@@ -592,7 +614,11 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
 
   self:SetMatchesSearch(true);
 
-  SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, self:GetID()));
+  SetItemButtonQuality(self, quality, self.BGR.itemLink or GetGuildBankItemLink(tabIndex, self:GetID()));
+
+  if GameTooltip:IsOwned(self) then
+    self:OnEnter()
+  end
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:BGRStartFlashing()
@@ -942,42 +968,75 @@ end
 
 BaganatorClassicLiveGuildItemButtonMixin = {}
 
-function BaganatorClassicLiveGuildItemButtonMixin:MyOnLoad()
-  self:HookScript("OnClick", function()
-    if not self.BGR or not self.BGR.itemID then
-      return
-    end
+function BaganatorClassicLiveGuildItemButtonMixin:OnLoad()
+  self:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+  self:RegisterForDrag("LeftButton")
+  self.SplitStack = function(button, split)
+    SplitGuildBankItem(button.tabIndex, button:GetID(), split)
+  end
+  self.UpdateTooltip = self.OnEnter
+end
 
-    if IsAltKeyDown() then
-      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
-      ClearCursor()
-    end
-    if IsModifiedClick("DRESSUP") then
-      ClearCursor()
-      return DressUpItemLink(self.BGR.itemLink) or DressUpBattlePetLink(self.BGR.itemLink) or DressUpMountLink(self.BGR.itemLink)
-    end
-  end)
+function BaganatorClassicLiveGuildItemButtonMixin:OnClick(button)
+  if self.BGR and self.BGR.itemName and IsAltKeyDown() then
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+    ClearCursor()
+  end
 
-  local function ApplyCursor()
-    if self.BGR and self.BGR.itemLink and IsModifiedClick("DRESSUP") then
-      ShowInspectCursor();
+  if self.BGR and self.BGR.itemLink and HandleModifiedItemClick(self.BGR.itemLink) then
+    return
+  end
+
+  if ( IsModifiedClick("SPLITSTACK") ) then
+    if ( not CursorHasItem() ) then
+      local texture, count, locked = GetGuildBankItemInfo(self.tabIndex, self:GetID())
+      if ( not locked and count and count > 1) then
+        OpenStackSplitFrame(count, self, "BOTTOMLEFT", "TOPLEFT")
+      end
+    end
+    return
+  end
+
+  local type, money = GetCursorInfo()
+  if ( type == "money" ) then
+    DepositGuildBankMoney(money)
+    ClearCursor()
+  elseif ( type == "guildbankmoney" ) then
+    DropCursorMoney()
+    ClearCursor()
+  else
+    if ( button == "RightButton" ) then
+      AutoStoreGuildBankItem(self.tabIndex, self:GetID())
+      self:OnLeave()
     else
-      ResetCursor()
+      PickupGuildBankItem(self.tabIndex, self:GetID())
     end
   end
-  self:HookScript("OnEnter", ApplyCursor)
-  self:HookScript("OnLeave", function()
+end
+
+function BaganatorClassicLiveGuildItemButtonMixin:OnEnter()
+  if self.BGR and self.BGR.itemLink and IsModifiedClick("DRESSUP") then
+    ShowInspectCursor();
+  else
     ResetCursor()
-  end)
-  hooksecurefunc(self, "UpdateTooltip", ApplyCursor)
+  end
+  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+  GameTooltip:SetGuildBankItem(self.tabIndex, self:GetID())
+end
+
+function BaganatorClassicLiveGuildItemButtonMixin:OnLeave()
+  GameTooltip_Hide()
+  ResetCursor()
 end
 
 function BaganatorClassicLiveGuildItemButtonMixin:UpdateTextures()
   AdjustClassicButton(self)
 end
 
-function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
-  local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, self:GetID());
+function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIndex)
+  self.tabIndex = tabIndex
+
+  local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
 
   if cacheData.itemLink == nil then
     texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
@@ -997,7 +1056,7 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tab)
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function()
       return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
-          tooltip:SetGuildBankItem(tab, self:GetID())
+          tooltip:SetGuildBankItem(tabIndex, self:GetID())
       end)
     end
   end)
