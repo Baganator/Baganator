@@ -7,9 +7,12 @@ Baganator.Utilities.OnAddonLoaded("Baganator", function()
   Baganator.SlashCmd.Initialize()
 
   Baganator.InventoryTracking.Initialize()
+
   Baganator.Search.Initialize()
+
   if Baganator.Config.Get(Baganator.Config.Options.ENABLE_UNIFIED_BAGS) then
     Baganator.UnifiedViews.Initialize()
   end
+
   Baganator.CustomiseDialog.Initialize()
 end)

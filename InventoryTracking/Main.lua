@@ -55,57 +55,32 @@ local function InitCurrentCharacter()
   characterData.auctions = characterData.auctions or {}
 end
 
+local function SetupCacheMixin(mixin, key)
+  xpcall(function()
+    local cache = CreateFrame("Frame")
+    Mixin(cache, mixin)
+    cache:OnLoad()
+    cache:SetScript("OnEvent", cache.OnEvent)
+    Baganator[key] = cache
+  end, CallErrorHandler)
+end
+
 local function SetupDataProcessing()
   Baganator.Utilities.CacheConnectedRealms()
 
-  local bagCache = CreateFrame("Frame")
-  Mixin(bagCache, BaganatorBagCacheMixin)
-  bagCache:OnLoad()
-  bagCache:SetScript("OnEvent", bagCache.OnEvent)
+  SetupCacheMixin(BaganatorBagCacheMixin, "BagCache")
 
-  Baganator.BagCache = bagCache
+  SetupCacheMixin(BaganatorMailCacheMixin, "MailCache")
 
-  local mailCache = CreateFrame("Frame")
-  Mixin(mailCache, BaganatorMailCacheMixin)
-  mailCache:OnLoad()
-  mailCache:SetScript("OnEvent", mailCache.OnEvent)
+  SetupCacheMixin(BaganatorEquippedCacheMixin, "EquippedCache")
 
-  Baganator.MailCache = mailCache
+  SetupCacheMixin(BaganatorCurrencyCacheMixin, "CurrencyCache")
 
-  local equippedCache = CreateFrame("Frame")
-  Mixin(equippedCache, BaganatorEquippedCacheMixin)
-  equippedCache:OnLoad()
-  equippedCache:SetScript("OnEvent", equippedCache.OnEvent)
+  SetupCacheMixin(BaganatorVoidCacheMixin, "VoidCache")
 
-  Baganator.EquippedCache = equippedCache
+  SetupCacheMixin(BaganatorGuildCacheMixin, "GuildCache")
 
-  local currencyCache = CreateFrame("Frame")
-  Mixin(currencyCache, BaganatorCurrencyCacheMixin)
-  currencyCache:OnLoad()
-  currencyCache:SetScript("OnEvent", currencyCache.OnEvent)
-
-  Baganator.CurrencyCache = currencyCache
-
-  local voidCache = CreateFrame("Frame")
-  Mixin(voidCache, BaganatorVoidCacheMixin)
-  voidCache:OnLoad()
-  voidCache:SetScript("OnEvent", voidCache.OnEvent)
-
-  Baganator.VoidCache = voidCache
-
-  local guildCache = CreateFrame("Frame")
-  Mixin(guildCache, BaganatorGuildCacheMixin)
-  guildCache:OnLoad()
-  guildCache:SetScript("OnEvent", guildCache.OnEvent)
-
-  Baganator.GuildCache = guildCache
-
-  local auctionCache = CreateFrame("Frame")
-  Mixin(auctionCache, BaganatorAuctionCacheMixin)
-  auctionCache:OnLoad()
-  auctionCache:SetScript("OnEvent", auctionCache.OnEvent)
-
-  Baganator.AuctionCache = auctionCache
+  SetupCacheMixin(BaganatorAuctionCacheMixin, "AuctionCache")
 end
 
 local function SetupItemSummaries()
@@ -115,27 +90,7 @@ local function SetupItemSummaries()
   Baganator.ItemSummaries = summaries
 end
 
-function Baganator.InventoryTracking.Initialize()
-  InitializeSavedVariables()
-
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LOGIN")
-  frame:SetScript("OnEvent", function()
-    InitCurrentCharacter()
-    SetupDataProcessing()
-  end)
-  SetupItemSummaries()
-
-  Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, name)
-    if name == currentCharacter then
-      InitCurrentCharacter()
-    end
-  end)
-
-  Baganator.CallbackRegistry:RegisterCallback("GuildNameSet", function(_, guild)
-    BAGANATOR_DATA.Characters[Baganator.BagCache.currentCharacter].details.guild = guild
-  end)
-
+local function SetupTooltips()
   if TooltipDataProcessor then
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
       if tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip then
@@ -227,4 +182,28 @@ function Baganator.InventoryTracking.Initialize()
       end
     end)
   end
+end
+
+function Baganator.InventoryTracking.Initialize()
+  InitializeSavedVariables()
+
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LOGIN")
+  frame:SetScript("OnEvent", function()
+    InitCurrentCharacter()
+    SetupDataProcessing()
+  end)
+  SetupItemSummaries()
+
+  Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, name)
+    if name == currentCharacter then
+      InitCurrentCharacter()
+    end
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("GuildNameSet", function(_, guild)
+    BAGANATOR_DATA.Characters[Baganator.BagCache.currentCharacter].details.guild = guild
+  end)
+
+  xpcall(SetupTooltips, CallErrorHandler)
 end
