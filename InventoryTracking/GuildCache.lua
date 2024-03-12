@@ -67,12 +67,14 @@ function BaganatorGuildCacheMixin:OnLoad()
   self.currentGuild = GetGuildKey()
   self.lastTabPickups = {}
 
-  hooksecurefunc("PickupGuildBankItem", function(tabIndex, slotID)
+  local function UpdateForPickup(tabIndex, slotID)
     table.insert(self.lastTabPickups, tabIndex)
     while #self.lastTabPickups > 2 do
       table.remove(self.lastTabPickups, 1)
     end
-  end)
+  end
+  hooksecurefunc("PickupGuildBankItem", UpdateForPickup)
+  hooksecurefunc("SplitGuildBankItem", UpdateForPickup)
 end
 
 function BaganatorGuildCacheMixin:OnEvent(eventName, ...)
