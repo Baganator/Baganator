@@ -9,6 +9,7 @@
 ## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA, BAGANATOR_SUMMARIES
 ## IconTexture: Interface\AddOns\Baganator\Assets\logo.tga
 
+
 Locales.lua
 
 Libs\LibBattlePetTooltipLine\LibStub\LibStub.lua
