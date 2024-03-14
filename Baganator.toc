@@ -1,5 +1,5 @@
 ## Interface: 100205
-## Interface-Cata: 30403
+## Interface-Cata: 40400
 ## Interface-Wrath: 30403
 ## Interface-Vanilla: 11501
 ## Title: Baganator
@@ -8,7 +8,6 @@
 ## OptionalDeps: Masque
 ## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA, BAGANATOR_SUMMARIES
 ## IconTexture: Interface\AddOns\Baganator\Assets\logo.tga
-
 
 Locales.lua
 
