@@ -38,7 +38,10 @@ function BaganatorGuildViewMixin:OnLoad()
     if changes then
       for tabIndex, isChanged in pairs(changes) do
         if isChanged then
-          self.otherTabsCache[tabIndex] = nil
+          if not self.otherTabsCache[guild] then
+            self.otherTabsCache[guild] = {}
+          end
+          self.otherTabsCache[guild][tabIndex] = nil
           if tabIndex == self.currentTab then
             for _, layout in ipairs(self.Layouts) do
               layout:RequestContentRefresh()
@@ -209,7 +212,7 @@ function BaganatorGuildViewMixin:ApplySearch(text)
 
   for index, tab in ipairs(guildData.bank) do
     local function ProcessTab()
-      self.searchMonitors[index]:StartSearch(self.otherTabsCache[index], text, function(matches)
+      self.searchMonitors[index]:StartSearch(self.otherTabsCache[self.lastGuild][index], text, function(matches)
         if #matches > 0 then
           self.Tabs[index].Icon:SetAlpha(1)
         else
@@ -217,10 +220,14 @@ function BaganatorGuildViewMixin:ApplySearch(text)
         end
       end)
     end
-    if self.otherTabsCache[index] == nil then
+
+    if not self.otherTabsCache[self.lastGuild] then
+      self.otherTabsCache[self.lastGuild] = {}
+    end
+    if self.otherTabsCache[self.lastGuild][index] == nil then
       Baganator.Search.GetBaseInfoFromList(
         tab.slots, function(baseInfoItems)
-          self.otherTabsCache[index] = baseInfoItems
+          self.otherTabsCache[self.lastGuild][index] = baseInfoItems
           ProcessTab()
         end
       )
