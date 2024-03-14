@@ -251,6 +251,7 @@ L["X_INFORMATION"] = "%s Information"
 L["MONEY_LOGS"] = "Money Logs"
 L["NO_TRANSACTIONS_AVAILABLE"] = "No Transactions Available"
 L["CANNOT_EDIT_GUILD_BANK_TAB_ERROR"] = "You do not have permissions to edit this tab"
+L["GUILD_NO_TABS_PURCHASED"] = "No guild bank tabs purchased"
 
 L["SEARCHED_EVERYWHERE_COLON"] = "Searched Everywhere:"
 L["NO_RESULTS"] = "No Results"

@@ -323,7 +323,11 @@ function BaganatorGuildViewMixin:UpdateTabs(guildData)
       PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
       StaticPopup_Show("CONFIRM_BUY_GUILDBANK_TAB")
     end)
-    tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
+    if not lastTab then
+      tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
+    else
+      tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
+    end
     tabButton.SelectedTexture:SetShown(false)
     tabButton:SetScale(tabScale)
     tabButton:Show()
@@ -360,10 +364,20 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
       self:OpenTabEditor()
     end
     if self.LogsFrame:IsShown() and self.LogsFrame.showing == PopupMode.Tab then
-      self:ShowTabLogs()
+      local tabInfo = BAGANATOR_DATA.Guilds[guild].bank[index]
+      if not tabInfo then
+        self.LogsFrame:Hide()
+      else
+        self:ShowTabLogs()
+      end
     end
     if self.TabTextFrame:IsShown() then
-      self:ShowTabText()
+      local tabInfo = BAGANATOR_DATA.Guilds[guild].bank[index]
+      if not tabInfo then
+        self.TabTextFrame:Hide()
+      else
+        self:ShowTabText()
+      end
     end
   else
     self.LogsFrame:Hide()
@@ -409,9 +423,11 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
 
   if not self.isLive then
     self.GuildCached:ShowGuild(guild, self.currentTab, guildWidth)
+    self.GuildCached:SetShown(#guildData.bank > 0)
     active = self.GuildCached
   else
     self.GuildLive:ShowGuild(guild, self.currentTab, guildWidth)
+    self.GuildLive:SetShown(#guildData.bank > 0)
     active = self.GuildLive
   end
 
@@ -479,7 +495,11 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   self.Money:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 10)
   self.DepositButton:SetPoint("BOTTOMRIGHT", -sideSpacing + 1, 6)
 
-  local height = active:GetHeight() + 6
+  local height = 6
+  -- active will be hidden if no guild bank tabs have been purchased
+  if active:IsShown() then
+    height = height + active:GetHeight()
+  end
   self:SetSize(
     active:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset,
     height + 60 + detailsHeight
@@ -620,11 +640,20 @@ function BaganatorGuildLogsTemplateMixin:ApplyTabTitle()
   end
 
   local tabInfo = BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
-  self:SetTitle(BAGANATOR_L_X_LOGS:format(tabInfo.name))
+  if tabIndex ~= nil then
+    self:SetTitle(BAGANATOR_L_X_LOGS:format(tabInfo.name))
+  else
+    self:SetTitle("")
+  end
 end
 
 function BaganatorGuildLogsTemplateMixin:ApplyTab()
   self.showing = PopupMode.Tab
+
+  if #BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank == 0 then
+    self.TextContainer:SetText(BAGANATOR_L_GUILD_NO_TABS_PURCHASED)
+    return
+  end
 
   -- Code for logs copied from Blizzard lua dumps and modified
 	local tab = GetCurrentGuildBankTab();
@@ -730,6 +759,14 @@ end
 
 function BaganatorGuildTabTextTemplateMixin:ApplyTab()
   local currentTab = GetCurrentGuildBankTab()
+
+  if #BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank == 0 then
+    self.TextContainer:SetText(BAGANATOR_L_GUILD_NO_TABS_PURCHASED)
+    self.SaveButton:Hide()
+    self.TextContainer:GetEditBox():SetEnabled(false)
+    return
+  end
+
   self.TextContainer:SetText(GetGuildBankText(currentTab))
   local canEdit = CanEditGuildTabInfo(currentTab)
   self.SaveButton:SetShown(canEdit)
@@ -738,7 +775,11 @@ end
 
 function BaganatorGuildTabTextTemplateMixin:ApplyTabTitle()
   local tabInfo = BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
-  self:SetTitle(BAGANATOR_L_X_INFORMATION:format(tabInfo.name))
+  if tabInfo ~= nil then
+    self:SetTitle(BAGANATOR_L_X_INFORMATION:format(tabInfo.name))
+  else
+    self:SetTitle("")
+  end
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnDragStart()
