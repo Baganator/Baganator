@@ -122,6 +122,14 @@ local function BindOnAccountCheck(details)
 end
 
 local function BindOnUseCheck(details)
+  if details.isBound then
+    return false
+  end
+
+  if C_ToyBox and C_ToyBox.GetToyInfo(details.itemID) then
+    return true
+  end
+
   GetTooltipInfoSpell(details)
 
   if details.tooltipInfoSpell then

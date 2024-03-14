@@ -106,6 +106,12 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOA, "boa", function(BindingText,
 end, textInit)
 
 local function IsBindOnUse(details)
+  if details.isBound then
+    return false
+  end
+  if C_ToyBox and C_ToyBox.GetToyInfo(details.itemID) then
+    return true
+  end
   if not details.tooltipInfo then
     details.tooltipInfo = details.tooltipGetter()
   end
