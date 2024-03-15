@@ -92,8 +92,12 @@ end
 
 local function SetupTooltips()
   if TooltipDataProcessor then
+    local function ValidateTooltip(tooltip)
+      return tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip or (not tooltip:IsForbidden() and (tooltip:GetName() or ""):match("^NotGameTooltip"))
+    end
+
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
-      if tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip then
+      if ValidateTooltip(tooltip) then
         local itemName, itemLink = TooltipUtil.GetDisplayedItem(tooltip)
 
         -- Fix to get recipes to show the inventory data for the recipe when
@@ -117,7 +121,7 @@ local function SetupTooltips()
       end
     end)
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
-      if tooltip == GameTooltip or tooltip == GameTooltipTooltip or tooltip == ItemRefTooltip then
+      if ValidateTooltip(tooltip) then
         local data = tooltip:GetPrimaryTooltipData()
         if AddCurrencyCheck() then
           AddToCurrencyTooltip(tooltip, data.id)
