@@ -24,3 +24,7 @@ function Baganator.Search.GetBaseInfoFromList(cachedItems, callback)
     callback(results)
   end
 end
+
+function Baganator.Search.ClassicHasItemLevel(details)
+  return details.classID == Enum.ItemClass.Armor or details.classID == Enum.ItemClass.Weapon
+end

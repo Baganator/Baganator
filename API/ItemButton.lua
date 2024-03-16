@@ -1,7 +1,16 @@
 local iconSettings = {}
 
 local IsEquipment = Baganator.Utilities.IsEquipment
-local HasItemLevel = Baganator.Utilities.HasItemLevel
+
+local function HasItemLevel(details)
+  return
+    -- Regular equipment
+    details.classID == Enum.ItemClass.Armor or details.classID == Enum.ItemClass.Weapon
+    -- Profession equipment (retail only)
+    or details.classID == Enum.ItemClass.Profession
+    -- Legion Artifact relics (retail only)
+    or (details.classID == Enum.ItemClass.Gem and IsArtifactRelicItem and IsArtifactRelicItem(details.itemLink))
+end
 
 local qualityColors = {
   [0] = CreateColor(157/255, 157/255, 157/255), -- Poor
@@ -47,7 +56,7 @@ local function textInit(itemButton)
 end
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
-  if HasItemLevel(details.itemLink) and not details.isCosmetic then
+  if HasItemLevel(details) and not details.isCosmetic then
     if not details.itemLevel then
       details.itemLevel = GetDetailedItemLevelInfo(details.itemLink)
     end

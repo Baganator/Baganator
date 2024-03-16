@@ -585,13 +585,51 @@ local function BinarySmartSearch(text)
   return allKeywords
 end
 
-local function ItemLevelPatternCheck(details, text)
-  -- Special check for details.itemLevel as pets may have one assigned for searhing
-  -- despite not being equipment.
-  if not details.itemLevel and not Baganator.Utilities.HasItemLevel(details.itemLink) then
+local GetItemLevel
+
+if Baganator.Constants.IsRetail then
+  -- On retail a lot of items have item levels that aren't gear so tooltip scans
+  -- are used.
+  local ITEM_LEVEL_PATTERN = ITEM_LEVEL:gsub("%%d", "(%%d+)")
+  GetItemLevel = function(details)
+    GetTooltipInfoSpell(details)
+
+    if not details.tooltipInfoSpell then
+      return
+    end
+
+    if details.itemLevel then
+      return details.itemLevel ~= -1
+    end
+
+    for _, line in ipairs(details.tooltipInfoSpell.lines) do
+      local level = line.leftText:match(ITEM_LEVEL_PATTERN)
+      if level then
+        details.itemLevel = tonumber(level)
+        return true
+      end
+    end
+
+    -- Set something so that the tooltip scan doesn't repeat on later searches on
+    -- items without an item level
+    details.itemLevel = -1
+
     return false
   end
-  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
+else
+  GetItemLevel = function(details)
+    if not Baganator.Search.ClassicHasItemLevel(details) then
+      return false
+    end
+
+    details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
+  end
+end
+
+local function ItemLevelPatternCheck(details, text)
+  if GetItemLevel(details) == false then
+    return false
+  end
 
   local wantedItemLevel = tonumber(text)
   return details.itemLevel and details.itemLevel == wantedItemLevel
@@ -602,30 +640,27 @@ local function ExactItemLevelPatternCheck(details, text)
 end
 
 local function ItemLevelRangePatternCheck(details, text)
-  if not details.itemLevel and not Baganator.Utilities.HasItemLevel(details.itemLink) then
+  if GetItemLevel(details) == false then
     return false
   end
-  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
 
   local minText, maxText = text:match("(%d+)%-(%d+)")
   return details.itemLevel and details.itemLevel >= tonumber(minText) and details.itemLevel <= tonumber(maxText)
 end
 
 local function ItemLevelMinPatternCheck(details, text)
-  if not details.itemLevel and not Baganator.Utilities.HasItemLevel(details.itemLink) then
+  if GetItemLevel(details) == false then
     return false
   end
-  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
 
   local minText = text:match("%d+")
   return details.itemLevel and details.itemLevel <= tonumber(minText)
 end
 
 local function ItemLevelMaxPatternCheck(details, text)
-  if not details.itemLevel and not Baganator.Utilities.HasItemLevel(details.itemLink) then
+  if GetItemLevel(details) == false then
     return false
   end
-  details.itemLevel = details.itemLevel or GetDetailedItemLevelInfo(details.itemLink)
 
   local maxText = text:match("%d+")
   return details.itemLevel and details.itemLevel >= tonumber(maxText)

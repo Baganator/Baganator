@@ -21,18 +21,6 @@ function Baganator.Utilities.IsEquipment(itemLink)
   )
 end
 
-function Baganator.Utilities.HasItemLevel(itemLink)
-  local classID = select(6, GetItemInfoInstant(itemLink))
-  return classID ~= nil and (
-    -- Regular equipment
-    classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
-    -- Profession equipment (retail only)
-    or classID == Enum.ItemClass.Profession
-    -- Legion Artifact relics (retail only)
-    or (classID == Enum.ItemClass.Gem and IsArtifactRelicItem and IsArtifactRelicItem(itemLink))
-  )
-end
-
 -- Order of parameters for the battle pet hyperlink string
 local battlePetTooltip = {
   "battlePetSpeciesID",
