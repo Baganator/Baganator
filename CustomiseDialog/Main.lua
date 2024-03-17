@@ -387,6 +387,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:SetupOpenClose()
   self:SetupSorting()
   self:SetupButtonsOptions()
+  self:SetupTooltipsLink()
 
   PanelTemplates_SetNumTabs(self, #self.Tabs)
 
@@ -591,6 +592,21 @@ function BaganatorCustomiseDialogMixin:SetupButtonsOptions()
   end)
 
   table.insert(self.lowestFrames, allFrames[#allFrames])
+end
+
+function BaganatorCustomiseDialogMixin:SetupTooltipsLink()
+  local tab = GetTab(self)
+  tab:SetText(BAGANATOR_L_TOOLTIPS)
+
+  local frame = GetWrapperFrame(self)
+
+  frame:SetScript("OnShow", function()
+    local lastIndex = self.lastIndex
+    C_Timer.After(0, function()
+      self:SetIndex(lastIndex)
+    end)
+    Settings.OpenToCategory(SYNDICATOR_L_SYNDICATOR)
+  end)
 end
 
 function BaganatorCustomiseDialogMixin:RefreshOptions()
