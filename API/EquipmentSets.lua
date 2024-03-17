@@ -111,7 +111,7 @@ if not Baganator.Constants.IsRetail then
         return
       end
 
-      if not Baganator.Utilities.IsEquipment(itemLink) then
+      if not Syndicator.Utilities.IsEquipment(itemLink) then
         return
       end
 
