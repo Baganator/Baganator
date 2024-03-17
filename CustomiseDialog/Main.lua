@@ -16,8 +16,13 @@ local WINDOW_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_ENABLE_BAG_VIEWS_2,
-    option = "enable_unified_bags",
+    text = BAGANATOR_L_ENABLE_BACKPACK_VIEW,
+    option = "enable_backpack_view",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_ENABLE_BANK_VIEW,
+    option = "enable_bank_view",
   },
   {
     type = "checkbox",

@@ -255,14 +255,18 @@ function Baganator.UnifiedViews.Initialize()
   -- other component initialisations won't fail
 
   xpcall(function()
-    SetupBackpackView()
-    HideDefaultBackpack()
-    Baganator.InitializeOpenClose()
+    if Baganator.Config.Get(Baganator.Config.Options.ENABLE_BACKPACK_VIEW) then
+      SetupBackpackView()
+      HideDefaultBackpack()
+      Baganator.InitializeOpenClose()
+    end
   end, CallErrorHandler)
 
   xpcall(function()
-    SetupBankView()
-    HideDefaultBank()
+    if Baganator.Config.Get(Baganator.Config.Options.ENABLE_BANK_VIEW) then
+      SetupBankView()
+      HideDefaultBank()
+    end
   end, CallErrorHandler)
 
   xpcall(function()

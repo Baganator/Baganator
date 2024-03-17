@@ -66,7 +66,8 @@ Baganator.Config.Options = {
 
   AUTO_OPEN = "auto_open",
 
-  ENABLE_UNIFIED_BAGS = "enable_unified_bags",
+  ENABLE_BACKPACK_VIEW = "enable_backpack_view",
+  ENABLE_BANK_VIEW = "enable_bank_view",
   ENABLE_GUILD_VIEW = "enable_guild_view",
 }
 
@@ -130,7 +131,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
 
-  [Baganator.Config.Options.ENABLE_UNIFIED_BAGS] = true,
+  [Baganator.Config.Options.ENABLE_BACKPACK_VIEW] = true,
+  [Baganator.Config.Options.ENABLE_BANK_VIEW] = true,
   [Baganator.Config.Options.ENABLE_GUILD_VIEW] = true,
 }
 
