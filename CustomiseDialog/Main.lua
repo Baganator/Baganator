@@ -379,7 +379,6 @@ function BaganatorCustomiseDialogMixin:OnLoad()
 
   self:SetupWindow()
   self:SetupIcon()
-  self:SetupTooltip()
   self:SetupOpenClose()
   self:SetupSorting()
   self:SetupButtonsOptions()
