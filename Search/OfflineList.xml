@@ -1,7 +1,0 @@
-<Ui>
-  <Frame name="BaganatorOfflineListSearchTemplate" virtual="true" mixin="BaganatorOfflineListSearchMixin">
-    <Scripts>
-      <OnLoad method="OnLoad"/>
-    </Scripts>
-  </Frame>
-</Ui>

@@ -6,14 +6,11 @@
 ## Version: @project-version@
 ## Author: plusmouse
 ## OptionalDeps: Masque
-## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA, BAGANATOR_SUMMARIES
+## RequiredDeps: Syndicator
+## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA
 ## IconTexture: Interface\AddOns\Baganator\Assets\logo.tga
 
-
 Locales.lua
-
-Libs\LibBattlePetTooltipLine\LibStub\LibStub.lua
-Libs\LibBattlePetTooltipLine\LibBattlePetTooltipLine.xml
 
 Core\Objects.lua
 Core\Locales.lua
@@ -22,29 +19,6 @@ Core\Config.lua
 Core\Utilities.lua
 Core\SlashCmd.lua
 Core\Main.lua
-
-InventoryTracking\Utilities.lua
-InventoryTracking\BagCache.lua
-InventoryTracking\MailCache.lua
-InventoryTracking\EquippedCache.lua
-InventoryTracking\CurrencyCache.lua
-InventoryTracking\GuildCache.lua
-InventoryTracking\VoidCache.lua
-InventoryTracking\AuctionCacheRetail.lua
-InventoryTracking\AuctionCacheClassic.lua
-InventoryTracking\ItemSummaries.lua
-InventoryTracking\Tooltips.lua
-InventoryTracking\CurrencyTooltipData.lua
-InventoryTracking\Main.lua
-
-Search\Initialize.lua
-Search\BaseInfo.lua
-Search\CheckItem.lua
-Search\GetGroupingKey.lua
-Search\OfflineList.lua
-Search\OfflineList.xml
-Search\MegaSearch.lua
-Search\Utilities.lua
 
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
@@ -63,6 +37,7 @@ Transfers\VendorItems.lua
 Transfers\AddToTrade.lua
 
 UnifiedViews\Utilities.lua
+UnifiedViews\Search.lua
 UnifiedViews\ItemButton.lua
 UnifiedViews\ItemButton.xml
 UnifiedViews\ItemButtonDataEvents.lua

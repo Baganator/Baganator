@@ -190,7 +190,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
 
   local start = debugprofilestop()
 
-  local characterData = BAGANATOR_DATA.Characters[character]
+  local characterData = SYNDICATOR_DATA.Characters[character]
 
   if not characterData then
     return
@@ -501,7 +501,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
 
   local start = debugprofilestop()
 
-  local characterData = BAGANATOR_DATA.Characters[character]
+  local characterData = SYNDICATOR_DATA.Characters[character]
 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
 
@@ -612,7 +612,7 @@ function BaganatorGeneralGuildLayoutMixin:RebuildLayout(rowWidth)
   self.buttons = {}
   self.buttonPool:ReleaseAll()
 
-  for index = 1, Baganator.Constants.MaxGuildBankTabItemSlots do
+  for index = 1, Syndicator.Constants.MaxGuildBankTabItemSlots do
     local button = self.buttonPool:Acquire()
     button:Show()
     button:SetID(index)
@@ -625,9 +625,9 @@ end
 function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   local start = debugprofilestop()
 
-  local guildData = BAGANATOR_DATA.Guilds[guild]
+  local guildData = SYNDICATOR_DATA.Guilds[guild]
 
-  if #self.buttons ~= Baganator.Constants.MaxGuildBankTabItemSlots then
+  if #self.buttons ~= Syndicator.Constants.MaxGuildBankTabItemSlots then
     self.refreshContent = true
     self:RebuildLayout(rowWidth)
   elseif self.reflow or rowWidth ~= self.oldRowWidth then

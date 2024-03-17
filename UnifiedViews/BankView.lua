@@ -36,7 +36,7 @@ function BaganatorBankViewMixin:OnLoad()
     Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+  Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
     if self:IsVisible() then
       self:UpdateForCharacter(character, true, updatedBags)
@@ -125,7 +125,7 @@ function BaganatorBankViewMixin:CreateBagSlots()
   end
 
   self.liveBankBagSlots = {}
-  for index = 1, Baganator.Constants.BankBagSlotsCount do
+  for index = 1, Syndicator.Constants.BankBagSlotsCount do
     local bb = GetLiveBankBagButton()
     table.insert(self.liveBankBagSlots, bb)
     bb:SetID(index)
@@ -149,14 +149,14 @@ function BaganatorBankViewMixin:CreateBagSlots()
   end
 
   self.cachedBankBagSlots = {}
-  for index = 1, Baganator.Constants.BankBagSlotsCount do
+  for index = 1, Syndicator.Constants.BankBagSlotsCount do
     local bb = GetCachedBankBagSlotButton()
     bb:UpdateTextures()
     bb.isBag = true
     table.insert(self.cachedBankBagSlots, bb)
     bb:SetID(index)
     bb:HookScript("OnEnter", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Baganator.Constants.AllBankIndexes[self:GetID()+1]] = true})
+      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllBankIndexes[self:GetID()+1]] = true})
     end)
     bb:HookScript("OnLeave", function(self)
       Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
@@ -276,12 +276,12 @@ function BaganatorBankViewMixin:UpdateBagSlots()
   end
 
   -- Show cached bag slots when viewing cached bank bags for other characters
-  local containerInfo = BAGANATOR_DATA.Characters[self.lastCharacter].containerInfo
+  local containerInfo = SYNDICATOR_DATA.Characters[self.lastCharacter].containerInfo
   if not self.isLive and containerInfo and containerInfo.bank then
     local show = Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS)
     for index, bb in ipairs(self.cachedBankBagSlots) do
       local details = CopyTable(containerInfo.bank[index] or {})
-      details.itemCount = Baganator.Utilities.CountEmptySlots(BAGANATOR_DATA.Characters[self.lastCharacter].bank[index + 1])
+      details.itemCount = Baganator.Utilities.CountEmptySlots(SYNDICATOR_DATA.Characters[self.lastCharacter].bank[index + 1])
       bb:SetItemDetails(details)
       if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
         local _, texture = GetInventorySlotInfo("Bag1")
@@ -306,16 +306,16 @@ function BaganatorBankViewMixin:OnHide(eventName)
 
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
-  Baganator.Search.ClearCache()
+  Syndicator.Search.ClearCache()
 end
 
 function BaganatorBankViewMixin:AllocateBankBags(character)
   -- Copied from UnifiedViews/BagView.lua
-  local newDetails = Baganator.UnifiedViews.GetCollapsingBagDetails(character, "bank", Baganator.Constants.AllBankIndexes, Baganator.Constants.BankBagSlotsCount)
+  local newDetails = Baganator.UnifiedViews.GetCollapsingBagDetails(character, "bank", Syndicator.Constants.AllBankIndexes, Syndicator.Constants.BankBagSlotsCount)
   if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
     self.bagDetailsForComparison.bank = CopyTable(newDetails)
     self.CollapsingBankBags = Baganator.UnifiedViews.AllocateCollapsingSections(
-      character, "bank", Baganator.Constants.AllBankIndexes,
+      character, "bank", Syndicator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,
       self.CollapsingBagSectionsPool, self.unallocatedItemButtonPool,
       function() self:UpdateForCharacter(self.lastCharacter, self.isLive) end)
@@ -366,13 +366,13 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   local bankWidth = Baganator.Config.Get(Baganator.Config.Options.BANK_VIEW_WIDTH)
 
-  activeBank:ShowCharacter(character, "bank", Baganator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
+  activeBank:ShowCharacter(character, "bank", Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
 
   for index, layout in ipairs(activeBankBagCollapsibles) do
-    layout:ShowCharacter(character, "bank", Baganator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
+    layout:ShowCharacter(character, "bank", Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
   end
 
-  local characterData = BAGANATOR_DATA.Characters[character]
+  local characterData = SYNDICATOR_DATA.Characters[character]
   if not characterData then
     self:SetTitle("")
   else
@@ -500,7 +500,7 @@ function BaganatorBankViewMixin:NotifyBagUpdate(updatedBags)
 end
 
 function BaganatorBankViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(BAGANATOR_DATA.Characters[self.liveCharacter].bank, Baganator.Constants.AllBankIndexes, function(status)
+  Baganator.Sorting.CombineStacks(SYNDICATOR_DATA.Characters[self.liveCharacter].bank, Syndicator.Constants.AllBankIndexes, function(status)
     self.sortManager:Apply(status, function()
       self:CombineStacks(callback)
     end, function()
@@ -511,19 +511,19 @@ end
 
 function BaganatorBankViewMixin:DoSort(isReverse)
   local indexesToUse = {}
-  for index in ipairs(Baganator.Constants.AllBankIndexes) do
+  for index in ipairs(Syndicator.Constants.AllBankIndexes) do
     indexesToUse[index] = true
   end
   -- Ignore reagent bank if it isn't purchased
   if Baganator.Constants.IsRetail and not IsReagentBankUnlocked() then
-    indexesToUse[tIndexOf(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)] = nil
+    indexesToUse[tIndexOf(Syndicator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)] = nil
   end
-  local bagChecks = Baganator.Sorting.GetBagUsageChecks(Baganator.Constants.AllBankIndexes)
+  local bagChecks = Baganator.Sorting.GetBagUsageChecks(Syndicator.Constants.AllBankIndexes)
 
   local function DoSortInternal()
     local status = Baganator.Sorting.ApplyOrdering(
-      BAGANATOR_DATA.Characters[self.liveCharacter].bank,
-      Baganator.Constants.AllBankIndexes,
+      SYNDICATOR_DATA.Characters[self.liveCharacter].bank,
+      Syndicator.Constants.AllBankIndexes,
       indexesToUse,
       bagChecks,
       isReverse,
@@ -564,11 +564,11 @@ function BaganatorBankViewMixin:RemoveSearchMatches(callback)
     tAppendAll(matches, layouts.live.SearchMonitor:GetMatches())
   end
 
-  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(BAGANATOR_DATA.Characters[self.liveCharacter].bags, Baganator.Constants.AllBagIndexes)
+  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(SYNDICATOR_DATA.Characters[self.liveCharacter].bags, Syndicator.Constants.AllBagIndexes)
 
-  local status = Baganator.Transfers.FromBagsToBags(matches, Baganator.Constants.AllBagIndexes, emptyBagSlots)
+  local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
 
-  self.transferManager:Apply(status, {"BagCacheUpdated"}, function()
+  self.transferManager:Apply(status, {"BagCacheUpdate"}, function()
     self:RemoveSearchMatches(callback)
   end, function()
     callback()

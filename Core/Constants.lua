@@ -1,23 +1,5 @@
 Baganator.Constants = {
-  AllBagIndexes = {
-    Enum.BagIndex.Backpack,
-    Enum.BagIndex.Bag_1,
-    Enum.BagIndex.Bag_2,
-    Enum.BagIndex.Bag_3,
-    Enum.BagIndex.Bag_4,
-  },
-  AllBankIndexes = {
-    Enum.BagIndex.Bank,
-    Enum.BagIndex.BankBag_1,
-    Enum.BagIndex.BankBag_2,
-    Enum.BagIndex.BankBag_3,
-    Enum.BagIndex.BankBag_4,
-    Enum.BagIndex.BankBag_5,
-    Enum.BagIndex.BankBag_6,
-    Enum.BagIndex.BankBag_7,
-  },
   IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
-  IsWrath = WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC,
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
 
@@ -25,50 +7,19 @@ Baganator.Constants = {
   MaxRecentsTabs = 5,
   BattlePetCageID = 82800,
 
-  BankBagSlotsCount = 7,
-
-  MaxGuildBankTabItemSlots = 98,
-  GuildBankFullAccessWithdrawalsLimit = 25000,
-
-  EquippedInventorySlotOffset = 1,
-
   MaxPinnedCurrencies = 3,
 }
 
-if not Baganator.Constants.IsRetail then
-  table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.Keyring)
-end
 if Baganator.Constants.IsRetail then
-  table.insert(Baganator.Constants.AllBagIndexes, Enum.BagIndex.ReagentBag)
-  table.insert(Baganator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)
-  Baganator.Constants.BagSlotsCount = 5
-  Baganator.Constants.MaxBagSize = 42
   Baganator.Constants.ButtonFrameOffset = 6
 end
 if Baganator.Constants.IsClassic then
-  -- Workaround for the enum containing the wrong values for the bank bag slots
-  for i = 1, Baganator.Constants.BankBagSlotsCount do
-    Baganator.Constants.AllBankIndexes[i + 1] = NUM_BAG_SLOTS + i
-  end
-  Baganator.Constants.BagSlotsCount = 4
-  Baganator.Constants.MaxBagSize = 36
   Baganator.Constants.ButtonFrameOffset = 0
 end
 
 Baganator.Constants.Events = {
   "SettingChangedEarly",
   "SettingChanged",
-
-  "CharacterDeleted",
-
-  "BagCacheUpdate",
-  "MailCacheUpdate",
-  "CurrencyCacheUpdate",
-  "GuildCacheUpdate",
-  "GuildNameSet",
-  "EquippedCacheUpdate",
-  "VoidCacheUpdate",
-  "AuctionsCacheUpdate",
 
   "SearchTextChanged",
   "BagShow",
@@ -92,16 +43,10 @@ Baganator.Constants.Events = {
   "HighlightBagItems",
   "ClearHighlightBag",
 
-  "EquipmentSetsUpdated",
   "ContentRefreshRequired",
   "PluginsUpdated",
 
   "TransferCancel",
-}
-
--- Hidden currencies for all characters tooltips as they are shared between characters
-Baganator.Constants.SharedCurrencies = {
-  2032, -- Trader's Tender
 }
 
 Baganator.Constants.SortStatus = {
@@ -113,32 +58,32 @@ Baganator.Constants.SortStatus = {
 
 Baganator.Constants.SampleSearchTerms = {
   "<400",
-  BAGANATOR_L_KEYWORD_BOE,
+  SYNDICATOR_L_KEYWORD_BOE,
   INVTYPE_SHOULDER:lower(),
   INVTYPE_TRINKET:lower(),
-  BAGANATOR_L_KEYWORD_FOOD .. "|" ..  BAGANATOR_L_KEYWORD_POTION,
-  BAGANATOR_L_KEYWORD_EQUIPMENT,
-  BAGANATOR_L_KEYWORD_USE,
-  BAGANATOR_L_KEYWORD_OPEN,
-  BAGANATOR_L_KEYWORD_GEAR,
-  BAGANATOR_L_KEYWORD_SOULBOUND,
-  "~" .. BAGANATOR_L_KEYWORD_EQUIPMENT,
+  SYNDICATOR_L_KEYWORD_FOOD .. "|" ..  SYNDICATOR_L_KEYWORD_POTION,
+  SYNDICATOR_L_KEYWORD_EQUIPMENT,
+  SYNDICATOR_L_KEYWORD_USE,
+  SYNDICATOR_L_KEYWORD_OPEN,
+  SYNDICATOR_L_KEYWORD_GEAR,
+  SYNDICATOR_L_KEYWORD_SOULBOUND,
+  "~" .. SYNDICATOR_L_KEYWORD_EQUIPMENT,
   "200-300",
-  BAGANATOR_L_KEYWORD_GEAR .. "&" .. BAGANATOR_L_KEYWORD_SOULBOUND .. "&" .. BAGANATOR_L_KEYWORD_JUNK,
+  SYNDICATOR_L_KEYWORD_GEAR .. "&" .. SYNDICATOR_L_KEYWORD_SOULBOUND .. "&" .. SYNDICATOR_L_KEYWORD_JUNK,
   ITEM_QUALITY3_DESC:lower(),
   ITEM_QUALITY2_DESC:lower(),
-  BAGANATOR_L_KEYWORD_BOA,
-  BAGANATOR_L_KEYWORD_REPUTATION,
-  BAGANATOR_L_KEYWORD_AXE,
-  BAGANATOR_L_KEYWORD_SWORD,
+  SYNDICATOR_L_KEYWORD_BOA,
+  SYNDICATOR_L_KEYWORD_REPUTATION,
+  SYNDICATOR_L_KEYWORD_AXE,
+  SYNDICATOR_L_KEYWORD_SWORD,
   MOUNT:lower(),
-  BAGANATOR_L_KEYWORD_TRADEABLE_LOOT,
-  BAGANATOR_L_KEYWORD_SET,
-  "~" .. BAGANATOR_L_KEYWORD_SET .. "&" .. BAGANATOR_L_KEYWORD_GEAR,
+  SYNDICATOR_L_KEYWORD_TRADEABLE_LOOT,
+  SYNDICATOR_L_KEYWORD_SET,
+  "~" .. SYNDICATOR_L_KEYWORD_SET .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
 }
 if not Baganator.Constants.IsEra then
   local socketSearchTerms = {
-    BAGANATOR_L_KEYWORD_SOCKET,
+    SYNDICATOR_L_KEYWORD_SOCKET,
     EMPTY_SOCKET_BLUE:lower(),
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, socketSearchTerms)
@@ -146,20 +91,14 @@ end
 if Baganator.Constants.IsRetail then
   local retailSearchTerms = {
     "dragonflight",
-    BAGANATOR_L_KEYWORD_BOE .. "&" .. "dragonflight",
-    BAGANATOR_L_KEYWORD_PET,
-    BAGANATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
-    BAGANATOR_L_KEYWORD_COSMETIC,
-    BAGANATOR_L_KEYWORD_REAGENT,
-    BAGANATOR_L_KEYWORD_MANUSCRIPT,
+    SYNDICATOR_L_KEYWORD_BOE .. "&" .. "dragonflight",
+    SYNDICATOR_L_KEYWORD_PET,
+    SYNDICATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
+    SYNDICATOR_L_KEYWORD_COSMETIC,
+    SYNDICATOR_L_KEYWORD_REAGENT,
+    SYNDICATOR_L_KEYWORD_MANUSCRIPT,
     TOY:lower(),
   }
   tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
 end
 Baganator.Constants.KeyItemFamily = 256
-Baganator.Constants.AccountBoundTooltipLines = {
-  ITEM_BIND_TO_BNETACCOUNT,
-  ITEM_BNETACCOUNTBOUND,
-  ITEM_BIND_TO_ACCOUNT,
-  ITEM_ACCOUNTBOUND,
-}

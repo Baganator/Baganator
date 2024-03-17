@@ -1,7 +1,7 @@
 function Baganator.ShowGoldSummaryRealm(anchor, point)
   GameTooltip:SetOwner(anchor, point)
 
-  local connectedRealms = Baganator.Utilities.GetConnectedRealms()
+  local connectedRealms = Syndicator.Utilities.GetConnectedRealms()
   local realmsToInclude = {}
   for _, r in ipairs(connectedRealms) do
     realmsToInclude[r] = true
@@ -10,8 +10,8 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
   local lines = {}
   local total = 0
   for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
-    if realmsToInclude[characterInfo.realmNormalized] and not BAGANATOR_DATA.Characters[characterInfo.fullName].details.hidden then
-      local money = BAGANATOR_DATA.Characters[characterInfo.fullName].money
+    if realmsToInclude[characterInfo.realmNormalized] and not SYNDICATOR_DATA.Characters[characterInfo.fullName].details.hidden then
+      local money = SYNDICATOR_DATA.Characters[characterInfo.fullName].money
       local characterName = characterInfo.name
       if #connectedRealms > 1 then
         characterName = characterInfo.fullName
@@ -20,7 +20,7 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
         characterName = RAID_CLASS_COLORS[characterInfo.className]:WrapTextInColorCode(characterName)
       end
       if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and characterInfo.race then
-        characterName = Baganator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
+        characterName = Syndicator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
       end
       table.insert(lines, {left = characterName, right = Baganator.Utilities.GetMoneyString(money, true)})
       total = total + money
@@ -49,7 +49,7 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
   local realmCount = 0
   local currentRealm
   for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
-    if not BAGANATOR_DATA.Characters[characterInfo.fullName].details.hidden then
+    if not SYNDICATOR_DATA.Characters[characterInfo.fullName].details.hidden then
       if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
         AddRealm(currentRealm, realmCount, realmTotal)
         realmTotal = 0
@@ -58,7 +58,7 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
       currentRealm = characterInfo.realm
       realmCount = realmCount + 1
 
-      local money = BAGANATOR_DATA.Characters[characterInfo.fullName].money
+      local money = SYNDICATOR_DATA.Characters[characterInfo.fullName].money
 
       total = total + money
       realmTotal = realmTotal + money

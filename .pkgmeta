@@ -4,15 +4,13 @@ ignore:
   - scripts
 plain-copy:
   - Core
-  - InventoryTracking
-  - Search
   - CustomiseDialog
   - Sorting
   - UnifiedViews
   - Transfers
   - Compatibility
+required-dependencies:
+  - syndicator
 optional-dependencies:
   - masque
 enable-toc-creation: yes
-externals:
-  Libs/LibBattlePetTooltipLine: https://github.com/plusmouse/LibBattlePetTooltipLine

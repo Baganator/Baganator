@@ -28,9 +28,9 @@ do
 end
 
 local function TransferToBank(matches, characterName, callback)
-  local emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(BAGANATOR_DATA.Characters[characterName].bank, Baganator.Constants.AllBankIndexes)
+  local emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(SYNDICATOR_DATA.Characters[characterName].bank, Syndicator.Constants.AllBankIndexes)
 
-  local status = Baganator.Transfers.FromBagsToBags(matches, Baganator.Constants.AllBankIndexes, emptyBankSlots)
+  local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
   callback(status)
 end
 
@@ -96,13 +96,13 @@ RegisterBagTransfer(
   function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) and (select(4, GetGuildBankTabInfo(GetCurrentGuildBankTab()))) end,
   function(matches, characterName, callback)
     local guildTab = GetCurrentGuildBankTab()
-    local emptyGuildSlots = Baganator.Transfers.GetEmptyGuildSlots(BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[guildTab], guildTab)
+    local emptyGuildSlots = Baganator.Transfers.GetEmptyGuildSlots(SYNDICATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[guildTab], guildTab)
     local status, modes = Baganator.Transfers.FromBagsToGuild(matches, emptyGuildSlots)
     callback(status, modes)
   end,
   true, BAGANATOR_L_TRANSFER_MAIN_VIEW_GUILD_TOOLTIP_TEXT
 )
 
-Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", function()
+Syndicator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", function()
   addonTable.BagTransferActivationCallback()
 end)

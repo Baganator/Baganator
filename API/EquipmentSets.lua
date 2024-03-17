@@ -55,7 +55,7 @@ do
             slotID = slot
             location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
           elseif bank and not bags then
-            bagID = Baganator.Constants.AllBankIndexes[1]
+            bagID = Syndicator.Constants.AllBankIndexes[1]
             slotID = slot - BankButtonIDToInvSlotID(0)
             location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
           elseif player then

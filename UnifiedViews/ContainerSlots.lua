@@ -162,7 +162,7 @@ local function OnBankSlotClick(self)
 end
 
 local function ShowBankSlotTooltip(self)
-  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Baganator.Constants.AllBankIndexes[self:GetID() + 1]] = true})
+  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllBankIndexes[self:GetID() + 1]] = true})
 
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   if self.needPurchase then
@@ -184,7 +184,7 @@ BaganatorRetailBankButtonMixin = {}
 function BaganatorRetailBankButtonMixin:Init()
   self.isBag = true
   self:RegisterForDrag("LeftButton")
-  self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(Baganator.Constants.AllBankIndexes[self:GetID() + 1]))
+  self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(Syndicator.Constants.AllBankIndexes[self:GetID() + 1]))
   self.needPurchase = true
 
   local _, texture = GetInventorySlotInfo("Bag1")
@@ -242,7 +242,7 @@ function BaganatorClassicBankButtonMixin:Init()
   self:RegisterForDrag("LeftButton")
   self.needPurchase = true
 
-  SetItemButtonCount(self, C_Container.GetContainerNumFreeSlots(Baganator.Constants.AllBankIndexes[self:GetID() + 1]))
+  SetItemButtonCount(self, C_Container.GetContainerNumFreeSlots(Syndicator.Constants.AllBankIndexes[self:GetID() + 1]))
 
   local _, texture = GetInventorySlotInfo("Bag1")
   SetItemButtonTexture(self, texture)

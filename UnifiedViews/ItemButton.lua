@@ -92,7 +92,7 @@ end
 
 local function GetInfo(self, cacheData, earlyCallback)
   earlyCallback = earlyCallback or function() end
-  Baganator.Search.GetBaseInfo(cacheData, function(info)
+  Syndicator.Search.GetBaseInfo(cacheData, function(info)
     self.BGR = info
     earlyCallback()
 
@@ -156,7 +156,7 @@ local function SearchCheck(self, text)
     return
   end
 
-  return Baganator.Search.CheckItem(self.BGR, text)
+  return Syndicator.Search.CheckItem(self.BGR, text)
 end
 
 -- Used to fade widgets when the item doesn't match the current search/context
@@ -908,7 +908,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   GetInfo(self, cacheData, function()
     self:BGRUpdateQuests()
     self.BGR.tooltipGetter = function()
-      return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
+      return Syndicator.Search.DumpClassicTooltip(function(tooltip)
         if self:GetParent():GetID() == -1 then
           tooltip:SetInventoryItem("player", self:GetInventorySlot())
         else

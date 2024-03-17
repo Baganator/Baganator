@@ -57,18 +57,6 @@ function Baganator.SlashCmd.Debug(...)
   end
 end
 
-function Baganator.SlashCmd.RemoveCharacter(characterName)
-  local characterData = BAGANATOR_DATA.Characters[characterName or ""]
-  if not characterData then
-    Baganator.Utilities.Message("Unrecognised character")
-    return
-  end
-
-  Baganator.Utilities.RemoveCharacter(characterName)
-
-  Baganator.Utilities.Message("Character '" .. characterName .. "' removed.")
-end
-
 function Baganator.SlashCmd.CustomiseUI()
   Baganator.CallbackRegistry:TriggerEvent("ShowCustomise")
 end
@@ -78,7 +66,6 @@ local COMMANDS = {
   ["config"] = Baganator.SlashCmd.Config,
   ["d"] = Baganator.SlashCmd.Debug,
   ["debug"] = Baganator.SlashCmd.Debug,
-  ["remove"] = Baganator.SlashCmd.RemoveCharacter,
   [""] = Baganator.SlashCmd.CustomiseUI,
 }
 function Baganator.SlashCmd.Handler(input)

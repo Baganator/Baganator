@@ -41,7 +41,7 @@ end
 function Baganator.Utilities.GetAllCharacters(searchText)
   searchText = searchText and searchText:lower() or ""
   local characters = {}
-  for char, info in pairs(BAGANATOR_DATA.Characters) do
+  for char, info in pairs(SYNDICATOR_DATA.Characters) do
     if searchText == "" or char:lower():find(searchText, nil, true) then
       table.insert(characters, {
         fullName = char,
@@ -86,44 +86,11 @@ function Baganator.Utilities.GetRandomSearchesText()
   return BAGANATOR_L_SEARCH_TRY_X:format(term)
 end
 
-if Baganator.Constants.IsClassic then
-  local tooltip = CreateFrame("GameTooltip", "BaganatorUtilitiesScanTooltip", nil, "GameTooltipTemplate")
-  tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-
-  function Baganator.Utilities.DumpClassicTooltip(tooltipSetter)
-    tooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-    tooltipSetter(tooltip)
-
-    local name = tooltip:GetName()
-    local dump = {}
-
-    local row = 1
-    while _G[name .. "TextLeft" .. row] ~= nil do
-      local leftFontString = _G[name .. "TextLeft" .. row]
-      local rightFontString = _G[name .. "TextRight" .. row]
-
-      local entry = {
-        leftText = leftFontString:GetText(),
-        leftColor = CreateColor(leftFontString:GetTextColor()),
-        rightText = rightFontString:GetText(),
-        rightColor = CreateColor(rightFontString:GetTextColor())
-      }
-      if entry.leftText or entry.rightText then
-        table.insert(dump, entry)
-      end
-
-      row = row + 1
-    end
-
-    return {lines = dump}
-  end
-end
-
 function Baganator.Utilities.AddBagSortManager(parent)
   parent.sortManager = CreateFrame("Frame", nil, parent)
   function parent.sortManager:Cancel()
     self:SetScript("OnUpdate", nil)
-    Baganator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self)
+    Syndicator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self)
     if self.timer then
       self.timer:Cancel()
       self.timer = nil
@@ -134,7 +101,7 @@ function Baganator.Utilities.AddBagSortManager(parent)
     if status == Baganator.Constants.SortStatus.Complete then
       completeFunc()
     elseif status == Baganator.Constants.SortStatus.WaitingMove then
-      Baganator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+      Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
         self:Cancel()
         retryFunc()
       end, self)
@@ -157,7 +124,7 @@ function Baganator.Utilities.AddBagTransferManager(parent)
     self:SetScript("OnUpdate", nil)
     if self.modes ~= nil then
       for _, m in ipairs(self.modes) do
-        Baganator.CallbackRegistry:UnregisterCallback(m, self)
+        Syndicator.CallbackRegistry:UnregisterCallback(m, self)
       end
       self.modes = nil
     end
@@ -182,7 +149,7 @@ function Baganator.Utilities.AddBagTransferManager(parent)
       -- Wait for all affected caches to update before moving onto the next
       -- action
       for _, m in ipairs(self.modes) do
-        Baganator.CallbackRegistry:RegisterCallback(m, function(_, _, affected)
+        Syndicator.CallbackRegistry:RegisterCallback(m, function(_, _, affected)
           local anyChanges = false
           for _, changed in pairs(affected) do
             anyChanges = anyChanges or changed

@@ -17,7 +17,7 @@ function BaganatorGuildViewMixin:OnLoad()
   self.searchMonitors = {}
 
   for i = 1, MAX_GUILDBANK_TABS do
-    table.insert(self.searchMonitors, CreateFrame("Frame", nil, self, "BaganatorOfflineListSearchTemplate"))
+    table.insert(self.searchMonitors, CreateFrame("Frame", nil, self, "SyndicatorOfflineListSearchTemplate"))
   end
 
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
@@ -34,7 +34,7 @@ function BaganatorGuildViewMixin:OnLoad()
     Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("GuildCacheUpdate",  function(_, guild, changes)
+  Syndicator.CallbackRegistry:RegisterCallback("GuildCacheUpdate",  function(_, guild, changes)
     if changes then
       for tabIndex, isChanged in pairs(changes) do
         if isChanged then
@@ -132,7 +132,7 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
         hiddenFrame:Hide()
         GuildBankFrame:SetParent(hiddenFrame)
       end
-      self.lastGuild = Baganator.GuildCache.currentGuild
+      self.lastGuild = Syndicator.GuildCache.currentGuild
       self.isLive = true
       self:Show()
     end
@@ -208,7 +208,7 @@ function BaganatorGuildViewMixin:ApplySearch(text)
 
   -- Highlight tabs with items that match
 
-  local guildData = BAGANATOR_DATA.Guilds[self.lastGuild]
+  local guildData = SYNDICATOR_DATA.Guilds[self.lastGuild]
 
   for index, tab in ipairs(guildData.bank) do
     local function ProcessTab()
@@ -225,7 +225,7 @@ function BaganatorGuildViewMixin:ApplySearch(text)
       self.otherTabsCache[self.lastGuild] = {}
     end
     if self.otherTabsCache[self.lastGuild][index] == nil then
-      Baganator.Search.GetBaseInfoFromList(
+      Syndicator.Search.GetBaseInfoFromList(
         tab.slots, function(baseInfoItems)
           self.otherTabsCache[self.lastGuild][index] = baseInfoItems
           ProcessTab()
@@ -366,12 +366,12 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
 
   if self.isLive then
     SetCurrentGuildBankTab(self.currentTab)
-    Baganator.GuildCache:StartFullBankScan()
+    Syndicator.GuildCache:StartFullBankScan()
     if GuildBankPopupFrame:IsShown() then
       self:OpenTabEditor()
     end
     if self.LogsFrame:IsShown() and self.LogsFrame.showing == PopupMode.Tab then
-      local tabInfo = BAGANATOR_DATA.Guilds[guild].bank[index]
+      local tabInfo = SYNDICATOR_DATA.Guilds[guild].bank[index]
       if not tabInfo then
         self.LogsFrame:Hide()
       else
@@ -379,7 +379,7 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
       end
     end
     if self.TabTextFrame:IsShown() then
-      local tabInfo = BAGANATOR_DATA.Guilds[guild].bank[index]
+      local tabInfo = SYNDICATOR_DATA.Guilds[guild].bank[index]
       if not tabInfo then
         self.TabTextFrame:Hide()
       else
@@ -402,7 +402,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   self.GuildCached:SetShown(not self.isLive)
   self.GuildLive:SetShown(self.isLive)
 
-  local guildData = BAGANATOR_DATA.Guilds[guild]
+  local guildData = SYNDICATOR_DATA.Guilds[guild]
   if not guildData then
     self:SetTitle("")
     return
@@ -488,7 +488,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   else -- not live
     self.wouldShowTransferButton = false
     self.WithdrawalsInfo:SetText("")
-    self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(BAGANATOR_DATA.Guilds[guild].money, true)))
+    self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(SYNDICATOR_DATA.Guilds[guild].money, true)))
     detailsHeight = 10
 
     self.TransferButton:Hide()
@@ -539,9 +539,9 @@ end
 function BaganatorGuildViewMixin:RemoveSearchMatches(callback)
   local matches = self.GuildLive.SearchMonitor:GetMatches()
 
-  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(BAGANATOR_DATA.Characters[Baganator.BagCache.currentCharacter].bags, Baganator.Constants.AllBagIndexes)
+  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(SYNDICATOR_DATA.Characters[Baganator.BagCache.currentCharacter].bags, Syndicator.Constants.AllBagIndexes)
 
-  local status, modes = Baganator.Transfers.FromGuildToBags(matches, Baganator.Constants.AllBagIndexes, emptyBagSlots)
+  local status, modes = Baganator.Transfers.FromGuildToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
 
   self.transferManager:Apply(status, modes or {"GuildCacheUpdate"}, function()
     self:RemoveSearchMatches(callback)
@@ -646,7 +646,7 @@ function BaganatorGuildLogsTemplateMixin:ApplyTabTitle()
   if self.showing ~= PopupMode.Tab then return
   end
 
-  local tabInfo = BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
+  local tabInfo = SYNDICATOR_DATA.Guilds[Syndicator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
   if tabIndex ~= nil then
     self:SetTitle(BAGANATOR_L_X_LOGS:format(tabInfo.name))
   else
@@ -657,7 +657,7 @@ end
 function BaganatorGuildLogsTemplateMixin:ApplyTab()
   self.showing = PopupMode.Tab
 
-  if #BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank == 0 then
+  if #SYNDICATOR_DATA.Guilds[Syndicator.GuildCache.currentGuild].bank == 0 then
     self.TextContainer:SetText(BAGANATOR_L_GUILD_NO_TABS_PURCHASED)
     return
   end
@@ -767,7 +767,7 @@ end
 function BaganatorGuildTabTextTemplateMixin:ApplyTab()
   local currentTab = GetCurrentGuildBankTab()
 
-  if #BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank == 0 then
+  if #SYNDICATOR_DATA.Guilds[Syndicator.GuildCache.currentGuild].bank == 0 then
     self.TextContainer:SetText(BAGANATOR_L_GUILD_NO_TABS_PURCHASED)
     self.SaveButton:Hide()
     self.TextContainer:GetEditBox():SetEnabled(false)
@@ -781,7 +781,7 @@ function BaganatorGuildTabTextTemplateMixin:ApplyTab()
 end
 
 function BaganatorGuildTabTextTemplateMixin:ApplyTabTitle()
-  local tabInfo = BAGANATOR_DATA.Guilds[Baganator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
+  local tabInfo = SYNDICATOR_DATA.Guilds[Syndicator.GuildCache.currentGuild].bank[GetCurrentGuildBankTab()]
   if tabInfo ~= nil then
     self:SetTitle(BAGANATOR_L_X_INFORMATION:format(tabInfo.name))
   else
