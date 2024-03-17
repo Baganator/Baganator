@@ -5,8 +5,7 @@
 ## Title: Baganator
 ## Version: @project-version@
 ## Author: plusmouse
-## OptionalDeps: Masque
-## RequiredDeps: Syndicator
+## OptionalDeps: Syndicator, Masque
 ## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA
 ## IconTexture: Interface\AddOns\Baganator\Assets\logo.tga
 

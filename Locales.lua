@@ -192,18 +192,14 @@ L["THAT_ITEM_IS_EQUIPPED"] = "That item is equipped"
 L["THAT_ITEM_IS_LISTED_ON_THE_AUCTION_HOUSE"] = "That item is listed on the auction house"
 L["THAT_ITEM_IS_IN_A_MAILBOX"] = "That item is in a mailbox"
 L["THAT_ITEM_IS_IN_VOID_STORAGE"] = "That item is in void storage"
-L["BAGS_LOWER"] = "bags"
-L["BANK_LOWER"] = "bank"
-L["MAIL_LOWER"] = "mail"
-L["EQUIPPED_LOWER"] = "equipped"
-L["VOID_LOWER"] = "void"
-L["AUCTIONS_LOWER"] = "auctions"
-L["GUILD_LOWER"] = "guild"
 
 L["THAT_ITEM_IS_EQUIPPED"] = "That item is equipped"
 L["THAT_ITEM_IS_LISTED_ON_THE_AUCTION_HOUSE"] = "That item is listed on the auction house"
 L["THAT_ITEM_IS_IN_A_MAILBOX"] = "That item is in a mailbox"
 L["THAT_ITEM_IS_IN_VOID_STORAGE"] = "That item is in void storage"
+
+L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
+L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
