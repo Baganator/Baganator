@@ -80,7 +80,7 @@
         <Scripts>
           <OnClick>
             local text = self:GetParent().SearchBox:GetText()
-            Baganator.Search.RunMegaSearchAndPrintResults(text)
+            Syndicator.Search.RunMegaSearchAndPrintResults(text)
           </OnClick>
         </Scripts>
       </Button>
