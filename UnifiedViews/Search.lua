@@ -14,6 +14,7 @@ StaticPopupDialogs[dialogName] = {
 }
 
 Syndicator.API.RegisterShowItemLocation(function(mode, entity, container, itemLink, searchText)
+  StaticPopup_Hide(dialogName)
   if mode == "character" then
     if container == "bag" then
       Baganator.CallbackRegistry:TriggerEvent("GuildHide")
