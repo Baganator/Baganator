@@ -26,8 +26,8 @@ StaticPopupDialogs[syndicatorInstallDialog] = {
 }
 
 Baganator.Utilities.OnAddonLoaded("Baganator", function()
-  if not C_AddOns.IsAddOnLoaded("Syndicator") then
-    if C_AddOns.DoesAddOnExist("Syndicator") then
+  if not (C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded)("Syndicator") then
+    if (C_AddOns and C_AddOns.DoesAddOnExist or DoesAddOnExist)("Syndicator") then
       Baganator.Utilities.Message(BAGANATOR_L_SYNDICATOR_ENABLE_MESSAGE)
       StaticPopup_Show(syndicatorEnableDialog)
     else
