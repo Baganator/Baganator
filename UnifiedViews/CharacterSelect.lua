@@ -89,7 +89,7 @@ function CharacterSelectSidebarMixin:OnLoad()
     end
     frame:SetText(frame.iconPrefix .. frame.fullName)
     if elementData.className then
-      local classColor = RAID_CLASS_COLORS[elementData.className]
+      local classColor = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[elementData.className]
       frame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
     else
       frame:GetFontString():SetTextColor(1, 1, 1)
