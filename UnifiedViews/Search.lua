@@ -1,3 +1,7 @@
+if not Syndicator then
+  return
+end
+
 local CONTAINER_TYPE_TO_MESSAGE = {
   equipped = BAGANATOR_L_THAT_ITEM_IS_EQUIPPED,
   auctions = BAGANATOR_L_THAT_ITEM_IS_LISTED_ON_THE_AUCTION_HOUSE,

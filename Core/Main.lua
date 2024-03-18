@@ -37,9 +37,11 @@ Baganator.Utilities.OnAddonLoaded("Baganator", function()
     if (C_AddOns and C_AddOns.DoesAddOnExist or DoesAddOnExist)("Syndicator") then
       Baganator.Utilities.Message(BAGANATOR_L_SYNDICATOR_ENABLE_MESSAGE)
       StaticPopup_Show(syndicatorEnableDialog)
+      error(BAGANATOR_L_SYNDICATOR_ENABLE_MESSAGE)
     else
       Baganator.Utilities.Message(BAGANATOR_L_SYNDICATOR_INSTALL_MESSAGE)
       StaticPopup_Show(syndicatorInstallDialog)
+      error(BAGANATOR_L_SYNDICATOR_INSTALL_MESSAGE)
     end
     return
   end

@@ -1,6 +1,6 @@
 local iconSettings = {}
 
-local IsEquipment = Syndicator.Utilities.IsEquipment
+local IsEquipment = Syndicator and Syndicator.Utilities.IsEquipment
 
 local function HasItemLevel(details)
   return

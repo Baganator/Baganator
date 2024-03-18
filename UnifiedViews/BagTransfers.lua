@@ -103,6 +103,8 @@ RegisterBagTransfer(
   true, BAGANATOR_L_TRANSFER_MAIN_VIEW_GUILD_TOOLTIP_TEXT
 )
 
-Syndicator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", function()
-  addonTable.BagTransferActivationCallback()
-end)
+if Syndicator then
+  Syndicator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", function()
+    addonTable.BagTransferActivationCallback()
+  end)
+end

@@ -56,6 +56,10 @@ Baganator.Constants.SortStatus = {
   WaitingItemData = 3,
 }
 
+if not Syndicator then
+  return
+end
+
 Baganator.Constants.SampleSearchTerms = {
   "<400",
   SYNDICATOR_L_KEYWORD_BOE,
