@@ -93,7 +93,7 @@ local function IsBindOnAccount(details)
   end
   if details.tooltipInfo then
     for _, row in ipairs(details.tooltipInfo.lines) do
-      if tIndexOf(Baganator.Constants.AccountBoundTooltipLines, row.leftText) ~= nil then
+      if tIndexOf(Syndicator.Constants.AccountBoundTooltipLines, row.leftText) ~= nil then
         return true
       end
     end
