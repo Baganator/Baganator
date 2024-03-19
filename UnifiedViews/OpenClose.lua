@@ -17,7 +17,15 @@ local interactions = {
   [IT.TradePartner] = {option = "trade_partner", default = false },
   [IT.ScrappingMachine] = {option = "scrapping_machine", default = true },
   [IT.Soulbind] = {option = "forge_of_bonds", default = false },
- }
+}
+
+local frames = {
+  ["CharacterFrame"] = { option = "character_panel", default = false },
+}
+
+local function CheckOption(option)
+  return Baganator.Config.Get(Baganator.Config.Options.AUTO_OPEN)[option]
+end
 
 BaganatorOpenCloseMixin = {}
 
@@ -44,10 +52,18 @@ function BaganatorOpenCloseMixin:OnLoad()
       self:RegisterEvent(event)
     end
   end
-end
 
-local function CheckOption(option)
-  return Baganator.Config.Get(Baganator.Config.Options.AUTO_OPEN)[option]
+  hooksecurefunc("ToggleCharacter", function(view)
+    local details = frames["CharacterFrame"]
+    if not CheckOption(details.option) then
+      return
+    end
+    if CharacterFrame:IsShown() then
+      Baganator.CallbackRegistry:TriggerEvent("BagShow")
+    else
+      Baganator.CallbackRegistry:TriggerEvent("BagHide")
+    end
+  end)
 end
 
 function BaganatorOpenCloseMixin:OnEvent(eventName, ...)

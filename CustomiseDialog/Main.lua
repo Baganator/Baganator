@@ -216,6 +216,12 @@ local OPEN_CLOSE_OPTIONS = {
     root = "auto_open",
     check = IsRetailCheck,
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_CHARACTER_PANEL,
+    option = "character_panel",
+    root = "auto_open",
+  },
 }
 local SORTING_OPTIONS = {
   {
