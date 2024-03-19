@@ -80,45 +80,39 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
 end
 
-local function GetExpansion(self, itemInfo)
-  if ItemVersion then
-    local details = ItemVersion.API:getItemVersion(self.BGR.itemID, true)
-    if details then
-      return details.major - 1
-    end
-  end
-  return itemInfo[15]
-end
-
 local function GetInfo(self, cacheData, earlyCallback)
   earlyCallback = earlyCallback or function() end
-  Syndicator.Search.GetBaseInfo(cacheData, function(info)
-    self.BGR = info
-    earlyCallback()
 
-    for plugin, widget in pairs(self.cornerPlugins) do
-      widget:Hide()
-    end
-    if not iconSettings.usingJunkPlugin and self.JunkIcon then
-      self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
-      if iconSettings.markJunk and self.BGR.isJunk then
-        self.BGR.persistIconGrey = true
-        self.icon:SetDesaturated(true)
-      end
-    end
+  local info = Syndicator.Search.GetBaseInfo(cacheData)
+  self.BGR = info
 
-    if self.BaganatorBagHighlight then
-      self.BaganatorBagHighlight:Hide()
+  earlyCallback()
+
+  for plugin, widget in pairs(self.cornerPlugins) do
+    widget:Hide()
+  end
+
+  if not iconSettings.usingJunkPlugin and self.JunkIcon then
+    self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
+    if iconSettings.markJunk and self.BGR.isJunk then
+      self.BGR.persistIconGrey = true
+      self.icon:SetDesaturated(true)
     end
-  end,
-  function(info)
+  end
+
+  if self.BaganatorBagHighlight then
+    self.BaganatorBagHighlight:Hide()
+  end
+
+  if self.BGR.itemID == nil then
+    return
+  end
+
+  function OnCached()
     if self.BGR ~= info then -- Check that the item button hasn't been refreshed
       return
     end
-    if self.BGR.itemLink == nil then
-      return
-    end
-    if self.BGR.isCosmetic then
+    if IsCosmeticItem and IsCosmeticItem(self.BGR.itemLink) then
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
     end
@@ -128,11 +122,19 @@ local function GetInfo(self, cacheData, earlyCallback)
     if self.BGRUpdateQuests then
       self:BGRUpdateQuests()
     end
-  end)
+  end
+
+  if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+    OnCached()
+  else
+    local item = Item:CreateFromItemID(self.BGR.itemID)
+    item:ContinueOnItemLoad(function()
+      OnCached()
+    end)
+  end
 end
 
-local function SetStaticInfo(self, details)
-
+local function SetStaticInfo(self)
   if iconSettings.equipmentSetBorder and self.BGR.setInfo then
     self.IconBorder:Show()
     self.IconBorder:SetVertexColor(equipmentSetBorder.r, equipmentSetBorder.g, equipmentSetBorder.b)
@@ -146,14 +148,6 @@ local function SearchCheck(self, text)
 
   if self.BGR == nil or self.BGR.itemLink == nil then
     return false
-  end
-
-  if self.BGR.itemInfoWaiting then
-    return
-  end
-
-  if not self.BGR.itemName then
-    return
   end
 
   return Syndicator.Search.CheckItem(self.BGR, text)
@@ -389,7 +383,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   -- reagents
   self:HookScript("OnEnter", function()
     if BankFrame:IsShown() then
-      if self.BGR and self.BGR.isCraftingReagent and IsReagentBankUnlocked() and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 then
+      if self.BGR and select(17, GetItemInfo(self.BGR.itemLink)) and IsReagentBankUnlocked() and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 then
         BankFrame.selectedTab = 2
       else
         BankFrame.selectedTab = 1
@@ -397,7 +391,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
     end
   end)
   self:HookScript("OnLeave", function()
-    if BankFrame:IsShown() and self.BGR and self.BGR.isCraftingReagent then
+    if BankFrame:IsShown() and self.BGR then
       BankFrame.selectedTab = 1
     end
   end)

@@ -3,13 +3,14 @@ local iconSettings = {}
 local IsEquipment = Syndicator and Syndicator.Utilities.IsEquipment
 
 local function HasItemLevel(details)
+  local classID = select(6, GetItemInfoInstant(details.itemLink))
   return
     -- Regular equipment
-    details.classID == Enum.ItemClass.Armor or details.classID == Enum.ItemClass.Weapon
+    classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
     -- Profession equipment (retail only)
-    or details.classID == Enum.ItemClass.Profession
+    or classID == Enum.ItemClass.Profession
     -- Legion Artifact relics (retail only)
-    or (details.classID == Enum.ItemClass.Gem and IsArtifactRelicItem and IsArtifactRelicItem(details.itemLink))
+    or (classID == Enum.ItemClass.Gem and IsArtifactRelicItem and IsArtifactRelicItem(details.itemLink))
 end
 
 local qualityColors = {
@@ -56,7 +57,7 @@ local function textInit(itemButton)
 end
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
-  if HasItemLevel(details) and not details.isCosmetic then
+  if HasItemLevel(details) and not IsCosmeticItem(details.itemLink) then
     if not details.itemLevel then
       details.itemLevel = GetDetailedItemLevelInfo(details.itemLink)
     end
@@ -198,6 +199,7 @@ end)
 
 if Baganator.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION, "expansion", function(Expansion, details)
+    details.expacID = details.expacID or Syndicator.Search.GetExpansion(details)
     local xpacText = expansionIDToText[details.expacID]
     Expansion:SetText(xpacText or "")
     return xpacText ~= nil
