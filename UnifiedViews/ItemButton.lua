@@ -108,7 +108,7 @@ local function GetInfo(self, cacheData, earlyCallback)
     return
   end
 
-  function OnCached()
+  local function OnCached()
     if self.BGR ~= info then -- Check that the item button hasn't been refreshed
       return
     end
