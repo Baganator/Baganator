@@ -17,7 +17,7 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
         characterName = characterInfo.fullName
       end
       if characterInfo.className then
-        characterName = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[characterInfo.className]:WrapTextInColorCode(characterName)
+        characterName = "|c" .. (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[characterInfo.className].colorStr .. characterName .. "|r"
       end
       if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and characterInfo.race then
         characterName = Syndicator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
