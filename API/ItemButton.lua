@@ -275,7 +275,7 @@ end)
 
 if Baganator.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_LEVEL, "battle_pet_level", function(Level, details)
-    if not details.itemLink:find("battlepet", nil, true) then
+    if not details.itemID == Syndicator.Constants.BattlePetCageID then
       return false
     end
     if iconSettings.useQualityColors then
@@ -284,7 +284,7 @@ if Baganator.Constants.IsRetail then
     else
       Level:SetTextColor(1,1,1)
     end
-    Level:SetText(details.itemLevel)
+    Level:SetText((details.itemLink:match("battlepet:.-:(%d+)")))
     return true
   end,
   textInit, {corner = "top_left", priority = 2})
