@@ -57,7 +57,7 @@ local function textInit(itemButton)
 end
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
-  if HasItemLevel(details) and not IsCosmeticItem(details.itemLink) then
+  if HasItemLevel(details) and not (IsCosmeticItem and IsCosmeticItem(details.itemLink)) then
     if not details.itemLevel then
       details.itemLevel = GetDetailedItemLevelInfo(details.itemLink)
     end
