@@ -1049,7 +1049,7 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabI
 
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function()
-      return Baganator.Utilities.DumpClassicTooltip(function(tooltip)
+      return Syndicator.Search.DumpClassicTooltip(function(tooltip)
           tooltip:SetGuildBankItem(tabIndex, self:GetID())
       end)
     end
