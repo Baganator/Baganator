@@ -211,29 +211,21 @@ function BaganatorGuildViewMixin:ApplySearch(text)
   local guildData = SYNDICATOR_DATA.Guilds[self.lastGuild]
 
   for index, tab in ipairs(guildData.bank) do
-    local function ProcessTab()
-      self.searchMonitors[index]:StartSearch(self.otherTabsCache[self.lastGuild][index], text, function(matches)
-        if #matches > 0 then
-          self.Tabs[index].Icon:SetAlpha(1)
-        else
-          self.Tabs[index].Icon:SetAlpha(0.2)
-        end
-      end)
-    end
-
     if not self.otherTabsCache[self.lastGuild] then
       self.otherTabsCache[self.lastGuild] = {}
     end
+
     if self.otherTabsCache[self.lastGuild][index] == nil then
-      Syndicator.Search.GetBaseInfoFromList(
-        tab.slots, function(baseInfoItems)
-          self.otherTabsCache[self.lastGuild][index] = baseInfoItems
-          ProcessTab()
-        end
-      )
-    else
-      ProcessTab()
+      self.otherTabsCache[self.lastGuild][index] = Syndicator.Search.GetBaseInfoFromList(tab.slots)
     end
+
+    self.searchMonitors[index]:StartSearch(self.otherTabsCache[self.lastGuild][index], text, function(matches)
+      if #matches > 0 then
+        self.Tabs[index].Icon:SetAlpha(1)
+      else
+        self.Tabs[index].Icon:SetAlpha(0.2)
+      end
+    end)
   end
 end
 
