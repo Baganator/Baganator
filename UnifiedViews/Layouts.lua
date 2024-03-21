@@ -25,7 +25,7 @@ local function MasqueRegistration(button)
 end
 
 local function GetNameFromLink(itemLink)
-  return (string.match(itemLink, "h%[(.*)%]|h"))
+  return (string.match(itemLink, "h%[(.*)%]|h"):gsub(" ?|A.-|a", ""))
 end
 
 local function RegisterHighlightSimilarItems(self)
