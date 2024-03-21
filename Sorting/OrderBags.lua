@@ -168,7 +168,7 @@ function Baganator.Sorting.ApplyOrdering(bags, bagIDs, indexesToUse, bagChecks, 
     return Baganator.Constants.SortStatus.Complete
   end
 
-  if Syndicator.BagCache.isUpdatePending then
+  if Syndicator.API.IsBagEventPending() then
     return Baganator.Constants.SortStatus.WaitingMove
   end
 

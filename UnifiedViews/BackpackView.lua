@@ -353,12 +353,12 @@ function BaganatorBackpackViewMixin:UpdateBagSlots()
   end
 
   -- Show cached bag slots when viewing cached bags for other characters
-  local containerInfo = SYNDICATOR_DATA.Characters[self.lastCharacter].containerInfo
+  local containerInfo = Syndicator.API.GetCharacter(self.lastCharacter).containerInfo
   if not self.isLive and containerInfo then
     local show = Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
     for index, bb in ipairs(self.cachedBagSlots) do
       local details = CopyTable(containerInfo.bags[index] or {})
-      details.itemCount = Baganator.Utilities.CountEmptySlots(SYNDICATOR_DATA.Characters[self.lastCharacter].bags[index + 1])
+      details.itemCount = Baganator.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(self.lastCharacter).bags[index + 1])
       bb:SetItemDetails(details)
       if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
         local _, texture = GetInventorySlotInfo("Bag1")
@@ -395,7 +395,7 @@ function BaganatorBackpackViewMixin:ToggleBank()
 end
 
 function BaganatorBackpackViewMixin:ToggleGuildBank()
-  Baganator.CallbackRegistry:TriggerEvent("GuildToggle", SYNDICATOR_DATA.Characters[self.lastCharacter].details.guild)
+  Baganator.CallbackRegistry:TriggerEvent("GuildToggle", Syndicator.API.GetCharacter(self.lastCharacter).details.guild)
 end
 
 function BaganatorBackpackViewMixin:ToggleReagents()
@@ -425,7 +425,7 @@ local function DeDuplicateRecents()
   local newRecents = {}
   local seen = {}
   for _, character in ipairs(recents) do
-    if SYNDICATOR_DATA.Characters[character] and not seen[character] and #newRecents < Baganator.Constants.MaxRecents then
+    if Syndicator.API.GetCharacter(character) and not seen[character] and #newRecents < Baganator.Constants.MaxRecents then
       table.insert(newRecents, character)
     end
     seen[character] = true
@@ -434,10 +434,7 @@ local function DeDuplicateRecents()
 end
 
 function BaganatorBackpackViewMixin:FillRecents(characters)
-  local characters = {}
-  for char, data in pairs(SYNDICATOR_DATA.Characters) do
-    table.insert(characters, char)
-  end
+  local characters = Syndicator.API.GetAllCharacters()
 
   table.sort(characters, function(a, b) return a < b end)
 
@@ -456,7 +453,7 @@ end
 
 function BaganatorBackpackViewMixin:AddNewRecent(character)
   local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
-  local data = SYNDICATOR_DATA.Characters[character]
+  local data = Syndicator.API.GetCharacter(character)
   if not data then
     return
   end
@@ -484,7 +481,7 @@ function BaganatorBackpackViewMixin:RefreshTabs()
   local index = 1
   while #tabs < Baganator.Constants.MaxRecentsTabs and index <= #characters do
     local char = characters[index]
-    local details = SYNDICATOR_DATA.Characters[char].details
+    local details = Syndicator.API.GetCharacter(char).details
     if sameConnected[details.realmNormalized] then
       local tabButton = self.tabsPool:Acquire()
       tabButton:SetText(details.character)
@@ -558,7 +555,7 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
     Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", character)
   end
 
-  local characterData = SYNDICATOR_DATA.Characters[character]
+  local characterData = Syndicator.API.GetCharacter(character)
 
   if not characterData then
     self:SetTitle("")
@@ -669,9 +666,9 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
 end
 
 function BaganatorBackpackViewMixin:UpdateCurrencies(character)
-  self.Money:SetText(Baganator.Utilities.GetMoneyString(SYNDICATOR_DATA.Characters[character].money, true))
+  self.Money:SetText(Baganator.Utilities.GetMoneyString(Syndicator.API.GetCharacter(character).money, true))
 
-  local characterCurrencies = SYNDICATOR_DATA.Characters[character].currencies
+  local characterCurrencies = Syndicator.API.GetCharacter(character).currencies
 
   if not C_CurrencyInfo then
     return
@@ -734,7 +731,7 @@ function BaganatorBackpackViewMixin:UpdateCurrencies(character)
 end
 
 function BaganatorBackpackViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(SYNDICATOR_DATA.Characters[self.liveCharacter].bags, Syndicator.Constants.AllBagIndexes, function(status)
+  Baganator.Sorting.CombineStacks(Syndicator.API.GetCharacter(self.liveCharacter).bags, Syndicator.Constants.AllBagIndexes, function(status)
     self.sortManager:Apply(status, function()
       self:CombineStacks(callback)
     end, function()
@@ -782,8 +779,8 @@ function BaganatorBackpackViewMixin:UpdateAllButtons()
     button:SetParent(parent)
     button:SetFrameLevel(700)
   end
-  local guildName = SYNDICATOR_DATA.Characters[self.lastCharacter].details.guild
-  self.ToggleGuildBankButton:SetEnabled(SYNDICATOR_DATA.Guilds[guildName] ~= nil)
+  local guildName = Syndicator.API.GetCharacter(self.lastCharacter).details.guild
+  self.ToggleGuildBankButton:SetEnabled(guildName ~= nil and Syndicator.API.GetGuild(guildName))
 end
 
 function BaganatorBackpackViewMixin:GetMatches()
@@ -826,7 +823,7 @@ function BaganatorBackpackViewMixin:DoSort(isReverse)
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(Syndicator.Constants.AllBagIndexes)
   local function DoSortInternal()
     local status = Baganator.Sorting.ApplyOrdering(
-      SYNDICATOR_DATA.Characters[self.liveCharacter].bags,
+      Syndicator.API.GetCharacter(self.liveCharacter).bags,
       Syndicator.Constants.AllBagIndexes,
       bagsToSort,
       bagChecks,

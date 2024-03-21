@@ -10,8 +10,8 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
   local lines = {}
   local total = 0
   for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
-    if realmsToInclude[characterInfo.realmNormalized] and not SYNDICATOR_DATA.Characters[characterInfo.fullName].details.hidden then
-      local money = SYNDICATOR_DATA.Characters[characterInfo.fullName].money
+    if realmsToInclude[characterInfo.realmNormalized] and not Syndicator.API.GetCharacter(characterInfo.fullName).details.hidden then
+      local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
       local characterName = characterInfo.name
       if #connectedRealms > 1 then
         characterName = characterInfo.fullName
@@ -49,7 +49,7 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
   local realmCount = 0
   local currentRealm
   for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
-    if not SYNDICATOR_DATA.Characters[characterInfo.fullName].details.hidden then
+    if not Syndicator.API.GetCharacter(characterInfo.fullName).details.hidden then
       if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
         AddRealm(currentRealm, realmCount, realmTotal)
         realmTotal = 0
@@ -58,7 +58,7 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
       currentRealm = characterInfo.realm
       realmCount = realmCount + 1
 
-      local money = SYNDICATOR_DATA.Characters[characterInfo.fullName].money
+      local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
 
       total = total + money
       realmTotal = realmTotal + money

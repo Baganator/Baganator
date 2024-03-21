@@ -11,13 +11,13 @@ local function SetHideButton(frame)
   frame.HideButton:SetPoint("TOPLEFT", 28, -2.5)
   frame.HideButton:SetSize(15, 15)
   frame.HideButton:SetScript("OnClick", function()
-    SYNDICATOR_DATA.Characters[frame.fullName].details.hidden = not SYNDICATOR_DATA.Characters[frame.fullName].details.hidden
+    Syndicator.API.ToggleCharacterHidden(frame.fullName)
     GameTooltip:Hide()
     frame:UpdateHideVisual()
   end)
   frame.HideButton:SetScript("OnEnter", function()
     GameTooltip:SetOwner(frame.HideButton, "ANCHOR_RIGHT")
-    if SYNDICATOR_DATA.Characters[frame.fullName].details.hidden then
+    if Syndicator.API.GetCharacter(frame.fullName).details.hidden then
       GameTooltip:SetText(BAGANATOR_L_SHOW_IN_TOOLTIPS)
     else
       GameTooltip:SetText(BAGANATOR_L_HIDE_IN_TOOLTIPS)
@@ -37,7 +37,7 @@ local function SetDeleteButton(frame)
   frame.DeleteButton:SetPoint("TOPLEFT", 8, -2.5)
   frame.DeleteButton:SetSize(15, 15)
   frame.DeleteButton:SetScript("OnClick", function()
-    Syndicator.Utilities.RemoveCharacter(frame.fullName)
+    Syndicator.API.DeleteCharacter(frame.fullName)
   end)
   frame.DeleteButton:SetScript("OnEnter", function()
     GameTooltip:SetOwner(frame.DeleteButton, "ANCHOR_RIGHT")
@@ -98,7 +98,7 @@ function CharacterSelectSidebarMixin:OnLoad()
       Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", elementData.fullName)
     end)
     frame.UpdateHideVisual = function()
-      if SYNDICATOR_DATA.Characters[frame.fullName].details.hidden then
+      if Syndicator.API.GetCharacter(frame.fullName).details.hidden then
         frame.HideButton:GetNormalTexture():SetVertexColor(hiddenColor.r, hiddenColor.g, hiddenColor.b)
       else
         frame.HideButton:GetNormalTexture():SetVertexColor(shownColor.r, shownColor.g, shownColor.b)
@@ -108,7 +108,7 @@ function CharacterSelectSidebarMixin:OnLoad()
       SetHideButton(frame)
       SetDeleteButton(frame)
     end
-    frame.DeleteButton:SetShown(frame.fullName ~= Syndicator.BagCache.currentCharacter)
+    frame.DeleteButton:SetShown(frame.fullName ~= Syndicator.API.GetCurrentCharacter())
     frame:UpdateHideVisual()
     UpdateForSelection(frame)
   end)

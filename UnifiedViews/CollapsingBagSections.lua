@@ -22,7 +22,7 @@ for subClassType, textureDetails in pairs(ContainerTypeToIcon) do
 end
 
 function Baganator.UnifiedViews.GetCollapsingBagDetails(character, section, indexes, slotsCount)
-  local characterInfo = SYNDICATOR_DATA.Characters[character]
+  local characterInfo = Syndicator.API.GetCharacter(character)
   if characterInfo.containerInfo == nil or characterInfo.containerInfo[section] == nil then
     local cleanMain = {}
     for i = 1, #indexes do

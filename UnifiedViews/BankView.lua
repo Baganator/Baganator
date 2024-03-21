@@ -276,12 +276,12 @@ function BaganatorBankViewMixin:UpdateBagSlots()
   end
 
   -- Show cached bag slots when viewing cached bank bags for other characters
-  local containerInfo = SYNDICATOR_DATA.Characters[self.lastCharacter].containerInfo
+  local containerInfo = Syndicator.API.GetCharacter(self.lastCharacter).containerInfo
   if not self.isLive and containerInfo and containerInfo.bank then
     local show = Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS)
     for index, bb in ipairs(self.cachedBankBagSlots) do
       local details = CopyTable(containerInfo.bank[index] or {})
-      details.itemCount = Baganator.Utilities.CountEmptySlots(SYNDICATOR_DATA.Characters[self.lastCharacter].bank[index + 1])
+      details.itemCount = Baganator.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(self.lastCharacter).bank[index + 1])
       bb:SetItemDetails(details)
       if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
         local _, texture = GetInventorySlotInfo("Bag1")
@@ -372,7 +372,7 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
     layout:ShowCharacter(character, "bank", Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
   end
 
-  local characterData = SYNDICATOR_DATA.Characters[character]
+  local characterData = Syndicator.API.GetCharacter(character)
   if not characterData then
     self:SetTitle("")
   else
@@ -500,7 +500,7 @@ function BaganatorBankViewMixin:NotifyBagUpdate(updatedBags)
 end
 
 function BaganatorBankViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(SYNDICATOR_DATA.Characters[self.liveCharacter].bank, Syndicator.Constants.AllBankIndexes, function(status)
+  Baganator.Sorting.CombineStacks(Syndicator.API.GetCharacter(self.liveCharacter).bank, Syndicator.Constants.AllBankIndexes, function(status)
     self.sortManager:Apply(status, function()
       self:CombineStacks(callback)
     end, function()
@@ -522,7 +522,7 @@ function BaganatorBankViewMixin:DoSort(isReverse)
 
   local function DoSortInternal()
     local status = Baganator.Sorting.ApplyOrdering(
-      SYNDICATOR_DATA.Characters[self.liveCharacter].bank,
+      Syndicator.API.GetCharacter(self.liveCharacter).bank,
       Syndicator.Constants.AllBankIndexes,
       indexesToUse,
       bagChecks,
@@ -564,7 +564,7 @@ function BaganatorBankViewMixin:RemoveSearchMatches(callback)
     tAppendAll(matches, layouts.live.SearchMonitor:GetMatches())
   end
 
-  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(SYNDICATOR_DATA.Characters[self.liveCharacter].bags, Syndicator.Constants.AllBagIndexes)
+  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(self.liveCharacter).bags, Syndicator.Constants.AllBagIndexes)
 
   local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
 

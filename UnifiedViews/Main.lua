@@ -48,14 +48,14 @@ local function SetupBackpackView()
     end
     backpackView:SetShown(not backpackView:IsShown())
     if backpackView:IsVisible() then
-      backpackView:UpdateForCharacter(Syndicator.BagCache.currentCharacter, true)
+      backpackView:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
     end
     lastToggleTime = GetTime()
     UpdateButtons()
   end
 
   Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
-    characterName = characterName or Syndicator.BagCache.currentCharacter
+    characterName = characterName or Syndicator.API.GetCurrentCharacter()
     backpackView:Show()
     backpackView:UpdateForCharacter(characterName, characterName == backpackView.liveCharacter)
     UpdateButtons()
@@ -73,7 +73,7 @@ local function SetupBackpackView()
   --Handled by OpenClose.lua
   --[[hooksecurefunc("OpenAllBags", function()
     backpackView:Show()
-    backpackView:UpdateForCharacter(Syndicator.BagCache.currentCharacter, true)
+    backpackView:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
   end)
 
   hooksecurefunc("CloseAllBags", function()
@@ -138,13 +138,13 @@ local function SetupBankView()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
-    characterName = characterName or Syndicator.BagCache.currentCharacter
+    characterName = characterName or Syndicator.API.GetCurrentCharacter()
     bankView:SetShown(characterName ~= bankView.lastCharacter or not bankView:IsShown())
     bankView:UpdateForCharacter(characterName, bankView.liveCharacter == characterName and bankView.liveBankActive)
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BankShow", function(_, characterName)
-    characterName = characterName or Syndicator.BagCache.currentCharacter
+    characterName = characterName or Syndicator.API.GetCurrentCharacter()
     bankView:Show()
     bankView:UpdateForCharacter(characterName, bankView.liveCharacter == characterName and bankView.liveBankActive)
   end)
@@ -183,17 +183,17 @@ local function SetupGuildView()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("GuildToggle", function(_, guildName)
-    local guildName = guildName or Syndicator.GuildCache.currentGuild
+    local guildName = guildName or Syndicator.API.GetCurrentGuild()
     guildView:SetShown(guildName ~= guildView.lastGuild or not guildView:IsShown())
-    guildView:UpdateForGuild(guildName, Syndicator.GuildCache.currentGuild == guildName and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
+    guildView:UpdateForGuild(guildName, Syndicator.API.GetCurrentGuild() == guildName and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("GuildShow",  function(_, guildName)
-    guildName = guildName or Syndicator.GuildCache.currentGuild
+    guildName = guildName or Syndicator.API.GetCurrentGuild()
     guildView:Show()
     guildView:UpdateForGuild(
       guildName,
-      guildName == Syndicator.GuildCache.currentGuild and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker)
+      guildName == Syndicator.API.GetCurrentGuild() and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker)
     )
   end)
 

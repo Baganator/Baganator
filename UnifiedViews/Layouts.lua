@@ -208,7 +208,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
 
   local start = debugprofilestop()
 
-  local characterData = SYNDICATOR_DATA.Characters[character]
+  local characterData = Syndicator.API.GetCharacter(character)
 
   if not characterData then
     return
@@ -501,7 +501,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
 
   local start = debugprofilestop()
 
-  local characterData = SYNDICATOR_DATA.Characters[character]
+  local characterData = Syndicator.API.GetCharacter(character)
 
   local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
 
@@ -616,7 +616,7 @@ end
 function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   local start = debugprofilestop()
 
-  local guildData = SYNDICATOR_DATA.Guilds[guild]
+  local guildData = Syndicator.API.GetGuild(guild)
 
   if #self.buttons ~= Syndicator.Constants.MaxGuildBankTabItemSlots then
     self.refreshContent = true

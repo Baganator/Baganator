@@ -41,7 +41,8 @@ end
 function Baganator.Utilities.GetAllCharacters(searchText)
   searchText = searchText and searchText:lower() or ""
   local characters = {}
-  for char, info in pairs(SYNDICATOR_DATA.Characters) do
+  for _, char in ipairs(Syndicator.API.GetAllCharacters()) do
+    local info = Syndicator.API.GetCharacter(char)
     if searchText == "" or char:lower():find(searchText, nil, true) then
       table.insert(characters, {
         fullName = char,
