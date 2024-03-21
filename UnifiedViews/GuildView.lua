@@ -55,7 +55,7 @@ function BaganatorGuildViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("GuildNameSet",  function(_, guild)
+  Syndicator.CallbackRegistry:RegisterCallback("GuildNameSet",  function(_, guild)
     if guild then
       self.lastGuild = guild
     end
