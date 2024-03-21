@@ -330,7 +330,7 @@ function BaganatorRetailCachedItemButtonMixin:OnClick(button)
   elseif IsModifiedClick("DRESSUP") then
     DressUpLink(self.BGR.itemLink)
   elseif IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
   end
 end
 
@@ -376,7 +376,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
     end
 
     if IsAltKeyDown() then
-      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     end
   end)
   -- Automatically use the reagent bank when at the bank transferring crafting
@@ -520,9 +520,10 @@ function BaganatorRetailLiveGuildItemButtonMixin:OnLoad()
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:OnClick(button)
-  if self.BGR and self.BGR.itemName and IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+  if self.BGR and self.BGR.itemLink and IsAltKeyDown() then
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     ClearCursor()
+    return
   end
 
   if self.BGR and self.BGR.itemLink and HandleModifiedItemClick(self.BGR.itemLink) then
@@ -592,7 +593,6 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIn
   self.tabIndex = tabIndex
 
   local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
-
   if cacheData.itemLink == nil then
     texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
   end
@@ -727,7 +727,7 @@ function BaganatorClassicCachedItemButtonMixin:OnClick(button)
   elseif IsModifiedClick("DRESSUP") then
    return DressUpItemLink(self.BGR.itemLink) or DressUpBattlePetLink(self.BGR.itemLink) or DressUpMountLink(self.BGR.itemLink)
   elseif IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
   end
 end
 
@@ -796,7 +796,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:MyOnLoad()
     end
 
     if IsAltKeyDown() then
-      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     end
   end)
 
@@ -972,9 +972,10 @@ function BaganatorClassicLiveGuildItemButtonMixin:OnLoad()
 end
 
 function BaganatorClassicLiveGuildItemButtonMixin:OnClick(button)
-  if self.BGR and self.BGR.itemName and IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemName)
+  if self.BGR and self.BGR.itemLink and IsAltKeyDown() then
+    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     ClearCursor()
+    return
   end
 
   if self.BGR and self.BGR.itemLink and HandleModifiedItemClick(self.BGR.itemLink) then

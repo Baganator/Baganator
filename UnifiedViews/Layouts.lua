@@ -24,6 +24,24 @@ local function MasqueRegistration(button)
   end
 end
 
+local function GetNameFromLink(itemLink)
+  return (string.match(itemLink, "h%[(.*)%]|h"))
+end
+
+local function RegisterHighlightSimilarItems(self)
+  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemLink)
+    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemLink == "" then
+      return
+    end
+    local itemName = GetNameFromLink(itemLink)
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemLink and GetNameFromLink(button.BGR.itemLink) == itemName then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
+end
+
 local ReflowSettings = {
   Baganator.Config.Options.BAG_ICON_SIZE,
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
@@ -268,16 +286,7 @@ function BaganatorCachedBagLayoutMixin:OnShow()
     end
   end, self)
 
-  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
-    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
-      return
-    end
-    for _, button in ipairs(self.buttons) do
-      if button.BGR.itemName == itemName then
-        button:BGRStartFlashing()
-      end
-    end
-  end, self)
+  RegisterHighlightSimilarItems(self)
 
   Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
     for _, button in ipairs(self.buttons) do
@@ -376,16 +385,7 @@ function BaganatorLiveBagLayoutMixin:OnShow()
     end
   end, self)
 
-  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
-    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
-      return
-    end
-    for _, button in ipairs(self.buttons) do
-      if button.BGR.itemName == itemName then
-        button:BGRStartFlashing()
-      end
-    end
-  end, self)
+  RegisterHighlightSimilarItems(self)
 
   Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
     for _, button in ipairs(self.buttons) do
@@ -571,16 +571,7 @@ function BaganatorGeneralGuildLayoutMixin:ApplySearch(text)
 end
 
 function BaganatorGeneralGuildLayoutMixin:OnShow()
-  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemName)
-    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemName == "" then
-      return
-    end
-    for _, button in ipairs(self.buttons) do
-      if button.BGR.itemName == itemName then
-        button:BGRStartFlashing()
-      end
-    end
-  end, self)
+  RegisterHighlightSimilarItems(self)
 
   Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
     for _, button in ipairs(self.buttons) do
