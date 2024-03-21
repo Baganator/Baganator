@@ -120,7 +120,7 @@ function CharacterSelectSidebarMixin:OnLoad()
       UpdateForSelection(frame)
     end
   end)
-  Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
+  Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
     self:UpdateList()
   end)
 

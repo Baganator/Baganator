@@ -127,7 +127,7 @@ function BaganatorBackpackViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
+  Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
     self.tabsSetup = false
     if self.lastCharacter == character then
       self:UpdateForCharacter(self.liveCharacter, true)
