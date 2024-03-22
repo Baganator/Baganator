@@ -413,8 +413,6 @@ end
 
 function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   -- Copied code from Blizzard Container Frame logic
-  local tooltipOwner = GameTooltip:GetOwner()
-
   local info = C_Container.GetContainerItemInfo(self:GetBagID(), self:GetID())
 
   -- Keep cache and display in sync
@@ -450,8 +448,16 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   self:UpdateItemContextMatching();
   self:UpdateCooldown(texture);
   self:SetReadable(readable);
-  self:CheckUpdateTooltip(tooltipOwner);
   self:SetMatchesSearch(true)
+
+  if GameTooltip:IsOwned(self) then
+    GameTooltip:Hide()
+    BattlePetTooltip:Hide()
+  end
+
+  if self:IsMouseOver() then
+    self:OnEnter()
+  end
 
   SetWidgetsAlpha(self, true)
   ReparentOverlays(self)
@@ -611,6 +617,9 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIn
   SetItemButtonQuality(self, quality, self.BGR.itemLink or GetGuildBankItemLink(tabIndex, self:GetID()));
 
   if GameTooltip:IsOwned(self) then
+    GameTooltip:Hide()
+  end
+  if self:IsMouseOver() then
     self:OnEnter()
   end
 end
@@ -850,16 +859,11 @@ function BaganatorClassicLiveContainerItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
-
   local info = C_Container.GetContainerItemInfo(self:GetParent():GetID(), self:GetID())
 
   if cacheData.itemLink == nil then
     info = nil
   end
-
-
-  -- Copied code from Blizzard Container Frame logic
-  local tooltipOwner = GameTooltip:GetOwner()
 
   local texture = cacheData.iconTexture or (info and info.iconFileID);
   local itemCount = info and info.stackCount;
@@ -869,14 +873,14 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   local isFiltered = info and info.isFiltered;
   local noValue = info and info.hasNoValue;
   local itemID = info and info.itemID;
-  
+
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonQuality(self, quality, itemID);
   ApplyQualityBorderClassic(self, quality)
   ApplyNewItemAnimation(self, quality)
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
-  
+
   ContainerFrameItemButton_SetForceExtended(self, false);
 
   if ( texture ) then
@@ -887,15 +891,15 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self.hasItem = nil;
   end
   self.readable = readable;
-  
-  if ( self == tooltipOwner ) then
-    if info then
-      self.UpdateTooltip(self);
-    else
-      GameTooltip:Hide();
-    end
+
+  if GameTooltip:IsOwned(self) then
+    GameTooltip:Hide()
   end
-  
+
+  if self:IsMouseOver() then
+    self:OnEnter()
+  end
+
   self.searchOverlay:SetShown(false);
   SetWidgetsAlpha(self, true)
 
@@ -1044,7 +1048,15 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabI
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
   ApplyQualityBorderClassic(self, quality)
-  
+
+  if GameTooltip:IsOwned(self) then
+    GameTooltip:Hide()
+  end
+
+  if self:IsMouseOver() then
+    self:OnEnter()
+  end
+
   self.searchOverlay:SetShown(false);
   SetWidgetsAlpha(self, true)
 
