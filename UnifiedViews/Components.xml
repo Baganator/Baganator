@@ -258,7 +258,7 @@
   <Button name="BaganatorMegaSearchButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true" motionScriptsWhileDisabled="true">
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_SEARCH_EVERYWHERE" type="global"/>
-      <KeyValue key="tooltipText" value="BAGANATOR_L_SEARCH_EVERYWHERE_TOOLTIP_TEXT_1" type="global"/>
+      <KeyValue key="tooltipText" value="BAGANATOR_L_SEARCH_EVERYWHERE_TOOLTIP_TEXT_2" type="global"/>
     </KeyValues>
     <Layers>
       <Layer level="ARTWORK">
