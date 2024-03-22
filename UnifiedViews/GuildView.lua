@@ -358,7 +358,7 @@ function BaganatorGuildViewMixin:SetCurrentTab(index)
 
   if self.isLive then
     SetCurrentGuildBankTab(self.currentTab)
-    Syndicator.GuildCache:StartFullBankScan()
+    QueryGuildBankTab(self.currentTab)
     if GuildBankPopupFrame:IsShown() then
       self:OpenTabEditor()
     end
