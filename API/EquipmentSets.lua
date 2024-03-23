@@ -107,7 +107,7 @@ if not Baganator.Constants.IsRetail then
     ItemRack:RegisterExternalEventListener("ITEMRACK_SET_DELETED", ItemRackUpdated)
 
     Baganator.API.RegisterItemSetSource("ItemRack", "item_rack_classic", function(itemLocation, guid, itemLink)
-      if not guid then
+      if not guid or not itemLink then
         return
       end
 
