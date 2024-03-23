@@ -277,7 +277,7 @@ end)
 
 if Baganator.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_LEVEL, "battle_pet_level", function(Level, details)
-    if not details.itemID == Syndicator.Constants.BattlePetCageID then
+    if details.itemID ~= Syndicator.Constants.BattlePetCageID then
       return false
     end
     if iconSettings.useQualityColors then
