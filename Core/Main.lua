@@ -46,6 +46,10 @@ Baganator.Utilities.OnAddonLoaded("Baganator", function()
     return
   end
 
+  if SYNDICATOR_DATA then
+    BAGANATOR_DATA = nil
+  end
+
   Baganator.Config.InitializeData()
   Baganator.SlashCmd.Initialize()
 
