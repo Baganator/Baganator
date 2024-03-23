@@ -183,6 +183,9 @@ local function ApplyItemDetailSettings(button)
       local setup = addonTable.IconCornerPlugins[plugin]
       if setup and not button.cornerPlugins[plugin] then
         button.cornerPlugins[plugin] = setup.onInit(button)
+        if button.cornerPlugins[plugin] then
+          button.cornerPlugins[plugin]:Hide()
+        end
       end
       local corner = button.cornerPlugins[plugin]
       if corner then
