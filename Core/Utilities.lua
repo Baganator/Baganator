@@ -9,7 +9,7 @@ do
   frame:SetScript("OnEvent", function(self, eventName, addonName)
     if callbacksPending[addonName] then
       for _, cb in ipairs(callbacksPending[addonName]) do
-        cb()
+        xpcall(cb, CallErrorHandler)
       end
       callbacksPending[addonName] = nil
     end
@@ -20,7 +20,7 @@ do
   -- Necessary because cannot nest EventUtil.ContinueOnAddOnLoaded
   function Baganator.Utilities.OnAddonLoaded(addonName, callback)
     if select(2, AddOnLoaded(addonName)) then
-      callback()
+      xpcall(callback, CallErrorHandler)
     else
       callbacksPending[addonName] = callbacksPending[addonName] or {}
       table.insert(callbacksPending[addonName], callback)
