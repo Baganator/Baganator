@@ -545,10 +545,12 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
     {"type-legacy", BAGANATOR_L_ITEM_TYPE_BASIC},
     {"quality-legacy", BAGANATOR_L_ITEM_QUALITY_BASIC},
     {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
-    {"blizzard", BAGANATOR_L_BLIZZARD},
     {"expansion", BAGANATOR_L_EXPANSION},
-    {"sortbags", BAGANATOR_L_SORTBAGS},
   }
+
+  for id, details in pairs(addonTable.ExternalContainerSorts) do
+    table.insert(allModes, {id, details.label})
+  end
 
   table.sort(allModes, function(a, b) return a[2] < b[2] end)
 

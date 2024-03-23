@@ -844,10 +844,8 @@ function BaganatorBackpackViewMixin:CombineStacksAndSort(isReverse)
     sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
   end
 
-  if sortMethod == "blizzard" then
-    Baganator.Sorting.BlizzardBagSort(isReverse)
-  elseif sortMethod == "sortbags" then
-    Baganator.Sorting.ExternalSortBags(isReverse)
+  if addonTable.ExternalContainerSorts[sortMethod] then
+    addonTable.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.Backpack)
   elseif sortMethod == "combine_stacks_only" then
     self:CombineStacks(function() end)
   else

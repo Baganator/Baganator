@@ -4,7 +4,9 @@ Baganator = {
   Search = {},
   UnifiedViews = {},
   CustomiseDialog = {},
-  API = {},
+  API = {
+    Constants = {},
+  },
   Sorting = {},
   Transfers = {},
 }

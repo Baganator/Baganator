@@ -24,7 +24,6 @@ Sorting\ItemFields.lua
 Sorting\Order.lua
 Sorting\OrderBags.lua
 Sorting\CombineStacks.lua
-Sorting\Plugins.lua
 Sorting\ModeCheck.lua
 
 Transfers\Utilities.lua
@@ -74,5 +73,6 @@ API\Main.lua
 API\Junk.lua
 API\ItemButton.lua
 API\EquipmentSets.lua
+API\Sorting.lua
 
 Compatibility\VanillaEngraving.lua

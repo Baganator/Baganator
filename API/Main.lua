@@ -135,3 +135,22 @@ function Baganator.API.RegisterItemSetSource(label, id, getter)
     getter = getter,
   })
 end
+
+addonTable.ExternalContainerSorts = {}
+
+Baganator.API.Constants.ContainerType = {
+  Backpack = "backpack",
+  Bank = "bank",
+}
+
+-- Register a sort function for bags and bank.
+-- callback: function(isReverse, containerType)
+--  isReverse: boolean
+--  containerType: Baganator.API.Constants.SortMode
+function Baganator.API.RegisterContainerSort(label, id, callback)
+  assert(not Baganator.Sorting.IsModeAvailable(id), "id already exists")
+  addonTable.ExternalContainerSorts[id] = {
+    label = label,
+    callback = callback,
+  }
+end

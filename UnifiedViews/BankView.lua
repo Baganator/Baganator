@@ -1,4 +1,7 @@
 BaganatorBankViewMixin = {}
+
+local _, addonTable = ...
+
 function BaganatorBankViewMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
@@ -544,10 +547,8 @@ function BaganatorBankViewMixin:CombineStacksAndSort(isReverse)
     sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
   end
 
-  if sortMethod == "blizzard" then
-    Baganator.Sorting.BlizzardBankSort(isReverse)
-  elseif sortMethod == "sortbags" then
-    Baganator.Sorting.ExternalSortBagsBank(isReverse)
+  if addonTable.ExternalContainerSorts[sortMethod] then
+    addonTable.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.Bank)
   elseif sortMethod == "combine_stacks_only" then
     self:CombineStacks(function() end)
   else
