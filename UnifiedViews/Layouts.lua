@@ -1,25 +1,19 @@
-local masqueGroup
-local function MasqueRegistration(button)
-  if not LibStub then
-    return
-  end
+local MasqueRegistration = function() end
 
-  if masqueGroup == nil then
-    -- Establish a reference to Masque.
-    local Masque, MSQ_Version = LibStub("Masque", true)
-    if Masque == nil then
-      return
-    end
+if LibStub then
+  -- Establish a reference to Masque.
+  local Masque, MSQ_Version = LibStub("Masque", true)
+  if Masque ~= nil then
     -- Retrieve a reference to a new or existing group.
-    masqueGroup = Masque:Group("Baganator", "Bag")
-  end
+    local masqueGroup = Masque:Group("Baganator", "Bag")
 
-  if masqueGroup then
-    if button.masqueApplied then
-      masqueGroup:ReSkin(button)
-    else
-      button.masqueApplied = true
-      masqueGroup:AddButton(button, nil, "Item")
+    MasqueRegistration = function(button)
+      if button.masqueApplied then
+        masqueGroup:ReSkin(button)
+      else
+        button.masqueApplied = true
+        masqueGroup:AddButton(button, nil, "Item")
+      end
     end
   end
 end
