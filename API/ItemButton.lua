@@ -226,6 +226,26 @@ Baganator.Utilities.OnAddonLoaded("Pawn", function()
     Arrow:SetSize(13.5, 15)
     return Arrow
   end, {corner = "top_left", priority = 1})
+
+  -- Equip/unequip
+  Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
+    if Baganator.API.IsCornerWidgetActive("pawn") then
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+  end)
+  -- Spec change
+  hooksecurefunc("PawnInvalidateBestItems", function()
+    if Baganator.API.IsCornerWidgetActive("pawn") then
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+  end)
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LEVEL_UP")
+  frame:SetScript("OnEvent", function()
+    if Baganator.API.IsCornerWidgetActive("pawn") then
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+  end)
 end)
 
 Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
@@ -249,6 +269,15 @@ Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
     itemButton.CanIMogItOverlay.CIMIIconTexture:SetPoint("TOPRIGHT")
     return itemButton.CanIMogItOverlay
   end, {corner = "top_right", priority = 1})
+
+  local function Callback()
+    if Baganator.API.IsCornerWidgetActive("can_i_mog_it") then
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+  end
+  CanIMogIt:RegisterMessage("OptionUpdate", function()
+    pcall(Callback)
+  end)
 end)
 
 Baganator.Utilities.OnAddonLoaded("BattlePetBreedID", function()
