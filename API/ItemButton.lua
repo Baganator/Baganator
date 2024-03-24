@@ -239,6 +239,13 @@ Baganator.Utilities.OnAddonLoaded("Pawn", function()
       Baganator.API.RequestItemButtonsRefresh()
     end
   end)
+  -- Settings change
+  hooksecurefunc("PawnResetTooltips", function()
+    if Baganator.API.IsCornerWidgetActive("pawn") then
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+  end)
+  -- Level up
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("PLAYER_LEVEL_UP")
   frame:SetScript("OnEvent", function()
