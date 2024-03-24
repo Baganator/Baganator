@@ -84,7 +84,7 @@ function BaganatorBankViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
-    if self:IsVisible() then
+    if self:IsVisible() and character ~= self.lastCharacter then
       self:UpdateForCharacter(character, self.liveCharacter == character and self.liveBankActive)
     end
   end)

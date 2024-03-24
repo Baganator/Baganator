@@ -117,8 +117,10 @@ function BaganatorBackpackViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
-    self:AddNewRecent(character)
-    self:UpdateForCharacter(character, self.liveCharacter == character)
+    if character ~= self.lastCharacter then
+      self:AddNewRecent(character)
+      self:UpdateForCharacter(character, self.liveCharacter == character)
+    end
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
