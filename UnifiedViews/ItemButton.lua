@@ -80,8 +80,9 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
 end
 
-local function GetInfo(self, cacheData, earlyCallback)
+local function GetInfo(self, cacheData, earlyCallback, finalCallback)
   earlyCallback = earlyCallback or function() end
+  finalCallback = finalCallback or function() end
 
   local info = Syndicator.Search.GetBaseInfo(cacheData)
   self.BGR = info
@@ -119,9 +120,7 @@ local function GetInfo(self, cacheData, earlyCallback)
     for _, callback in ipairs(itemCallbacks) do
       callback(self)
     end
-    if self.BGRUpdateQuests then
-      self:BGRUpdateQuests()
-    end
+    finalCallback()
   end
 
   if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
@@ -298,13 +297,15 @@ end
 
 function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self:SetItemButtonTexture(details.iconTexture)
-  self:SetItemButtonQuality(details.quality)
+  self:SetItemButtonQuality(details.quality, details.itemLink, false, details.isBound)
   self:SetItemButtonCount(details.itemCount)
   SetItemCraftingQualityOverlay(self, details.itemLink)
   SetItemButtonDesaturated(self, false);
   ReparentOverlays(self)
 
-  GetInfo(self, details)
+  GetInfo(self, details, nil, function()
+    self:SetItemButtonQuality(details.quality, details.itemLink, false, details.isBound)
+  end)
 end
 
 function BaganatorRetailCachedItemButtonMixin:BGRStartFlashing()
@@ -440,7 +441,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   self:SetItemButtonTexture(texture);
 
   local doNotSuppressOverlays = false;
-  SetItemButtonQuality(self, quality, itemLink, doNotSuppressOverlays, isBound);
+  self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
 
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
@@ -470,6 +471,9 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self.BGR.hasNoValue = noValue
     self.BGR.setInfo = Baganator.UnifiedViews.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()), self.BGR.itemLink)
     self:BGRUpdateQuests()
+  end, function()
+    self:BGRUpdateQuests()
+    self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
   end)
 end
 
@@ -935,6 +939,8 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     end
 
     self.BGR.hasNoValue = noValue
+  end, function()
+    self:BGRUpdateQuests()
   end)
 end
 
