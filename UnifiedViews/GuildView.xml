@@ -129,6 +129,18 @@
             <Anchor point="BOTTOMLEFT" x="15" y="30"/>
           </Anchors>
         </FontString>
+        <FontString parentKey="NotVisitedText" inherits="GameFontHighlight" text="BAGANATOR_L_GUILD_BANK_DATA_MISSING_HINT">
+          <Anchors>
+            <Anchor point="LEFT" relativeKey="$parent.Money"/>
+            <Anchor point="TOP" relativePoint="CENTER"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="NoTabsText" inherits="GameFontHighlight" text="BAGANATOR_L_GUILD_BANK_NO_TABS">
+          <Anchors>
+            <Anchor point="LEFT" relativeKey="$parent.Money"/>
+            <Anchor point="TOP" relativePoint="CENTER" y="10"/>
+          </Anchors>
+        </FontString>
       </Layer>
     </Layers>
     <Frames>

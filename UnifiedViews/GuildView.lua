@@ -472,6 +472,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
       self.WithdrawButton:Enable()
     end
     self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X_X:format(GetMoneyString(withdrawMoney, true), GetMoneyString(guildMoney, true)))
+    self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 15)
     detailsHeight = 30
 
     self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
@@ -481,6 +482,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     self.wouldShowTransferButton = false
     self.WithdrawalsInfo:SetText("")
     self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(Syndicator.API.GetGuild(guild).money, true)))
+    self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 5)
     detailsHeight = 10
 
     self.TransferButton:Hide()
@@ -489,6 +491,11 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
 
   active:ClearAllPoints()
   active:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -50)
+
+  self.SearchBox:SetShown(active:IsShown())
+  self.NotVisitedText:SetShown(not active:IsShown() and not guildData.details.visited)
+  self.NoTabsText:SetShown(not active:IsShown() and guildData.details.visited)
+  self.Money:SetShown(active:IsShown() or guildData.details.visited)
 
   self.WithdrawalsInfo:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 30)
   self.Money:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 10)

@@ -32,6 +32,9 @@ L["ALL_CHARACTERS"] = "All Characters"
 L["BAG_SLOTS"] = "Bag Slots"
 L["GUILD_BANK"] = "Guild Bank"
 L["BANK_DATA_MISSING_HINT"] = "Bank data missing. Visit a banker with %s to populate this view."
+L["GUILD_BANK_DATA_MISSING_HINT"] = "This guild bank hasn't been visited yet."
+L["GUILD_BANK_NO_TABS"] = "There are no tabs in this guild bank."
+
 
 L["CUSTOMISE_BAGANATOR"] = "Customise Baganator"
 L["ENABLE_BACKPACK_VIEW"] = "Use Baganator backpack view (reload required)"
