@@ -217,9 +217,7 @@ end)
 
 Baganator.Utilities.OnAddonLoaded("Pawn", function()
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_PAWN, "pawn", function(Arrow, details)
-    local classID = select(6, GetItemInfoInstant(details.itemLink))
-    local shouldShow = classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon or classID == Enum.ItemClass.Gem
-    return shouldShow and PawnShouldItemLinkHaveUpgradeArrowUnbudgeted(details.itemLink)
+    return HasItemLevel(details) and PawnShouldItemLinkHaveUpgradeArrowUnbudgeted(details.itemLink)
   end, function(itemButton)
     local Arrow = itemButton:CreateTexture(nil, "OVERLAY")
     Arrow:SetTexture("Interface\\AddOns\\Pawn\\Textures\\UpgradeArrow")
