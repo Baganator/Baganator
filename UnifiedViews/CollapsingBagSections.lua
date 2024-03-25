@@ -1,15 +1,15 @@
 local ContainerTypeToIcon = {
   [0] = nil, -- regular bag
-  [1] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_soul_shard", tooltipHeader=SYNDICATOR_L_SOUL}, -- soulbag
-  [2] = {type = "atlas", value="worldquest-icon-herbalism", tooltipHeader=SYNDICATOR_L_HERBALISM, size=50}, --herb
-  [3] = {type = "atlas", value="worldquest-icon-enchanting", tooltipHeader=SYNDICATOR_L_ENCHANTING, size=50}, --enchant
-  [4] = {type = "atlas", value="worldquest-icon-engineering", tooltipHeader=SYNDICATOR_L_ENGINEERING, size=50}, --engineering
-  [5] = {type = "atlas", value="worldquest-icon-jewelcrafting", tooltipHeader=SYNDICATOR_L_GEMS, size=50}, -- gem
-  [6] = {type = "atlas", value="worldquest-icon-mining", tooltipHeader=SYNDICATOR_L_MINING, size=50}, -- mining
-  [7] = {type = "atlas", value="worldquest-icon-leatherworking", tooltipHeader=SYNDICATOR_L_LEATHERWORKING, size=50}, -- leatherworking
-  [8] = {type = "atlas", value="worldquest-icon-inscription", tooltipHeader=SYNDICATOR_L_INSCRIPTION, size=50}, -- inscription
-  [9] = {type = "atlas", value="worldquest-icon-fishing", tooltipHeader=SYNDICATOR_L_FISHING, size=50}, -- fishing
-  [10] = {type = "atlas", value="worldquest-icon-cooking", tooltipHeader=SYNDICATOR_L_COOKING, size=60}, -- cooking
+  [1] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_soul_shard", tooltipHeader=BAGANATOR_L_SOUL}, -- soulbag
+  [2] = {type = "atlas", value="worldquest-icon-herbalism", tooltipHeader=BAGANATOR_L_HERBALISM, size=50}, --herb
+  [3] = {type = "atlas", value="worldquest-icon-enchanting", tooltipHeader=BAGANATOR_L_ENCHANTING, size=50}, --enchant
+  [4] = {type = "atlas", value="worldquest-icon-engineering", tooltipHeader=BAGANATOR_L_ENGINEERING, size=50}, --engineering
+  [5] = {type = "atlas", value="worldquest-icon-jewelcrafting", tooltipHeader=BAGANATOR_L_GEMS, size=50}, -- gem
+  [6] = {type = "atlas", value="worldquest-icon-mining", tooltipHeader=BAGANATOR_L_MINING, size=50}, -- mining
+  [7] = {type = "atlas", value="worldquest-icon-leatherworking", tooltipHeader=BAGANATOR_L_LEATHERWORKING, size=50}, -- leatherworking
+  [8] = {type = "atlas", value="worldquest-icon-inscription", tooltipHeader=BAGANATOR_L_INSCRIPTION, size=50}, -- inscription
+  [9] = {type = "atlas", value="worldquest-icon-fishing", tooltipHeader=BAGANATOR_L_FISHING, size=50}, -- fishing
+  [10] = {type = "atlas", value="worldquest-icon-cooking", tooltipHeader=BAGANATOR_L_COOKING, size=60}, -- cooking
 }
 
 local keyedTextures = {
