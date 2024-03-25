@@ -719,7 +719,7 @@ function BaganatorBackpackViewMixin:UpdateCurrencies(character)
         -- other characters info via the tooltip anyway
         self.Currencies[i]:SetScript("OnEnter", function(self)
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-          Baganator.Tooltips.AddCurrencyLines(GameTooltip, currencyID)
+          Syndicator.Tooltips.AddCurrencyLines(GameTooltip, currencyID)
         end)
       end
       self.Currencies[i]:SetScript("OnLeave", function(self)
