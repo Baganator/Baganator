@@ -73,7 +73,8 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", functio
 end, textInit)
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOE, "boe", function(BindingText, details)
-  if IsEquipment(details.itemLink) and not details.isBound and (iconSettings.boe_on_common or details.quality > 1) then
+  local classID = select(6, GetItemInfoInstant(details.itemLink))
+  if (IsEquipment(details.itemLink) or classID == Enum.ItemClass.Container) and not details.isBound and (iconSettings.boe_on_common or details.quality > 1) then
       BindingText:SetText(BAGANATOR_L_BOE)
       if iconSettings.useQualityColors then
         local color = qualityColors[details.quality]
