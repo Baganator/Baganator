@@ -27,6 +27,9 @@
           <OnClick>
             self:GetParent():CombineStacksAndSort(button == "RightButton")
           </OnClick>
+          <OnEnter inherit="append">
+            self.tooltipText = Baganator.Utilities.GetExternalSortMethodName()
+          </OnEnter>
         </Scripts>
       </Button>
       <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">

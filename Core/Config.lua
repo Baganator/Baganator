@@ -69,6 +69,8 @@ Baganator.Config.Options = {
   ENABLE_BACKPACK_VIEW = "enable_backpack_view",
   ENABLE_BANK_VIEW = "enable_bank_view",
   ENABLE_GUILD_VIEW = "enable_guild_view",
+
+  GUILD_BANK_SORT_METHOD = "guild_bank_sort_method",
 }
 
 Baganator.Config.Defaults = {
@@ -134,6 +136,8 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ENABLE_BACKPACK_VIEW] = true,
   [Baganator.Config.Options.ENABLE_BANK_VIEW] = true,
   [Baganator.Config.Options.ENABLE_GUILD_VIEW] = true,
+
+  [Baganator.Config.Options.GUILD_BANK_SORT_METHOD] = "unset",
 }
 
 Baganator.Config.IsCharacterSpecific = {

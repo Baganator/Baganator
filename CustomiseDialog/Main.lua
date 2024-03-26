@@ -539,40 +539,73 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
   local frame = GetWrapperFrame(self)
 
-  local allModes = {
-    {"type", BAGANATOR_L_ITEM_TYPE_ENHANCED},
-    {"quality", BAGANATOR_L_ITEM_QUALITY_ENHANCED},
-    {"type-legacy", BAGANATOR_L_ITEM_TYPE_BASIC},
-    {"quality-legacy", BAGANATOR_L_ITEM_QUALITY_BASIC},
-    {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
-    {"expansion", BAGANATOR_L_EXPANSION},
-  }
+  do
+    local allModes = {
+      {"type", BAGANATOR_L_ITEM_TYPE_ENHANCED},
+      {"quality", BAGANATOR_L_ITEM_QUALITY_ENHANCED},
+      {"type-legacy", BAGANATOR_L_ITEM_TYPE_BASIC},
+      {"quality-legacy", BAGANATOR_L_ITEM_QUALITY_BASIC},
+      {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
+      {"expansion", BAGANATOR_L_EXPANSION},
+    }
 
-  for id, details in pairs(addonTable.ExternalContainerSorts) do
-    table.insert(allModes, {id, details.label})
+    for id, details in pairs(addonTable.ExternalContainerSorts) do
+      table.insert(allModes, {id, details.label})
+    end
+
+    table.sort(allModes, function(a, b) return a[2] < b[2] end)
+
+    local typeDropDown = {
+      type = "dropdown",
+      option = "sort_method",
+      entries = {},
+      values = {},
+    }
+
+    for _, details in ipairs(allModes) do
+      if Baganator.Sorting.IsModeAvailable(details[1]) then
+        table.insert(typeDropDown.values, details[1])
+        table.insert(typeDropDown.entries, details[2])
+      end
+    end
+
+    if not Baganator.Sorting.IsModeAvailable(Baganator.Config.Get("sort_method")) then
+      Baganator.Config.ResetOne("sort_method")
+    end
+
+    table.insert(SORTING_OPTIONS, typeDropDown)
   end
+  if next(addonTable.ExternalGuildBankSorts) ~= nil then
+    local allModes = {}
 
-  table.sort(allModes, function(a, b) return a[2] < b[2] end)
+    Baganator.Utilities.AutoSetGuildSortMethod()
 
-  local typeDropDown = {
-    type = "dropdown",
-    option = "sort_method",
-    entries = {},
-    values = {},
-  }
+    for id, details in pairs(addonTable.ExternalGuildBankSorts) do
+      table.insert(allModes, {id, details.label})
+    end
 
-  for _, details in ipairs(allModes) do
-    if Baganator.Sorting.IsModeAvailable(details[1]) then
+    table.sort(allModes, function(a, b) return a[2] < b[2] end)
+
+    local typeDropDown = {
+      type = "dropdown",
+      option = "guild_bank_sort_method",
+      entries = {NONE},
+      values = {"none"},
+    }
+
+    for _, details in ipairs(allModes) do
       table.insert(typeDropDown.values, details[1])
       table.insert(typeDropDown.entries, details[2])
     end
-  end
 
-  if not Baganator.Sorting.IsModeAvailable(Baganator.Config.Get("sort_method")) then
-    Baganator.Config.ResetOne("sort_method")
-  end
+    table.insert(SORTING_OPTIONS, {
+      type = "header",
+      text = BAGANATOR_L_GUILD_BANK_SORT_METHOD,
+      level = 2,
+    })
 
-  table.insert(SORTING_OPTIONS, typeDropDown)
+    table.insert(SORTING_OPTIONS, typeDropDown)
+  end
 
   local allFrames = GenerateFrames(SORTING_OPTIONS, frame)
 

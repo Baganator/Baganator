@@ -109,6 +109,7 @@ L["ADD_A_CORNER_ITEM"] = "Add a corner item"
 L["ICON_CORNER_PRIORITIES_EXPLANATION"] = "Choose what information should be shown in each corner of the icon on an item's button and prioritise the most wanted information."
 
 L["SORT"] = "Sort"
+L["USING_X"] = "Using %s"
 L["SORTING"] = "Sorting"
 L["REVERSE_GROUPS_SORT_ORDER"] = "Reverse groups sort order"
 L["SORT_START_AT_BOTTOM"] = "Start the sorted items at the bottom of bag"
@@ -116,6 +117,7 @@ L["SORT_IGNORE_SLOTS_AT_END_NOT_START"] = "Ignore slots at the end, not start, f
 L["X_BAG_SLOTS_TO_IGNORE_WHEN_SORTING_CHARACTER_SPECIFIC"] = "%s regular bag slots to ignore when sorting (character specific)"
 L["X_BANK_SLOTS_TO_IGNORE_WHEN_SORTING_CHARACTER_SPECIFIC"] = "%s regular bank slots to ignore when sorting (character specific)"
 L["AUTO_SORT_ON_OPENING_BAGS"] = "Automatically sort on opening bags"
+L["GUILD_BANK_SORT_METHOD"] = "Guild Bank Sort Method"
 
 L["SEARCH_TRY_X"] = "Search, try %s"
 

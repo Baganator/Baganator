@@ -1,3 +1,5 @@
+local _, addonTable = ...
+
 local PopupMode = {
   Tab = "tab",
   Money = "money",
@@ -82,11 +84,13 @@ function BaganatorGuildViewMixin:OnLoad()
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
-      if self:IsShown() then
+      if self:IsVisible() then
         self:UpdateForGuild(self.lastGuild, self.isLive)
       end
     elseif settingName == Baganator.Config.Options.SHOW_TRANSFER_BUTTON then
       self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
+    elseif settingName == Baganator.Config.Options.GUILD_BANK_SORT_METHOD then
+      self:UpdateForGuild(self.lastGuild, self.isLive)
     elseif settingName == Baganator.Config.Options.SHOW_BUTTONS_ON_ALT then
       self:UpdateAllButtons()
     end
@@ -475,6 +479,20 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 15)
     detailsHeight = 30
 
+    self.SortButton:SetShown(canDeposit
+      and #guildData.bank > 0
+      -- Use 7*14 to cover that every item in a tab can be sorted
+      and (remainingWithdrawals == -1 or remainingWithdrawals > #guildData.bank * 7*14)
+      and addonTable.ExternalGuildBankSorts[Baganator.Config.Get(Baganator.Config.Options.GUILD_BANK_SORT_METHOD)]
+      and Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
+    )
+
+    if self.SortButton:IsShown() then
+      self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
+    else
+      self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
+    end
+
     self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
     self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
     self.LogsFrame:ApplyTabTitle()
@@ -486,6 +504,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
     detailsHeight = 10
 
     self.TransferButton:Hide()
+    self.SortButton:Hide()
     self.LogsFrame:Hide()
   end
 
@@ -557,6 +576,11 @@ function BaganatorGuildViewMixin:Transfer(button)
   end
 end
 
+function BaganatorGuildViewMixin:CombineStacksAndSort()
+  local sortsDetails = addonTable.ExternalGuildBankSorts[Baganator.Config.Get(Baganator.Config.Options.GUILD_BANK_SORT_METHOD)]
+  sortsDetails.callback()
+end
+
 function BaganatorGuildViewMixin:ToggleTabText()
   if self.TabTextFrame:IsShown() then
     self.TabTextFrame:Hide()
@@ -625,6 +649,7 @@ function BaganatorGuildLogsTemplateMixin:OnShow()
   Baganator.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
   self:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
+  Baganator.Utilities.AutoSetGuildSortMethod()
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStart()

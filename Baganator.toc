@@ -74,5 +74,6 @@ API\Junk.lua
 API\ItemButton.lua
 API\EquipmentSets.lua
 API\Sorting.lua
+API\GuildBankSorting.lua
 
 Compatibility\VanillaEngraving.lua

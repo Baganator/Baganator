@@ -1,3 +1,5 @@
+local _, addonTable = ...
+
 local classicBorderFrames = {
   "BotLeftCorner", "BotRightCorner", "BottomBorder", "LeftBorder", "RightBorder",
   "TopRightCorner", "TopLeftCorner", "TopBorder"
@@ -186,4 +188,33 @@ function Baganator.Utilities.GetMoneyString(amount, splitThousands)
   local result = GetMoneyString(amount, splitThousands)
   result = result:gsub("0:0:2:0", "12"):gsub("|T", " |T")
   return result
+end
+
+function Baganator.Utilities.GetExternalSortMethodName()
+  local sortsDetails = addonTable.ExternalContainerSorts[Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)]
+  return sortsDetails and BAGANATOR_L_USING_X:format(sortsDetails.label)
+end
+
+function Baganator.Utilities.GetGuildSortMethodName()
+  local sortsDetails = addonTable.ExternalGuildBankSorts[Baganator.Config.Get(Baganator.Config.Options.GUILD_BANK_SORT_METHOD)]
+  return sortsDetails and BAGANATOR_L_USING_X:format(sortsDetails.label)
+end
+
+function Baganator.Utilities.AutoSetGuildSortMethod()
+  local method = Baganator.Config.Get(Baganator.Config.Options.GUILD_BANK_SORT_METHOD)
+  if not addonTable.ExternalGuildBankSorts[method] then
+    if method == "unset" and next(addonTable.ExternalGuildBankSorts) then
+      local lowest, id = nil, nil
+      for id, details in keys(addonTable.ExternalGuildBankSorts) do
+        if lowest == nil then
+          lowest, id = details.priority, id
+        elseif details.priority < lowest then
+          lowest, id = details.priority, id
+        end
+      end
+      Baganator.Config.Set("guild_bank_sort_method", id)
+    elseif method ~= "none" and method ~= "unset" then
+      Baganator.Config.ResetOne("guild_bank_sort_method")
+    end
+  end
 end
