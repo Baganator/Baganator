@@ -148,6 +148,7 @@ Baganator.API.Constants.ContainerType = {
 --  isReverse: boolean
 --  containerType: Baganator.API.Constants.SortMode
 function Baganator.API.RegisterContainerSort(label, id, callback)
+  assert(type(label) == "string" and type(id) == "string" and type(callback) == "function")
   assert(not Baganator.Sorting.IsModeAvailable(id), "id already exists")
   addonTable.ExternalContainerSorts[id] = {
     label = label,
@@ -161,6 +162,7 @@ local guildSortPriority = 0
 -- Register a sort function for guild bank.
 -- callback: function()
 function Baganator.API.RegisterGuildBankSort(label, id, callback)
+  assert(type(label) == "string" and type(id) == "string" and type(callback) == "function")
   assert(not addonTable.ExternalGuildBankSorts[id], "id already exists")
   guildSortPriority = guildSortPriority + 1
   addonTable.ExternalGuildBankSorts[id] = {
