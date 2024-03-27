@@ -441,7 +441,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
   self.SearchBox:ClearAllPoints()
   self.SearchBox:SetPoint("BOTTOMLEFT", active, "TOPLEFT", 5, 3)
   -- 300 is the default searchbox width
-  self.SearchBox:SetWidth(math.min(300, active:GetWidth() - 5))
+  self.SearchBox:SetWidth(active:GetWidth() - 5)
 
   if guildData.bank[1] then
     self.Tabs[1]:SetPoint("LEFT", active, "LEFT")
