@@ -205,7 +205,7 @@ function Baganator.Utilities.AutoSetGuildSortMethod()
   if not addonTable.ExternalGuildBankSorts[method] then
     if method == "unset" and next(addonTable.ExternalGuildBankSorts) then
       local lowest, id = nil, nil
-      for id, details in keys(addonTable.ExternalGuildBankSorts) do
+      for id, details in pairs(addonTable.ExternalGuildBankSorts) do
         if lowest == nil then
           lowest, id = details.priority, id
         elseif details.priority < lowest then
