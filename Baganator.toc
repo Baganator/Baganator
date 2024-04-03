@@ -1,7 +1,7 @@
 ## Interface: 100206
 ## Interface-Cata: 40400
 ## Interface-Wrath: 30403
-## Interface-Vanilla: 11501
+## Interface-Vanilla: 11502
 ## Title: Baganator
 ## Version: @project-version@
 ## Author: plusmouse
