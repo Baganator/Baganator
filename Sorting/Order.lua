@@ -104,7 +104,7 @@ function Baganator.Sorting.AddSortKeys(list)
       end
 
       item.priority = PriorityMap[item.itemID] and 1 or 1000
-      item.classID, item.subClassID = select(6, GetItemInfoInstant(linkToCheck))
+      item.classID, item.subClassID = select(6, C_Item.GetItemInfoInstant(linkToCheck))
       item.invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID)
       item.index = index
       if item.itemID == Baganator.Constants.BattlePetCageID then

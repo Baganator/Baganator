@@ -306,7 +306,11 @@ function BaganatorBankViewMixin:OnShow()
 end
 
 function BaganatorBankViewMixin:OnHide(eventName)
-  CloseBankFrame()
+  if C_Bank then
+    C_Bank.CloseBankFrame()
+  else
+    CloseBankFrame()
+  end
 
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")

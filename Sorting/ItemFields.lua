@@ -156,7 +156,7 @@ keysMapping["expansion"] = function(self)
     return 0
   end
 
-  local expansion = select(15, GetItemInfo(self.itemLink))
+  local expansion = select(15, C_Item.GetItemInfo(self.itemLink))
   return expansion
 end
 
@@ -166,7 +166,7 @@ end
 
 keysMapping["itemLevel"] = function(self)
   if C_Item.IsItemDataCachedByID(self.itemID) then
-    local itemLevel = GetDetailedItemLevelInfo(self.itemLink)
+    local itemLevel = C_Item.GetDetailedItemLevelInfo(self.itemLink)
     return itemLevel or -1
   else
     C_Item.RequestLoadItemDataByID(self.itemID)

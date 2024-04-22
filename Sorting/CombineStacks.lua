@@ -75,7 +75,7 @@ local function GetBagStacks(bags, bagIDs, callback)
           itemIDToStackSize[item.itemID] = -1
           local item = Item:CreateFromItemID(item.itemID)
           item:ContinueOnItemLoad(function()
-            itemIDToStackSize[item.itemID] = select(8, GetItemInfo(item.itemID))
+            itemIDToStackSize[item.itemID] = select(8, C_Item.GetItemInfo(item.itemID))
             waiting = waiting - 1
             if waiting == 0 and loopComplete then
               callback(stacks)

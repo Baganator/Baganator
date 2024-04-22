@@ -39,7 +39,7 @@ function Baganator.UnifiedViews.GetCollapsingBagDetails(character, section, inde
 
   for index = 1, slotsCount do
     if containerInfo[index] and containerInfo[index].itemID ~= nil then
-      local classID, subClassID = select(6, GetItemInfoInstant(containerInfo[index].itemID))
+      local classID, subClassID = select(6, C_Item.GetItemInfoInstant(containerInfo[index].itemID))
       local icon = ContainerTypeToIcon[subClassID]
       local bagIndex = index + 1
       if classID == Enum.ItemClass.Quiver then

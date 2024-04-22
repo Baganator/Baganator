@@ -5,19 +5,19 @@ function Baganator.Sorting.GetBagUsageChecks(bagIDs)
   local sortOrder = {}
   if Baganator.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.ReagentBag) ~= nil then
     checks[Enum.BagIndex.ReagentBag] = function(item)
-      return item.itemID and (select(17, GetItemInfo(item.itemID)))
+      return item.itemID and (select(17, C_Item.GetItemInfo(item.itemID)))
     end
     sortOrder[Enum.BagIndex.ReagentBag] = 10 -- reagent bags go after special bags
   end
   if Baganator.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.Reagentbank) ~= nil then
     checks[Enum.BagIndex.Reagentbank] = function(item)
-      return (select(17, GetItemInfo(item.itemID)))
+      return (select(17, C_Item.GetItemInfo(item.itemID)))
     end
     sortOrder[Enum.BagIndex.Reagentbank] = 10 -- reagent bags go after special bags
   end
   if not Baganator.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.Keyring) ~= nil then
     checks[Enum.BagIndex.Keyring] = function(item)
-      local itemFamily = item.itemID and GetItemFamily(item.itemID)
+      local itemFamily = item.itemID and C_Item.GetItemFamily(item.itemID)
       return itemFamily == Baganator.Constants.KeyItemFamily
     end
     sortOrder[Enum.BagIndex.Keyring] = 1
@@ -27,7 +27,7 @@ function Baganator.Sorting.GetBagUsageChecks(bagIDs)
     local _, family = C_Container.GetContainerNumFreeSlots(bagID)
     if family ~= nil and family ~= 0 then
       checks[bagID] = function(item)
-        local itemFamily = item.itemID and GetItemFamily(item.itemID)
+        local itemFamily = item.itemID and C_Item.GetItemFamily(item.itemID)
         return itemFamily and item.classID ~= Enum.ItemClass.Container and item.classID ~= Enum.ItemClass.Quiver and bit.band(itemFamily, family) ~= 0
       end
       sortOrder[bagID] = 5 -- special bags go after keyrings
