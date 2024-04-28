@@ -647,6 +647,9 @@ function BaganatorCustomiseDialogMixin:SetupTooltipsLink()
       self:SetIndex(lastIndex)
     end)
     Settings.OpenToCategory(SYNDICATOR_L_SYNDICATOR)
+    C_Timer.After(0, function()
+      Settings.OpenToCategory(SYNDICATOR_L_SYNDICATOR)
+    end)
   end)
 end
 
