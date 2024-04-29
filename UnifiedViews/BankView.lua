@@ -41,11 +41,10 @@ function BaganatorBankViewMixin:OnLoad()
 
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
-    if self:IsVisible() then
-      self:UpdateForCharacter(character, true, updatedBags)
-    else
-      self:NotifyBagUpdate(updatedBags)
+    if character == self.lastCharacter and self:IsVisible() then
+        self:UpdateForCharacter(character, self.liveBankActive, updatedBags)
     end
+    self:NotifyBagUpdate(updatedBags)
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
