@@ -124,6 +124,14 @@ function BaganatorGuildViewMixin:OnLoad()
     timeout = 0,
     hideOnEscape = 1,
   }
+
+  self.warningNotInGuildDialog = "Baganator.NotInGuild" .. self:GetName()
+  StaticPopupDialogs[self.warningNotInGuildDialog] = {
+    text = ERR_GUILD_PLAYER_NOT_IN_GUILD,
+    button1 = OKAY,
+    timeout = 0,
+    hideOnEscape = 1,
+  }
 end
 
 function BaganatorGuildViewMixin:OnEvent(eventName, ...)
@@ -137,8 +145,15 @@ function BaganatorGuildViewMixin:OnEvent(eventName, ...)
         GuildBankFrame:SetParent(hiddenFrame)
       end
       self.lastGuild = Syndicator.API.GetCurrentGuild()
-      self.isLive = true
-      self:Show()
+      -- Special case, classic, where Blizzard still opens the Guild Bank UI
+      -- even if there's no guild
+      if self.lastGuild == nil then
+        StaticPopup_Show(self.warningNotInGuildDialog)
+        CloseGuildBankFrame()
+      else
+        self.isLive = true
+        self:Show()
+      end
     end
   elseif eventName == "PLAYER_INTERACTION_MANAGER_FRAME_HIDE" then
     local interactType = ...
