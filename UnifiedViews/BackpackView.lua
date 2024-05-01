@@ -824,7 +824,7 @@ function BaganatorBackpackViewMixin:DoSort(isReverse)
   end
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(Syndicator.Constants.AllBagIndexes)
   local function DoSortInternal()
-    local status = Baganator.Sorting.ApplyOrdering(
+    local status = Baganator.Sorting.ApplyBagOrdering(
       Syndicator.API.GetCharacter(self.liveCharacter).bags,
       Syndicator.Constants.AllBagIndexes,
       bagsToSort,

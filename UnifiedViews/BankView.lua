@@ -525,7 +525,7 @@ function BaganatorBankViewMixin:DoSort(isReverse)
   local bagChecks = Baganator.Sorting.GetBagUsageChecks(Syndicator.Constants.AllBankIndexes)
 
   local function DoSortInternal()
-    local status = Baganator.Sorting.ApplyOrdering(
+    local status = Baganator.Sorting.ApplyBagOrdering(
       Syndicator.API.GetCharacter(self.liveCharacter).bank,
       Syndicator.Constants.AllBankIndexes,
       indexesToUse,
