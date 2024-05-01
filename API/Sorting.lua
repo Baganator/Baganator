@@ -40,8 +40,15 @@ Baganator.Utilities.OnAddonLoaded("tdPack2", function()
 end)
 
 Baganator.Utilities.OnAddonLoaded("BankStack", function()
-  local sortBank = BankStack.CommandDecorator(BankStack.SortBags, "bank")
-  local sortBags = BankStack.CommandDecorator(BankStack.SortBags, "bags")
+  local sortBank, sortBags
+  if BankStack.CommandDecorator then
+    sortBank = BankStack.CommandDecorator(BankStack.SortBags, "bank")
+    sortBags = BankStack.CommandDecorator(BankStack.SortBags, "bags")
+  else
+    sortBank = function() BankStack.SortBags("bank") end
+    sortBags = BankStack.SortBags
+  end
+
   Baganator.API.RegisterContainerSort("BankStack", "bankstack", function(isReverse, containerType)
     if isReverse then
       return

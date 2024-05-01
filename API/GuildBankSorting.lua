@@ -5,8 +5,10 @@ Baganator.Utilities.OnAddonLoaded("SushiSort", function()
 end)
 
 Baganator.Utilities.OnAddonLoaded("BankStack", function()
-  local sortBank = BankStack.CommandDecorator(BankStack.SortBags, "bank")
-  Baganator.API.RegisterGuildBankSort("BankStack", "bankstack", function()
-    sortBank()
-  end)
+  if BankStack.CommandDecorator then
+    local sortBank = BankStack.CommandDecorator(BankStack.SortBags, "bank")
+    Baganator.API.RegisterGuildBankSort("BankStack", "bankstack", function()
+      sortBank()
+    end)
+  end
 end)
