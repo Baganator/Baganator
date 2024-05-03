@@ -6,6 +6,10 @@ local classicBorderFrames = {
 }
 
 function Baganator.Utilities.ApplyVisuals(frame)
+  if TSM_API then
+    self:SetFrameStrata("HIGH")
+  end
+
   local alpha = Baganator.Config.Get(Baganator.Config.Options.VIEW_ALPHA)
   local noFrameBorders = Baganator.Config.Get(Baganator.Config.Options.NO_FRAME_BORDERS)
 
