@@ -35,7 +35,6 @@ L["BANK_DATA_MISSING_HINT"] = "Bank data missing. Visit a banker with %s to popu
 L["GUILD_BANK_DATA_MISSING_HINT"] = "This guild bank hasn't been visited yet."
 L["GUILD_BANK_NO_TABS"] = "There are no tabs in this guild bank."
 
-
 L["CUSTOMISE_BAGANATOR"] = "Customise Baganator"
 L["ENABLE_BACKPACK_VIEW"] = "Use Baganator backpack view (reload required)"
 L["ENABLE_BANK_VIEW"] = "Use Baganator bank view (reload required)"
@@ -105,6 +104,7 @@ L["BATTLE_PET_BREEDID"] = "Battle Pet BreedID"
 L["BATTLE_PET_LEVEL"] = "Battle Pet Level"
 L["JUNK"] = "Junk"
 L["ENGRAVED_RUNE"] = "Engraved Rune"
+L["KEYSTONE_LEVEL"] = "Keystone Level"
 L["ADD_A_CORNER_ITEM"] = "Add a corner item"
 L["ICON_CORNER_PRIORITIES_EXPLANATION"] = "Choose what information should be shown in each corner of the icon on an item's button and prioritise the most wanted information."
 

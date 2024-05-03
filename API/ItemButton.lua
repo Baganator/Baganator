@@ -342,3 +342,22 @@ if C_Engraving and C_Engraving.IsEngravingEnabled() then
     return texture
   end, {corner = "top_right", priority = 1})
 end
+
+if Baganator.Constants.IsRetail then
+  Baganator.API.RegisterCornerWidget(BAGANATOR_L_KEYSTONE_LEVEL, "keystone_level", function(KeystoneText, details)
+    local level = details.itemLink:match("keystone:[^:]*:[^:]*:(%d+)")
+    if not level then
+      return false
+    end
+    local color = C_ChallengeMode.GetKeystoneLevelRarityColor(tonumber(level))
+
+    KeystoneText:SetText(level)
+    if iconSettings.useQualityColors then
+      local color = qualityColors[details.quality]
+      KeystoneText:SetTextColor(color.r, color.g, color.b)
+    else
+      KeystoneText:SetTextColor(1,1,1)
+    end
+    return true
+  end, textInit, {corner = "top_left", priority = 1})
+end
