@@ -7,7 +7,7 @@ local classicBorderFrames = {
 
 function Baganator.Utilities.ApplyVisuals(frame)
   if TSM_API then
-    self:SetFrameStrata("HIGH")
+    frame:SetFrameStrata("HIGH")
   end
 
   local alpha = Baganator.Config.Get(Baganator.Config.Options.VIEW_ALPHA)
