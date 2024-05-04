@@ -359,5 +359,5 @@ if Baganator.Constants.IsRetail then
       KeystoneText:SetTextColor(1,1,1)
     end
     return true
-  end, textInit, {corner = "top_left", priority = 1})
+  end, textInit, {corner = "top_left", priority = 3})
 end
