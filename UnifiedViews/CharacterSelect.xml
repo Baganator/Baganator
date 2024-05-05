@@ -1,9 +1,11 @@
 <Ui>
-  <Frame name="BaganatorCharacterSelectSidebarTemplate" virtual="true" mixin="CharacterSelectSidebarMixin" inherits="ButtonFrameTemplate" enableMouse="true">
+  <Frame name="BaganatorCharacterSelectTemplate" virtual="true" mixin="BaganatorCharacterSelectMixin" inherits="ButtonFrameTemplate" enableMouse="true" hidden="true">
     <Size x="320" y="400"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
+      <OnDragStart method="OnDragStart"/>
+      <OnDragStop method="OnDragStop"/>
     </Scripts>
     <Frames>
       <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate">

@@ -24,6 +24,7 @@ Baganator.Constants.Events = {
   "SearchTextChanged",
   "BagShow",
   "BagHide",
+  "CharacterSelectToggle",
   "CharacterSelect",
   "SpecialBagToggled",
   "BankToggle",

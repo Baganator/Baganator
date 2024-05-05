@@ -1,4 +1,4 @@
-CharacterSelectSidebarMixin = {}
+BaganatorCharacterSelectMixin = {}
 
 local arrowLeft = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 18, 18, 0, 1, 0, 1)
 
@@ -51,11 +51,15 @@ local function SetDeleteButton(frame)
   end)
 end
 
-function CharacterSelectSidebarMixin:OnLoad()
+function BaganatorCharacterSelectMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
   self:SetClampedToScreen(true)
+
+  self:RegisterForDrag("LeftButton")
+  self:SetMovable(true)
+  self:SetUserPlaced(false)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
@@ -129,12 +133,26 @@ function CharacterSelectSidebarMixin:OnLoad()
   end)
 end
 
-function CharacterSelectSidebarMixin:UpdateList()
+function BaganatorCharacterSelectMixin:UpdateList()
   local characters = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
   self.ScrollBox:SetDataProvider(CreateDataProvider(characters), true)
 end
 
-function CharacterSelectSidebarMixin:OnShow()
+function BaganatorCharacterSelectMixin:OnShow()
   Baganator.Utilities.ApplyVisuals(self)
   self:UpdateList()
+end
+
+function BaganatorCharacterSelectMixin:OnDragStart()
+  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+    self:StartMoving()
+    self:SetUserPlaced(false)
+  end
+end
+
+function BaganatorCharacterSelectMixin:OnDragStop()
+  self:StopMovingOrSizing()
+  self:SetUserPlaced(false)
+  local point, _, relativePoint, x, y = self:GetPoint(1)
+  Baganator.Config.Set(Baganator.Config.Options.CHARACTER_SELECT_POSITION, {point, x, y})
 end

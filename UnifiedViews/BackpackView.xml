@@ -9,11 +9,6 @@
       <OnDragStop method="OnDragStop"/>
     </Scripts>
     <Frames>
-      <Frame name="$parentCharacterSelect" parentKey="CharacterSelect" inherits="BaganatorCharacterSelectSidebarTemplate" hidden="true" frameLevel="999">
-        <Anchors>
-          <Anchor point="RIGHT" relativePoint="LEFT"/>
-        </Anchors>
-      </Frame>
       <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
@@ -56,13 +51,7 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleCharacterSidebar()
-          </OnClick>
-        </Scripts>
-      </Button>
+      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons" />
       <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700" parentArray="TopButtons">
         <Scripts>
           <OnClick>

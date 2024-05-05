@@ -60,6 +60,7 @@ Baganator.Config.Options = {
   GUILD_VIEW_POSITION = "guild_view_position",
   GUILD_VIEW_DIALOG_POSITION = "guild_view_dialog_position",
   SHOW_BUTTONS_ON_ALT = "show_buttons_on_alt",
+  CHARACTER_SELECT_POSITION = "character_select_position",
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
@@ -100,6 +101,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
   [Baganator.Config.Options.GUILD_VIEW_POSITION] = {"LEFT", 20, 0},
   [Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION] = {"BOTTOM", "Baganator_GuildViewFrame", "TOP", 0, 0},
+  [Baganator.Config.Options.CHARACTER_SELECT_POSITION] = {"RIGHT", "Baganator_BackpackViewFrame", "LEFT", 0, 0},
   [Baganator.Config.Options.SHOW_TOOLTIPS_ON_SHIFT] = false,
   [Baganator.Config.Options.TOOLTIPS_CONNECTED_REALMS_ONLY] = true,
   [Baganator.Config.Options.TOOLTIPS_SORT_BY_NAME] = false,

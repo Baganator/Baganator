@@ -208,6 +208,11 @@
         </Texture>
       </Layer>
     </Layers>
+    <Scripts>
+      <OnClick>
+        Baganator.CallbackRegistry:TriggerEvent("CharacterSelectToggle")
+      </OnClick>
+    </Scripts>
   </Button>
 
   <Button name="BaganatorBankButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true">

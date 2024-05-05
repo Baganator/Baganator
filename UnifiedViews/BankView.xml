@@ -40,9 +40,14 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700" parentArray="TopButtons">
+      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons">
         <Anchors>
           <Anchor point="TOPLEFT" x="5"/>
+        </Anchors>
+      </Button>
+      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700" parentArray="TopButtons">
+        <Anchors>
+          <Anchor point="LEFT" relativeKey="$parent.ToggleAllCharacters" relativePoint="RIGHT" />
         </Anchors>
         <Scripts>
           <OnClick>
