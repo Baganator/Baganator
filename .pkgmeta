@@ -11,6 +11,4 @@ plain-copy:
   - Compatibility
 required-dependencies:
   - syndicator
-optional-dependencies:
-  - masque
 enable-toc-creation: yes
