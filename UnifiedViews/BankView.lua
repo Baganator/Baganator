@@ -339,7 +339,11 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
   updatedBags = updatedBags or {bags = {}, bank = {}}
   Baganator.Utilities.ApplyVisuals(self)
 
+  local oldLast = self.lastCharacter
   self.lastCharacter = character
+  if oldLast ~= self.lastCharacter then
+    Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", character)
+  end
   self.isLive = isLive
 
   self:AllocateBankBags(character)
