@@ -146,7 +146,7 @@ Baganator.API.Constants.ContainerType = {
 -- Register a sort function for bags and bank.
 -- callback: function(isReverse, containerType)
 --  isReverse: boolean
---  containerType: Baganator.API.Constants.SortMode
+--  containerType: Baganator.API.Constants.ContainerType
 function Baganator.API.RegisterContainerSort(label, id, callback)
   assert(type(label) == "string" and type(id) == "string" and type(callback) == "function")
   assert(not Baganator.Sorting.IsModeAvailable(id), "id already exists")
