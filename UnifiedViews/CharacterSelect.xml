@@ -1,5 +1,5 @@
 <Ui>
-  <Frame name="BaganatorCharacterSelectTemplate" virtual="true" mixin="BaganatorCharacterSelectMixin" inherits="ButtonFrameTemplate" enableMouse="true" hidden="true">
+  <Frame name="BaganatorCharacterSelectTemplate" virtual="true" mixin="BaganatorCharacterSelectMixin" inherits="ButtonFrameTemplate" enableMouse="true" hidden="true" topLevel="true">
     <Size x="320" y="400"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
