@@ -52,6 +52,7 @@ Baganator.Config.Options = {
   ICON_FLASH_SIMILAR_ALT = "icon_flash_similar_alt",
 
   JUNK_PLUGIN = "junk_plugin",
+  JUNK_PLUGINS_IGNORED = "junk_plugin_ignored",
 
   MAIN_VIEW_POSITION = "main_view_position",
   MAIN_VIEW_SHOW_BAG_SLOTS = "main_view_show_bag_slots",
@@ -130,6 +131,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = 0,
   [Baganator.Config.Options.AUTO_SORT_ON_OPEN] = false,
   [Baganator.Config.Options.JUNK_PLUGIN] = "poor_quality",
+  [Baganator.Config.Options.JUNK_PLUGINS_IGNORED] = {},
   [Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS] = true,
 
   [Baganator.Config.Options.DEBUG] = false,
