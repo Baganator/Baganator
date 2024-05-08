@@ -54,16 +54,15 @@ Baganator.Utilities.OnAddonLoaded("Vendor", function()
 end)
 
 Baganator.Utilities.OnAddonLoaded("Dejunk", function()
-  if not DejunkApi then
+  if not DejunkApi or not DejunkApi.Events then
     return
   end
 
   Baganator.API.RegisterJunkPlugin("Dejunk", "dejunk", function(bagID, slotID, itemID, itemLink)
     return DejunkApi:IsJunk(bagID, slotID)
   end)
-  DejunkApi:AddListener(function()
-    -- Check to avoid triggering a full refresh when Dejunk refreshing its bags
-    if not debugstack():match("items%.lua") then
+  DejunkApi:AddListener(function(event)
+    if event ~= DejunkApi.Events.BagsUpdated then
       Baganator.API.RequestItemButtonsRefresh()
     end
   end)
