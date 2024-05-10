@@ -584,7 +584,8 @@ end
 function BaganatorGeneralGuildLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
-  elseif tIndexOf(RefreshContentSettings, setting) ~= nil then
+  end
+  if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
 end
