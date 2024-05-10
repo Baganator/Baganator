@@ -292,6 +292,13 @@ function Baganator.UnifiedViews.Initialize()
   end, CallErrorHandler)
 
   xpcall(function()
+    -- So that the character select sets its position correctly if the bag view
+    -- is disabled
+    if Baganator_BackpackViewFrame == nil then
+      local frame = CreateFrame("Frame", "Baganator_BackpackViewFrame", UIParent)
+      frame:SetPoint("TOPLEFT", UIParent, "TOPRIGHT")
+      frame:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMRIGHT")
+    end
     SetupCharacterSelect()
   end, CallErrorHandler)
 
