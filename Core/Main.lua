@@ -53,6 +53,8 @@ Baganator.Utilities.OnAddonLoaded("Baganator", function()
   Baganator.Config.InitializeData()
   Baganator.SlashCmd.Initialize()
 
+  Baganator.ItemViewCommon.Initialize()
+
   Baganator.UnifiedViews.Initialize()
 
   Baganator.CustomiseDialog.Initialize()

@@ -2,6 +2,7 @@ Baganator = {
   Utilities = {},
   InventoryTracking = {},
   Search = {},
+  ItemViewCommon = {},
   UnifiedViews = {},
   CustomiseDialog = {},
   API = {

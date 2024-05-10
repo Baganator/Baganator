@@ -287,7 +287,6 @@ function Baganator.UnifiedViews.Initialize()
     if Baganator.Config.Get(Baganator.Config.Options.ENABLE_BACKPACK_VIEW) then
       SetupBackpackView()
       HideDefaultBackpack()
-      Baganator.InitializeOpenClose()
     end
   end, CallErrorHandler)
 
@@ -322,6 +321,4 @@ function Baganator.UnifiedViews.Initialize()
       SetupGuildView()
     end
   end, CallErrorHandler)
-
-  Baganator.ItemButtonUtil.UpdateSettings()
 end

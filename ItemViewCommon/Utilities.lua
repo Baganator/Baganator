@@ -222,3 +222,68 @@ function Baganator.Utilities.AutoSetGuildSortMethod()
     end
   end
 end
+
+function Baganator.Utilities.ShowCurrencies(self, character)
+  self.Money:SetText(Baganator.Utilities.GetMoneyString(Syndicator.API.GetCharacter(character).money, true))
+
+  local characterCurrencies = Syndicator.API.GetCharacter(character).currencies
+
+  if not C_CurrencyInfo then
+    return
+  end
+
+  if not characterCurrencies then
+    for _, c in ipairs(self.Currencies) do
+      c:SetText("")
+    end
+    return
+  end
+
+  for i = 1, Baganator.Constants.MaxPinnedCurrencies do
+    local currencyID, icon
+    if C_CurrencyInfo and C_CurrencyInfo.GetBackpackCurrencyInfo then
+      local currencyInfo = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
+      if currencyInfo then
+        currencyID = currencyInfo.currencyTypesID
+        icon = currencyInfo.iconFileID
+      end
+    elseif GetBackpackCurrencyInfo then
+      icon, currencyID = select(3, GetBackpackCurrencyInfo(i))
+    end
+
+    local currencyText = ""
+
+    if currencyID ~= nil then
+      local count = 0
+      if characterCurrencies[currencyID] ~= nil then
+        count = characterCurrencies[currencyID]
+      end
+
+      currencyText = BreakUpLargeNumbers(count)
+      if strlenutf8(currencyText) > 5 then
+        currencyText = AbbreviateNumbers(count)
+      end
+      currencyText = currencyText .. " " .. CreateSimpleTextureMarkup(icon, 12, 12)
+      if GameTooltip.SetCurrencyByID then
+        -- Show retail currency tooltip
+        self.Currencies[i]:SetScript("OnEnter", function(self)
+          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+          GameTooltip:SetCurrencyByID(currencyID)
+        end)
+      else
+        -- SetCurrencyByID doesn't exist on classic, but we want to show the
+        -- other characters info via the tooltip anyway
+        self.Currencies[i]:SetScript("OnEnter", function(self)
+          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+          Syndicator.Tooltips.AddCurrencyLines(GameTooltip, currencyID)
+        end)
+      end
+      self.Currencies[i]:SetScript("OnLeave", function(self)
+        GameTooltip:Hide()
+      end)
+    else
+      self.Currencies[i]:SetScript("OnEnter", nil)
+    end
+    self.Currencies[i]:SetText(currencyText)
+  end
+end
