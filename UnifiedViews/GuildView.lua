@@ -132,6 +132,10 @@ function BaganatorGuildViewMixin:OnLoad()
     timeout = 0,
     hideOnEscape = 1,
   }
+
+  self.AllButtons = {}
+  tAppendAll(self.AllButtons, self.FixedButtons)
+  tAppendAll(self.AllButtons, self.LiveButtons)
 end
 
 function BaganatorGuildViewMixin:OnEvent(eventName, ...)
@@ -533,7 +537,7 @@ function BaganatorGuildViewMixin:UpdateForGuild(guild, isLive)
 
   self.WithdrawalsInfo:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 30)
   self.Money:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 10)
-  self.DepositButton:SetPoint("BOTTOMRIGHT", -sideSpacing + 1, 6)
+  self.DepositButton:SetPoint("BOTTOMRIGHT", self, -sideSpacing + 1, 6)
 
   local height = 6
   -- active will be hidden if no guild bank tabs have been purchased
@@ -552,13 +556,6 @@ local hiddenParent = CreateFrame("Frame")
 hiddenParent:Hide()
 
 function BaganatorGuildViewMixin:UpdateAllButtons()
-  if self.isLive then
-    self.AllButtons = {}
-    tAppendAll(self.AllButtons, self.FixedButtons)
-    tAppendAll(self.AllButtons, self.LiveButtons)
-  else
-    self.AllButtons = self.FixedButtons
-  end
   local parent = self
   if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
     parent = hiddenParent
