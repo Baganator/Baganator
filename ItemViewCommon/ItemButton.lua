@@ -87,19 +87,9 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
   local info = Syndicator.Search.GetBaseInfo(cacheData)
   self.BGR = info
 
+  Baganator.ItemButtonUtil.WidgetsOnly(self)
+
   earlyCallback()
-
-  for plugin, widget in pairs(self.cornerPlugins) do
-    widget:Hide()
-  end
-
-  if not iconSettings.usingJunkPlugin and self.JunkIcon then
-    self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
-    if iconSettings.markJunk and self.BGR.isJunk then
-      self.BGR.persistIconGrey = true
-      self.icon:SetDesaturated(true)
-    end
-  end
 
   if self.BaganatorBagHighlight then
     self.BaganatorBagHighlight:Hide()
@@ -117,12 +107,41 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
     end
-    for _, callback in ipairs(itemCallbacks) do
-      callback(self)
-    end
     finalCallback()
   end
 
+  if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+    OnCached()
+  else
+    local item = Item:CreateFromItemID(self.BGR.itemID)
+    item:ContinueOnItemLoad(function()
+      OnCached()
+    end)
+  end
+end
+
+function Baganator.ItemButtonUtil.WidgetsOnly(self)
+  for plugin, widget in pairs(self.cornerPlugins) do
+    widget:Hide()
+  end
+
+  if not iconSettings.usingJunkPlugin and self.JunkIcon then
+    self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
+    if iconSettings.markJunk and self.BGR.isJunk then
+      self.BGR.persistIconGrey = true
+      self.icon:SetDesaturated(true)
+    end
+  end
+
+  if self.BGR.itemID == nil then
+    return
+  end
+
+  local function OnCached()
+    for _, callback in ipairs(itemCallbacks) do
+      callback(self)
+    end
+  end
   if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
     OnCached()
   else

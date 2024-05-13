@@ -569,11 +569,6 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
   self.BagLive:SetShown(isLive)
   self.BagCached:SetShown(not isLive)
 
-  for _, layouts in ipairs(self.CollapsingBags) do
-    layouts.live:SetShown(isLive)
-    layouts.cached:SetShown(not isLive)
-  end
-
   self:NotifyBagUpdate(updatedBags)
 
   local searchText = self.SearchBox:GetText()
@@ -614,6 +609,11 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
 
   bagHeight = bagHeight + Baganator.UnifiedViews.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
   local height = bagHeight
+
+  for _, layouts in ipairs(self.CollapsingBags) do
+    layouts.live:SetShown(isLive and layouts.live:IsShown())
+    layouts.cached:SetShown(not isLive and layouts.cached:IsShown())
+  end
 
   self.Tabs[1]:SetPoint("LEFT", activeBag, "LEFT")
 

@@ -352,11 +352,6 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
   self.BankLive:SetShown(self.isLive)
   self.BankCached:SetShown(not self.isLive)
 
-  for _, layouts in ipairs(self.CollapsingBankBags) do
-    layouts.live:SetShown(self.isLive)
-    layouts.cached:SetShown(not self.isLive)
-  end
-
   self.SortButton:SetShown(self.isLive and Baganator.Utilities.ShouldShowSortButton())
   self:UpdateTransferButton()
 
@@ -414,8 +409,13 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   local bankHeight = activeBank:GetHeight() + topSpacing / 2
 
-  -- Copied from UnifiedViews/BagView.lua
+  -- Copied from UnifiedViews/BackpackView.lua
   bankHeight = bankHeight + Baganator.UnifiedViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
+
+  for _, layouts in ipairs(self.CollapsingBankBags) do
+    layouts.live:SetShown(layouts.live:IsShown() and isLive)
+    layouts.cached:SetShown(layouts.cached:IsShown() and not isLive)
+  end
 
   self.AllButtons = {}
   tAppendAll(self.AllButtons, self.AllFixedButtons)

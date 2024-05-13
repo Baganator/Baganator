@@ -165,10 +165,9 @@ function Baganator.UnifiedViews.ArrangeCollapsibles(activeCollapsibles, originBa
     local key = originCollapsibles[index].key
     local hidden = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)[key]
     local divider = originCollapsibles[index].divider
-    if hidden then
-      divider:Hide()
-      layout:Hide()
-    else
+    divider:SetShown(not hidden)
+    layout:SetShown(not hidden)
+    if not hidden then
       divider:SetPoint("BOTTOM", layout, "TOP", 0, topSpacing / 2 + dividerOffset)
       divider:SetPoint("LEFT", layout)
       divider:SetPoint("RIGHT", layout)
