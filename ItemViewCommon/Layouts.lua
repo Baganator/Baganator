@@ -530,7 +530,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
       if #bag == #sectionData[bagIndex] then
         for index, cacheData in ipairs(sectionData[bagIndex]) do
           local button = bag[index]
-          if button.BGR == nil or button.BGR.itemLink ~= cacheData.itemLink or button.BGR.isBound ~= cacheData.isBound or button.BGR.itemCount ~= cacheData.itemCount or button.BGR.quality ~= cacheData.quality then
+          if button.BGR == nil or button.BGR.itemLink ~= cacheData.itemLink or not button.BGR.isBound ~= not cacheData.isBound or button.BGR.itemCount ~= (cacheData.itemCount or 1) or button.BGR.quality ~= cacheData.quality then
             button:SetItemDetails(cacheData)
           elseif refreshContent then
             Baganator.ItemButtonUtil.WidgetsOnly(button)

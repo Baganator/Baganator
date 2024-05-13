@@ -118,6 +118,8 @@ function BaganatorBackpackViewMixin:OnLoad()
     self:ApplySearch(text)
   end)
 
+  self.GlobalSearchButton:Disable()
+
   Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
     if character ~= self.lastCharacter then
       self:AddNewRecent(character)
