@@ -59,6 +59,10 @@ function BaganatorBackpackViewMixin:OnLoad()
 
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
+    if updatedBags.containerBags == nil or updatedBags.containerBags.bags then
+      self.updateBagSlotsNeeded = true
+    end
+    self.searchToApply = true
     if self:IsVisible() then
       self:UpdateForCharacter(character, true, updatedBags)
     else
@@ -67,9 +71,7 @@ function BaganatorBackpackViewMixin:OnLoad()
   end)
 
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
-    if self:IsVisible() and self.isLive then
-      self:UpdateForCharacter(self.lastCharacter, self.isLive)
-    end
+    self:UpdateCurrencies(self.lastCharacter)
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
@@ -112,6 +114,7 @@ function BaganatorBackpackViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
+    self.searchToApply = true
     self:ApplySearch(text)
   end)
 
@@ -160,23 +163,17 @@ function BaganatorBackpackViewMixin:OnLoad()
 
   -- Update currencies when they are watched/unwatched in Blizz UI
   EventRegistry:RegisterCallback("TokenFrame.OnTokenWatchChanged", function()
-    if self:IsVisible() then
-      self:UpdateCurrencies(self.lastCharacter)
-    end
+    self:UpdateCurrencies(self.lastCharacter)
   end)
 
   -- Needed to get currencies to load correctly on classic versions of WoW
   Baganator.Utilities.OnAddonLoaded("Blizzard_TokenUI", function()
-    if self:IsVisible() then
-      self:UpdateCurrencies(self.lastCharacter)
-    end
+    self:UpdateCurrencies(self.lastCharacter)
 
     -- Wrath Classic
     if ManageBackpackTokenFrame then
       hooksecurefunc("ManageBackpackTokenFrame", function()
-        if self:IsVisible() then
-          self:UpdateCurrencies(self.lastCharacter)
-        end
+        self:UpdateCurrencies(self.lastCharacter)
       end)
     end
   end)
@@ -222,7 +219,9 @@ function BaganatorBackpackViewMixin:OnShow()
 end
 
 function BaganatorBackpackViewMixin:OnHide()
-  Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  if self.SearchBox:GetText() ~= "" then
+    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  end
   Syndicator.Search.ClearCache()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
 
@@ -248,6 +247,7 @@ function BaganatorBackpackViewMixin:ApplySearch(text)
   if not self:IsVisible() then
     return
   end
+  self.searchToApply = false
 
   if self.isLive then
     self.BagLive:ApplySearch(text)
@@ -345,11 +345,14 @@ function BaganatorBackpackViewMixin:CreateBagSlots()
 end
 
 function BaganatorBackpackViewMixin:UpdateBagSlots()
-  -- Show live back slots if viewing live bags
-  local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
-  for _, bb in ipairs(self.liveBagSlots) do
-    bb:Init()
-    bb:SetShown(show)
+  if self.updateBagSlotsNeeded then
+    self.updateBagSlotsNeeded = false
+    -- Show live back slots if viewing live bags
+    local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
+    for _, bb in ipairs(self.liveBagSlots) do
+      bb:Init()
+      bb:SetShown(show)
+    end
   end
 
   -- Show cached bag slots when viewing cached bags for other characters
@@ -535,6 +538,7 @@ function BaganatorBackpackViewMixin:NotifyBagUpdate(updatedBags)
 end
 
 function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, updatedBags)
+  local start = debugprofilestop()
   updatedBags = updatedBags or {bags = {}, bank = {}}
   Baganator.Utilities.ApplyVisuals(self)
   self:SetupTabs()
@@ -561,8 +565,6 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
   self:UpdateTransferButton()
-
-  local showReagents = Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS)
 
   self.BagLive:SetShown(isLive)
   self.BagCached:SetShown(not isLive)
@@ -598,7 +600,9 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
     layout:ShowCharacter(character, "bags", Syndicator.Constants.AllBagIndexes, self.CollapsingBags[index].indexesToUse, bagWidth)
   end
 
-  self:ApplySearch(searchText)
+  if self.searchToApply then
+    self:ApplySearch(searchText)
+  end
 
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
@@ -658,11 +662,25 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
 
   self:UpdateAllButtons()
 
-  self:UpdateCurrencies(character)
+  if self.currencyUpdateNeeded then
+    self:UpdateCurrencies(character)
+  end
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("-- updateforcharacter backpack", debugprofilestop() - start)
+  end
 end
 
 function BaganatorBackpackViewMixin:UpdateCurrencies(character)
-  Baganator.Utilities.ShowCurrencies(self, character)
+  local start = debugprofilestop()
+  if self:IsVisible() then
+    self.currencyUpdateNeeded = false
+    Baganator.Utilities.ShowCurrencies(self, character)
+  else
+    self.currencyUpdateNeeded = true
+  end
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("currency update", debugprofilestop() - start)
+  end
 end
 
 function BaganatorBackpackViewMixin:CombineStacks(callback)

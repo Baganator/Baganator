@@ -38,9 +38,13 @@ function BaganatorRetailBagSlotButtonMixin:Init()
   self:SetItemButtonTexture(texture)
   local itemID = GetInventoryItemID("player", inventorySlot)
   if itemID ~= nil then
-    Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+    if C_Item.IsItemDataCachedByID(itemID) then
       self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
-    end)
+    else
+      Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+        self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
+      end)
+    end
   end
   self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
   self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(self:GetID()))

@@ -405,7 +405,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
       if self.ItemContextOverlay:IsShown() then
         SetWidgetsAlpha(self, false)
       else
-        SetWidgetsAlpha(self, not self.BGR or self.BGR.matchesSearch)
+        SetWidgetsAlpha(self, self.BGR == nil or self.BGR.matchesSearch ~= false)
       end
     end
   end)
