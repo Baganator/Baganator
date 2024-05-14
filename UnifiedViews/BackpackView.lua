@@ -349,12 +349,15 @@ end
 function BaganatorBackpackViewMixin:UpdateBagSlots()
   if self.updateBagSlotsNeeded then
     self.updateBagSlotsNeeded = false
-    -- Show live back slots if viewing live bags
-    local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
     for _, bb in ipairs(self.liveBagSlots) do
       bb:Init()
-      bb:SetShown(show)
     end
+  end
+
+  local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
+  for _, bb in ipairs(self.liveBagSlots) do
+    -- Show live back slots if viewing live bags
+    bb:SetShown(show)
   end
 
   -- Show cached bag slots when viewing cached bags for other characters
