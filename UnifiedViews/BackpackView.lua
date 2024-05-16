@@ -62,7 +62,7 @@ function BaganatorBackpackViewMixin:OnLoad()
     if updatedBags.containerBags == nil or updatedBags.containerBags.bags then
       self.updateBagSlotsNeeded = true
     end
-    self.searchToApply = self.SearchBox:GetText() ~= ""
+    self.searchToApply = self.searchToApply or self.SearchBox:GetText() ~= ""
     if self:IsVisible() then
       self:UpdateForCharacter(character, true, updatedBags)
     else
