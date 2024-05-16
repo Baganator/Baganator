@@ -137,6 +137,8 @@ function Baganator.ItemButtonUtil.WidgetsOnly(self)
     return
   end
 
+  self.BGR.setInfo = Baganator.UnifiedViews.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+
   local function OnCached()
     for _, callback in ipairs(itemCallbacks) do
       callback(self)
@@ -488,7 +490,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
     self.BGR.hasNoValue = noValue
-    self.BGR.setInfo = Baganator.UnifiedViews.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetBagID(), self:GetID()), self.BGR.itemLink)
     self:BGRUpdateQuests()
   end, function()
     self:BGRUpdateQuests()
