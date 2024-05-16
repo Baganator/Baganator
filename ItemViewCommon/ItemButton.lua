@@ -87,9 +87,9 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
   local info = Syndicator.Search.GetBaseInfo(cacheData)
   self.BGR = info
 
-  Baganator.ItemButtonUtil.WidgetsOnly(self)
-
   earlyCallback()
+
+  Baganator.ItemButtonUtil.WidgetsOnly(self)
 
   if self.BaganatorBagHighlight then
     self.BaganatorBagHighlight:Hide()
@@ -125,16 +125,16 @@ function Baganator.ItemButtonUtil.WidgetsOnly(self)
     widget:Hide()
   end
 
+  if self.BGR.itemID == nil then
+    return
+  end
+
   if not iconSettings.usingJunkPlugin and self.JunkIcon then
     self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
     if iconSettings.markJunk and self.BGR.isJunk then
       self.BGR.persistIconGrey = true
       self.icon:SetDesaturated(true)
     end
-  end
-
-  if self.BGR.itemID == nil then
-    return
   end
 
   self.BGR.setInfo = Baganator.UnifiedViews.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
