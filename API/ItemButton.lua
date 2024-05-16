@@ -255,6 +255,10 @@ Baganator.Utilities.OnAddonLoaded("Pawn", function()
 end)
 
 Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
+  local function IsPet(itemID)
+    local classID, subClassID = select(6, GetItemInfoInstant(itemID))
+    return classID == Enum.ItemClass.Battlepet or classID == Enum.ItemClass.Miscellaneous and subClassID == Enum.ItemMiscellaneousSubclass.CompanionPet
+  end
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_CAN_I_MOG_IT, "can_i_mog_it", function(CIMIOverlay, details)
     local function CIMI_Update(self)
       if not self or not self:GetParent() then return end
@@ -267,7 +271,7 @@ Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
       CIMI_SetIcon(self, CIMI_Update, CanIMogIt:GetTooltipText(details.itemLink))
     end
     CIMI_SetIcon(CIMIOverlay, CIMI_Update, CanIMogIt:GetTooltipText(details.itemLink))
-    return IsEquipment(details.itemLink)
+    return (C_Transmog and C_Transmog.CanTransmogItem(details.itemLink)) or (C_ToyBox and C_ToyBox.GetToyInfo(details.itemID)) or IsPet(details.itemID) or (C_MountJournal and C_MountJournal.GetMountFromItem(details.itemID))
   end,
   function(itemButton)
     CIMI_AddToFrame(itemButton, function() end)
