@@ -470,7 +470,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   self:UpdateExtended();
   self:UpdateNewItem(quality);
   self:UpdateJunkItem(quality, noValue);
-  self:UpdateItemContextMatching();
   self:UpdateCooldown(texture);
   self:SetReadable(readable);
   self:SetMatchesSearch(true)
@@ -493,6 +492,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self:BGRUpdateQuests()
   end, function()
     self:BGRUpdateQuests()
+    self:UpdateItemContextMatching();
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
   end)
 end
