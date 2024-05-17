@@ -52,7 +52,7 @@ end
 function BaganatorCustomiseCornersSelectionPopoutButtonMixin:HidePopout()
   self.Popout:Hide();
 
-  if GetMouseFocus() == self then
+  if (GetMouseFocus and GetMouseFocus()) or (GetMouseFoci and GetMouseFoci()[1]) == self then
     self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox-hover");
   else
     self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox");
