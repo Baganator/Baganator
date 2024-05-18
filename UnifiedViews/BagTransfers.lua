@@ -54,7 +54,7 @@ end)
 RegisterBagTransfer(
   function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and sendMailShowing end,
   TransferToMail,
-  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT
+  false, BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT
 )
 
 local function AddToScrapper(matches, characterName, callback)
