@@ -677,7 +677,7 @@ function BaganatorBackpackViewMixin:UpdateForCharacter(character, isLive, update
 
   self:UpdateAllButtons()
 
-  if self.currencyUpdateNeeded then
+  if self.currencyUpdateNeeded or oldLast ~= character then
     self:UpdateCurrencies(character)
   end
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
