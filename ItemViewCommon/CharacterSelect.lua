@@ -126,6 +126,9 @@ function BaganatorCharacterSelectMixin:OnLoad()
   end)
   Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
     self:UpdateList()
+    if character == self.selectedCharacter then
+      Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", Syndicator.API.GetCurrentCharacter())
+    end
   end)
 
   self.SearchBox:HookScript("OnTextChanged", function()

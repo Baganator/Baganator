@@ -94,15 +94,6 @@ function BaganatorBankViewMixin:OnLoad()
     end
   end)
 
-  Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
-    self.tabsSetup = false
-    if self.lastCharacter == character then
-      self:UpdateForCharacter(self.liveCharacter, true)
-    else
-      self:UpdateForCharacter(self.lastCharacter, self.isLive)
-    end
-  end)
-
   self:CreateBagSlots()
 
   self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()

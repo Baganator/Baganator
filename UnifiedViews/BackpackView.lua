@@ -133,15 +133,6 @@ function BaganatorBackpackViewMixin:OnLoad()
     end
   end)
 
-  Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
-    self.tabsSetup = false
-    if self.lastCharacter == character then
-      self:UpdateForCharacter(self.liveCharacter, true)
-    else
-      self:UpdateForCharacter(self.lastCharacter, self.isLive)
-    end
-  end)
-
   local frame = CreateFrame("Frame")
   local function UpdateMoneyDisplay()
     if IsShiftKeyDown() then
