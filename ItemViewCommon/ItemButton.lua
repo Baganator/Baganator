@@ -81,13 +81,13 @@ function Baganator.ItemButtonUtil.UpdateSettings()
 end
 
 local function GetInfo(self, cacheData, earlyCallback, finalCallback)
-  earlyCallback = earlyCallback or function() end
-  finalCallback = finalCallback or function() end
-
   local info = Syndicator.Search.GetBaseInfo(cacheData)
   self.BGR = info
 
-  earlyCallback()
+  self.BGR.earlyCallback = earlyCallback or function() end
+  self.BGR.finalCallback = finalCallback or function() end
+
+  self.BGR.earlyCallback()
 
   Baganator.ItemButtonUtil.WidgetsOnly(self)
 
@@ -107,7 +107,7 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
     end
-    finalCallback()
+    self.BGR.finalCallback()
   end
 
   if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
@@ -152,6 +152,11 @@ function Baganator.ItemButtonUtil.WidgetsOnly(self)
       OnCached()
     end)
   end
+end
+
+-- Called to reset searched state, widgets, and tooltip data cache
+function Baganator.ItemButtonUtil.ResetCache(self, cacheData)
+  GetInfo(self, cacheData, self.BGR.earlyCallback, self.BGR.finalCallback)
 end
 
 local function SetStaticInfo(self)
