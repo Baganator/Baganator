@@ -67,6 +67,7 @@
       </Frame>
 
       <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
+      <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
 
       <Button parentKey="DepositIntoReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_REAGENTS">
         <Scripts>

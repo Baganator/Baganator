@@ -444,6 +444,10 @@ function BaganatorSingleViewBankViewMixin:UpdateForCharacter(character, isLive, 
 
   self.SearchWidget:SetSpacing(sideSpacing)
 
+  if self.CurrencyWidget.lastCharacter ~= self.lastCharacter then
+    self.CurrencyWidget:UpdateCurrencies(character)
+  end
+
   self:SetSize(
     activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2,
     bankHeight + 54
