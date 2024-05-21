@@ -1,5 +1,5 @@
 <Ui>
-  <Frame name="BaganatorBankViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorBankViewMixin">
+  <Frame name="BaganatorSingleViewBankViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorSingleViewBankViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnEvent method="OnEvent"/>
@@ -66,9 +66,7 @@
         </Anchors>
       </Frame>
 
-      <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
-        <Size x="300" y="22"/>
-      </EditBox>
+      <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
 
       <Button parentKey="DepositIntoReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_REAGENTS">
         <Scripts>

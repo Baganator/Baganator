@@ -35,6 +35,8 @@ Baganator.Constants.Events = {
   "GuildHide",
   "GuildSetTab",
 
+  "ViewComplete",
+
   "ShowCustomise",
   "ResetFramePositions",
 

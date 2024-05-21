@@ -1,5 +1,5 @@
 <Ui>
-  <Frame name="BaganatorBackpackViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorBackpackViewMixin">
+  <Frame name="BaganatorSingleViewBackpackViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorSingleViewBackpackViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
@@ -59,50 +59,12 @@
           </OnClick>
         </Scripts>
       </Button>
-      <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
-        <Size x="300" y="22"/>
-        <Anchors>
-          <Anchor point="RIGHT" x="-45" y="0"/>
-        </Anchors>
-      </EditBox>
-      <Button parentKey="GlobalSearchButton" inherits="BaganatorMegaSearchButtonTemplate">
-        <Anchors>
-          <Anchor point="RIGHT" x="-13" y="0"/>
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            local text = self:GetParent().SearchBox:GetText()
-            Syndicator.Search.RunMegaSearchAndPrintResults(text)
-          </OnClick>
-        </Scripts>
-      </Button>
+
+      <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
 
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
+      <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
     </Frames>
-    <Layers>
-      <Layer level="BACKGROUND">
-        <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true">
-          <Anchors>
-            <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
-          </Anchors>
-        </FontString>
-        <FontString parentKey="Currency1" parentArray="Currencies" inherits="GameFontHighlight" enableMouse="true">
-          <Anchors>
-            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Money" relativePoint="BOTTOMLEFT" x="-15" />
-          </Anchors>
-        </FontString>
-        <FontString parentKey="Currency2" parentArray="Currencies" inherits="GameFontHighlight" enableMouse="true">
-          <Anchors>
-            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Currency1" relativePoint="BOTTOMLEFT" x="-15" />
-          </Anchors>
-        </FontString>
-        <FontString parentKey="Currency3" parentArray="Currencies" inherits="GameFontHighlight" enableMouse="true">
-          <Anchors>
-            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Currency2" relativePoint="BOTTOMLEFT" x="-15" />
-          </Anchors>
-        </FontString>
-      </Layer>
-    </Layers>
   </Frame>
 </Ui>

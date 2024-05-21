@@ -1,0 +1,32 @@
+<Ui>
+  <Frame name="BaganatorCurrencyWidgetTemplate" virtual="true" mixin="BaganatorCurrencyWidgetMixin">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+    </Scripts>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.$parent" x="-10" y="10"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="Currency1" parentArray="Currencies" inherits="GameFontHighlight" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Money" relativePoint="BOTTOMLEFT" x="-15" />
+          </Anchors>
+        </FontString>
+        <FontString parentKey="Currency2" parentArray="Currencies" inherits="GameFontHighlight" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Currency1" relativePoint="BOTTOMLEFT" x="-15" />
+          </Anchors>
+        </FontString>
+        <FontString parentKey="Currency3" parentArray="Currencies" inherits="GameFontHighlight" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Currency2" relativePoint="BOTTOMLEFT" x="-15" />
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Frame>
+</Ui>

@@ -137,7 +137,7 @@ function Baganator.ItemButtonUtil.WidgetsOnly(self)
     end
   end
 
-  self.BGR.setInfo = Baganator.UnifiedViews.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+  self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
 
   local function OnCached()
     for _, callback in ipairs(itemCallbacks) do
@@ -451,7 +451,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   end
 
   local texture = cacheData.iconTexture or (info and info.iconFileID);
-  local itemCount = info and info.stackCount;
+  local itemCount = cacheData.itemCount;
   local locked = info and info.isLocked;
   local quality = cacheData.quality or (info and info.quality);
   local readable = info and info.IsReadable;
@@ -635,7 +635,7 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIn
     texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
   end
   texture = cacheData.iconTexture or texture
-  itemCount = itemCount == 0 and cacheData.itemCount or itemCount
+  itemCount = cacheData.itemCount
   quality = cacheData.quality or quality
 
   self.BGR.tooltipGetter = function() return C_TooltipInfo.GetGuildBankItem(tabIndex, self:GetID()) end
@@ -898,7 +898,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   end
 
   local texture = cacheData.iconTexture or (info and info.iconFileID);
-  local itemCount = info and info.stackCount;
+  local itemCount = cacheData.itemCount
   local locked = info and info.isLocked;
   local quality = cacheData.quality or (info and info.quality);
   local readable = info and info.isReadable;
@@ -946,7 +946,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
         end
       end)
     end
-    self.BGR.setInfo = Baganator.UnifiedViews.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+    self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
 
     if C_Engraving and C_Engraving.IsEngravingEnabled() then
       self.BGR.isEngravable = false
@@ -1075,7 +1075,7 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabI
     texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
   end
   texture = cacheData.iconTexture or texture
-  itemCount = itemCount == 0 and cacheData.itemCount or itemCount
+  itemCount = cacheData.itemCount
   quality = cacheData.quality or quality
 
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);

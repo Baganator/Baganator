@@ -200,7 +200,7 @@ function Baganator.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagCheck
    -- final order
   SetIndexes(oneList, bagIDs)
 
-  local sortedItems, incomplete = Baganator.Sorting.OrderOneListOffline(oneList)
+  local sortedItems, incomplete = Baganator.Sorting.OrderOneListOffline(oneList, Baganator.Config.Get("sort_method"))
 
   if showTimers then
     print("sort initial", debugprofilestop() - start)

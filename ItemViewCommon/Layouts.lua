@@ -34,6 +34,14 @@ local function RegisterHighlightSimilarItems(self)
       end
     end
   end, self)
+
+  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
+    for _, button in ipairs(self.buttons) do
+      if button.BGR.itemLink == itemLink then
+        button:BGRStartFlashing()
+      end
+    end
+  end, self)
 end
 
 local ReflowSettings = {
@@ -59,7 +67,7 @@ local RefreshContentSettings = {
   Baganator.Config.Options.JUNK_PLUGIN,
 }
 
-local function GetPaddingAndSize()
+function Baganator.ItemButtonUtil.GetPaddingAndSize()
   local iconPadding = 4
 
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
@@ -76,7 +84,7 @@ local function ApplySizing(self, rowWidth, iconPadding, iconSize, flexDimension,
 end
 
 local function FlowButtonsRows(self, rowWidth)
-  local iconPadding, iconSize = GetPaddingAndSize()
+  local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
 
   local rows, cols = 0, 0
   if Baganator.Config.Get(Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP) then
@@ -103,7 +111,7 @@ local function FlowButtonsRows(self, rowWidth)
 end
 
 local function FlowButtonsColumns(self, rowWidth)
-  local iconPadding, iconSize = GetPaddingAndSize()
+  local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
 
   local columnHeight = math.ceil(#self.buttons / rowWidth)
 
@@ -126,10 +134,41 @@ local function FlowButtonsColumns(self, rowWidth)
   self.oldRowWidth = rowWidth
 end
 
+local function IsDifferentCachedData(data1, data2)
+  return data1 == nil or data1.itemLink ~= data2.itemLink or not data1.isBound ~= not data2.isBound or (data1.itemCount or 1) ~= (data2.itemCount or 1) or data1.quality ~= data2.quality
+end
+
+local function UpdateQuests(self)
+  for _, button in ipairs(self.buttons) do
+    if button.BGR and button.BGR.isQuestItem then
+      local item = Item:CreateFromItemID(button.BGR.itemID)
+      item:ContinueOnItemLoad(function()
+        button:BGRUpdateQuests()
+      end)
+    end
+  end
+end
+
+local function LiveBagOnEvent(self, eventName, ...)
+  if eventName == "ITEM_LOCK_CHANGED" then
+    local bagID, slotID = ...
+    self:UpdateLockForItem(bagID, slotID)
+  elseif eventName == "BAG_UPDATE_COOLDOWN" then
+    self:UpdateCooldowns()
+  elseif eventName == "UNIT_QUEST_LOG_CHANGED" then
+    local unit = ...
+    if unit == "player" then
+      self:UpdateQuests()
+    end
+  elseif eventName == "QUEST_ACCEPTED" then
+    self:UpdateQuests()
+  end
+end
+
 BaganatorCachedBagLayoutMixin = {}
 
 function BaganatorCachedBagLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedViews.GetCachedItemButtonPool(self)
+  self.buttonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.buttonsByBag = {}
@@ -281,21 +320,11 @@ function BaganatorCachedBagLayoutMixin:OnShow()
   end, self)
 
   RegisterHighlightSimilarItems(self)
-
-  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
-    for _, button in ipairs(self.buttons) do
-      if button.BGR.itemLink == itemLink then
-        button:BGRStartFlashing()
-      end
-    end
-  end, self)
 end
 
 function BaganatorCachedBagLayoutMixin:OnHide()
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
 end
 
 BaganatorLiveBagLayoutMixin = {}
@@ -307,7 +336,7 @@ local LIVE_LAYOUT_EVENTS = {
 }
 
 function BaganatorLiveBagLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedViews.GetLiveItemButtonPool(self)
+  self.buttonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByBag = {}
@@ -331,32 +360,9 @@ function BaganatorLiveBagLayoutMixin:UpdateCooldowns()
   end
 end
 
-function BaganatorLiveBagLayoutMixin:UpdateQuests()
-  for _, button in ipairs(self.buttons) do
-    if button.BGR and button.BGR.isQuestItem then
-      local item = Item:CreateFromItemID(button.BGR.itemID)
-      item:ContinueOnItemLoad(function()
-        button:BGRUpdateQuests()
-      end)
-    end
-  end
-end
+BaganatorLiveBagLayoutMixin.UpdateQuests = UpdateQuests
 
-function BaganatorLiveBagLayoutMixin:OnEvent(eventName, ...)
-  if eventName == "ITEM_LOCK_CHANGED" then
-    local bagID, slotID = ...
-    self:UpdateLockForItem(bagID, slotID)
-  elseif eventName == "BAG_UPDATE_COOLDOWN" then
-    self:UpdateCooldowns()
-  elseif eventName == "UNIT_QUEST_LOG_CHANGED" then
-    local unit = ...
-    if unit == "player" then
-      self:UpdateQuests()
-    end
-  elseif eventName == "QUEST_ACCEPTED" then
-    self:UpdateQuests()
-  end
-end
+BaganatorLiveBagLayoutMixin.OnEvent = LiveBagOnEvent
 
 function BaganatorLiveBagLayoutMixin:OnShow()
   FrameUtil.RegisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
@@ -380,14 +386,6 @@ function BaganatorLiveBagLayoutMixin:OnShow()
   end, self)
 
   RegisterHighlightSimilarItems(self)
-
-  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
-    for _, button in ipairs(self.buttons) do
-      if button.BGR.itemLink == itemLink then
-        button:BGRStartFlashing()
-      end
-    end
-  end, self)
 end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
@@ -530,7 +528,7 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
       if #bag == #sectionData[bagIndex] then
         for index, cacheData in ipairs(sectionData[bagIndex]) do
           local button = bag[index]
-          if button.BGR == nil or button.BGR.itemLink ~= cacheData.itemLink or not button.BGR.isBound ~= not cacheData.isBound or button.BGR.itemCount ~= (cacheData.itemCount or 1) or button.BGR.quality ~= cacheData.quality then
+          if IsDifferentCachedData(button.BGR, cacheData) then
             button:SetItemDetails(cacheData)
           elseif refreshContent then
             Baganator.ItemButtonUtil.ResetCache(button, cacheData)
@@ -558,7 +556,7 @@ end
 BaganatorGeneralGuildLayoutMixin = {}
 
 function BaganatorGeneralGuildLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedViews.GetCachedItemButtonPool(self)
+  self.buttonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
@@ -571,14 +569,6 @@ end
 
 function BaganatorGeneralGuildLayoutMixin:OnShow()
   RegisterHighlightSimilarItems(self)
-
-  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
-    for _, button in ipairs(self.buttons) do
-      if button.BGR.itemLink == itemLink then
-        button:BGRStartFlashing()
-      end
-    end
-  end, self)
 end
 
 function BaganatorGeneralGuildLayoutMixin:OnHide()
@@ -662,7 +652,7 @@ end
 BaganatorLiveGuildLayoutMixin = CreateFromMixins(BaganatorGeneralGuildLayoutMixin)
 
 function BaganatorLiveGuildLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.UnifiedViews.GetLiveGuildItemButtonPool(self)
+  self.buttonPool = Baganator.ItemViewCommon.GetLiveGuildItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")

@@ -38,7 +38,7 @@ local expansionIDToText = {
   [9] = "DF",
 }
 
-Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
+local function CacheSettings()
   iconSettings = {
     markJunk = Baganator.Config.Get("icon_grey_junk"),
     junkPlugin = Baganator.Config.Get("junk_plugin"),
@@ -48,7 +48,9 @@ Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
   if iconSettings.junkPlugin == "poor_quality" then
     iconSettings.junkPlugin = nil
   end
-end)
+end
+Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", CacheSettings)
+Baganator.Utilities.OnAddonLoaded("Baganator", CacheSettings)
 
 local function textInit(itemButton)
   local text = itemButton:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
@@ -75,13 +77,13 @@ end, textInit)
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOE, "boe", function(BindingText, details)
   local classID = select(6, C_Item.GetItemInfoInstant(details.itemLink))
   if (IsEquipment(details.itemLink) or classID == Enum.ItemClass.Container) and not details.isBound and (iconSettings.boe_on_common or details.quality > 1) then
-      BindingText:SetText(BAGANATOR_L_BOE)
-      if iconSettings.useQualityColors then
-        local color = qualityColors[details.quality]
-        BindingText:SetTextColor(color.r, color.g, color.b)
-      else
-        BindingText:SetTextColor(1,1,1)
-      end
+    BindingText:SetText(BAGANATOR_L_BOE)
+    if iconSettings.useQualityColors then
+      local color = qualityColors[details.quality]
+      BindingText:SetTextColor(color.r, color.g, color.b)
+    else
+      BindingText:SetTextColor(1,1,1)
+    end
     return true
   end
 end, textInit)

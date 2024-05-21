@@ -36,6 +36,7 @@ Transfers\AddToTrade.lua
 
 ItemViewCommon\Utilities.lua
 ItemViewCommon\Search.lua
+ItemViewCommon\Search.xml
 ItemViewCommon\ItemButton.lua
 ItemViewCommon\ItemButton.xml
 ItemViewCommon\ItemButtonDataEvents.lua
@@ -49,18 +50,21 @@ ItemViewCommon\EquipmentSetInfo.lua
 ItemViewCommon\MoneyDisplay.lua
 ItemViewCommon\CharacterSelect.lua
 ItemViewCommon\CharacterSelect.xml
+ItemViewCommon\Currency.lua
+ItemViewCommon\Currency.xml
 ItemViewCommon\OpenClose.lua
 ItemViewCommon\Initialize.lua
 
-UnifiedViews\BankView.lua
-UnifiedViews\BankView.xml
-UnifiedViews\BagTransfers.lua
-UnifiedViews\CollapsingBagSections.lua
-UnifiedViews\BackpackView.lua
-UnifiedViews\BackpackView.xml
-UnifiedViews\GuildView.lua
-UnifiedViews\GuildView.xml
-UnifiedViews\Main.lua
+SingleViews\Pools.lua
+SingleViews\BankView.lua
+SingleViews\BankView.xml
+SingleViews\BagTransfers.lua
+SingleViews\CollapsingBagSections.lua
+SingleViews\BackpackView.lua
+SingleViews\BackpackView.xml
+SingleViews\GuildView.lua
+SingleViews\GuildView.xml
+SingleViews\Main.lua
 
 CustomiseDialog\Components.lua
 CustomiseDialog\Components.xml

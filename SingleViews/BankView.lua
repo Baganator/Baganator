@@ -1,8 +1,8 @@
-BaganatorBankViewMixin = {}
+BaganatorSingleViewBankViewMixin = {}
 
 local _, addonTable = ...
 
-function BaganatorBankViewMixin:OnLoad()
+function BaganatorSingleViewBankViewMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
@@ -10,8 +10,8 @@ function BaganatorBankViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  self.unallocatedItemButtonPool = Baganator.UnifiedViews.GetLiveItemButtonPool(self)
-  self.CollapsingBagSectionsPool = Baganator.UnifiedViews.GetCollapsingBagSectionsPool(self)
+  self.unallocatedItemButtonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
+  self.CollapsingBagSectionsPool = Baganator.SingleViews.GetCollapsingBagSectionsPool(self)
   self.CollapsingBankBags = {}
   self.bagDetailsForComparison = {}
 
@@ -25,19 +25,6 @@ function BaganatorBankViewMixin:OnLoad()
 
   Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
   Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
-
-  self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
-    if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
-      local text = self.SearchBox:GetText()
-      Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
-    end
-    if self.SearchBox:GetText() == "" then
-      self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
-    end
-  end)
-  self.SearchBox.clearButton:SetScript("OnClick", function()
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
-  end)
 
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
@@ -110,7 +97,7 @@ function BaganatorBankViewMixin:OnLoad()
   self:UpdateTransferButton()
 end
 
-function BaganatorBankViewMixin:CreateBagSlots()
+function BaganatorSingleViewBankViewMixin:CreateBagSlots()
   local function GetLiveBankBagButton()
     if Baganator.Constants.IsRetail then
       return CreateFrame("ItemButton", nil, self, "BaganatorRetailBankButtonTemplate")
@@ -126,7 +113,7 @@ function BaganatorBankViewMixin:CreateBagSlots()
     bb:SetID(index)
     if #self.liveBankBagSlots == 1 then
       bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -12, 0)
+      bb:SetPoint("LEFT", self.SearchWidget.SearchBox, "LEFT", -12, 0)
     else
       bb:SetPoint("TOPLEFT", self.liveBankBagSlots[#self.liveBankBagSlots - 1], "TOPRIGHT")
     end
@@ -158,14 +145,14 @@ function BaganatorBankViewMixin:CreateBagSlots()
     end)
     if #self.cachedBankBagSlots == 1 then
       bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.SearchBox, "LEFT", -12, 0)
+      bb:SetPoint("LEFT", self.SearchWidget.SearchBox, "LEFT", -12, 0)
     else
       bb:SetPoint("TOPLEFT", self.cachedBankBagSlots[#self.cachedBankBagSlots - 1], "TOPRIGHT")
     end
   end
 end
 
-function BaganatorBankViewMixin:UpdateTransferButton()
+function BaganatorSingleViewBankViewMixin:UpdateTransferButton()
   if not self.isLive then
     self.TransferButton:Hide()
     return
@@ -185,31 +172,29 @@ function BaganatorBankViewMixin:UpdateTransferButton()
   self.TransferButton:Show()
 end
 
-function BaganatorBankViewMixin:OnDragStart()
+function BaganatorSingleViewBankViewMixin:OnDragStart()
   if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
 end
 
-function BaganatorBankViewMixin:OnDragStop()
+function BaganatorSingleViewBankViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
   Baganator.Config.Set(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION, {point, x, y})
 end
 
-function BaganatorBankViewMixin:ToggleReagents()
+function BaganatorSingleViewBankViewMixin:ToggleReagents()
   Baganator.Config.Set(Baganator.Config.Options.SHOW_REAGENTS, not Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS))
 end
 
-function BaganatorBankViewMixin:ToggleBagSlots()
+function BaganatorSingleViewBankViewMixin:ToggleBagSlots()
   Baganator.Config.Set(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS, not Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS))
 end
 
-function BaganatorBankViewMixin:ApplySearch(text)
-  self.SearchBox:SetText(text)
-
+function BaganatorSingleViewBankViewMixin:ApplySearch(text)
   if not self:IsVisible() then
     return
   end
@@ -227,7 +212,7 @@ function BaganatorBankViewMixin:ApplySearch(text)
   end
 end
 
-function BaganatorBankViewMixin:OnEvent(eventName)
+function BaganatorSingleViewBankViewMixin:OnEvent(eventName)
   if eventName == "BANKFRAME_OPENED" then
     self:Show()
     self.liveBankActive = true
@@ -263,7 +248,7 @@ function BaganatorBankViewMixin:OnEvent(eventName)
   end
 end
 
-function BaganatorBankViewMixin:UpdateBagSlots()
+function BaganatorSingleViewBankViewMixin:UpdateBagSlots()
   local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS)
   for _, bb in ipairs(self.liveBankBagSlots) do
     bb:Init()
@@ -291,12 +276,11 @@ function BaganatorBankViewMixin:UpdateBagSlots()
   end
 end
 
-function BaganatorBankViewMixin:OnShow()
-  self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
+function BaganatorSingleViewBankViewMixin:OnShow()
   self:RegisterEvent("MODIFIER_STATE_CHANGED")
 end
 
-function BaganatorBankViewMixin:OnHide(eventName)
+function BaganatorSingleViewBankViewMixin:OnHide(eventName)
   if C_Bank then
     C_Bank.CloseBankFrame()
   else
@@ -305,15 +289,14 @@ function BaganatorBankViewMixin:OnHide(eventName)
 
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
-  Syndicator.Search.ClearCache()
 end
 
-function BaganatorBankViewMixin:AllocateBankBags(character)
-  -- Copied from UnifiedViews/BagView.lua
-  local newDetails = Baganator.UnifiedViews.GetCollapsingBagDetails(character, "bank", Syndicator.Constants.AllBankIndexes, Syndicator.Constants.BankBagSlotsCount)
+function BaganatorSingleViewBankViewMixin:AllocateBankBags(character)
+  -- Copied from SingleViews/BagView.lua
+  local newDetails = Baganator.SingleViews.GetCollapsingBagDetails(character, "bank", Syndicator.Constants.AllBankIndexes, Syndicator.Constants.BankBagSlotsCount)
   if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
     self.bagDetailsForComparison.bank = CopyTable(newDetails)
-    self.CollapsingBankBags = Baganator.UnifiedViews.AllocateCollapsingSections(
+    self.CollapsingBankBags = Baganator.SingleViews.AllocateCollapsingSections(
       character, "bank", Syndicator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,
       self.CollapsingBagSectionsPool, self.unallocatedItemButtonPool,
@@ -322,11 +305,11 @@ function BaganatorBankViewMixin:AllocateBankBags(character)
   end
 end
 
-function BaganatorBankViewMixin:SetLiveCharacter(character)
+function BaganatorSingleViewBankViewMixin:SetLiveCharacter(character)
   self.liveCharacter = character
 end
 
-function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBags)
+function BaganatorSingleViewBankViewMixin:UpdateForCharacter(character, isLive, updatedBags)
   updatedBags = updatedBags or {bags = {}, bank = {}}
   Baganator.Utilities.ApplyVisuals(self)
 
@@ -378,20 +361,20 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
   end
 
   self.BankMissingHint:SetShown(#activeBank.buttons == 0)
-  self.SearchBox:SetShown(#activeBank.buttons ~= 0)
+  self.SearchWidget:SetShown(#activeBank.buttons ~= 0)
 
   if self.BankMissingHint:IsShown() then
     self.BankMissingHint:SetText(BAGANATOR_L_BANK_DATA_MISSING_HINT:format(characterData.details.character))
   end
 
-  local searchText = self.SearchBox:GetText()
+  local searchText = self.SearchWidget.SearchBox:GetText()
 
   self:ApplySearch(searchText)
 
   self.DepositIntoReagentsBankButton:SetShown(self.isLive and Baganator.Constants.IsRetail and IsReagentBankUnlocked())
   self.BuyReagentBankButton:SetShown(self.isLive and Baganator.Constants.IsRetail and not IsReagentBankUnlocked())
 
-  -- Copied from UnifiedViews/BagView.lua
+  -- Copied from SingleViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
@@ -400,8 +383,8 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   local bankHeight = activeBank:GetHeight() + topSpacing / 2
 
-  -- Copied from UnifiedViews/BackpackView.lua
-  bankHeight = bankHeight + Baganator.UnifiedViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
+  -- Copied from SingleViews/BackpackView.lua
+  bankHeight = bankHeight + Baganator.SingleViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
 
   for _, layouts in ipairs(self.CollapsingBankBags) do
     layouts.live:SetShown(layouts.live:IsShown() and isLive)
@@ -458,20 +441,21 @@ function BaganatorBankViewMixin:UpdateForCharacter(character, isLive, updatedBag
 
   activeBank:ClearAllPoints()
   activeBank:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50)
-  self.SearchBox:ClearAllPoints()
-  self.SearchBox:SetPoint("RIGHT", -sideSpacing, 0, 0)
-  self.SearchBox:SetPoint("BOTTOMLEFT", activeBank, "TOPLEFT", 5, 3)
+
+  self.SearchWidget:SetSpacing(sideSpacing)
 
   self:SetSize(
     activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2,
     bankHeight + 54
   )
+
+  Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
 end
 
 local hiddenParent = CreateFrame("Frame")
 hiddenParent:Hide()
 
-function BaganatorBankViewMixin:UpdateAllButtons()
+function BaganatorSingleViewBankViewMixin:UpdateAllButtons()
   if not self.AllButtons then
     return
   end
@@ -486,7 +470,7 @@ function BaganatorBankViewMixin:UpdateAllButtons()
   end
 end
 
-function BaganatorBankViewMixin:NotifyBagUpdate(updatedBags)
+function BaganatorSingleViewBankViewMixin:NotifyBagUpdate(updatedBags)
   self.BankLive:MarkBagsPending("bank", updatedBags)
 
   for _, bagGroup in ipairs(self.CollapsingBankBags) do
@@ -502,7 +486,7 @@ function BaganatorBankViewMixin:NotifyBagUpdate(updatedBags)
   end
 end
 
-function BaganatorBankViewMixin:CombineStacks(callback)
+function BaganatorSingleViewBankViewMixin:CombineStacks(callback)
   Baganator.Sorting.CombineStacks(Syndicator.API.GetCharacter(self.liveCharacter).bank, Syndicator.Constants.AllBankIndexes, function(status)
     self.sortManager:Apply(status, function()
       self:CombineStacks(callback)
@@ -512,7 +496,7 @@ function BaganatorBankViewMixin:CombineStacks(callback)
   end)
 end
 
-function BaganatorBankViewMixin:DoSort(isReverse)
+function BaganatorSingleViewBankViewMixin:DoSort(isReverse)
   local indexesToUse = {}
   for index in ipairs(Syndicator.Constants.AllBankIndexes) do
     indexesToUse[index] = true
@@ -539,7 +523,7 @@ function BaganatorBankViewMixin:DoSort(isReverse)
   DoSortInternal()
 end
 
-function BaganatorBankViewMixin:CombineStacksAndSort(isReverse)
+function BaganatorSingleViewBankViewMixin:CombineStacksAndSort(isReverse)
   local sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
 
   if not Baganator.Sorting.IsModeAvailable(sortMethod) then
@@ -558,7 +542,7 @@ function BaganatorBankViewMixin:CombineStacksAndSort(isReverse)
   end
 end
 
-function BaganatorBankViewMixin:RemoveSearchMatches(callback)
+function BaganatorSingleViewBankViewMixin:RemoveSearchMatches(callback)
   local matches = {}
   tAppendAll(matches, self.BankLive.SearchMonitor:GetMatches())
   for _, layouts in ipairs(self.CollapsingBankBags) do
@@ -576,8 +560,8 @@ function BaganatorBankViewMixin:RemoveSearchMatches(callback)
   end)
 end
 
-function BaganatorBankViewMixin:Transfer(button)
-  if self.SearchBox:GetText() == "" then
+function BaganatorSingleViewBankViewMixin:Transfer(button)
+  if self.SearchWidget.SearchBox:GetText() == "" then
     StaticPopup_Show(self.confirmTransferAllDialogName)
   else
     self:RemoveSearchMatches(function() end)

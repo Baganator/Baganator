@@ -117,7 +117,7 @@ function Baganator.Sorting.AddSortKeys(list)
   end
 end
 
-function Baganator.Sorting.OrderOneListOffline(list)
+function Baganator.Sorting.OrderOneListOffline(list, sortMethod)
   local start = debugprofilestop()
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
@@ -128,7 +128,7 @@ function Baganator.Sorting.OrderOneListOffline(list)
 
   list = tFilter(list, function(a) return a.itemLink ~= nil end, true)
 
-  local sortKeys = allSortKeys[Baganator.Config.Get("sort_method")]
+  local sortKeys = allSortKeys[sortMethod]
 
   local incomplete = false
   if reverse then

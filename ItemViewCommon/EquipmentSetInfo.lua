@@ -1,7 +1,6 @@
 local _, addonTable = ...
 
-
-function Baganator.UnifiedViews.GetEquipmentSetInfo(location, itemLink)
+function Baganator.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
   local guid = C_Item.DoesItemExist(location) and C_Item.GetItemGUID(location) or nil
 
   local results = {}

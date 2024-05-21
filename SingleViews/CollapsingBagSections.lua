@@ -21,7 +21,7 @@ for subClassType, textureDetails in pairs(ContainerTypeToIcon) do
   keyedTextures[subClassType] = textureDetails
 end
 
-function Baganator.UnifiedViews.GetCollapsingBagDetails(character, section, indexes, slotsCount)
+function Baganator.SingleViews.GetCollapsingBagDetails(character, section, indexes, slotsCount)
   local characterInfo = Syndicator.API.GetCharacter(character)
   if characterInfo.containerInfo == nil or characterInfo.containerInfo[section] == nil then
     local cleanMain = {}
@@ -91,7 +91,7 @@ function Baganator.UnifiedViews.GetCollapsingBagDetails(character, section, inde
   }
 end
 
-function Baganator.UnifiedViews.AllocateCollapsingSections(character, section, bagIDs, collapsingInfo, previousSections, sectionPool, itemButtonPool, refreshCallback)
+function Baganator.SingleViews.AllocateCollapsingSections(character, section, bagIDs, collapsingInfo, previousSections, sectionPool, itemButtonPool, refreshCallback)
   collapsingInfo.mainIndexesToUse = {}
   for _, index in ipairs(collapsingInfo.main) do
     collapsingInfo.mainIndexesToUse[index] = true
@@ -103,7 +103,7 @@ function Baganator.UnifiedViews.AllocateCollapsingSections(character, section, b
 
   for _, info in ipairs(collapsingInfo.special) do
     local layouts = sectionPool:Acquire()
-    Baganator.UnifiedViews.SetupCollapsingBagSection(layouts, info, bagIDs)
+    Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
     layouts.live:SetPool(itemButtonPool)
     layouts.button:Hide()
 
@@ -118,7 +118,7 @@ function Baganator.UnifiedViews.AllocateCollapsingSections(character, section, b
   return CollapsingBags
 end
 
-function Baganator.UnifiedViews.SetupCollapsingBagSection(layouts, info, bagIDs)
+function Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
   if info.visual.type == "file" then
     layouts.button.icon:SetSize(17, 17)
     layouts.button.icon:SetTexture(info.visual.value)
@@ -153,7 +153,7 @@ function Baganator.UnifiedViews.SetupCollapsingBagSection(layouts, info, bagIDs)
   end)
 end
 
-function Baganator.UnifiedViews.ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
+function Baganator.SingleViews.ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
   local topSpacing, dividerOffset, endPadding = 14, 2, 0
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     topSpacing = 7

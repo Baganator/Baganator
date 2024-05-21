@@ -1,5 +1,5 @@
 <Ui>
-  <Frame name="BaganatorGuildViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorGuildViewMixin">
+  <Frame name="BaganatorSingleViewGuildViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorSingleViewGuildViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
@@ -123,12 +123,7 @@
         </Anchors>
       </Frame>
 
-      <EditBox parentKey="SearchBox" inherits="SearchBoxTemplate" autoFocus="false" frameLevel="700">
-        <Size x="300" y="22"/>
-        <Anchors>
-          <Anchor point="BOTTOMLEFT" relativeKey="$parent.GuildCached" relativePoint="TOPLEFT" x="5" y="3"/>
-        </Anchors>
-      </EditBox>
+      <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
     </Frames>
     <Layers>
       <Layer level="BACKGROUND">
