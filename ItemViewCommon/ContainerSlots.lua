@@ -183,6 +183,15 @@ local function HideBankSlotTooltip(self)
   GameTooltip:Hide()
 end
 
+local function GetBankBagInfo(bankBagID)
+  local inventoryID = BankButtonIDToInvSlotID(bankBagID, 1)
+  local texture = GetInventoryItemTexture("player", inventoryID)
+  local quality = GetInventoryItemQuality("player", inventoryID)
+  local itemID = GetInventoryItemID("player", inventoryID)
+
+  return itemID, texture, quality
+end
+
 BaganatorRetailBankButtonMixin = {}
 
 function BaganatorRetailBankButtonMixin:Init()
@@ -200,14 +209,14 @@ function BaganatorRetailBankButtonMixin:Init()
   end
   self.needPurchase = false
   SetItemButtonTextureVertexColor(self, 1.0,1.0,1.0)
-  local info = C_Container.GetContainerItemInfo(Enum.BagIndex.Bankbag, self:GetID())
-  if info == nil then
+  local itemID, texture, quality = GetBankBagInfo(self:GetID())
+  if itemID == nil then
     return
   end
-  self:SetItemButtonTexture(info.iconFileID)
-  self:SetItemButtonQuality(info.quality)
-  Item:CreateFromItemID(info.itemID):ContinueOnItemLoad(function()
-    self:SetItemButtonQuality(C_Item.GetItemQualityByID(info.itemID))
+  self:SetItemButtonTexture(texture)
+  self:SetItemButtonQuality(quality)
+  Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+    self:SetItemButtonQuality(C_Item.GetItemQualityByID(itemID))
   end)
 end
 
