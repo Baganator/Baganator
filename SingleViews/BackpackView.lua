@@ -50,10 +50,9 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
       self.updateBagSlotsNeeded = true
     end
     self.searchToApply = true
+    self:NotifyBagUpdate(updatedBags)
     if self:IsVisible() then
-      self:UpdateForCharacter(character, true, updatedBags)
-    else
-      self:NotifyBagUpdate(updatedBags)
+      self:UpdateForCharacter(character, true)
     end
   end)
 
@@ -470,9 +469,8 @@ function BaganatorSingleViewBackpackViewMixin:NotifyBagUpdate(updatedBags)
   end
 end
 
-function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLive, updatedBags)
+function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLive)
   local start = debugprofilestop()
-  updatedBags = updatedBags or {bags = {}, bank = {}}
   Baganator.Utilities.ApplyVisuals(self)
 
   local characterData = Syndicator.API.GetCharacter(character)
@@ -503,8 +501,6 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
 
   self.BagLive:SetShown(isLive)
   self.BagCached:SetShown(not isLive)
-
-  self:NotifyBagUpdate(updatedBags)
 
   local searchText = self.SearchWidget.SearchBox:GetText()
 
