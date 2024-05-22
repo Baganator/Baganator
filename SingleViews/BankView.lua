@@ -395,14 +395,11 @@ function BaganatorSingleViewBankViewMixin:UpdateForCharacter(character, isLive, 
   tAppendAll(self.AllButtons, self.AllFixedButtons)
   tAppendAll(self.AllButtons, self.TopButtons)
 
-  local anyButtonsOnBottom = false
-
   local lastButton = nil
   for index, layout in ipairs(activeBankBagCollapsibles) do
     local button = self.CollapsingBankBags[index].button
     button:SetShown(layout:GetHeight() > 0)
     if button:IsShown() then
-      anyButtonsOnBottom = true
       button:ClearAllPoints()
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
@@ -416,7 +413,6 @@ function BaganatorSingleViewBankViewMixin:UpdateForCharacter(character, isLive, 
   end
 
   if self.BuyReagentBankButton:IsShown() then
-    anyButtonsOnBottom = true
     table.insert(self.AllButtons, self.BuyReagentBankButton)
     self.BuyReagentBankButton:ClearAllPoints()
     if lastButton then
@@ -427,15 +423,12 @@ function BaganatorSingleViewBankViewMixin:UpdateForCharacter(character, isLive, 
     end
   end
   if self.DepositIntoReagentsBankButton:IsShown() then
-    anyButtonsOnBottom = true
     table.insert(self.AllButtons, self.DepositIntoReagentsBankButton)
     self.DepositIntoReagentsBankButton:ClearAllPoints()
     self.DepositIntoReagentsBankButton:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", 5, 0)
   end
 
-  if anyButtonsOnBottom then
-    bankHeight = bankHeight + 20
-  end
+  bankHeight = bankHeight + 20
 
   self:UpdateAllButtons()
 
