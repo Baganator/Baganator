@@ -139,14 +139,20 @@ local function SetupBankView()
 
   Baganator.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
     characterName = characterName or Syndicator.API.GetCurrentCharacter()
-    bankView:SetShown(characterName ~= bankView.lastCharacter or not bankView:IsShown())
-    bankView:UpdateForCharacter(characterName, bankView.liveCharacter == characterName and bankView.liveBankActive)
+    bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
+    bankView:UpdateViewToCharacter(characterName)
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BankShow", function(_, characterName)
-    characterName = characterName or Syndicator.API.GetCurrentCharacter()
-    bankView:Show()
-    bankView:UpdateForCharacter(characterName, bankView.liveCharacter == characterName and bankView.liveBankActive)
+  Baganator.CallbackRegistry:RegisterCallback("BankShow", function(_, entity, subView)
+    if type(entity) == "string" or entity == nil then -- Character bank
+      local characterName = entity or Syndicator.API.GetCurrentCharacter()
+      bankView:Show()
+      bankView:UpdateViewToCharacter(characterName)
+    elseif type(entity) == "number" then -- Warband bank
+      subView = subView or 1
+      bankView:Show()
+      bankView:UpdateViewToWarband(entity, subView)
+    end
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("BankHide", function(_, characterName)

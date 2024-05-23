@@ -1,4 +1,4 @@
-## Interface: 100207
+## Interface: 100207, 110000
 ## Interface-Cata: 40400
 ## Interface-Wrath: 30403
 ## Interface-Vanilla: 11502
@@ -56,6 +56,10 @@ ItemViewCommon\OpenClose.lua
 ItemViewCommon\Initialize.lua
 
 SingleViews\Pools.lua
+SingleViews\BankViewCharacterView.lua
+SingleViews\BankViewCharacterView.xml
+SingleViews\BankViewWarbandView.lua
+SingleViews\BankViewWarbandView.xml
 SingleViews\BankView.lua
 SingleViews\BankView.xml
 SingleViews\BagTransfers.lua

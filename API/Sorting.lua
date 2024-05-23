@@ -3,11 +3,13 @@ if Baganator.Constants.IsRetail then
     C_Container.SetSortBagsRightToLeft(not isReverse)
     if containerType == Baganator.API.Constants.ContainerType.Backpack then
       C_Container.SortBags()
-    elseif containerType == Baganator.API.Constants.ContainerType.Bank then
+    elseif containerType == Baganator.API.Constants.ContainerType.CharacterBank then
       C_Container.SortBankBags()
       C_Timer.After(1, function()
         C_Container.SortReagentBankBags()
       end)
+    elseif containerType == Baganator.API.Constants.ContainerType.WarbandBank then
+      C_Container.SortAccountBankBags()
     end
   end)
 end
@@ -17,7 +19,7 @@ Baganator.Utilities.OnAddonLoaded("SortBags", function()
     SetSortBagsRightToLeft(not isReverse)
     if containerType == Baganator.API.Constants.ContainerType.Backpack then
       SortBags()
-    elseif containerType == Baganator.API.Constants.ContainerType.Bank then
+    elseif containerType == Baganator.API.Constants.ContainerType.CharacterBank then
       SortBankBags()
     end
   end)
@@ -33,7 +35,7 @@ Baganator.Utilities.OnAddonLoaded("tdPack2", function()
     local button = isReverse and "RightButton" or "LeftButton"
     if containerType == Baganator.API.Constants.ContainerType.Backpack then
       bagButton:Click(button)
-    elseif containerType == Baganator.API.Constants.ContainerType.Bank then
+    elseif containerType == Baganator.API.Constants.ContainerType.CharacterBank then
       bankButton:Click(button)
     end
   end)
@@ -56,7 +58,7 @@ Baganator.Utilities.OnAddonLoaded("BankStack", function()
 
     if containerType == Baganator.API.Constants.ContainerType.Backpack then
       sortBags()
-    elseif containerType == Baganator.API.Constants.ContainerType.Bank then
+    elseif containerType == Baganator.API.Constants.ContainerType.CharacterBank then
       sortBank()
     end
   end)

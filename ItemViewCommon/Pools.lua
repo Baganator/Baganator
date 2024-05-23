@@ -33,6 +33,14 @@ function Baganator.ItemViewCommon.GetLiveGuildItemButtonPool(parent)
   end
 end
 
+function Baganator.ItemViewCommon.GetLiveWarbandItemButtonPool(self)
+  if Baganator.Constants.IsRetail then
+    return CreateFramePool("ItemButton", self, "BaganatorRetailLiveWarbandItemButtonTemplate")
+  else
+    error("no warbands here")
+  end
+end
+
 function Baganator.ItemViewCommon.GetTabButtonPool(parent)
   if Baganator.Constants.IsRetail then
     return CreateFramePool("Button", parent, "BaganatorRetailTabButtonTemplate")

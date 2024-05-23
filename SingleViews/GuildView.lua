@@ -310,7 +310,6 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
       tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     end
     tabButton.SelectedTexture:Hide()
-    tabButton:SetID(index)
     tabButton:SetScale(tabScale)
     tabButton:Show()
     tabButton.tabName = tabInfo.name

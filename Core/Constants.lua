@@ -63,6 +63,14 @@ if not Syndicator then
   return
 end
 
+if Syndicator.Constants.WarbandBankActive then
+  -- Note constant values are taken from Blizzard code
+  Baganator.Constants.BlizzardBankTabConstants = {
+    Character = 1,
+    Warband = 3,
+  }
+end
+
 Baganator.Constants.SampleSearchTerms = {
   "<400",
   SYNDICATOR_L_KEYWORD_BOE,

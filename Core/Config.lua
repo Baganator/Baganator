@@ -3,6 +3,7 @@ Baganator.Config = {}
 Baganator.Config.Options = {
   BAG_VIEW_WIDTH = "bag_view_width",
   BANK_VIEW_WIDTH = "bank_view_width",
+  WARBAND_BANK_VIEW_WIDTH = "warband_bank_view_width",
   GUILD_VIEW_WIDTH = "guild_view_width",
   BAG_ICON_SIZE = "bag_icon_size",
   VIEW_ALPHA = "view_alpha",
@@ -78,6 +79,7 @@ Baganator.Config.Options = {
 Baganator.Config.Defaults = {
   [Baganator.Config.Options.BAG_VIEW_WIDTH] = 12,
   [Baganator.Config.Options.BANK_VIEW_WIDTH] = Baganator.Constants.IsRetail and 24 or 18,
+  [Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH] = 14,
   [Baganator.Config.Options.GUILD_VIEW_WIDTH] = 14,
   [Baganator.Config.Options.BAG_ICON_SIZE] = 37,
   [Baganator.Config.Options.VIEW_ALPHA] = 1,
@@ -159,6 +161,7 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
   Baganator.Config.Options.BAG_VIEW_WIDTH,
   Baganator.Config.Options.BANK_VIEW_WIDTH,
+  Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH,
   Baganator.Config.Options.GUILD_VIEW_WIDTH,
   Baganator.Config.Options.SHOW_REAGENTS,
   Baganator.Config.Options.SHOW_SORT_BUTTON,

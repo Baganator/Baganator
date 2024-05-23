@@ -51,6 +51,11 @@ Syndicator.API.RegisterShowItemLocation(function(mode, entity, container, itemLi
     Baganator.CallbackRegistry:TriggerEvent("GuildSetTab", tonumber(container))
     Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
     Baganator.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
+  elseif mode == "warband" then
+    Baganator.CallbackRegistry:TriggerEvent("GuildHide")
+    Baganator.CallbackRegistry:TriggerEvent("BagHide")
+    Baganator.CallbackRegistry:TriggerEvent("BankShow", tonumber(entity), tonumber(container))
+    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
   else
     Baganator.CallbackRegistry:UnregisterCallback("ViewComplete", self)
     return

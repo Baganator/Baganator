@@ -26,6 +26,15 @@
     </Scripts>
   </ItemButton>
 
+  <ItemButton name="BaganatorRetailLiveWarbandItemButtonTemplate" virtual="true" inherits="BankItemButtonTemplate">
+    <Scripts>
+      <OnLoad inherit="prepend">
+        Mixin(self, BaganatorRetailLiveWarbandItemButtonMixin)
+        self:MyOnLoad()
+      </OnLoad>
+    </Scripts>
+  </ItemButton>
+
   <Button name="BaganatorClassicCachedItemButtonTemplate" virtual="true" inherits="ItemButtonTemplate" mixin="BaganatorClassicCachedItemButtonMixin">
     <Scripts>
       <OnClick method="OnClick"/>

@@ -27,11 +27,31 @@ do
   end)
 end
 
-local function TransferToBank(matches, characterName, callback)
-  local emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
+local TransferToBank
+if Syndicator.Constants.WarbandBankActive then
+  TransferToBank = function(matches, characterName, callback)
+    local emptyBankSlots
+    if BankFrame:GetActiveBankType() == Enum.BankType.Character then
+      emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
+    elseif BankFrame:GetActiveBankType() == Enum.BankType.Account then
+      matches = tFilter(matches, function(m) return C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, ItemLocation:CreateFromBagAndSlot(m.bagID, m.slotID)) end, true)
+      local bagID = AccountBankPanel:GetSelectedTabID()
+      local tabIndex = tIndexOf(Syndicator.Constants.AllWarbandIndexes, bagID)
+      local bagsData = {Syndicator.API.GetWarband(1).bank[tabIndex].slots}
+      emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(bagsData, {bagID})
+    else
+      error("unrecognised bank type")
+    end
 
-  local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
-  callback(status)
+    local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
+    callback(status)
+  end
+else
+  TransferToBank = function(matches, characterName, callback)
+    local emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
+    local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
+    callback(status)
+  end
 end
 
 RegisterBagTransfer(

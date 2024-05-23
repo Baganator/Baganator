@@ -184,7 +184,9 @@ addonTable.ExternalContainerSorts = {}
 
 Baganator.API.Constants.ContainerType = {
   Backpack = "backpack",
-  Bank = "bank",
+  Bank = "character_bank", -- same as CharacterBank, kept for compatibility
+  CharacterBank = "character_bank",
+  WarbandBank = "warband_bank",
 }
 
 -- Register a sort function for bags and bank.

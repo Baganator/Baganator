@@ -45,6 +45,23 @@
     </Scripts>
   </Frame>
 
+  <Frame name="BaganatorLiveWarbandLayoutTemplate" virtual="true" mixin="BaganatorLiveWarbandLayoutMixin" parentArray="Layouts">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnHide method="OnHide"/>
+      <OnEvent method="OnEvent"/>
+    </Scripts>
+  </Frame>
+
+  <Frame name="BaganatorCachedWarbandLayoutTemplate" virtual="true" mixin="BaganatorCachedWarbandLayoutMixin" parentArray="Layouts">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+      <OnHide method="OnHide"/>
+    </Scripts>
+  </Frame>
+
   <Frame name="BaganatorBagDividerTemplate" virtual="true">
     <Anchors>
       <Anchor point="TOPLEFT"/>

@@ -669,6 +669,218 @@ function BaganatorLiveGuildLayoutMixin:OnEvent(eventName, ...)
   end
 end
 
+BaganatorLiveWarbandLayoutMixin = {}
+
+function BaganatorLiveWarbandLayoutMixin:OnLoad()
+  self.buttonPool = Baganator.ItemViewCommon.GetLiveWarbandItemButtonPool(self)
+  self.indexFrame = CreateFrame("Frame", nil, self)
+  self.buttons = {}
+  self.waitingUpdate = true
+  self.prevState = {}
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
+
+  self:RegisterEvent("ITEM_LOCK_CHANGED")
+end
+
+BaganatorLiveWarbandLayoutMixin.OnEvent = LiveBagOnEvent
+
+function BaganatorLiveWarbandLayoutMixin:OnShow()
+  RegisterHighlightSimilarItems(self)
+end
+
+function BaganatorLiveWarbandLayoutMixin:OnHide()
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+end
+
+function BaganatorLiveWarbandLayoutMixin:InformSettingChanged(setting)
+  if tIndexOf(ReflowSettings, setting) ~= nil then
+    self.reflow = true
+  end
+  if tIndexOf(RefreshContentSettings, setting) ~= nil then
+    self.refreshContent = true
+  end
+end
+
+function BaganatorLiveWarbandLayoutMixin:RequestContentRefresh()
+  self.refreshContent = true
+end
+
+function BaganatorLiveWarbandLayoutMixin:UpdateLockForItem(bagID, slotID)
+  if self.buttons[1] and bagID == self.buttons[1]:GetBankTabID() then
+    local itemButton = self.buttons[slotID]
+    if itemButton then
+      local info = C_Container.GetContainerItemInfo(bagID, slotID);
+      local locked = info and info.isLocked;
+      SetItemButtonDesaturated(itemButton, locked or itemButton.BGR.persistIconGrey)
+    end
+  end
+end
+
+function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
+  if tabSize == 0 then
+    return
+  end
+
+  for slotIndex = 1, tabSize do
+    local b = self.buttonPool:Acquire()
+    b:SetID(slotIndex)
+    b:SetParent(self.indexFrame)
+    b:Show()
+    table.insert(self.buttons, b)
+  end
+
+  FlowButtonsRows(self, rowWidth)
+
+  self.initialized = true
+end
+
+function BaganatorLiveWarbandLayoutMixin:MarkTabsPending(updatedWaiting)
+  self.waitingUpdate = updatedWaiting.bags[self.prevState.bagID] == true
+end
+
+function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
+  local start = debugprofilestop()
+
+  local warbandData = Syndicator.API.GetWarband(1).bank
+
+  if #warbandData == 0 then
+    return
+  end
+
+  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  if not self.initialized then
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("rebuild")
+    end
+    self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
+    self.waitingUpdate = true
+  elseif self.reflow or rowWidth ~= self.oldRowWidth then
+    self.reflow = false
+    FlowButtonsRows(self, rowWidth)
+  end
+
+  local refreshContent = self.refreshContent
+  if self.refreshContent then
+    self.refreshContent = false
+    self.waitingUpdate = true
+  end
+
+  if self.waitingUpdate or self.prevState.tabIndex ~= tabIndex then
+    local bagID = indexes[tabIndex]
+    self.indexFrame:SetID(bagID)
+    for index, cacheData in ipairs(warbandData[tabIndex].slots) do
+      local button = self.buttons[index]
+      button:SetBankTabID(bagID)
+      if IsDifferentCachedData(button.BGR, cacheData) then
+        button:SetItemDetails(cacheData)
+      elseif refreshContent then
+        Baganator.ItemButtonUtil.ResetCache(button, cacheData)
+      end
+    end
+  end
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("live warband layout took", debugprofilestop() - start)
+  end
+
+  self.prevState = {
+    tabIndex = tabIndex,
+    bagID = indexes[tabIndex],
+  }
+  self.waitingUpdate = false
+end
+
+function BaganatorLiveWarbandLayoutMixin:ApplySearch(text)
+  self.SearchMonitor:StartSearch(text)
+end
+
+BaganatorCachedWarbandLayoutMixin = {}
+
+function BaganatorCachedWarbandLayoutMixin:OnLoad()
+  self.buttonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
+  self.buttons = {}
+  self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
+end
+
+function BaganatorCachedWarbandLayoutMixin:OnShow()
+  RegisterHighlightSimilarItems(self)
+end
+
+function BaganatorCachedWarbandLayoutMixin:OnHide()
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+end
+
+function BaganatorCachedWarbandLayoutMixin:InformSettingChanged(setting)
+  if tIndexOf(ReflowSettings, setting) ~= nil then
+    self.reflow = true
+  end
+end
+
+function BaganatorCachedWarbandLayoutMixin:RequestContentRefresh()
+  self.refreshContent = true
+end
+
+function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
+  if tabSize == 0 then
+    return
+  end
+
+  for slotIndex = 1, tabSize do
+    local b = self.buttonPool:Acquire()
+    b:Show()
+    table.insert(self.buttons, b)
+  end
+
+  FlowButtonsRows(self, rowWidth)
+
+  self.initialized = true
+end
+
+function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
+  local start = debugprofilestop()
+
+  local warbandData = Syndicator.API.GetWarband(1).bank
+
+  if #warbandData == 0 then
+    return
+  end
+
+  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+
+  if not self.initialized then
+    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+      print("rebuild")
+    end
+    self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
+    self.waitingUpdate = true
+  elseif self.reflow or rowWidth ~= self.oldRowWidth then
+    self.reflow = false
+    FlowButtonsRows(self, rowWidth)
+  end
+
+  local refreshContent = self.refreshContent
+  if self.refreshContent then
+    self.refreshContent = false
+    self.waitingUpdate = true
+  end
+
+  for index, cacheData in ipairs(warbandData[tabIndex].slots) do
+    local button = self.buttons[index]
+    button:SetItemDetails(cacheData)
+  end
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("cached warband layout took", debugprofilestop() - start)
+  end
+end
+
+function BaganatorCachedWarbandLayoutMixin:ApplySearch(text)
+  self.SearchMonitor:StartSearch(text)
+end
+
 BaganatorSearchLayoutMonitorMixin = {}
 
 function BaganatorSearchLayoutMonitorMixin:OnLoad()
