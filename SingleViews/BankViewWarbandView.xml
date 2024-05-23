@@ -22,6 +22,9 @@
             C_Bank.AutoDepositItemsIntoBank(Enum.BankType.Account)
           </OnClick>
         </Scripts>
+        <Anchors>
+          <Anchor point="BOTTOM" y="29"/>
+        </Anchors>
       </Button>
 
       <CheckButton parentKey="IncludeReagentsCheckbox" inherits="BankPanelCheckBoxTemplate" text="BAGANATOR_L_INCLUDE_REAGENTS" mixin="BankPanelIncludeReagentsCheckBoxMixin" parentArray="LiveButtons">
@@ -38,7 +41,7 @@
           <OnClick method="OnClick"/>
         </Scripts>
         <Anchors>
-          <Anchor point="LEFT" relativeKey="$parent.DepositItemsButton" relativePoint="RIGHT" x="2"/>
+          <Anchor point="BOTTOM" y="6"/>
         </Anchors>
       </CheckButton>
 
@@ -50,6 +53,9 @@
             self:GetParent().currentTab:DepositMoney()
           </OnClick>
         </Scripts>
+        <Anchors>
+          <Anchor point="BOTTOM" y="29"/>
+        </Anchors>
       </Button>
       <Button parentKey="WithdrawMoneyButton" inherits="UIPanelDynamicResizeButtonTemplate" text="WITHDRAW" parentArray="LiveButtons">
         <Scripts>
@@ -77,7 +83,7 @@
         </FontString>
         <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true">
           <Anchors>
-            <Anchor point="RIGHT" relativeKey="$parent.WithdrawMoneyButton" relativePoint="LEFT" x="-5"/>
+            <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
           </Anchors>
         </FontString>
       </Layer>

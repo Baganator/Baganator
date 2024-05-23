@@ -323,24 +323,16 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   activeBank:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50)
 
   if self.isLive then
-    self.DepositItemsButton:ClearAllPoints()
-    self.DepositItemsButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 29)
+    self.IncludeReagentsCheckbox:SetPoint("LEFT", activeBank, "LEFT", -2, 0)
     self.DepositItemsButton:SetPoint("LEFT", activeBank, "LEFT", -2, 0)
 
-    self.DepositMoneyButton:ClearAllPoints()
     self.DepositMoneyButton:SetPoint("RIGHT", activeBank, "RIGHT", 0, 0)
-    self.DepositMoneyButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
 
-    self.Money:ClearAllPoints()
-    self.Money:SetPoint("RIGHT", self.WithdrawMoneyButton, "LEFT", -2, 0)
     bankHeight = bankHeight + 24
 
     if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
       bankHeight =  bankHeight + 2
     end
-  else
-    self.Money:ClearAllPoints()
-    self.Money:SetPoint("BOTTOMRIGHT", -10, 10)
   end
 
   self:UpdateTabs()
