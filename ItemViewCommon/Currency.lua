@@ -2,7 +2,9 @@ BaganatorCurrencyWidgetMixin = {}
 
 function BaganatorCurrencyWidgetMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
-    self:UpdateCurrencies(self.lastCharacter)
+    if self.lastCharacter then
+      self:UpdateCurrencies(self.lastCharacter)
+    end
   end)
 
   -- Update currencies when they are watched/unwatched in Blizz UI
