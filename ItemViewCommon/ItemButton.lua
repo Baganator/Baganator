@@ -399,6 +399,10 @@ end
 
 BaganatorRetailLiveContainerItemButtonMixin = {}
 
+local function IsReagentBankActive()
+  return IsReagentBankUnlocked() and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 and (not BankFrame.GetActiveBankType or BankFrame:GetActiveBankType() ~= Enum.BankType.Account)
+end
+
 function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   self:HookScript("OnClick", function()
     if not self.BGR or not self.BGR.itemID then
@@ -413,7 +417,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   -- reagents
   self:HookScript("OnEnter", function()
     if BankFrame:IsShown() then
-      if self.BGR and self.BGR.itemLink and (select(17, C_Item.GetItemInfo(self.BGR.itemLink))) and IsReagentBankUnlocked() and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 then
+      if self.BGR and self.BGR.itemLink and (select(17, C_Item.GetItemInfo(self.BGR.itemLink))) and IsReagentBankActive() then
         BankFrame.selectedTab = 2
       else
         BankFrame.selectedTab = 1
