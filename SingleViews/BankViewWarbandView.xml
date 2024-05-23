@@ -47,14 +47,14 @@
       <Button parentKey="DepositMoneyButton" inherits="UIPanelDynamicResizeButtonTemplate" text="DEPOSIT" parentArray="LiveButtons">
         <Scripts>
           <OnClick>
-            self:GetParent():DepositMoney()
+            self:GetParent().currentTab:DepositMoney()
           </OnClick>
         </Scripts>
       </Button>
       <Button parentKey="WithdrawMoneyButton" inherits="UIPanelDynamicResizeButtonTemplate" text="WITHDRAW" parentArray="LiveButtons">
         <Scripts>
           <OnClick>
-            self:GetParent():WithdrawMoney()
+            self:GetParent().currentTab:WithdrawMoney()
           </OnClick>
         </Scripts>
         <Anchors>

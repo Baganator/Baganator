@@ -334,6 +334,10 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     self.Money:ClearAllPoints()
     self.Money:SetPoint("RIGHT", self.WithdrawMoneyButton, "LEFT", -2, 0)
     bankHeight = bankHeight + 24
+
+    if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+      bankHeight =  bankHeight + 2
+    end
   else
     self.Money:ClearAllPoints()
     self.Money:SetPoint("BOTTOMRIGHT", -10, 10)
