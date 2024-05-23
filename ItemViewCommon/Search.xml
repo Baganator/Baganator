@@ -19,7 +19,6 @@
         <Scripts>
           <OnClick>
             local text = self:GetParent().SearchBox:GetText()
-            print("here", text)
             Syndicator.Search.RunMegaSearchAndPrintResults(text)
           </OnClick>
         </Scripts>
