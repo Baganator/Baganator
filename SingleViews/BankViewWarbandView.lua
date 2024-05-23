@@ -307,8 +307,6 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     button:SetShown(self.isLive)
   end
 
-  local warbandData = Syndicator.API.GetWarband(1)
-
   self:UpdateCurrencies()
 
   -- Copied from SingleViews/BagView.lua
