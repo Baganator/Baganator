@@ -81,6 +81,7 @@ local WINDOW_OPTIONS = {
     highText = "42",
     valuePattern = BAGANATOR_L_X_GUILD_COLUMNS,
     option = "guild_view_width",
+    check = NotIsEraCheck,
   },
   {
     type = "checkbox",
