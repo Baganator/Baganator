@@ -26,8 +26,7 @@ function BaganatorSingleViewBankViewWarbandViewMixin:OnLoad()
 
   Syndicator.CallbackRegistry:RegisterCallback("WarbandCurrencyCacheUpdate",  function(_, warbandIndex)
     if self:IsVisible() then
-      local warbandData = Syndicator.API.GetWarband(warbandIndex)
-      self.Money:SetText(Baganator.Utilities.GetMoneyString(warbandData.money, true))
+      self:UpdateCurrencies()
     end
   end)
 
@@ -158,6 +157,16 @@ function BaganatorSingleViewBankViewWarbandViewMixin:SetupBlizzardFramesForTab()
     if self.TabSettingsMenu:IsShown() then
       self.TabSettingsMenu:OnNewBankTabSelected(bagID)
     end
+  end
+end
+
+function BaganatorSingleViewBankViewWarbandViewMixin:UpdateCurrencies()
+  local warbandData = Syndicator.API.GetWarband(warbandIndex)
+  self.Money:SetText(Baganator.Utilities.GetMoneyString(warbandData.money, true))
+
+  if self.isLive then
+    self.DepositMoneyButton:SetEnabled(C_Bank.CanDepositMoney(Enum.BankType.Account))
+    self.WithdrawMoneyButton:SetEnabled(C_Bank.CanWithdrawMoney(Enum.BankType.Account))
   end
 end
 
@@ -297,12 +306,10 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   for _, button in ipairs(self.LiveButtons) do
     button:SetShown(self.isLive)
   end
-  self.DepositMoneyButton:SetEnabled(C_Bank.CanDepositMoney(Enum.BankType.Account))
-  self.WithdrawMoneyButton:SetEnabled(C_Bank.CanWithdrawMoney(Enum.BankType.Account))
 
   local warbandData = Syndicator.API.GetWarband(1)
 
-  self.Money:SetText(Baganator.Utilities.GetMoneyString(warbandData.money, true))
+  self:UpdateCurrencies()
 
   -- Copied from SingleViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
