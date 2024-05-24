@@ -504,6 +504,10 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self:UpdateItemContextMatching();
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
   end)
+
+  if not self.BGR.itemID then
+    self:UpdateItemContextMatching();
+  end
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRStartFlashing()
