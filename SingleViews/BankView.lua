@@ -60,8 +60,6 @@ function BaganatorSingleViewBankViewMixin:OnLoad()
       if self:IsShown() then
         Baganator.Utilities.ApplyVisuals(self)
       end
-    elseif settingName == Baganator.Config.Options.SHOW_BUTTONS_ON_ALT then
-      self:UpdateAllButtons()
     end
   end)
 
@@ -124,14 +122,10 @@ function BaganatorSingleViewBankViewMixin:OnEvent(eventName)
   elseif eventName == "BANKFRAME_CLOSED" then
     self.liveBankActive = false
     self:Hide()
-  elseif eventName == "MODIFIER_STATE_CHANGED" then
-    self:UpdateAllButtons()
   end
 end
 
 function BaganatorSingleViewBankViewMixin:OnShow()
-  self:RegisterEvent("MODIFIER_STATE_CHANGED")
-
   if self.Tabs[1] then
     if self.currentTab == self.Character then
       PanelTemplates_SelectTab(self.Tabs[1])
@@ -148,7 +142,6 @@ function BaganatorSingleViewBankViewMixin:OnHide(eventName)
     CloseBankFrame()
   end
 
-  self:UnregisterEvent("MODIFIER_STATE_CHANGED")
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
 end
 
@@ -190,27 +183,9 @@ function BaganatorSingleViewBankViewMixin:UpdateView()
   self.SortButton:SetShown(self.currentTab.isLive and Baganator.Utilities.ShouldShowSortButton())
   self:UpdateTransferButton()
 
-  self:UpdateAllButtons()
+  self.ButtonVisibility:Update()
 
   self:SetSize(self.currentTab:GetSize())
-end
-
-local hiddenParent = CreateFrame("Frame")
-hiddenParent:Hide()
-
-function BaganatorSingleViewBankViewMixin:UpdateAllButtons()
-  if not self.AllButtons then
-    return
-  end
-
-  local parent = self
-  if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
-    parent = hiddenParent
-  end
-  for _, button in ipairs(self.AllButtons) do
-    button:SetParent(parent)
-    button:SetFrameLevel(700)
-  end
 end
 
 function BaganatorSingleViewBankViewMixin:Transfer(button)

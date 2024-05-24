@@ -60,6 +60,7 @@
       </Button>
 
       <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
+      <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>
 
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>

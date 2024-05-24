@@ -77,8 +77,6 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
       self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
     elseif settingName == Baganator.Config.Options.GUILD_BANK_SORT_METHOD then
       self:UpdateForGuild(self.lastGuild, self.isLive)
-    elseif settingName == Baganator.Config.Options.SHOW_BUTTONS_ON_ALT then
-      self:UpdateAllButtons()
     end
   end)
 
@@ -151,8 +149,6 @@ function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)
       self.isLive = false
       self:Hide()
     end
-  elseif eventName == "MODIFIER_STATE_CHANGED" then
-    self:UpdateAllButtons()
   elseif eventName == "GUILDBANKLOG_UPDATE" and self.LogsFrame:IsVisible() then
     if self.LogsFrame.showing == PopupMode.Tab then
       self.LogsFrame:ApplyTab()
@@ -176,12 +172,10 @@ end
 
 function BaganatorSingleViewGuildViewMixin:OnShow()
   self:UpdateForGuild(self.lastGuild, self.isLive)
-  self:RegisterEvent("MODIFIER_STATE_CHANGED")
 end
 
 function BaganatorSingleViewGuildViewMixin:OnHide()
   self:HideInfoDialogs()
-  self:UnregisterEvent("MODIFIER_STATE_CHANGED")
   CloseGuildBankFrame()
 end
 
@@ -528,23 +522,9 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     height + 60 + detailsHeight
   )
 
-  self:UpdateAllButtons()
+  self.ButtonVisiblity:Update()
 
   Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
-end
-
-local hiddenParent = CreateFrame("Frame")
-hiddenParent:Hide()
-
-function BaganatorSingleViewGuildViewMixin:UpdateAllButtons()
-  local parent = self
-  if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
-    parent = hiddenParent
-  end
-  for _, button in ipairs(self.AllButtons) do
-    button:SetParent(parent)
-    button:SetFrameLevel(700)
-  end
 end
 
 function BaganatorSingleViewGuildViewMixin:RemoveSearchMatches(callback)

@@ -344,8 +344,6 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   self:SetupBlizzardFramesForTab()
   self:HighlightCurrentTab()
 
-  self:GetParent():UpdateAllButtons()
-
   Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
 
   self:SetSize(

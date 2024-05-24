@@ -2,7 +2,6 @@
   <Frame name="BaganatorSingleViewBankViewCharacterViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewCharacterViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
-      <OnHide method="OnHide"/>
     </Scripts>
     <Frames>
       <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons">

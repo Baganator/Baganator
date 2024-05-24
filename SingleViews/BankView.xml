@@ -48,6 +48,7 @@
       </Frame>
 
       <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
+      <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>
     </Frames>
   </Frame>
 </Ui>

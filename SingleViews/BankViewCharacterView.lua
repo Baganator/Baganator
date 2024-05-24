@@ -72,18 +72,6 @@ function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
   self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset, 0)
 end
 
-function BaganatorSingleViewBankViewCharacterViewMixin:OnHide()
-  for _, button in ipairs(self.TopButtons) do
-    button:SetParent(self)
-  end
-  for _, button in ipairs(self.LiveButtons) do
-    button:SetParent(self)
-  end
-  for index, details in ipairs(self.CollapsingBankBags) do
-    details.button:SetParent(self)
-  end
-end
-
 function BaganatorSingleViewBankViewCharacterViewMixin:ToggleBagSlots()
   Baganator.Config.Set(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS, not Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS))
 end

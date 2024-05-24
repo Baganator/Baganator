@@ -82,8 +82,6 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
       end
     elseif settingName == Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
-    elseif settingName == Baganator.Config.Options.SHOW_BUTTONS_ON_ALT then
-      self:UpdateAllButtons()
     end
   end)
 
@@ -141,14 +139,10 @@ function BaganatorSingleViewBackpackViewMixin:OnShow()
       self:CombineStacksAndSort()
     end)
   end
-  self:RegisterEvent("MODIFIER_STATE_CHANGED")
-
   PlaySound(SOUNDKIT.IG_BACKPACK_OPEN);
 end
 
 function BaganatorSingleViewBackpackViewMixin:OnHide()
-  self:UnregisterEvent("MODIFIER_STATE_CHANGED")
-
   PlaySound(SOUNDKIT.IG_BACKPACK_CLOSE);
 end
 
@@ -509,22 +503,8 @@ function BaganatorSingleViewBackpackViewMixin:UpdateTransferButton()
   self.TransferButton:Hide()
 end
 
-local hiddenParent = CreateFrame("Frame")
-hiddenParent:Hide()
-
 function BaganatorSingleViewBackpackViewMixin:UpdateAllButtons()
-  if not self.AllButtons then
-    return
-  end
-
-  local parent = self
-  if Baganator.Config.Get(Baganator.Config.Options.SHOW_BUTTONS_ON_ALT) and not IsAltKeyDown() then
-    parent = hiddenParent
-  end
-  for _, button in ipairs(self.AllButtons) do
-    button:SetParent(parent)
-    button:SetFrameLevel(700)
-  end
+  self.ButtonVisibility:Update()
   local guildName = Syndicator.API.GetCharacter(self.lastCharacter).details.guild
   self.ToggleGuildBankButton:SetEnabled(guildName ~= nil and Syndicator.API.GetGuild(guildName))
 end

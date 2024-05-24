@@ -124,6 +124,7 @@
       </Frame>
 
       <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
+      <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>
     </Frames>
     <Layers>
       <Layer level="BACKGROUND">
