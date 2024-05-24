@@ -229,6 +229,16 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateView()
 end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
+  local characterData = Syndicator.API.GetCharacter(character)
+  if not characterData then
+    self:GetParent():SetTitle("")
+    return
+  else
+    self:GetParent():SetTitle(BAGANATOR_L_XS_BANK:format(characterData.details.character))
+  end
+
+  self:AllocateBankBags(character)
+
   local oldLast = self.lastCharacter
   self.lastCharacter = character
   if oldLast ~= self.lastCharacter then
@@ -236,8 +246,9 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   end
   self.isLive = isLive
 
-  self:AllocateBankBags(character)
   self.BagSlots:Update(character, self.isLive)
+  local containerInfo = characterData.containerInfo
+  self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bank))
 
   self.BankLive:SetShown(self.isLive)
   self.BankCached:SetShown(not self.isLive)
@@ -267,13 +278,6 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   for index, layout in ipairs(activeBankBagCollapsibles) do
     layout:ShowCharacter(character, "bank", Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
-  end
-
-  local characterData = Syndicator.API.GetCharacter(character)
-  if not characterData then
-    self:GetParent():SetTitle("")
-  else
-    self:GetParent():SetTitle(BAGANATOR_L_XS_BANK:format(characterData.details.character))
   end
 
   self.BankMissingHint:SetShown(#activeBank.buttons == 0)

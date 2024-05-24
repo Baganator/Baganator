@@ -368,6 +368,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   self.isLive = isLive
 
   self.BagSlots:Update(self.lastCharacter, self.isLive)
+  local containerInfo = characterData.containerInfo
   self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bags))
 
   if oldLast ~= character then
