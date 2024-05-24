@@ -403,7 +403,7 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
 
   -- Show cached bag slots when viewing cached bags for other characters
   local containerInfo = Syndicator.API.GetCharacter(character).containerInfo
-  if not isLive and containerInfo then
+  if not isLive and containerInfo and containerInfo[self.mode] then
     local show = Baganator.Config.Get(self.config)
     for index, bb in ipairs(self.cachedBagSlots) do
       local details = CopyTable(containerInfo[self.mode][index] or {})
