@@ -37,18 +37,10 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
   Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
   Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
 
-  FrameUtil.RegisterFrameForEvents(self, {
-    "PLAYER_REGEN_DISABLED",
-    "PLAYER_REGEN_ENABLED",
-  })
-
   self.tabsPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
 
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
-    if updatedBags.containerBags == nil or updatedBags.containerBags.bags then
-      self.updateBagSlotsNeeded = true
-    end
     self.searchToApply = true
     self:NotifyBagUpdate(updatedBags)
     if self:IsVisible() then
@@ -89,7 +81,7 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
         end
       end
     elseif settingName == Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
-      self:UpdateBagSlots()
+      self.BagSlots:Update(self.lastCharacter, self.isLive)
     elseif settingName == Baganator.Config.Options.SHOW_BUTTONS_ON_ALT then
       self:UpdateAllButtons()
     end
@@ -112,8 +104,6 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
-
-  self:CreateBagSlots()
 
   self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
@@ -141,6 +131,8 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
     local button = self.TopButtons[index]
     button:SetPoint("TOPLEFT", self.TopButtons[index-1], "TOPRIGHT")
   end
+
+  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset, 0)
 end
 
 function BaganatorSingleViewBackpackViewMixin:OnShow()
@@ -193,121 +185,6 @@ end
 
 function BaganatorSingleViewBackpackViewMixin:SetLiveCharacter(character)
   self.liveCharacter = character
-end
-
-function BaganatorSingleViewBackpackViewMixin:OnEvent(eventName)
-  if eventName == "PLAYER_REGEN_DISABLED" then
-    -- Disable bag bag slots buttons in combat as pickup/drop doesn't work then
-    if not self.liveBagSlots then
-      return
-    end
-    for _, button in ipairs(self.liveBagSlots) do
-      SetItemButtonDesaturated(button, true)
-      button:Disable()
-    end
-  elseif eventName == "PLAYER_REGEN_ENABLED" then
-    if not self.liveBagSlots then
-      return
-    end
-    for _, button in ipairs(self.liveBagSlots) do
-      SetItemButtonDesaturated(button, false)
-      button:Enable()
-    end
-  elseif eventName == "MODIFIER_STATE_CHANGED" then
-    self:UpdateAllButtons()
-  end
-end
-
-function BaganatorSingleViewBackpackViewMixin:CreateBagSlots()
-  local function GetBagSlotButton()
-    if Baganator.Constants.IsRetail then
-      return CreateFrame("ItemButton", nil, self, "BaganatorRetailBagSlotButtonTemplate")
-    else
-      return CreateFrame("Button", nil, self, "BaganatorClassicBagSlotButtonTemplate")
-    end
-  end
-
-  self.liveBagSlots = {}
-  for index = 1, Syndicator.Constants.BagSlotsCount do
-    local bb = GetBagSlotButton()
-    table.insert(self.liveBagSlots, bb)
-    bb:SetID(index)
-    if #self.liveBagSlots == 1 then
-      bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.SearchWidget.SearchBox, "LEFT", -12, 0)
-    else
-      bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
-    end
-  end
-
-  local cachedBagSlotCounter = 0
-  local function GetCachedBagSlotButton()
-    -- Use cached item buttons from cached layout views
-    if Baganator.Constants.IsRetail then
-      return CreateFrame("ItemButton", nil, self, "BaganatorRetailCachedItemButtonTemplate")
-    else
-      cachedBagSlotCounter = cachedBagSlotCounter + 1
-      return CreateFrame("Button", "BGRCachedBagSlotItemButton" .. cachedBagSlotCounter, self, "BaganatorClassicCachedItemButtonTemplate")
-    end
-  end
-
-  self.cachedBagSlots = {}
-  for index = 1, Syndicator.Constants.BagSlotsCount do
-    local bb = GetCachedBagSlotButton()
-    bb:UpdateTextures()
-    bb.isBag = true
-    table.insert(self.cachedBagSlots, bb)
-    bb:SetID(index)
-    bb:HookScript("OnEnter", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
-    end)
-    bb:HookScript("OnLeave", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
-    end)
-    if #self.cachedBagSlots == 1 then
-      bb:SetPoint("BOTTOM", self, "TOP")
-      bb:SetPoint("LEFT", self.SearchWidget.SearchBox, "LEFT", -12, 0)
-    else
-      bb:SetPoint("TOPLEFT", self.cachedBagSlots[#self.cachedBagSlots - 1], "TOPRIGHT")
-    end
-  end
-end
-
-function BaganatorSingleViewBackpackViewMixin:UpdateBagSlots()
-  if self.updateBagSlotsNeeded then
-    self.updateBagSlotsNeeded = false
-    for _, bb in ipairs(self.liveBagSlots) do
-      bb:Init()
-    end
-  end
-
-  local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
-  for _, bb in ipairs(self.liveBagSlots) do
-    -- Show live back slots if viewing live bags
-    bb:SetShown(show)
-  end
-
-  -- Show cached bag slots when viewing cached bags for other characters
-  local containerInfo = Syndicator.API.GetCharacter(self.lastCharacter).containerInfo
-  if not self.isLive and containerInfo then
-    local show = Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS)
-    for index, bb in ipairs(self.cachedBagSlots) do
-      local details = CopyTable(containerInfo.bags[index] or {})
-      details.itemCount = Baganator.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(self.lastCharacter).bags[index + 1])
-      bb:SetItemDetails(details)
-      if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
-        local _, texture = GetInventorySlotInfo("Bag1")
-        SetItemButtonTexture(bb, texture)
-      end
-      bb:SetShown(show)
-    end
-  else
-    for _, bb in ipairs(self.cachedBagSlots) do
-      bb:Hide()
-    end
-  end
-
-  self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bags))
 end
 
 function BaganatorSingleViewBackpackViewMixin:OnDragStart()
@@ -490,7 +367,8 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   self.lastCharacter = character
   self.isLive = isLive
 
-  self:UpdateBagSlots()
+  self.BagSlots:Update(self.lastCharacter, self.isLive)
+  self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bags))
 
   if oldLast ~= character then
     Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", character)

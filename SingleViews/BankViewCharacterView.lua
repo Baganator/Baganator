@@ -3,12 +3,6 @@ local _, addonTable = ...
 BaganatorSingleViewBankViewCharacterViewMixin = {}
 
 function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
-  FrameUtil.RegisterFrameForEvents(self, {
-    "PLAYERBANKBAGSLOTS_CHANGED",
-    "PLAYER_REGEN_DISABLED",
-    "PLAYER_REGEN_ENABLED",
-  })
-
   self.unallocatedItemButtonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
   self.CollapsingBagSectionsPool = Baganator.SingleViews.GetCollapsingBagSectionsPool(self)
   self.CollapsingBankBags = {}
@@ -64,7 +58,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
         self:GetParent():UpdateView()
       end
     elseif settingName == Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS then
-      self:UpdateBagSlots()
+      self.BagSlots:Update(self.lastCharacter, self.isLive)
     end
   end)
 
@@ -75,7 +69,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
     end
   end)
 
-  self:CreateBagSlots()
+  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset, 0)
 end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:OnHide()
@@ -90,115 +84,8 @@ function BaganatorSingleViewBankViewCharacterViewMixin:OnHide()
   end
 end
 
-function BaganatorSingleViewBankViewCharacterViewMixin:OnEvent()
-  if eventName == "PLAYERBANKBAGSLOTS_CHANGED" then
-    if self:IsVisible() then
-      self:UpdateBagSlots()
-    end
-  elseif eventName == "PLAYER_REGEN_DISABLED" then
-    if not self.liveBankBagSlots then
-      return
-    end
-    -- Disable bank bag slots buttons in combat as pickup/drop doesn't work
-    for _, button in ipairs(self.liveBankBagSlots) do
-      SetItemButtonDesaturated(button, true)
-      button:Disable()
-    end
-  elseif eventName == "PLAYER_REGEN_ENABLED" then
-    if not self.liveBankBagSlots then
-      return
-    end
-    for _, button in ipairs(self.liveBankBagSlots) do
-      SetItemButtonDesaturated(button, false)
-      button:Enable()
-    end
-  end
-end
-
-function BaganatorSingleViewBankViewCharacterViewMixin:CreateBagSlots()
-  local function GetLiveBankBagButton()
-    if Baganator.Constants.IsRetail then
-      return CreateFrame("ItemButton", nil, self, "BaganatorRetailBankButtonTemplate")
-    else
-      return CreateFrame("Button", nil, self, "BaganatorClassicBankButtonTemplate")
-    end
-  end
-
-  self.liveBankBagSlots = {}
-  for index = 1, Syndicator.Constants.BankBagSlotsCount do
-    local bb = GetLiveBankBagButton()
-    table.insert(self.liveBankBagSlots, bb)
-    bb:SetID(index)
-    if #self.liveBankBagSlots == 1 then
-      bb:SetPoint("BOTTOMLEFT", self.ToggleAllCharacters, "TOPLEFT", 4, 0)
-    else
-      bb:SetPoint("TOPLEFT", self.liveBankBagSlots[#self.liveBankBagSlots - 1], "TOPRIGHT")
-    end
-  end
-
-  local cachedBankBagSlotCounter = 0
-  local function GetCachedBankBagSlotButton()
-    -- Use cached item buttons from cached layout views
-    if Baganator.Constants.IsRetail then
-      return CreateFrame("ItemButton", nil, self, "BaganatorRetailCachedItemButtonTemplate")
-    else
-      cachedBankBagSlotCounter = cachedBankBagSlotCounter + 1
-      return CreateFrame("Button", "BGRCachedBankBagSlotItemButton" .. cachedBankBagSlotCounter, self, "BaganatorClassicCachedItemButtonTemplate")
-    end
-  end
-
-  self.cachedBankBagSlots = {}
-  for index = 1, Syndicator.Constants.BankBagSlotsCount do
-    local bb = GetCachedBankBagSlotButton()
-    bb:UpdateTextures()
-    bb.isBag = true
-    table.insert(self.cachedBankBagSlots, bb)
-    bb:SetID(index)
-    bb:HookScript("OnEnter", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllBankIndexes[self:GetID()+1]] = true})
-    end)
-    bb:HookScript("OnLeave", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
-    end)
-    if #self.cachedBankBagSlots == 1 then
-      bb:SetPoint("BOTTOMLEFT", self.ToggleAllCharacters, "TOPLEFT", 3, 0)
-    else
-      bb:SetPoint("TOPLEFT", self.cachedBankBagSlots[#self.cachedBankBagSlots - 1], "TOPRIGHT")
-    end
-  end
-end
-
 function BaganatorSingleViewBankViewCharacterViewMixin:ToggleBagSlots()
   Baganator.Config.Set(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS, not Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS))
-end
-
-function BaganatorSingleViewBankViewCharacterViewMixin:UpdateBagSlots()
-  local show = self.isLive and Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS)
-  for _, bb in ipairs(self.liveBankBagSlots) do
-    bb:Init()
-    bb:SetShown(show)
-  end
-
-  -- Show cached bag slots when viewing cached bank bags for other characters
-  local containerInfo = Syndicator.API.GetCharacter(self.lastCharacter).containerInfo
-  if not self.isLive and containerInfo and containerInfo.bank then
-    local show = Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS)
-    for index, bb in ipairs(self.cachedBankBagSlots) do
-      local details = CopyTable(containerInfo.bank[index] or {})
-      details.itemCount = Baganator.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(self.lastCharacter).bank[index + 1])
-      bb:SetItemDetails(details)
-      if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
-        local _, texture = GetInventorySlotInfo("Bag1")
-        SetItemButtonTexture(bb, texture)
-      end
-      bb:SetShown(show)
-    end
-    self.cachedBankBagSlots[1]:SetPoint("BOTTOMLEFT", self.ToggleAllCharacters, "TOPLEFT")
-  else
-    for _, bb in ipairs(self.cachedBankBagSlots) do
-      bb:Hide()
-    end
-  end
 end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:ApplySearch(text)
@@ -350,7 +237,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   self.isLive = isLive
 
   self:AllocateBankBags(character)
-  self:UpdateBagSlots()
+  self.BagSlots:Update(character, self.isLive)
 
   self.BankLive:SetShown(self.isLive)
   self.BankCached:SetShown(not self.isLive)

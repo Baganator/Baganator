@@ -4,7 +4,6 @@
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
       <OnHide method="OnHide"/>
-      <OnEvent method="OnEvent"/>
       <OnDragStart method="OnDragStart"/>
       <OnDragStop method="OnDragStop"/>
     </Scripts>
@@ -65,6 +64,12 @@
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
       <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
+
+      <Frame parentKey="BagSlots" inherits="BaganatorBagSlotsContainerTemplate">
+        <KeyValues>
+          <KeyValue key="mode" value="bags" type="string"/>
+        </KeyValues>
+      </Frame>
     </Frames>
   </Frame>
 </Ui>

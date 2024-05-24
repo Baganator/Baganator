@@ -2,7 +2,6 @@
   <Frame name="BaganatorSingleViewBankViewCharacterViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewCharacterViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
-      <OnEvent method="OnEvent"/>
       <OnHide method="OnHide"/>
     </Scripts>
     <Frames>
@@ -48,6 +47,12 @@
           </OnClick>
         </Scripts>
       </Button>
+
+      <Frame parentKey="BagSlots" inherits="BaganatorBagSlotsContainerTemplate">
+        <KeyValues>
+          <KeyValue key="mode" value="bank" type="string"/>
+        </KeyValues>
+      </Frame>
     </Frames>
     <Layers>
       <Layer level="BACKGROUND">

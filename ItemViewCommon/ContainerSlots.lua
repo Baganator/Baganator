@@ -304,3 +304,143 @@ end
 function BaganatorClassicBankButtonMixin:OnLeave()
   HideBankSlotTooltip(self)
 end
+
+BaganatorBagSlotsContainerMixin = {}
+
+function BaganatorBagSlotsContainerMixin:OnLoad()
+  Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+    if updatedBags.containerBags == nil or updatedBags.containerBags[self.mode] then
+      self.updateBagSlotsNeeded = true
+    end
+  end)
+  self.updateBagSlotsNeeded = true
+
+  FrameUtil.RegisterFrameForEvents(self, {
+    "PLAYER_REGEN_DISABLED",
+    "PLAYER_REGEN_ENABLED",
+  })
+
+  local bagSlotsCount
+  local GetBagSlotButton
+  if self.mode == "bags" then
+    GetBagSlotButton = function()
+      if Baganator.Constants.IsRetail then
+        return CreateFrame("ItemButton", nil, self, "BaganatorRetailBagSlotButtonTemplate")
+      else
+        return CreateFrame("Button", nil, self, "BaganatorClassicBagSlotButtonTemplate")
+      end
+    end
+    bagSlotsCount = Syndicator.Constants.BagSlotsCount
+    self.config = Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS
+  elseif self.mode == "bank" then
+    GetBagSlotButton = function()
+      if Baganator.Constants.IsRetail then
+        return CreateFrame("ItemButton", nil, self, "BaganatorRetailBankButtonTemplate")
+      else
+        return CreateFrame("Button", nil, self, "BaganatorClassicBankButtonTemplate")
+      end
+    end
+    bagSlotsCount = Syndicator.Constants.BankBagSlotsCount
+    self.config = Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS
+  end
+
+  self.liveBagSlots = {}
+  for index = 1, bagSlotsCount do
+    local bb = GetBagSlotButton()
+    table.insert(self.liveBagSlots, bb)
+    bb:SetID(index)
+    if #self.liveBagSlots == 1 then
+      bb:SetPoint("BOTTOMLEFT")
+    else
+      bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
+    end
+  end
+
+  local cachedBagSlotCounter = 0
+  local function GetCachedBagSlotButton()
+    -- Use cached item buttons from cached layout views
+    if Baganator.Constants.IsRetail then
+      return CreateFrame("ItemButton", nil, self, "BaganatorRetailCachedItemButtonTemplate")
+    else
+      cachedBagSlotCounter = cachedBagSlotCounter + 1
+      return CreateFrame("Button", "BGRCachedBagSlotItemButton" .. cachedBagSlotCounter, self, "BaganatorClassicCachedItemButtonTemplate")
+    end
+  end
+
+  self.cachedBagSlots = {}
+  for index = 1, bagSlotsCount do
+    local bb = GetCachedBagSlotButton()
+    bb:UpdateTextures()
+    bb.isBag = true
+    table.insert(self.cachedBagSlots, bb)
+    bb:SetID(index)
+    bb:HookScript("OnEnter", function(self)
+      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
+    end)
+    bb:HookScript("OnLeave", function(self)
+      Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+    end)
+    if #self.cachedBagSlots == 1 then
+      bb:SetPoint("BOTTOMLEFT")
+    else
+      bb:SetPoint("TOPLEFT", self.cachedBagSlots[#self.cachedBagSlots - 1], "TOPRIGHT")
+    end
+  end
+end
+
+function BaganatorBagSlotsContainerMixin:Update(character, isLive)
+  if self.updateBagSlotsNeeded then
+    for _, bb in ipairs(self.liveBagSlots) do
+      bb:Init()
+    end
+  end
+
+  local show = isLive and Baganator.Config.Get(self.config)
+  for _, bb in ipairs(self.liveBagSlots) do
+    -- Show live bag slots if viewing live bags/bank
+    bb:SetShown(show)
+  end
+
+  -- Show cached bag slots when viewing cached bags for other characters
+  local containerInfo = Syndicator.API.GetCharacter(character).containerInfo
+  if not isLive and containerInfo then
+    local show = Baganator.Config.Get(self.config)
+    for index, bb in ipairs(self.cachedBagSlots) do
+      local details = CopyTable(containerInfo[self.mode][index] or {})
+      details.itemCount = Baganator.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(character)[self.mode][index + 1])
+      bb:SetItemDetails(details)
+      if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
+        local _, texture = GetInventorySlotInfo("Bag1")
+        SetItemButtonTexture(bb, texture)
+      end
+      bb:SetShown(show)
+    end
+  else
+    for _, bb in ipairs(self.cachedBagSlots) do
+      bb:Hide()
+    end
+  end
+end
+
+function BaganatorBagSlotsContainerMixin:OnEvent(eventName)
+  if eventName == "PLAYER_REGEN_DISABLED" then
+    -- Disable bag bag slots buttons in combat as pickup/drop doesn't work then
+    if not self.liveBagSlots then
+      return
+    end
+    for _, button in ipairs(self.liveBagSlots) do
+      SetItemButtonDesaturated(button, true)
+      button:Disable()
+    end
+  elseif eventName == "PLAYER_REGEN_ENABLED" then
+    if not self.liveBagSlots then
+      return
+    end
+    for _, button in ipairs(self.liveBagSlots) do
+      SetItemButtonDesaturated(button, false)
+      button:Enable()
+    end
+  elseif eventName == "MODIFIER_STATE_CHANGED" then
+    self:UpdateAllButtons()
+  end
+end

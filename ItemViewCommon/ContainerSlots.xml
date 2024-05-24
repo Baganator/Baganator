@@ -42,4 +42,12 @@
       <OnReceiveDrag method="OnReceiveDrag"/>
     </Scripts>
   </Button>
+
+  <Frame name="BaganatorBagSlotsContainerTemplate" virtual="true" mixin="BaganatorBagSlotsContainerMixin">
+    <Size x="1" y="1"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnEvent method="OnEvent"/>
+    </Scripts>
+  </Frame>
 </Ui>
