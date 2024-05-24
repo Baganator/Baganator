@@ -124,7 +124,7 @@ RegisterBagTransfer(
     local status = Baganator.Transfers.AddToTrade(matches)
     callback(status)
   end,
-  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_TRADE_TOOLTIP_TEXT
+  false, BAGANATOR_L_TRANSFER_MAIN_VIEW_TRADE_TOOLTIP_TEXT
 )
 
 RegisterBagTransfer(
