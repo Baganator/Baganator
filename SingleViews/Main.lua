@@ -194,9 +194,12 @@ local function SetupGuildView()
     guildView:UpdateForGuild(guildName, Syndicator.API.GetCurrentGuild() == guildName and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("GuildShow",  function(_, guildName)
+  Baganator.CallbackRegistry:RegisterCallback("GuildShow",  function(_, guildName, tabIndex)
     guildName = guildName or Syndicator.API.GetCurrentGuild()
     guildView:Show()
+    if tabIndex ~= nil then
+      guildView:SetCurrentTab(tabIndex)
+    end
     guildView:UpdateForGuild(
       guildName,
       guildName == Syndicator.API.GetCurrentGuild() and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker)
@@ -205,14 +208,6 @@ local function SetupGuildView()
 
   Baganator.CallbackRegistry:RegisterCallback("GuildHide",  function(_, ...)
     guildView:Hide()
-  end)
-
-  Baganator.CallbackRegistry:RegisterCallback("GuildSetTab", function(_, tabIndex)
-    guildView:SetCurrentTab(tabIndex)
-    guildView:UpdateForGuild(
-      guildView.lastGuild,
-      guildView.isLive
-    )
   end)
 end
 

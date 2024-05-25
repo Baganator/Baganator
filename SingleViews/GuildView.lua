@@ -522,7 +522,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     height + 60 + detailsHeight
   )
 
-  self.ButtonVisiblity:Update()
+  self.ButtonVisibility:Update()
 
   Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
 end
