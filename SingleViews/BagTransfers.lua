@@ -28,7 +28,7 @@ do
 end
 
 local TransferToBank
-if Syndicator.Constants.WarbandBankActive then
+if Syndicator and Syndicator.Constants.WarbandBankActive then
   TransferToBank = function(matches, characterName, callback)
     local emptyBankSlots
     if BankFrame:GetActiveBankType() == Enum.BankType.Character then
