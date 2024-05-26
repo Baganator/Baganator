@@ -680,4 +680,8 @@ end
 function BaganatorCustomiseDialogMixin:OnShow()
   self:SetIndex(self.lastIndex or 1)
   self:RefreshOptions()
+
+  local tabsWidth = self.Tabs[#self.Tabs]:GetRight() - self.Tabs[1]:GetLeft()
+
+  self:SetWidth(math.max(self:GetWidth(), tabsWidth + 20))
 end
