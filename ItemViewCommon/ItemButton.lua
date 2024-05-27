@@ -519,7 +519,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRSetHighlight(isHighlight
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateCooldown()
-  self:UpdateCooldown(self.BGR.itemLink);
+  self:UpdateCooldown(self.BGR.itemLink ~= nil);
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateQuests()
