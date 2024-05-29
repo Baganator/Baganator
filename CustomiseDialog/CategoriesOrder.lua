@@ -102,7 +102,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
     end
   end)
 
-  local dropDown = CreateFrame("EventButton", nil, parent, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
+  local dropDown = Baganator.CustomiseDialog.GetDropdown(container)
   SetCategoriesToDropDown(dropDown)
 
   local function Pickup(value, label)

@@ -39,7 +39,7 @@ for index, value in ipairs(PRIORITY_LIST) do
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
-  self.DropDown = CreateFrame("EventButton", nil, self, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
+  self.DropDown = Baganator.CustomiseDialog.GetDropdown(self)
   self.DropDown:SetPoint("TOPRIGHT")
   self.DropDown:SetWidth(200)
   self.DropDown:SetText(BAGANATOR_L_CHOOSE_TO_EDIT)

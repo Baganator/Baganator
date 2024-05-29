@@ -419,3 +419,22 @@ end
 function BaganatorPrioritySliderMixin:OnMouseWheel(delta)
   self.Slider:SetValue(self.Slider:GetValue() + delta)
 end
+
+function Baganator.CustomiseDialog.GetDropdown(parent)
+  if DoesTemplateExist("WowStyle1DropdownTemplate") then
+    local dropdown = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+    dropdown.SetupOptions = function(_, entries, values)
+      dropdown:SetupMenu(function(_, rootDescription)
+        for index = 1, #entries do
+          local entry, value = entries[index], values[index]
+          rootDescription:CreateButton(entry, function() dropdown:OnEntryClicked({value = value, label = entry}) end)
+        end
+      end)
+    end
+    dropdown.disableSelectionText = true
+    dropdown.OnEntryClicked = function() end
+    return dropdown
+  else
+    return CreateFrame("EventButton", nil, parent, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
+  end
+end

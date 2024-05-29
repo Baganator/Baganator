@@ -89,7 +89,7 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
     end
   end)
 
-  local dropDown = CreateFrame("EventButton", nil, container, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
+  local dropDown = Baganator.CustomiseDialog.GetDropdown(container)
   SetAddCornerPriorities(dropDown)
 
   local function Pickup(value)
@@ -116,7 +116,7 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
   draggable:SetScript("OnHide", function()
     dropDown:SetText(BAGANATOR_L_ADD_A_CORNER_ITEM)
   end)
-  dropDown:SetPoint("TOPLEFT", 300, 0)
+  dropDown:SetPoint("TOPLEFT", 320, 0)
   dropDown:SetPoint("TOPRIGHT")
 
   local description = container:CreateFontString(nil, "ARTWORK", "GameFontNormal")
