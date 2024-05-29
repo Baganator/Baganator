@@ -14,7 +14,7 @@ local function SetupCharacterSelect()
     end
     local anchor = CopyTable(setting)
     if setting[2] == nil then -- Accommodate renamed backpack frames
-      anchor[2] = Baganator_SingleViewBackpackViewFrame or UIParent
+      anchor[2] = Baganator.ViewManagement.GetBackpackFrame() or UIParent
       setting[2] = anchor[2]:GetName()
     end
     characterSelect:SetPoint(unpack(anchor))
@@ -32,6 +32,10 @@ local function SetupCharacterSelect()
 
   Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("BackpackFrameChanged", function()
+    SetPositions()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("CharacterSelectToggle", function(_, guildName)

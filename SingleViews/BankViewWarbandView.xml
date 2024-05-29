@@ -1,9 +1,5 @@
 <Ui>
-  <Frame name="BaganatorSingleViewBankViewWarbandViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewWarbandViewMixin">
-    <Scripts>
-      <OnLoad method="OnLoad"/>
-      <OnHide method="OnHide"/>
-    </Scripts>
+  <Frame name="BaganatorSingleViewBankViewWarbandViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewWarbandViewMixin" inherits="BaganatorItemViewCommonBankViewWarbandViewTemplate">
     <Frames>
       <Frame parentKey="BankLive" inherits="BaganatorLiveWarbandLayoutTemplate">
         <Anchors>
@@ -15,78 +11,6 @@
           <Anchor point="TOPLEFT" x="13" y="-50"/>
         </Anchors>
       </Frame>
-
-      <Button parentKey="DepositItemsButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_WARBOUND" parentArray="LiveButtons">
-        <Scripts>
-          <OnClick>
-            C_Bank.AutoDepositItemsIntoBank(Enum.BankType.Account)
-          </OnClick>
-        </Scripts>
-        <Anchors>
-          <Anchor point="BOTTOM" y="29"/>
-        </Anchors>
-      </Button>
-
-      <CheckButton parentKey="IncludeReagentsCheckbox" inherits="BankPanelCheckBoxTemplate" text="BAGANATOR_L_INCLUDE_REAGENTS" mixin="BankPanelIncludeReagentsCheckBoxMixin" parentArray="LiveButtons">
-        <Size x="23" y="22"/>
-        <KeyValues>
-          <KeyValue key="fontObject" value="GameFontHighlight" type="global"/>
-        </KeyValues>
-        <Scripts>
-          <OnLoad>
-            self.Text:SetText(self:GetText())
-            self.Text:SetScript("OnMouseUp", function() self:Click() end)
-          </OnLoad>
-          <OnShow method="OnShow"/>
-          <OnClick method="OnClick"/>
-        </Scripts>
-        <Anchors>
-          <Anchor point="BOTTOM" y="6"/>
-        </Anchors>
-      </CheckButton>
-
-      <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
-
-      <Button parentKey="DepositMoneyButton" inherits="UIPanelDynamicResizeButtonTemplate" text="DEPOSIT" parentArray="LiveButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent().currentTab:DepositMoney()
-          </OnClick>
-        </Scripts>
-        <Anchors>
-          <Anchor point="BOTTOM" y="29"/>
-        </Anchors>
-      </Button>
-      <Button parentKey="WithdrawMoneyButton" inherits="UIPanelDynamicResizeButtonTemplate" text="WITHDRAW" parentArray="LiveButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent().currentTab:WithdrawMoney()
-          </OnClick>
-        </Scripts>
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.DepositMoneyButton" relativePoint="LEFT"/>
-        </Anchors>
-      </Button>
-
-      <Frame parentKey="TabSettingsMenu" inherits="BankPanelTabSettingsMenuTemplate" hidden="true">
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPRIGHT" x="40" y="5"/>
-        </Anchors>
-      </Frame>
     </Frames>
-    <Layers>
-      <Layer level="BACKGROUND">
-        <FontString parentKey="BankMissingHint" inherits="GameFontHighlight" text="BAGANATOR_L_BANK_DATA_MISSING_HINT">
-          <Anchors>
-            <Anchor point="LEFT" x="20" y="-10"/>
-          </Anchors>
-        </FontString>
-        <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true">
-          <Anchors>
-            <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
-          </Anchors>
-        </FontString>
-      </Layer>
-    </Layers>
   </Frame>
 </Ui>

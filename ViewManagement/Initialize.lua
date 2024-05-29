@@ -1,7 +1,15 @@
 local function SetupBackpackView()
-  local backpackView = CreateFrame("Frame", "Baganator_SingleViewBackpackViewFrame", UIParent, "BaganatorSingleViewBackpackViewTemplate")
-  backpackView:SetClampedToScreen(true)
-  backpackView:SetUserPlaced(false)
+  local backpackView
+  local allBackpackViews = {
+    single = CreateFrame("Frame", "Baganator_SingleViewBackpackViewFrame", UIParent, "BaganatorSingleViewBackpackViewTemplate"),
+    category = CreateFrame("Frame", "Baganator_CategoryViewBackpackViewFrame", UIParent, "BaganatorCategoryViewBackpackViewTemplate"),
+  }
+
+  function Baganator.ViewManagement.GetBackpackFrame()
+    return backpackView
+  end
+
+  backpackView = allBackpackViews[Baganator.Config.Get(Baganator.Config.Options.VIEW_TYPE)]
 
   local bagButtons = {}
 
@@ -21,8 +29,10 @@ local function SetupBackpackView()
   end
 
   local function SetPositions()
-    backpackView:ClearAllPoints()
-    backpackView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
+    for _, backpackView in pairs(allBackpackViews) do
+      backpackView:ClearAllPoints()
+      backpackView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
+    end
   end
 
   local function ResetPositions()
@@ -35,7 +45,13 @@ local function SetupBackpackView()
     ResetPositions()
   end
 
-  table.insert(UISpecialFrames, backpackView:GetName())
+  for _, backpackView in pairs(allBackpackViews) do
+    table.insert(UISpecialFrames, backpackView:GetName())
+
+    backpackView:HookScript("OnHide", function()
+      UpdateButtons()
+    end)
+  end
 
   Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
@@ -66,8 +82,18 @@ local function SetupBackpackView()
     UpdateButtons()
   end)
 
-  backpackView:HookScript("OnHide", function()
-    UpdateButtons()
+  Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == Baganator.Config.Options.VIEW_TYPE then
+      local isShown = backpackView:IsShown()
+      backpackView:Hide()
+      backpackView = allBackpackViews[Baganator.Config.Get(settingName)]
+      if isShown then
+        Baganator.CallbackRegistry:TriggerEvent("BagShow")
+      end
+      Baganator.CallbackRegistry:TriggerEvent("BackpackFrameChanged", backpackView)
+    elseif settingName == Baganator.Config.Options.MAIN_VIEW_POSITION then
+      SetPositions()
+    end
   end)
 
   --Handled by OpenClose.lua
@@ -112,15 +138,28 @@ local function SetupBackpackView()
 end
 
 local function SetupBankView()
-  local bankView = CreateFrame("Frame", "Baganator_SingleViewBankViewFrame", UIParent, "BaganatorSingleViewBankViewTemplate")
-  bankView:SetClampedToScreen(true)
-  bankView:SetUserPlaced(false)
+  local bankView
+  local allBankViews = {
+    single = CreateFrame("Frame", "Baganator_SingleViewBankViewFrame", UIParent, "BaganatorSingleViewBankViewTemplate"),
+    category = CreateFrame("Frame", "Baganator_CategoryViewBankViewFrame", UIParent, "BaganatorCategoryViewBankViewTemplate"),
+  }
 
-  table.insert(UISpecialFrames, bankView:GetName())
+  bankView = allBankViews[Baganator.Config.Get(Baganator.Config.Options.VIEW_TYPE)]
+
+  FrameUtil.RegisterFrameForEvents(bankView, {
+    "BANKFRAME_OPENED",
+    "BANKFRAME_CLOSED",
+  })
+
+  for _, bankView in pairs(allBankViews) do
+    table.insert(UISpecialFrames, bankView:GetName())
+  end
 
   local function SetPositions()
-    bankView:ClearAllPoints()
-    bankView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)))
+    for key, bankView in pairs(allBankViews) do
+      bankView:ClearAllPoints()
+      bankView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)))
+    end
   end
 
   local function ResetPositions()
@@ -157,6 +196,23 @@ local function SetupBankView()
 
   Baganator.CallbackRegistry:RegisterCallback("BankHide", function(_, characterName)
     bankView:Hide()
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == Baganator.Config.Options.VIEW_TYPE then
+      bankView:Hide()
+      FrameUtil.UnregisterFrameForEvents(bankView, {
+        "BANKFRAME_OPENED",
+        "BANKFRAME_CLOSED",
+      })
+      bankView = allBankViews[Baganator.Config.Get(settingName)]
+      FrameUtil.RegisterFrameForEvents(bankView, {
+        "BANKFRAME_OPENED",
+        "BANKFRAME_CLOSED",
+      })
+    elseif settingName == Baganator.Config.Options.BANK_ONLY_VIEW_POSITION then
+      SetPositions()
+    end
   end)
 end
 
@@ -251,7 +307,7 @@ local function HideDefaultBank()
   BankFrame:SetScript("OnEvent", nil)
 end
 
-function Baganator.SingleViews.Initialize()
+function Baganator.ViewManagement.Initialize()
   -- Use xpcall to so that if Blizzard reworks a component the rest of the
   -- other component initialisations won't fail
 
@@ -259,6 +315,10 @@ function Baganator.SingleViews.Initialize()
     if Baganator.Config.Get(Baganator.Config.Options.ENABLE_BACKPACK_VIEW) then
       SetupBackpackView()
       HideDefaultBackpack()
+    else
+      function Baganator.ViewManagement.GetBackpackFrame()
+        return nil
+      end
     end
   end, CallErrorHandler)
 

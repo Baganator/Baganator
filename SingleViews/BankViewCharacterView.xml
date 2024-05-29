@@ -1,24 +1,6 @@
 <Ui>
-  <Frame name="BaganatorSingleViewBankViewCharacterViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewCharacterViewMixin">
-    <Scripts>
-      <OnLoad method="OnLoad"/>
-    </Scripts>
+  <Frame name="BaganatorSingleViewBankViewCharacterViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewCharacterViewMixin" inherits="BaganatorItemViewCommonBankViewCharacterViewTemplate">
     <Frames>
-      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Anchors>
-          <Anchor point="TOPLEFT" relativeKey="$parent" x="5"/>
-        </Anchors>
-      </Button>
-      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Anchors>
-          <Anchor point="LEFT" relativeKey="$parent.ToggleAllCharacters" relativePoint="RIGHT" />
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleBagSlots()
-          </OnClick>
-        </Scripts>
-      </Button>
       <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate">
         <Anchors>
           <Anchor point="TOPLEFT" x="13" y="-50"/>
@@ -29,38 +11,6 @@
           <Anchor point="TOPLEFT" x="13" y="-50"/>
         </Anchors>
       </Frame>
-
-      <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
-
-      <Button parentKey="DepositIntoReagentsBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_REAGENTS" parentArray="LiveButtons">
-        <Scripts>
-          <OnClick>
-            DepositReagentBank()
-          </OnClick>
-        </Scripts>
-      </Button>
-      <Button parentKey="BuyReagentBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_BUY_REAGENT_BANK" parentArray="LiveButtons">
-        <Scripts>
-          <OnClick>
-            StaticPopup_Show("CONFIRM_BUY_REAGENTBANK_TAB")
-          </OnClick>
-        </Scripts>
-      </Button>
-
-      <Frame parentKey="BagSlots" inherits="BaganatorBagSlotsContainerTemplate">
-        <KeyValues>
-          <KeyValue key="mode" value="bank" type="string"/>
-        </KeyValues>
-      </Frame>
     </Frames>
-    <Layers>
-      <Layer level="BACKGROUND">
-        <FontString parentKey="BankMissingHint" inherits="GameFontHighlight" text="BAGANATOR_L_BANK_DATA_MISSING_HINT">
-          <Anchors>
-            <Anchor point="LEFT" x="20" y="-10"/>
-          </Anchors>
-        </FontString>
-      </Layer>
-    </Layers>
   </Frame>
 </Ui>

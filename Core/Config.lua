@@ -1,6 +1,7 @@
 Baganator.Config = {}
 
 Baganator.Config.Options = {
+  VIEW_TYPE = "view_type",
   BAG_VIEW_WIDTH = "bag_view_width",
   BANK_VIEW_WIDTH = "bank_view_width",
   WARBAND_BANK_VIEW_WIDTH = "warband_bank_view_width",
@@ -74,9 +75,17 @@ Baganator.Config.Options = {
   ENABLE_GUILD_VIEW = "enable_guild_view",
 
   GUILD_BANK_SORT_METHOD = "guild_bank_sort_method",
+
+  CUSTOM_CATEGORIES = "custom_categories",
+  AUTOMATIC_CATEGORIES_ADDED = "automatic_categories_added",
+  CATEGORY_DISPLAY_ORDER = "category_display_order",
+  CATEGORY_HORIZONTAL_SPACING = "category_horizontal_spacing",
+  CATEGORY_ITEM_GROUPING = "category_item_grouping",
 }
 
 Baganator.Config.Defaults = {
+  [Baganator.Config.Options.VIEW_TYPE] = "single", -- "single" or "category"
+
   [Baganator.Config.Options.BAG_VIEW_WIDTH] = 12,
   [Baganator.Config.Options.BANK_VIEW_WIDTH] = Baganator.Constants.IsRetail and 24 or 18,
   [Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH] = 14,
@@ -144,6 +153,25 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.ENABLE_GUILD_VIEW] = true,
 
   [Baganator.Config.Options.GUILD_BANK_SORT_METHOD] = "unset",
+
+  [Baganator.Config.Options.CUSTOM_CATEGORIES] = {
+    --[[
+    { -- Search group
+      name = "Tinker Gems",
+      search = "gem&tinker",
+      extraItems = {},
+    },
+    { -- Group with specific items in it
+      name = "Special Gems",
+      search = nil,
+      extraItems = {{itemID = 154128}, {petID = 2959}, --stored by item id or pet id
+    },
+    ]]
+  },
+  [Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED] = {},
+  [Baganator.Config.Options.CATEGORY_DISPLAY_ORDER] = {},
+  [Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING] = 0,
+  [Baganator.Config.Options.CATEGORY_ITEM_GROUPING] = true,
 }
 
 Baganator.Config.IsCharacterSpecific = {

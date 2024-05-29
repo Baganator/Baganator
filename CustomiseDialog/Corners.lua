@@ -1,73 +1,23 @@
 local _, addonTable = ...
 
 local arrayName = "icon_%s_corner_array"
-local function SetDataProvider(c)
-  local filtered = tFilter(c.elements, function(e)
-    return addonTable.IconCornerPlugins[e] ~= nil
-  end, true)
-  c.ScrollBox:SetDataProvider(CreateDataProvider(filtered))
-end
 
-local function GetDraggable(callback, movedCallback)
-  local frame = CreateFrame("Frame", nil, UIParent)
-  frame:SetSize(80, 20)
-  frame.background = frame:CreateTexture(nil, "OVERLAY", nil)
-  --frame.background:SetColorTexture(0.5, 0, 0.5, 0.5)
-  frame.background:SetAtlas("auctionhouse-nav-button-highlight")
-  frame.background:SetAllPoints()
-  frame.text = frame:CreateFontString(nil, nil, "GameFontNormal")
-  frame.text:SetAllPoints()
-  frame:EnableMouse(true)
-  frame:SetFrameStrata("DIALOG")
-  frame:SetScript("OnMouseDown", function()
-    callback()
-    frame:Hide()
-  end)
-  frame:Hide()
-  frame.KeepMoving = function(self)
-    local uiScale = UIParent:GetEffectiveScale()
-    local x, y = GetCursorPosition()
-    frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x / uiScale, y / uiScale)
-    if movedCallback then
-      movedCallback()
+local function SetDataProvider(c)
+  c.elements = {}
+  local forDataProvider = {}
+  for _, widgetValue in ipairs(Baganator.Config.Get(arrayName:format(c.regionName))) do
+    if addonTable.IconCornerPlugins[widgetValue] then
+      table.insert(c.elements, widgetValue)
+      table.insert(forDataProvider, { value = widgetValue, label = addonTable.IconCornerPlugins[widgetValue].label})
     end
   end
-  frame:SetScript("OnUpdate", frame.KeepMoving)
-
-  return frame
+  c.ScrollBox:SetDataProvider(CreateDataProvider(forDataProvider))
 end
 
 local function GetCornerContainer(parent, regionName, callback)
-  local container = CreateFrame("Frame", nil, parent, "InsetFrameTemplate")
+  local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
   container:SetSize(200, 80)
   container.regionName = regionName
-  container.elements = CopyTable(Baganator.Config.Get(arrayName:format(regionName)))
-
-  container.ScrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")
-  container.ScrollBox:SetPoint("TOPLEFT", 1, -2)
-  container.ScrollBox:SetPoint("BOTTOMRIGHT", -1, 1)
-  local scrollView = CreateScrollBoxListLinearView()
-  scrollView:SetElementExtent(22)
-  scrollView:SetElementInitializer("Button", function(frame, elementData)
-    if not frame.initialized then
-      frame.initialized = true
-      frame:SetNormalFontObject(GameFontHighlight)
-      frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
-      frame:SetScript("OnClick", function(self, button)
-        callback(self.value, button)
-      end)
-      frame.number = frame:CreateFontString(nil, "ARTWORK", "NumberFontNormal")
-      frame.number:SetPoint("LEFT", 5, 0)
-    end
-    frame.number:SetText(container.ScrollBox:GetDataProvider():FindIndex(elementData))
-    frame.value = elementData
-    frame:SetText(addonTable.IconCornerPlugins[elementData].label)
-  end)
-  container.ScrollBar = CreateFrame("EventFrame", nil, container, "WowTrimScrollBar")
-  container.ScrollBar:SetPoint("TOPRIGHT")
-  container.ScrollBar:SetPoint("BOTTOMRIGHT")
-  ScrollUtil.InitScrollBoxListWithScrollBar(container.ScrollBox, container.ScrollBar, scrollView)
-  ScrollUtil.AddManagedScrollBarVisibilityBehavior(container.ScrollBox, container.ScrollBar)
 
   SetDataProvider(container)
 
@@ -91,20 +41,6 @@ local function SetAddCornerPriorities(dropDown)
   dropDown:SetupOptions(entries, values)
 end
 
-local function GetWidgetDropDown(parent)
-  local dropDown = CreateFrame("EventButton", nil, parent, "BaganatorCustomiseCornersSelectionPopoutButtonTemplate")
-
-  return dropDown
-end
-
-local function GetMouseover(c)
-  for _, f in c.ScrollBox:EnumerateFrames() do
-    if f:IsMouseOver() then
-      return f, f:IsMouseOver(0, f:GetHeight()/2)
-    end
-  end
-end
-
 function Baganator.CustomiseDialog.GetCornersEditor(parent)
   local container = CreateFrame("Frame", nil, parent)
   container:SetSize(480, 210)
@@ -117,10 +53,10 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
   highlight:SetAtlas("128-RedButton-Highlight")
   highlight:Hide()
   local draggable
-  draggable = GetDraggable(function()
+  draggable = Baganator.CustomiseDialog.GetDraggable(function()
     for _, c in ipairs(corners) do
       if c:IsMouseOver() then
-        local f, isTop = GetMouseover(c)
+        local f, isTop = Baganator.CustomiseDialog.GetMouseOverInContainer(c)
         if not f then
           table.insert(c.elements, draggable.value)
         else
@@ -141,7 +77,7 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
     for _, c in ipairs(corners) do
       if c:IsMouseOver() then
         highlight:Show()
-        local f, isTop = GetMouseover(c)
+        local f, isTop = Baganator.CustomiseDialog.GetMouseOverInContainer(c)
         if f and isTop then
           highlight:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
         elseif f then
@@ -153,7 +89,7 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
     end
   end)
 
-  local dropDown = GetWidgetDropDown(container)
+  local dropDown = CreateFrame("EventButton", nil, container, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
   SetAddCornerPriorities(dropDown)
 
   local function Pickup(value)
@@ -212,20 +148,10 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
       local newElements = Baganator.Config.Get(arrayName:format(region))
       for _, c in ipairs(corners) do
         if c.regionName == region then
-          c.elements = CopyTable(newElements)
           SetDataProvider(c)
         end
       end
     end
-  end)
-
-  Baganator.CallbackRegistry:RegisterCallback("PluginsUpdated", function()
-    for _, c in ipairs(corners) do
-      local newElements = Baganator.Config.Get(arrayName:format(c.regionName))
-      c.elements = CopyTable(newElements)
-      SetDataProvider(c)
-    end
-    SetAddCornerPriorities(dropDown)
   end)
 
   return container

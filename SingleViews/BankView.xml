@@ -1,54 +1,8 @@
 <Ui>
-  <Frame name="BaganatorSingleViewBankViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorSingleViewBankViewMixin">
-    <Scripts>
-      <OnLoad method="OnLoad"/>
-      <OnEvent method="OnEvent"/>
-      <OnShow method="OnShow"/>
-      <OnHide method="OnHide"/>
-      <OnDragStart method="OnDragStart"/>
-      <OnDragStop method="OnDragStop"/>
-    </Scripts>
-    <Frames>
-      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
-        </Anchors>
-      </Button>
-      <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            self:GetParent().currentTab:CombineStacksAndSort(button == "RightButton")
-          </OnClick>
-          <OnEnter inherit="append">
-            self.tooltipText = Baganator.Utilities.GetExternalSortMethodName()
-          </OnEnter>
-        </Scripts>
-      </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
-        <KeyValues>
-          <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_BANK_VIEW_TOOLTIP_TEXT" type="global"/>
-        </KeyValues>
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.SortButton" relativePoint="LEFT"/>
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            self:GetParent():Transfer(button)
-          </OnClick>
-        </Scripts>
-      </Button>
-
-      <Frame parentKey="Character" inherits="BaganatorSingleViewBankViewCharacterViewTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT"/>
-        </Anchors>
-      </Frame>
-
-      <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
-      <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>
-    </Frames>
+  <Frame name="BaganatorSingleViewBankViewTemplate" virtual="true" inherits="BaganatorItemViewCommonBankViewTemplate">
+    <KeyValues>
+      <KeyValue key="characterTemplate" value="BaganatorSingleViewBankViewCharacterViewTemplate"/>
+      <KeyValue key="warbandTemplate" value="BaganatorSingleViewBankViewWarbandViewTemplate"/>
+    </KeyValues>
   </Frame>
 </Ui>

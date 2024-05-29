@@ -10,6 +10,23 @@ end
 
 local WINDOW_OPTIONS = {
   {
+    type = "header",
+    text = BAGANATOR_L_VIEWS_TYPE,
+    level = 2,
+  },
+  {
+    type = "dropdown",
+    option = "view_type",
+    entries = {
+      BAGANATOR_L_SINGLE,
+      BAGANATOR_L_CATEGORY,
+    },
+    values = {
+      "single",
+      "category",
+    }
+  },
+  {
     type = "checkbox",
     text = BAGANATOR_L_LOCK_INVENTORY_FRAMES,
     option = "lock_frames",
@@ -307,6 +324,29 @@ local BUTTONS_OPTIONS = {
   },
 }
 
+local CATEGORIES_OPTIONS = {
+  {
+    type = "slider",
+    min = 0,
+    max = 200,
+    scale = 100,
+    lowText = "0%",
+    highText = "200%",
+    valuePattern = BAGANATOR_L_X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES,
+    option = "category_horizontal_spacing",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_GROUP_IDENTICAL_ITEMS,
+    option = "category_item_grouping",
+  },
+  {
+    type = "header",
+    text = BAGANATOR_L_EDIT,
+    level = 2,
+  },
+}
+
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
   return a.text < b.text
 end)
@@ -404,6 +444,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:SetupOpenClose()
   self:SetupSorting()
   self:SetupButtonsOptions()
+  self:SetupCategoriesOptions()
   self:SetupTooltipsLink()
 
   PanelTemplates_SetNumTabs(self, #self.Tabs)
@@ -444,7 +485,7 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
   local frame = GetWrapperFrame(self)
 
   frame.ResetFramePositions = CreateFrame("Button", nil, frame, "UIPanelDynamicResizeButtonTemplate")
-  frame.ResetFramePositions:SetPoint("TOPRIGHT", frame, -20, -8)
+  frame.ResetFramePositions:SetPoint("TOPRIGHT", frame, -20, -88)
   frame.ResetFramePositions:SetText(BAGANATOR_L_RESET_POSITIONS)
   DynamicResizeButton_Resize(frame.ResetFramePositions)
   frame.ResetFramePositions:SetScript("OnClick", function()
@@ -483,7 +524,7 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
 
   local allFrames = GenerateFrames(WINDOW_OPTIONS, frame)
 
-  allFrames[2].CheckBox.HoverBackground:SetPoint("RIGHT", frame.ResetFramePositions, "LEFT")
+  allFrames[3].CheckBox.HoverBackground:SetPoint("RIGHT", frame.ResetFramePositions, "LEFT")
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
@@ -644,6 +685,44 @@ function BaganatorCustomiseDialogMixin:SetupButtonsOptions()
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       frame:SetValue(Baganator.Config.Get(frame.option))
+    end
+  end)
+
+  table.insert(self.lowestFrames, allFrames[#allFrames])
+end
+
+function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
+  local tab = GetTab(self)
+  tab:SetText(BAGANATOR_L_CATEGORIES)
+
+  local frame = GetWrapperFrame(self)
+
+  local allFrames = GenerateFrames(CATEGORIES_OPTIONS, frame)
+
+  local categoriesEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesEditorTemplate")
+  categoriesEditor:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
+  table.insert(allFrames, categoriesEditor)
+
+  local orderHeader = unpack(GenerateFrames({
+    {
+      type = "header",
+      text = BAGANATOR_L_DISPLAY_ORDER,
+      level = 2,
+    },
+  }, frame))
+
+  orderHeader:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
+  table.insert(allFrames, orderHeader)
+
+  local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)
+  categoriesOrder:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -20)
+  table.insert(allFrames, categoriesOrder)
+
+  frame:SetScript("OnShow", function()
+    for index, frame in ipairs(allFrames) do
+      if frame.SetValue then
+        frame:SetValue(Baganator.Config.Get(frame.option))
+      end
     end
   end)
 

@@ -87,3 +87,335 @@ end
 
 function BaganatorHeaderMixin:SetValue(value)
 end
+
+BaganatorCustomiseGetSelectionPopoutButtonMixin = CreateFromMixins(CallbackRegistryMixin, EventButtonMixin);
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnLoad()
+  CallbackRegistryMixin.OnLoad(self);
+
+  self.Label = self:CreateFontString(nil, nil, "GameFontNormal")
+  self.Label:SetAllPoints()
+  self.Label:SetSize(250, 20)
+
+  self.parent = self:GetParent();
+
+  self.Popout.logicalParent = self;
+
+  self.buttonPool = CreateFramePool("BUTTON", self.Popout, "SettingsSelectionPopoutEntryTemplate");
+  self.initialAnchor = AnchorUtil.CreateAnchor("TOPLEFT", self.Popout, "TOPLEFT", 6, -12);
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetText(text)
+  self.Label:SetText(text)
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:HandlesGlobalMouseEvent(buttonID, event)
+  return event == "GLOBAL_MOUSE_DOWN" and buttonID == "LeftButton";
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEnter()
+  if not self.Popout:IsShown() then
+    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox-hover");
+  end
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnLeave()
+  if not self.Popout:IsShown() then
+    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox");
+  end
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetEnabled_(enabled)
+  self:SetEnabled(enabled);
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnPopoutShown()
+  if self.parent.OnPopoutShown then
+    self.parent:OnPopoutShown();
+  end
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnHide()
+  self:HidePopout();
+  self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox");
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:HidePopout()
+  self.Popout:Hide();
+
+  if (GetMouseFocus and GetMouseFocus()) or (GetMouseFoci and GetMouseFoci()[1]) == self then
+    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox-hover");
+  else
+    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox");
+  end
+
+  self.HighlightTexture:SetAlpha(0);
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnClick()
+  self:TogglePopout()
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:ShowPopout()
+  if self.popoutNeedsUpdate then
+    self:UpdatePopout();
+  end
+  SelectionPopouts:CloseAll();
+
+  self.Popout:Show();
+  self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox-open");
+  self.HighlightTexture:SetAlpha(0.2);
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetPopoutStrata(strata)
+  self.Popout:SetFrameStrata(strata);
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetupOptions(entries, values)
+  local container = Settings.CreateControlTextContainer();
+  for index, option in ipairs(entries) do
+    container:Add(values[index], option);
+  end
+
+  self.selections = container:GetData()
+  self.selectedIndex = selectedIndex;
+
+  if self.Popout:IsShown() then
+    self:UpdatePopout();
+  else
+    self.popoutNeedsUpdate = true;
+  end
+
+  return self:UpdateButtonDetails();
+end
+
+local MAX_POPOUT_ENTRIES_FOR_1_COLUMN = 10;
+local MAX_POPOUT_ENTRIES_FOR_2_COLUMNS = 24;
+local MAX_POPOUT_ENTRIES_FOR_3_COLUMNS = 36;
+
+local function getNumColumnsAndStride(numSelections, maxStride)
+  local numColumns, stride;
+  if numSelections > MAX_POPOUT_ENTRIES_FOR_3_COLUMNS then
+    numColumns, stride = 4, math.ceil(numSelections / 4);
+  elseif numSelections > MAX_POPOUT_ENTRIES_FOR_2_COLUMNS then
+    numColumns, stride = 3, math.ceil(numSelections / 3);
+  elseif numSelections > MAX_POPOUT_ENTRIES_FOR_1_COLUMN then
+    numColumns, stride =  2, math.ceil(numSelections / 2);
+  else
+    numColumns, stride =  1, numSelections;
+  end
+
+  if maxStride and stride > maxStride then
+    numColumns = math.ceil(numSelections / maxStride);
+    stride = math.ceil(numSelections / numColumns);
+  end
+
+  return numColumns, stride;
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:GetMaxPopoutStride()
+  local maxPopoutHeight = self.parent.GetMaxPopoutHeight and self.parent:GetMaxPopoutHeight() or nil;
+  if maxPopoutHeight then
+    local selectionHeight = 20;
+    return math.floor(maxPopoutHeight / selectionHeight);
+  end
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:UpdatePopout()
+  self.buttonPool:ReleaseAll();
+
+  local selections = self:GetSelections();
+  local numColumns, stride = getNumColumnsAndStride(#selections, self:GetMaxPopoutStride());
+  local buttons = {};
+
+  local hasIneligibleChoice = false;
+  local hasLockedChoice = false;
+  for _, selectionData in ipairs(selections) do
+    if selectionData.ineligibleChoice then
+      hasIneligibleChoice = true;
+    end
+    if selectionData.isLocked then
+      hasLockedChoice = true;
+    end
+  end
+
+  local maxDetailsWidth = 0;
+  for index, selectionInfo in ipairs(selections) do
+    local button = self.buttonPool:Acquire();
+
+    local isSelected = false--(index == self.selectedIndex);
+    button:SetupEntry(selectionInfo, index, isSelected, numColumns > 1, hasIneligibleChoice, hasLockedChoice);
+    maxDetailsWidth = math.max(maxDetailsWidth, button.SelectionDetails:GetWidth());
+
+    table.insert(buttons, button);
+  end
+
+  for _, button in ipairs(buttons) do
+    button.SelectionDetails:SetWidth(maxDetailsWidth);
+    button:Layout();
+    button:Show();
+  end
+
+  if stride ~= self.lastStride then
+    self.layout = AnchorUtil.CreateGridLayout(GridLayoutMixin.Direction.TopLeftToBottomRightVertical, stride);
+    self.lastStride = stride;
+  end
+
+  AnchorUtil.GridLayout(buttons, self.initialAnchor, self.layout);
+
+  self.popoutNeedsUpdate = false;
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:GetSelections()
+  return self.selections;
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:GetCurrentSelectedData()
+  local selections = self:GetSelections();
+  return selections[self.selectedIndex];
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:UpdateButtonDetails()
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:TogglePopout()
+  local showPopup = not self.Popout:IsShown();
+  if showPopup then
+    self:ShowPopout();
+  else
+    self:HidePopout();
+  end
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:FindIndex(predicate)
+  return FindInTableIf(self:GetSelections(), predicate);
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:IsDataMatch(data1, data2)
+  return data1 == data2;
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEntryClicked(entryData)
+  self:HidePopout();
+
+  PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEntryMouseEnter(entry)
+  if self.parent.OnEntryMouseEnter then
+    self.parent:OnEntryMouseEnter(entry);
+  end
+end
+
+function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEntryMouseLeave(entry)
+  if self.parent.OnEntryMouseLeave then
+    self.parent:OnEntryMouseLeave(entry);
+  end
+end
+
+function Baganator.CustomiseDialog.GetDraggable(callback, movedCallback)
+  local frame = CreateFrame("Frame", nil, UIParent)
+  frame:SetSize(80, 20)
+  frame.background = frame:CreateTexture(nil, "OVERLAY", nil)
+  --frame.background:SetColorTexture(0.5, 0, 0.5, 0.5)
+  frame.background:SetAtlas("auctionhouse-nav-button-highlight")
+  frame.background:SetAllPoints()
+  frame.text = frame:CreateFontString(nil, nil, "GameFontNormal")
+  frame.text:SetAllPoints()
+  frame:EnableMouse(true)
+  frame:SetFrameStrata("DIALOG")
+  frame:SetScript("OnMouseDown", function()
+    callback()
+    frame:Hide()
+  end)
+  frame:Hide()
+  frame.KeepMoving = function(self)
+    local uiScale = UIParent:GetEffectiveScale()
+    local x, y = GetCursorPosition()
+    frame:SetPoint("CENTER", UIParent, "BOTTOMLEFT", x / uiScale, y / uiScale)
+    if movedCallback then
+      movedCallback()
+    end
+  end
+  frame:SetScript("OnUpdate", frame.KeepMoving)
+
+  return frame
+end
+
+function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
+  local container = CreateFrame("Frame", nil, parent, "InsetFrameTemplate")
+  container.ScrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")
+  container.ScrollBox:SetPoint("TOPLEFT", 1, -2)
+  container.ScrollBox:SetPoint("BOTTOMRIGHT", -1, 1)
+  local scrollView = CreateScrollBoxListLinearView()
+  scrollView:SetElementExtent(22)
+  scrollView:SetElementInitializer("Button", function(frame, elementData)
+    if not frame.initialized then
+      frame.initialized = true
+      frame:SetNormalFontObject(GameFontHighlight)
+      frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
+      frame:SetScript("OnClick", function(self, button)
+        callback(self.value, self:GetText())
+      end)
+      frame.number = frame:CreateFontString(nil, "ARTWORK", "NumberFontNormal")
+      frame.number:SetPoint("LEFT", 5, 0)
+    end
+    frame.number:SetText(container.ScrollBox:GetDataProvider():FindIndex(elementData))
+    frame.value = elementData.value
+    frame:SetText(elementData.label)
+    frame:SetEnabled(elementData.value ~= Baganator.CategoryViews.Constants.ProtectedCategory)
+  end)
+  container.ScrollBar = CreateFrame("EventFrame", nil, container, "WowTrimScrollBar")
+  container.ScrollBar:SetPoint("TOPRIGHT")
+  container.ScrollBar:SetPoint("BOTTOMRIGHT")
+  ScrollUtil.InitScrollBoxListWithScrollBar(container.ScrollBox, container.ScrollBar, scrollView)
+  ScrollUtil.AddManagedScrollBarVisibilityBehavior(container.ScrollBox, container.ScrollBar)
+
+  return container
+end
+
+function Baganator.CustomiseDialog.GetMouseOverInContainer(c)
+  for _, f in c.ScrollBox:EnumerateFrames() do
+    if f:IsMouseOver() then
+      return f, f:IsMouseOver(0, f:GetHeight()/2)
+    end
+  end
+end
+
+local VALUE_TO_PRIORITY_TEXT = {
+  [-1] = BAGANATOR_L_LOW,
+  [0] = BAGANATOR_L_NORMAL,
+  [1] = BAGANATOR_L_HIGH,
+  [2] = BAGANATOR_L_HIGHER,
+  [3] = BAGANATOR_L_HIGHEST,
+}
+BaganatorPrioritySliderMixin = {}
+
+function BaganatorPrioritySliderMixin:Init(details)
+  Mixin(self, details)
+  self.callback = self.callback or function() end
+
+  self.Slider:SetMinMaxValues(-1, 3)
+  self.Slider.High:SetText(BAGANATOR_L_HIGHEST)
+  self.Slider.Low:SetText(BAGANATOR_L_LOW)
+  self.Slider:SetValueStep(1)
+  self.Slider:SetObeyStepOnDrag(true)
+
+  self.Slider:SetScript("OnValueChanged", function()
+    local value = self.Slider:GetValue()
+    self.callback(value)
+    self.Slider.Text:SetText(self.valuePattern:format(VALUE_TO_PRIORITY_TEXT[value]))
+  end)
+end
+
+function BaganatorPrioritySliderMixin:SetValue(value)
+  self.Slider:SetValue(value)
+end
+
+function BaganatorPrioritySliderMixin:GetValue()
+  return self.Slider:GetValue()
+end
+
+function BaganatorPrioritySliderMixin:OnMouseWheel(delta)
+  self.Slider:SetValue(self.Slider:GetValue() + delta)
+end

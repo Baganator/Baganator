@@ -16,4 +16,45 @@
       </OnShow>
     </Scripts>
   </Button>
+
+  <EventButton name="BaganatorCustomiseGetSelectionPopoutButtonTemplate" mixin="BaganatorCustomiseGetSelectionPopoutButtonMixin" virtual="true">
+    <Size x="150" y="38"/>
+    <NormalTexture parentKey="NormalTexture" atlas="charactercreate-customize-dropdownbox"/>
+    <HighlightTexture parentKey="HighlightTexture" atlas="charactercreate-customize-dropdownbox-open" alphaMode="ADD" alpha="0"/>
+    <PushedTextOffset x="2" y="-2"/>
+    <Frames>
+      <Frame parentKey="Popout" inherits="SelectionPopoutTemplate" hidden="true" frameStrata="HIGH">
+        <Anchors>
+          <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="3" y="11"/>
+        </Anchors>
+      </Frame>
+    </Frames>
+    <Scripts>
+      <OnClick method="OnClick"/>
+      <OnLoad method="OnLoad"/>
+      <OnHide method="OnHide"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
+    </Scripts>
+  </EventButton>
+
+  <Frame name="BaganatorPrioritySliderTemplate" virtual="true" mixin="BaganatorPrioritySliderMixin">
+    <Size y="50"/>
+    <Frames>
+      <Slider parentKey="Slider" inherits="OptionsSliderTemplate">
+        <Size y="20"/>
+        <Anchors>
+          <Anchor point="RIGHT" x="-30" y="-10"/>
+          <Anchor point="LEFT" x="30" y="-10"/>
+        </Anchors>
+      </Slider>
+    </Frames>
+    <Anchors>
+      <Anchor point="RIGHT" x="-30"/>
+      <Anchor point="LEFT" x="30"/>
+    </Anchors>
+    <Scripts>
+      <OnMouseWheel method="OnMouseWheel"/>
+    </Scripts>
+  </Frame>
 </Ui>

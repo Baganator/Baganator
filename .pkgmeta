@@ -6,7 +6,10 @@ plain-copy:
   - Core
   - CustomiseDialog
   - Sorting
+  - ItemViewCommon
   - SingleViews
+  - CategoryViews
+  - ViewManagement
   - Transfers
   - Compatibility
 required-dependencies:

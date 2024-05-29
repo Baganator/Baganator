@@ -1,0 +1,49 @@
+<Ui>
+  <Frame name="BaganatorCustomiseDialogCategoriesEditorTemplate" virtual="true" mixin="BaganatorCustomiseDialogCategoriesEditorMixin">
+    <Size x="600" y="200"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnHide method="OnHide"/>
+    </Scripts>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString inherits="GameFontHighlight" text="NAME">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="15" y="-50"/>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontHighlight" text="SEARCH">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="15" y="-90"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategoryName" letters="100">
+        <Size x="300" y="30"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" x="200" y="-40"/>
+        </Anchors>
+      </EditBox>
+      <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategorySearch" letters="100">
+        <Size x="300" y="30"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" x="200" y="-80"/>
+        </Anchors>
+      </EditBox>
+
+      <Button parentKey="ApplyChangesButton" text="SAVE" inherits="UIPanelDynamicResizeButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>
+        </Anchors>
+      </Button>
+
+      <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" x="15" y="0"/>
+        </Anchors>
+      </Button>
+    </Frames>
+  </Frame>
+</Ui>

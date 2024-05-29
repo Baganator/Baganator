@@ -1,21 +1,54 @@
-BaganatorSingleViewBankViewMixin = {}
+BaganatorItemViewCommonBankViewMixin = {}
 
-function BaganatorSingleViewBankViewMixin:OnLoad()
+function BaganatorItemViewCommonBankViewMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
 
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
-
-  self.currentTab = self.Character
+  self:SetClampedToScreen(true)
+  self:SetUserPlaced(false)
 
   self.tabPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
 
   self.Tabs = {}
 
+  self.Character = CreateFrame("Frame", nil, self, self.characterTemplate)
+  self.Character:SetPoint("TOPLEFT")
+  self:InitializeWarband(self.warbandTemplate)
+
+  self.currentTab = self.Character
+
+  Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+    self.hasCharacter = true
+  end)
+
+  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+      if self:IsShown() then
+        Baganator.Utilities.ApplyVisuals(self)
+      end
+    end
+  end)
+
+  self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
+  StaticPopupDialogs[self.confirmTransferAllDialogName] = {
+    text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK,
+    button1 = YES,
+    button2 = NO,
+    OnAccept = function()
+      self.currentTab:RemoveSearchMatches(function() end)
+    end,
+    timeout = 0,
+    hideOnEscape = 1,
+  }
+  self:UpdateTransferButton()
+end
+
+function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
   if Syndicator.Constants.WarbandBankActive then
-    self.Warband = CreateFrame("Frame", nil, self, "BaganatorSingleViewBankViewWarbandViewTemplate")
+    self.Warband = CreateFrame("Frame", nil, self, template)
     self.Warband:Hide()
     self.Warband:SetPoint("TOPLEFT")
 
@@ -44,40 +77,9 @@ function BaganatorSingleViewBankViewMixin:OnLoad()
     self.Tabs[1]:SetPoint("BOTTOM", 0, -30)
     PanelTemplates_SetNumTabs(self, #self.Tabs)
   end
-
-
-  FrameUtil.RegisterFrameForEvents(self, {
-    "BANKFRAME_OPENED",
-    "BANKFRAME_CLOSED",
-  })
-
-  Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-    self.hasCharacter = true
-  end)
-
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsShown() then
-        Baganator.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
-
-  self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
-  StaticPopupDialogs[self.confirmTransferAllDialogName] = {
-    text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK,
-    button1 = YES,
-    button2 = NO,
-    OnAccept = function()
-      self.currentTab:RemoveSearchMatches(function() end)
-    end,
-    timeout = 0,
-    hideOnEscape = 1,
-  }
-  self:UpdateTransferButton()
 end
 
-function BaganatorSingleViewBankViewMixin:UpdateTransferButton()
+function BaganatorItemViewCommonBankViewMixin:UpdateTransferButton()
   if not self.currentTab.isLive then
     self.TransferButton:Hide()
     return
@@ -97,21 +99,21 @@ function BaganatorSingleViewBankViewMixin:UpdateTransferButton()
   self.TransferButton:Show()
 end
 
-function BaganatorSingleViewBankViewMixin:OnDragStart()
+function BaganatorItemViewCommonBankViewMixin:OnDragStart()
   if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
 end
 
-function BaganatorSingleViewBankViewMixin:OnDragStop()
+function BaganatorItemViewCommonBankViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
   Baganator.Config.Set(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION, {point, x, y})
 end
 
-function BaganatorSingleViewBankViewMixin:OnEvent(eventName)
+function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
   if eventName == "BANKFRAME_OPENED" then
     self:Show()
     self.liveBankActive = true
@@ -125,7 +127,7 @@ function BaganatorSingleViewBankViewMixin:OnEvent(eventName)
   end
 end
 
-function BaganatorSingleViewBankViewMixin:OnShow()
+function BaganatorItemViewCommonBankViewMixin:OnShow()
   if self.Tabs[1] then
     if self.currentTab == self.Character then
       PanelTemplates_SelectTab(self.Tabs[1])
@@ -135,7 +137,7 @@ function BaganatorSingleViewBankViewMixin:OnShow()
   end
 end
 
-function BaganatorSingleViewBankViewMixin:OnHide(eventName)
+function BaganatorItemViewCommonBankViewMixin:OnHide(eventName)
   if C_Bank then
     C_Bank.CloseBankFrame()
   else
@@ -145,7 +147,7 @@ function BaganatorSingleViewBankViewMixin:OnHide(eventName)
   Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
 end
 
-function BaganatorSingleViewBankViewMixin:UpdateViewToCharacter(characterName)
+function BaganatorItemViewCommonBankViewMixin:UpdateViewToCharacter(characterName)
   self.Character.lastCharacter = characterName
   if not self.Character:IsShown() then
     self.Tabs[1]:Click()
@@ -154,7 +156,7 @@ function BaganatorSingleViewBankViewMixin:UpdateViewToCharacter(characterName)
   end
 end
 
-function BaganatorSingleViewBankViewMixin:UpdateViewToWarband(warbandIndex, tabIndex)
+function BaganatorItemViewCommonBankViewMixin:UpdateViewToWarband(warbandIndex, tabIndex)
   self.Warband:SetCurrentTab(tabIndex)
   if not self.Warband:IsShown() then
     self.Tabs[2]:Click()
@@ -163,10 +165,12 @@ function BaganatorSingleViewBankViewMixin:UpdateViewToWarband(warbandIndex, tabI
   end
 end
 
-function BaganatorSingleViewBankViewMixin:UpdateView()
+function BaganatorItemViewCommonBankViewMixin:UpdateView()
+  self.start = debugprofilestop()
+
   Baganator.Utilities.ApplyVisuals(self)
 
-  -- Copied from SingleViews/BagView.lua
+  -- Copied from ItemViewCommons/BagView.lua
   local sideSpacing = 13
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
@@ -178,17 +182,24 @@ function BaganatorSingleViewBankViewMixin:UpdateView()
 
   self.SearchWidget:SetSpacing(sideSpacing)
 
-  self.currentTab:UpdateView()
-
   self.SortButton:SetShown(self.currentTab.isLive and Baganator.Utilities.ShouldShowSortButton())
   self:UpdateTransferButton()
 
+  self.currentTab:UpdateView()
+end
+
+
+function BaganatorItemViewCommonBankViewMixin:OnTabFinished()
   self.ButtonVisibility:Update()
 
   self:SetSize(self.currentTab:GetSize())
+
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("bank", debugprofilestop() - self.start)
+  end
 end
 
-function BaganatorSingleViewBankViewMixin:Transfer(button)
+function BaganatorItemViewCommonBankViewMixin:Transfer(button)
   if self.SearchWidget.SearchBox:GetText() == "" then
     StaticPopup_Show(self.confirmTransferAllDialogName)
   else

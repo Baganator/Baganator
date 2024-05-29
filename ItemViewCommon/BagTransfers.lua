@@ -1,7 +1,15 @@
 local addonName, addonTable = ...
 
 addonTable.BagTransfers = {}
-addonTable.BagTransferActivationCallback = function() end
+local activationCallbacks = {}
+function addonTable.AddBagTransferActivationCallback(callback)
+  table.insert(activationCallbacks, callback)
+end
+local function CallActivationCallbacks()
+  for _, callback in ipairs(activationCallbacks) do
+    callback()
+  end
+end
 
 local function RegisterBagTransfer(condition, action, confirmOnAll, tooltipText)
   table.insert(addonTable.BagTransfers, { condition = condition, action = action, confirmOnAll = confirmOnAll, tooltipText = tooltipText})
@@ -11,7 +19,7 @@ local playerInteractionManagerChecking = CreateFrame("Frame")
 playerInteractionManagerChecking:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
 playerInteractionManagerChecking:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
 playerInteractionManagerChecking:SetScript("OnEvent", function()
-  addonTable.BagTransferActivationCallback()
+  CallActivationCallbacks()
 end)
 
 local isBankOpen = false
@@ -23,7 +31,7 @@ do
   })
   BankCheck:SetScript("OnEvent", function(_, event)
     isBankOpen = event == "BANKFRAME_OPENED"
-    addonTable.BagTransferActivationCallback()
+    CallActivationCallbacks()
   end)
 end
 
@@ -68,7 +76,7 @@ end
 local sendMailShowing = false
 hooksecurefunc("SetSendMailShowing", function(state)
   sendMailShowing = state
-  addonTable.BagTransferActivationCallback()
+  CallActivationCallbacks()
 end)
 
 RegisterBagTransfer(
@@ -141,6 +149,6 @@ RegisterBagTransfer(
 
 if Syndicator then
   Syndicator.CallbackRegistry:RegisterCallback("GuildCacheUpdate", function()
-    addonTable.BagTransferActivationCallback()
+    CallActivationCallbacks()
   end)
 end

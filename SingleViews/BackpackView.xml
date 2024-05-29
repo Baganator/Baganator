@@ -1,76 +1,8 @@
 <Ui>
-  <Frame name="BaganatorSingleViewBackpackViewTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorSingleViewBackpackViewMixin">
-    <Scripts>
-      <OnLoad method="OnLoad"/>
-      <OnShow method="OnShow"/>
-      <OnHide method="OnHide"/>
-      <OnDragStart method="OnDragStart"/>
-      <OnDragStop method="OnDragStop"/>
-    </Scripts>
+  <Frame name="BaganatorSingleViewBackpackViewTemplate" virtual="true" inherits="BaganatorItemViewCommonBackpackViewTemplate" mixin="BaganatorSingleViewBackpackViewMixin">
     <Frames>
-      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
-        </Anchors>
-      </Button>
-      <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            self:GetParent():CombineStacksAndSort(button == "RightButton")
-          </OnClick>
-          <OnEnter inherit="append">
-            self.tooltipText = Baganator.Utilities.GetExternalSortMethodName()
-          </OnEnter>
-        </Scripts>
-      </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.SortButton" relativePoint="LEFT"/>
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            self:GetParent():Transfer()
-          </OnClick>
-        </Scripts>
-      </Button>
-      <Button parentKey="ToggleBankButton" inherits="BaganatorBankButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleBank()
-          </OnClick>
-        </Scripts>
-      </Button>
-      <Button parentKey="ToggleGuildBankButton" inherits="BaganatorGuildBankButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleGuildBank()
-          </OnClick>
-        </Scripts>
-      </Button>
-      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons" />
-      <Button parentKey="ToggleBagSlotsButton" inherits="BaganatorToggleBagSlotsButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleBagSlots()
-          </OnClick>
-        </Scripts>
-      </Button>
-
-      <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
-      <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>
-
       <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
       <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
-      <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
-
-      <Frame parentKey="BagSlots" inherits="BaganatorBagSlotsContainerTemplate">
-        <KeyValues>
-          <KeyValue key="mode" value="bags" type="string"/>
-        </KeyValues>
-      </Frame>
     </Frames>
   </Frame>
 </Ui>
