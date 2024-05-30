@@ -30,7 +30,7 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
 
   self.pending = {}
   for _, item in ipairs(everything) do
-    local key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(item)
+    local key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(item) .. tostring(item.guid)
     if not self.pending[key] then
       self.pending[key] = {}
       if not self.seenData[key] then

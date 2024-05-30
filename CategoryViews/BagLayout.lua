@@ -105,8 +105,17 @@ function Baganator.CategoryViews.LayoutContainers(self, character, containerType
         else
           info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
         end
+        info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
+        if info.itemID ~= nil then
+          local location = {bagID = bagID, slotIndex = slotIndex}
+          info.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(location)
+          if info.setInfo then
+            info.guid = C_Item.GetItemGUID(location)
+          end
+        end
       end
       if info.itemID then
+        info.guid = info.guid or ""
         info.iconTexture = slot.iconTexture
         info.keyLink = linkMap[info.itemLink]
         if not info.keyLink then
@@ -115,7 +124,6 @@ function Baganator.CategoryViews.LayoutContainers(self, character, containerType
         end
         info.bagID = bagID
         info.slotID = slotIndex
-        info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
         table.insert(everything, info)
       else
         if not emptySlots[bagID] then
