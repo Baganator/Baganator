@@ -134,7 +134,7 @@ local function SetupBackpackView()
     ToggleBackpackView()
   end)
 
-  hooksecurefunc("ToggleAllBags", ToggleBackpackView)
+  ToggleAllBags = ToggleBackpackView
 end
 
 local function SetupBankView()
