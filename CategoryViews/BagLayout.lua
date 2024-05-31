@@ -123,6 +123,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         end
         info.bagID = bagID
         info.slotID = slotIndex
+        info.key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
         table.insert(everything, info)
       else
         if not emptySlots[bagID] then
@@ -157,7 +158,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         local entriesByKey = {}
         for _, item in ipairs(details) do
           anyResults = true
-          local groupingKey = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(item)
+          local groupingKey = item.key
           if entriesByKey[groupingKey] then
             entriesByKey[groupingKey].itemCount = entriesByKey[groupingKey].itemCount + item.itemCount
           else
