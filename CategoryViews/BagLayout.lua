@@ -47,6 +47,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
   while #self.LiveLayouts < #searches + activeLayoutOffset do -- +1 for the extra category added when removing a category item
     table.insert(self.LiveLayouts, CreateFrame("Frame", nil, self, "BaganatorLiveCategoryLayoutTemplate"))
+    self.LiveLayouts[#self.LiveLayouts]:SetPool(self.liveItemButtonPool)
     table.insert(self.CachedLayouts, CreateFrame("Frame", nil, self, "BaganatorCachedCategoryLayoutTemplate"))
   end
 
