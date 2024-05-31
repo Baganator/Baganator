@@ -30,9 +30,9 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, labelsPool, searchLab
       label:SetWidth(math.min(layout:GetWidth() + categorySpacing, targetPixelWidth - offsetX))
       label:SetWordWrap(false)
       layout:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY - label:GetHeight() - headerPadding / 2)
-      offsetX = offsetX + layout:GetWidth() + iconPadding
-      maxWidth = math.max(maxWidth, offsetX + iconPadding)
-      offsetX = offsetX + categorySpacing
+      offsetX = offsetX + layout:GetWidth()
+      maxWidth = math.max(maxWidth, offsetX)
+      offsetX = offsetX + categorySpacing + iconPadding
       prevLayout = layout
       prevLabel = label
     end

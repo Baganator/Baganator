@@ -223,7 +223,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       table.insert(searchLabels, BAGANATOR_L_EMPTY)
     end
 
-    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, self.labelsPool, searchLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset, -50 - topSpacing / 4, bagWidth)
+    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, self.labelsPool, searchLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth)
 
     callback(maxWidth, maxHeight)
 

@@ -106,7 +106,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   local warbandData = Syndicator.API.GetWarband(1)
   Baganator.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "bank", {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
-      math.max(500, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
+      math.max(400, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2 + buttonPadding
     )
 
