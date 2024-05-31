@@ -103,7 +103,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacksAndSort(is
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:RemoveSearchMatches(callback)
-  local matches = self:GetMatches()
+  local matches = self:GetSearchMatches()
 
   local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(
     Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags,

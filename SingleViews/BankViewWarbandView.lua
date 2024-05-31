@@ -1,6 +1,6 @@
 BaganatorSingleViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
 
-function BaganatorSingleViewBankViewWarbandViewMixin:GetMatches()
+function BaganatorSingleViewBankViewWarbandViewMixin:GetSearchMatches()
   return self.BankLive.SearchMonitor:GetMatches()
 end
 
