@@ -326,7 +326,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
     else
       tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     end
-    tabButton.SelectedTexture:SetShown(false)
+    tabButton.SelectedTexture:Hide()
     tabButton:SetScale(tabScale)
     tabButton:Show()
     tabButton.tabName = BUY_GUILDBANK_TAB

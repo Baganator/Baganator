@@ -223,7 +223,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
     else
       tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     end
-    tabButton.SelectedTexture:SetShown(false)
+    tabButton.SelectedTexture:Hide()
     tabButton:SetScale(tabScale)
     tabButton:Show()
     tabButton.tabName = BAGANATOR_L_BUY_WARBAND_BANK_TAB

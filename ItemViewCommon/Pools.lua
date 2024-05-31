@@ -48,7 +48,7 @@ function Baganator.ItemViewCommon.GetTabButtonPool(parent)
     return CreateObjectPool(function(pool)
       classicCachedObjectCounter = classicCachedObjectCounter + 1
       return CreateFrame("Button", "BGRItemViewCommonTabButton" .. classicCachedObjectCounter, parent, "BaganatorClassicTabButtonTemplate")
-    end, FramePool_HideAndClearAnchors)
+    end, FramePool_HideAndClearAnchors or Pool_HideAndClearAnchors)
   end
 end
 
@@ -56,5 +56,5 @@ function Baganator.ItemViewCommon.GetSideTabButtonPool(parent)
   return CreateObjectPool(function(pool)
     classicCachedObjectCounter = classicCachedObjectCounter + 1
     return CreateFrame("Button", "BGRItemViewCommonTabButton" .. classicCachedObjectCounter, parent, "BaganatorRightSideTabButtonTemplate")
-  end, FramePool_HideAndClearAnchors)
+  end, FramePool_HideAndClearAnchors or Pool_HideAndClearAnchors)
 end
