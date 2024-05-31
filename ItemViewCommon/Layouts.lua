@@ -652,6 +652,11 @@ function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
       Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink)
     end
   end)
+  button:HookScript("OnDragStart", function(_)
+    if C_Cursor.GetCursorItem() ~= nil then
+      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink)
+    end
+  end)
 end
 
 function BaganatorLiveCategoryLayoutMixin:SetupDummyButton(button)
@@ -661,12 +666,15 @@ function BaganatorLiveCategoryLayoutMixin:SetupDummyButton(button)
   button.setup = true
   button.isDummy = true
 
-  button:SetScript("OnClick", function()
+  local function ProcessCursor()
     if C_Cursor.GetCursorItem() ~= nil then
       Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemEnd", button.dummyType == "add" and button.BGR.category or nil)
       ClearCursor()
     end
-  end)
+  end
+  button:SetScript("OnClick", ProcessCursor)
+
+  button:SetScript("OnReceiveDrag", ProcessCursor)
 
   button:SetScript("OnEnter", function()
     GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
