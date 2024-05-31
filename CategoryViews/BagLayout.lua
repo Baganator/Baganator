@@ -3,7 +3,7 @@ local addonName, addonTable = ...
 local linkMap = {}
 local activeLayoutOffset = 1
 
-function Baganator.CategoryViews.LayoutContainers(self, character, containerType, bagIndexes, sideSpacing, topSpacing, callback)
+function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
 
   local searches, searchLabels, priority = {}, {}, {}
@@ -81,8 +81,6 @@ function Baganator.CategoryViews.LayoutContainers(self, character, containerType
   local prioritisedSearches = CopyTable(searches)
   table.sort(prioritisedSearches, function(a, b) return priority[a] > priority[b] end)
 
-  local characterData = Syndicator.API.GetCharacter(character)
-
   local junkPluginID = Baganator.Config.Get("junk_plugin")
   local junkPlugin = addonTable.JunkPlugins[junkPluginID] and addonTable.JunkPlugins[junkPluginID].callback
   if junkPluginID == "poor_quality" then
@@ -92,7 +90,7 @@ function Baganator.CategoryViews.LayoutContainers(self, character, containerType
   local emptySlots = {}
   local emptySlotCount = 0
   local everything = {}
-  for bagIndex, bag in ipairs(characterData[containerType]) do
+  for bagIndex, bag in ipairs(allBags) do
     local bagID = bagIndexes[bagIndex]
     if not bagID then -- Avoid errors from bags removed from the possible indexes
       break
@@ -145,8 +143,10 @@ function Baganator.CategoryViews.LayoutContainers(self, character, containerType
     local bagWidth
     if containerType == "bags" then
       bagWidth = Baganator.Config.Get(Baganator.Config.Options.BAG_VIEW_WIDTH)
-    else
+    elseif containerType == "bank" then
       bagWidth = Baganator.Config.Get(Baganator.Config.Options.BANK_VIEW_WIDTH)
+    elseif containerType == "warband" then
+      bagWidth = Baganator.Config.Get(Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH)
     end
 
     local anyResults = false

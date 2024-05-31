@@ -62,6 +62,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:GetSearchMatches()
   for _, layouts in ipairs(self.CollapsingBankBags) do
     tAppendAll(matches, layouts.live.SearchMonitor:GetMatches())
   end
+  return matches
 end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:NotifyBagUpdate(updatedBags)

@@ -114,7 +114,8 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     self.addToCategoryMode = false
   end
 
-  Baganator.CategoryViews.LayoutContainers(self, character, "bags", Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  local characterData = Syndicator.API.GetCharacter(character)
+  Baganator.CategoryViews.LayoutContainers(self, characterData.bags, "bags", Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
       math.max(500, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2

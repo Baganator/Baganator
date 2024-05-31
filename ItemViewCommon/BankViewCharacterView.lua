@@ -14,6 +14,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
 
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
+    self.searchToApply = true
     self:NotifyBagUpdate(updatedBags)
     if character == self.liveCharacter and self:IsVisible() then
       self:GetParent():UpdateView()
