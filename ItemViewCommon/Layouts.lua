@@ -612,11 +612,7 @@ end
 
 function BaganatorLiveCategoryLayoutMixin:OnShow()
   FrameUtil.RegisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
-  local start = debugprofilestop()
   self:UpdateCooldowns()
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("update cooldowns show", debugprofilestop() - start)
-  end
   self:UpdateQuests()
 
   RegisterHighlightSimilarItems(self)
@@ -1195,7 +1191,6 @@ function BaganatorSearchLayoutMonitorMixin:OnUpdate()
 end
 
 function BaganatorSearchLayoutMonitorMixin:StartSearch(text)
-  local start = debugprofilestop()
   self.text = text
   self.pendingItems = {}
   for _, itemButton in ipairs(self:GetParent().buttons) do
@@ -1205,9 +1200,6 @@ function BaganatorSearchLayoutMonitorMixin:StartSearch(text)
   end
   if next(self.pendingItems) then
     self:SetScript("OnUpdate", self.OnUpdate)
-  end
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("search monitor start", debugprofilestop() - start)
   end
 end
 

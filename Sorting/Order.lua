@@ -118,12 +118,6 @@ function Baganator.Sorting.AddSortKeys(list)
 end
 
 function Baganator.Sorting.OrderOneListOffline(list, sortMethod)
-  local start = debugprofilestop()
-
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("sort convert", debugprofilestop() - start)
-  end
-
   local reverse = Baganator.Config.Get(Baganator.Config.Options.REVERSE_GROUPS_SORT_ORDER)
 
   list = tFilter(list, function(a) return a.itemLink ~= nil end, true)
