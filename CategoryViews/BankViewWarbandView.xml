@@ -1,0 +1,14 @@
+<Ui>
+  <Frame name="BaganatorCategoryViewBankViewWarbandViewTemplate" virtual="true" mixin="BaganatorCategoryViewBankViewWarbandViewMixin" inherits="BaganatorItemViewCommonBankViewWarbandViewTemplate">
+    <Scripts>
+      <OnEvent method="OnEvent"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="MultiSearch" mixin="BaganatorCategoryViewsCategorySearchMixin">
+        <Scripts>
+          <OnLoad method="OnLoad"/>
+        </Scripts>
+      </Frame>
+    </Frames>
+  </Frame>
+</Ui>

@@ -16,6 +16,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
 
   Syndicator.CallbackRegistry:RegisterCallback("WarbandBankCacheUpdate",  function(_, index, updates)
     self:NotifyBagUpdate(updates)
+    self.searchToApply = true
     if updates.tabInfo then
       self.updateTabs = true
     end
@@ -257,9 +258,6 @@ end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   self.isLive = isLive
-
-  self.BankLive:SetShown(self.isLive)
-  self.BankCached:SetShown(not self.isLive)
 
   self:GetParent():SetTitle(ACCOUNT_BANK_PANEL_TITLE)
 

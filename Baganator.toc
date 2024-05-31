@@ -85,8 +85,8 @@ CategoryViews\BagLayout.lua
 CategoryViews\CategorySearch.lua
 CategoryViews\BankViewCharacterView.lua
 CategoryViews\BankViewCharacterView.xml
-#CategoryViews\BankViewWarbandView.lua
-#CategoryViews\BankViewWarbandView.xml
+CategoryViews\BankViewWarbandView.lua
+CategoryViews\BankViewWarbandView.xml
 CategoryViews\BankView.xml
 CategoryViews\BackpackView.lua
 CategoryViews\BackpackView.xml

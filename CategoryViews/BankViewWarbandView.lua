@@ -1,7 +1,7 @@
-BaganatorCategoryViewBankViewCharacterViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewCharacterViewMixin)
+BaganatorCategoryViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
-  BaganatorItemViewCommonBankViewCharacterViewMixin.OnLoad(self)
+function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
+  BaganatorItemViewCommonBankViewWarbandViewMixin.OnLoad(self)
 
   self.Layouts = {}
   self.LiveLayouts = {}
@@ -49,7 +49,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   end)
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:OnEvent(eventName, ...)
+function BaganatorCategoryViewBankViewWarbandViewMixin:OnEvent(eventName, ...)
   if eventName == "CURSOR_CHANGED" and self.addToCategoryMode and not C_Cursor.GetCursorItem() then
     self.addToCategoryMode = nil
     if self:IsVisible() then
@@ -58,7 +58,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnEvent(eventName, ...)
   end
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()
+function BaganatorCategoryViewBankViewWarbandViewMixin:GetSearchMatches()
   local matches = {}
   for _, layouts in ipairs(self.LiveLayouts) do
     tAppendAll(matches, layouts.SearchMonitor:GetMatches())
@@ -66,7 +66,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:ApplySearch(text)
+function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)
   if not self:IsVisible() then
     return
   end
@@ -78,39 +78,17 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:ApplySearch(text)
   end
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:NotifyBagUpdate(updatedBags)
+function BaganatorCategoryViewBankViewWarbandViewMixin:NotifyBagUpdate(updatedBags)
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
-  BaganatorItemViewCommonBankViewCharacterViewMixin.UpdateForCharacter(self, character, isLive)
+function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
+  BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
 
-  self:GetParent().AllButtons = {}
-
-  tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
-  tAppendAll(self:GetParent().AllButtons, self.TopButtons)
-
-  -- Copied from SingleViews/BagView.lua
+  -- Copied from WarbandViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
-  end
-
-  local buttonPadding = 0
-
-  if self.BuyReagentBankButton:IsShown() then
-    table.insert(self:GetParent().AllButtons, self.BuyReagentBankButton)
-    self.BuyReagentBankButton:ClearAllPoints()
-    self.BuyReagentBankButton:SetPoint("LEFT", self, Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
-    self.BuyReagentBankButton:SetPoint("BOTTOM", self, 0, 6)
-    buttonPadding = 2
-  end
-  if self.DepositIntoReagentsBankButton:IsShown() then
-    table.insert(self:GetParent().AllButtons, self.DepositIntoReagentsBankButton)
-    self.DepositIntoReagentsBankButton:ClearAllPoints()
-    self.DepositIntoReagentsBankButton:SetPoint("LEFT", self, Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
-    self.DepositIntoReagentsBankButton:SetPoint("BOTTOM", self, 0, 6)
-    buttonPadding = 2
   end
 
   self.isGrouping = false--Baganator.Config.Get(Baganator.Config.Options.CATEGORY_ITEM_GROUPING)
@@ -119,8 +97,14 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
     self.addToCategoryMode = false
   end
 
-  local characterData = Syndicator.API.GetCharacter(character)
-  Baganator.CategoryViews.LayoutContainers(self, characterData.bank, "bank", Syndicator.Constants.AllBankIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  local buttonPadding = 0
+  if self.isLive then
+    buttonPadding = buttonPadding + 25
+  end
+  
+
+  local warbandData = Syndicator.API.GetWarband(1)
+  Baganator.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "bank", {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
       math.max(500, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2 + buttonPadding
@@ -135,4 +119,6 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
     self:GetParent():OnTabFinished()
   end)
+
+  self:GetParent():OnTabFinished()
 end
