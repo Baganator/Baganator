@@ -49,9 +49,11 @@ local function SetupAddRemoveItems()
       local oldIndex = FindInTableIf(customCategories[previousCategory].addedItems, function(alt)
         return alt.itemID == details.itemID and alt.petID == details.petID
       end)
-      table.remove(customCategories[previousCategory].addedItems, oldIndex)
-      if #customCategories[previousCategory].addedItems == 0 then
-        customCategories[previousCategory].addedItems = nil
+      if oldIndex then
+        table.remove(customCategories[previousCategory].addedItems, oldIndex)
+        if #customCategories[previousCategory].addedItems == 0 then
+          customCategories[previousCategory].addedItems = nil
+        end
       end
     end
 
