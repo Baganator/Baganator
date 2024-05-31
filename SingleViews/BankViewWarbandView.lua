@@ -35,6 +35,8 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   local bankHeight = activeBank:GetHeight() + topSpacing / 2
 
+  self:GetParent().AllButtons = self:GetParent().AllFixedButtons
+
   bankHeight = bankHeight + 20
 
   activeBank:ClearAllPoints()

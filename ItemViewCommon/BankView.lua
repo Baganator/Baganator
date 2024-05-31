@@ -182,14 +182,14 @@ function BaganatorItemViewCommonBankViewMixin:UpdateView()
 
   self.SearchWidget:SetSpacing(sideSpacing)
 
-  self.SortButton:SetShown(self.currentTab.isLive and Baganator.Utilities.ShouldShowSortButton())
-  self:UpdateTransferButton()
-
   self.currentTab:UpdateView()
 end
 
 
 function BaganatorItemViewCommonBankViewMixin:OnTabFinished()
+  self.SortButton:SetShown(self.currentTab.isLive and Baganator.Utilities.ShouldShowSortButton())
+  self:UpdateTransferButton()
+
   self.ButtonVisibility:Update()
 
   self:SetSize(self.currentTab:GetSize())
