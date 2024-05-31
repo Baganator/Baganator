@@ -245,7 +245,7 @@ function BaganatorCustomiseGetSelectionPopoutButtonMixin:UpdatePopout()
 
     local isSelected = false--(index == self.selectedIndex);
     button:SetupEntry(selectionInfo, index, isSelected, numColumns > 1, hasIneligibleChoice, hasLockedChoice);
-    maxDetailsWidth = math.max(maxDetailsWidth, button.SelectionDetails:GetWidth());
+    maxDetailsWidth = math.max(maxDetailsWidth, button.SelectionDetails:GetWidth(), button.SelectionDetails.SelectionName:GetWidth() + 10);
 
     table.insert(buttons, button);
   end
