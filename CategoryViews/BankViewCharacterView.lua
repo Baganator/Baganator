@@ -86,6 +86,9 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
   self:GetParent().AllButtons = {}
 
+  tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
+  tAppendAll(self:GetParent().AllButtons, self.TopButtons)
+
   -- Copied from SingleViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
@@ -99,20 +102,16 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
     table.insert(self:GetParent().AllButtons, self.BuyReagentBankButton)
     self.BuyReagentBankButton:ClearAllPoints()
     self.BuyReagentBankButton:SetPoint("LEFT", self, Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
-    self.BuyReagentBankButton:SetPoint("BOTTOM", 0, 6)
+    self.BuyReagentBankButton:SetPoint("BOTTOM", self, 0, 6)
     buttonPadding = 2
   end
   if self.DepositIntoReagentsBankButton:IsShown() then
     table.insert(self:GetParent().AllButtons, self.DepositIntoReagentsBankButton)
     self.DepositIntoReagentsBankButton:ClearAllPoints()
     self.DepositIntoReagentsBankButton:SetPoint("LEFT", self, Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
-    self.DepositIntoReagentsBankButton:SetPoint("BOTTOM", 0, 6)
+    self.DepositIntoReagentsBankButton:SetPoint("BOTTOM", self, 0, 6)
     buttonPadding = 2
   end
-
-  self:GetParent().AllButtons = {}
-  tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
-  tAppendAll(self:GetParent().AllButtons, self.TopButtons)
 
   self.isGrouping = false--Baganator.Config.Get(Baganator.Config.Options.CATEGORY_ITEM_GROUPING)
 

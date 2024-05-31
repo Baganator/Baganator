@@ -251,12 +251,6 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:HighlightCurrentTab()
   end
 end
 
-function BaganatorItemViewCommonBankViewWarbandViewMixin:OnHide()
-  for _, button in ipairs(self.LiveButtons) do
-    button:SetParent(self)
-  end
-end
-
 function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateView()
   self:ShowTab(self.currentTab, self:GetParent().liveBankActive)
 end
