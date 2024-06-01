@@ -30,8 +30,6 @@ Baganator.Config.Options = {
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
-  INVERTED_BAG_SHORTCUTS = "inverted_bag_shortcuts",
-
   HIDE_BOE_ON_COMMON = "hide_boe_on_common",
   ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
   ICON_TEXT_FONT_SIZE = "icon_text_font_size",
@@ -91,7 +89,6 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.SHOW_SORT_BUTTON] = true,
   [Baganator.Config.Options.SHOW_TRANSFER_BUTTON] = true,
   [Baganator.Config.Options.SHOW_GUILD_BANK_BUTTON] = true,
-  [Baganator.Config.Options.INVERTED_BAG_SHORTCUTS] = false,
   [Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW] = {},
   [Baganator.Config.Options.HIDE_BOE_ON_COMMON] = false,
   [Baganator.Config.Options.SHOW_RECENTS_TABS] = true,
