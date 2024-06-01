@@ -5,7 +5,7 @@ function Baganator.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
 
   local results = {}
   for _, source in ipairs(addonTable.ItemSetSources) do
-    local new = source.getter(location, guid, itemLink)
+    local new = source.isInSet(location, guid, itemLink)
     if new and #new > 0 then
       tAppendAll(results, new)
     end
@@ -16,4 +16,16 @@ function Baganator.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
   else
     return nil
   end
+end
+
+function Baganator.ItemViewCommon.GetEquipmentSetNames()
+  local results = {}
+  for _, source in ipairs(addonTable.ItemSetSources) do
+    local names = source.getAllSetNames and source.getAllSetNames()
+    if names and #names > 0 then
+      tAppendAll(results, names)
+    end
+  end
+
+  return results
 end

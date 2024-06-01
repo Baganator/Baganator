@@ -9,9 +9,12 @@ do
       "PLAYER_LOGIN",
     })
     self.equipmentSetInfo = {}
+    self.equipmentSetNames = {}
 
     Baganator.API.RegisterItemSetSource(BAGANATOR_L_BLIZZARD, "blizzard", function(itemLocation, guid)
       return self.equipmentSetInfo[guid]
+    end, function()
+      return self.equipmentSetNames
     end)
   end
   BlizzardSetTracker:OnLoad()
@@ -36,8 +39,10 @@ do
     local oldSetInfo = CopyTable(self.equipmentSetInfo)
 
     local cache = {}
+    self.equipmentSetNames = {}
     for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
       local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
+      table.insert(self.equipmentSetNames, name)
       local info = {name = name, iconTexture = iconTexture, setID = setID}
       -- Uses or {} because a set might exist without any associated item
       -- locations
@@ -85,9 +90,12 @@ end
 if not Baganator.Constants.IsRetail then
   Baganator.Utilities.OnAddonLoaded("ItemRack", function()
     local equipmentSetInfo = {}
+    local equipmentSetNames = {}
     local function ItemRackUpdated()
       equipmentSetInfo = {}
+      equipmentSetNames = {}
       for name, details in pairs(ItemRackUser.Sets) do
+        table.insert(equipmentSetNames, name)
         if name:sub(1, 1) ~= "~" then
           local setInfo = {name = name, icon = details.icon}
           for _, itemRef in pairs(details.equip) do
@@ -142,6 +150,8 @@ if not Baganator.Constants.IsRetail then
         end
       end
       return equipmentSetInfo[id]
+    end, function()
+      return equipmentSetNames
     end)
   end)
 end

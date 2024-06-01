@@ -6,44 +6,12 @@ local activeLayoutOffset = 1
 function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
 
-  local searches, searchLabels, priority = {}, {}, {}
-
-  local customSearches = {}
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-  local attachedItems = {}
-  local categoryKeys = {}
-  for index, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
-    local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
-    if category then
-      table.insert(searches, category.search)
-      table.insert(searchLabels, category.name)
-      priority[category.search] = category.searchPriority
-      customSearches[category.search] = false
-      categoryKeys[category.search] = categoryKeys[category.search] or category.source
-    end
-    category = customCategories[source]
-    if category then
-      local search = category.search:lower()
-      if search == "" then
-        search = "________" .. index
-      end
-      table.insert(searches, search)
-      table.insert(searchLabels, category.name)
-      priority[search] = category.searchPriority
-      customSearches[search] = customSearches[search] == nil
-      categoryKeys[search] = categoryKeys[search] or category.name
-      if category.addedItems and next(category.addedItems) then
-        attachedItems[search] = {}
-        for _, details in ipairs(category.addedItems) do
-          if details.itemID then
-            attachedItems[search]["i:" .. details.itemID] = true
-          elseif details.petID then
-            attachedItems[search]["p:" .. details.petID] = true
-          end
-        end
-      end
-    end
-  end
+
+  local composed = Baganator.CategoryViews.ComposeCategories()
+
+  local searches, searchLabels, priority, customSearches, customCategories, attachedItems, categoryKeys =
+    composed.searches, composed.searchLabels, composed.priorities, composed.customSearches, composed.customCategories, composed.attachedItems, composed.categoryKeys
 
   while #self.LiveLayouts < #searches + activeLayoutOffset do -- +1 for the extra category added when removing a category item
     table.insert(self.LiveLayouts, CreateFrame("Frame", nil, self, "BaganatorLiveCategoryLayoutTemplate"))

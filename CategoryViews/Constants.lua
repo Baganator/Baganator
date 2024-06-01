@@ -41,6 +41,12 @@ if Baganator.Constants.IsEra then
       searchPriority = 100,
     },
     {
+      key = "auto_equipment_sets",
+      name = BAGANATOR_L_CATEGORY_AUTO_EQUIPMENT_SETS,
+      auto = "equipment_sets",
+      searchPriority = 200,
+    },
+    {
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower(),
@@ -121,6 +127,12 @@ elseif Baganator.Constants.IsClassic then -- Cata
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
       search = SYNDICATOR_L_KEYWORD_REAGENT,
       searchPriority = 100,
+    },
+    {
+      key = "auto_equipment_sets",
+      name = BAGANATOR_L_CATEGORY_AUTO_EQUIPMENT_SETS,
+      auto = "equipment_sets",
+      searchPriority = 200,
     },
     {
       key = "weapon",
@@ -218,6 +230,12 @@ else -- retail
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
       search = SYNDICATOR_L_KEYWORD_REAGENT,
       searchPriority = 100,
+    },
+    {
+      key = "auto_equipment_sets",
+      name = BAGANATOR_L_CATEGORY_AUTO_EQUIPMENT_SETS,
+      auto = "equipment_sets",
+      searchPriority = 200,
     },
     {
       key = "weapon",
