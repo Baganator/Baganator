@@ -333,7 +333,7 @@ function Baganator.ViewManagement.Initialize()
     if BackpackTokenFrame then
       local info = C_XMLUtil.GetTemplateInfo("BackpackTokenTemplate")
       local tokenWidth = info and info.width or 50
-      BackpackTokenFrame:SetWidth(tokenWidth * 3) -- Support tracking up to 3 currencies
+      BackpackTokenFrame:SetWidth(tokenWidth * 3 + 1) -- Support tracking up to 3 currencies
     end
   end, CallErrorHandler)
 
