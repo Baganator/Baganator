@@ -220,7 +220,6 @@ L["CATEGORY_FOOD"] = "Food"
 L["CATEGORY_TOY"] = "Toy"
 
 L["X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES"] = "%s%% item button spacing between categories"
-L["X_BRACKETS_X"] = "%s (%s)"
 L["ALL_CATEGORIES"] = "All categories"
 L["ORDER_CATEGORIES_DESCRIPTION"] = "Choose a category to reposition or add"
 L["EDIT"] = "Edit"
