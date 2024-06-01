@@ -171,12 +171,12 @@ end
 
 addonTable.ItemSetSources = {}
 
-function Baganator.API.RegisterItemSetSource(label, id, isInSet, getAllSetNames)
-  assert(type(label) == "string" and type(id) == "string" and type(isInSet) == "function" and (getAllSetNames == nil or type(getAllSetNames) == "function"))
+function Baganator.API.RegisterItemSetSource(label, id, getItemSetInfo, getAllSetNames)
+  assert(type(label) == "string" and type(id) == "string" and type(getItemSetInfo) == "function" and (getAllSetNames == nil or type(getAllSetNames) == "function"))
   table.insert(addonTable.ItemSetSources, {
     label = label,
     id = id,
-    isInSet = isInSet,
+    getItemSetInfo = getItemSetInfo,
     getAllSetNames = getAllSetNames,
   })
 end

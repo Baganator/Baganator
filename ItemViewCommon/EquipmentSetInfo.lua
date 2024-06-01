@@ -5,7 +5,7 @@ function Baganator.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
 
   local results = {}
   for _, source in ipairs(addonTable.ItemSetSources) do
-    local new = source.isInSet(location, guid, itemLink)
+    local new = source.getItemSetInfo(location, guid, itemLink)
     if new and #new > 0 then
       tAppendAll(results, new)
     end
