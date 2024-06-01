@@ -195,7 +195,7 @@ else -- retail
     {
       key = "potion",
       name = BAGANATOR_L_CATEGORY_POTION,
-      search = SYNDICATOR_L_KEYWORD_POTION,
+      search = SYNDICATOR_L_KEYWORD_POTION .. "&" .. C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower(),
       searchPriority = 164,
     },
     {
