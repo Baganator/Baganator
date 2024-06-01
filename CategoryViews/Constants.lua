@@ -78,7 +78,9 @@ if Baganator.Constants.IsEra then
     {
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      -- Only era uses the KEYRING keyword as only era has a keyring bag
+      search = SYNDICATOR_L_KEYWORD_KEYRING or C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      searchPriority = 165,
     },
     {
       key = "miscellaneous",
@@ -160,6 +162,7 @@ elseif Baganator.Constants.IsClassic then -- Cata
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      searchPriority = 165,
     },
     {
       key = "miscellaneous",
@@ -267,6 +270,7 @@ else -- retail
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      searchPriority = 165,
     },
     {
       key = "miscellaneous",
