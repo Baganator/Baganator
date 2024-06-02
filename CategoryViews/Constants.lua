@@ -42,7 +42,7 @@ if Baganator.Constants.IsEra then
     },
     {
       key = "auto_equipment_sets",
-      name = BAGANATOR_L_CATEGORY_AUTO_EQUIPMENT_SETS,
+      name = BAGANATOR_L_CATEGORY_EQUIPMENT_SETS_AUTO,
       auto = "equipment_sets",
       searchPriority = 200,
     },
@@ -130,7 +130,7 @@ elseif Baganator.Constants.IsClassic then -- Cata
     },
     {
       key = "auto_equipment_sets",
-      name = BAGANATOR_L_CATEGORY_AUTO_EQUIPMENT_SETS,
+      name = BAGANATOR_L_CATEGORY_EQUIPMENT_SETS_AUTO,
       auto = "equipment_sets",
       searchPriority = 200,
     },
@@ -234,7 +234,7 @@ else -- retail
     },
     {
       key = "auto_equipment_sets",
-      name = BAGANATOR_L_CATEGORY_AUTO_EQUIPMENT_SETS,
+      name = BAGANATOR_L_CATEGORY_EQUIPMENT_SETS_AUTO,
       auto = "equipment_sets",
       searchPriority = 200,
     },

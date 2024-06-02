@@ -219,6 +219,7 @@ L["CATEGORY_POTION"] = "Potion"
 L["CATEGORY_FOOD"] = "Food"
 L["CATEGORY_TOY"] = "Toy"
 L["CATEGORY_AUTO_EQUIPMENT_SETS"] = "Auto: Equipment Sets"
+L["CATEGORY_EQUIPMENT_SETS_AUTO"] = "Equipment Sets (Auto)"
 L["CATEGORY_EQUIPMENT_SET"] = "Equipment Set"
 
 L["X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES"] = "%s%% item button spacing between categories"
