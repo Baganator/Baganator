@@ -43,7 +43,7 @@ do
     for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
       local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
       table.insert(self.equipmentSetNames, name)
-      local info = {name = name, iconTexture = iconTexture, setID = setID}
+      local info = {name = name, iconTexture = iconTexture}
       -- Uses or {} because a set might exist without any associated item
       -- locations
       for _, location in pairs(C_EquipmentSet.GetItemLocations(setID) or {}) do
@@ -95,9 +95,9 @@ if not Baganator.Constants.IsRetail then
       equipmentSetInfo = {}
       equipmentSetNames = {}
       for name, details in pairs(ItemRackUser.Sets) do
-        table.insert(equipmentSetNames, name)
         if name:sub(1, 1) ~= "~" then
-          local setInfo = {name = name, icon = details.icon}
+          table.insert(equipmentSetNames, name)
+          local setInfo = {name = name, iconTexture = details.icon}
           for _, itemRef in pairs(details.equip) do
             if not equipmentSetInfo[itemRef] then
               equipmentSetInfo[itemRef] = {}
