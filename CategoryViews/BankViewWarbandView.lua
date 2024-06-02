@@ -13,7 +13,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
     layout:SetPool(self.liveItemButtonPool)
   end
 
-  self.labelsPool = CreateFontStringPool(self, "BACKGROUND", 0, "GameFontNormal")
+  self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
 
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
@@ -64,6 +64,14 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:GetSearchMatches()
     tAppendAll(matches, layouts.SearchMonitor:GetMatches())
   end
   return matches
+end
+
+function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(associatedSearch)
+  if not self.isLive or not associatedSearch then
+    return
+  end
+
+  self:RemoveSearchMatches(function() return self.results[associatedSearch].all end)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)

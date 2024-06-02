@@ -199,10 +199,10 @@ function BaganatorItemViewCommonBankViewMixin:OnTabFinished()
   end
 end
 
-function BaganatorItemViewCommonBankViewMixin:Transfer(button)
+function BaganatorItemViewCommonBankViewMixin:Transfer()
   if self.SearchWidget.SearchBox:GetText() == "" then
     StaticPopup_Show(self.confirmTransferAllDialogName)
   else
-    self.currentTab:RemoveSearchMatches(function() end)
+    self.currentTab:RemoveSearchMatches()
   end
 end

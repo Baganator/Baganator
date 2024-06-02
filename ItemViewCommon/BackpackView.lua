@@ -100,7 +100,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     button1 = YES,
     button2 = NO,
     OnAccept = function()
-      self:Transfer(true)
+      self:Transfer(true, self.data)
     end,
     timeout = 0,
     hideOnEscape = 1,
@@ -371,23 +371,22 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateAllButtons()
   self.ToggleGuildBankButton:SetEnabled(guildName ~= nil and Syndicator.API.GetGuild(guildName))
 end
 
-function BaganatorItemViewCommonBackpackViewMixin:RunAction(action)
-  action(self:GetSearchMatches(), self.liveCharacter, function(status, modes)
+function BaganatorItemViewCommonBackpackViewMixin:RunAction(action, getItems)
+  action((getItems and getItems()) or self:GetSearchMatches(), self.liveCharacter, function(status, modes)
     self.transferManager:Apply(status, modes or {"BagCacheUpdate"}, function()
       self:RunAction(action)
-    end, function()
-    end)
+    end, function() end)
   end)
 end
 
-function BaganatorItemViewCommonBackpackViewMixin:Transfer(force)
+function BaganatorItemViewCommonBackpackViewMixin:Transfer(force, getItems)
   for _, transferDetails in ipairs(addonTable.BagTransfers) do
     if transferDetails.condition() then
       if not force and transferDetails.confirmOnAll and self.SearchWidget.SearchBox:GetText() == "" then
-        StaticPopup_Show(self.confirmTransferAllDialogName)
+        StaticPopup_Show(self.confirmTransferAllDialogName, nil, nil, getItems)
         break
       else
-        self:RunAction(transferDetails.action)
+        self:RunAction(transferDetails.action, getItems)
         break
       end
     end

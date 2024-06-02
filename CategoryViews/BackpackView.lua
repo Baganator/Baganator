@@ -11,7 +11,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
 
   self:RegisterEvent("CURSOR_CHANGED")
 
-  self.labelsPool = CreateFontStringPool(self, "BACKGROUND", 0, "GameFontNormal")
+  self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
 
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
@@ -96,6 +96,14 @@ function BaganatorCategoryViewBackpackViewMixin:GetSearchMatches()
     tAppendAll(matches, layouts.SearchMonitor:GetMatches())
   end
   return matches
+end
+
+function BaganatorCategoryViewBackpackViewMixin:TransferCategory(associatedSearch)
+  if not self.isLive or not associatedSearch then
+    return
+  end
+
+  self:Transfer(true, function() return self.results[associatedSearch].all end)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)

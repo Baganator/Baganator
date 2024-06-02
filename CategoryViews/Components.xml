@@ -1,0 +1,11 @@
+<Ui>
+  <Button name="BaganatorCategoryViewsCategoryButtonTemplate" virtual="true" mixin="BaganatorCategoryViewsCategoryButtonMixin" text=" ">
+    <NormalFont style="GameFontNormal"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnClick method="OnClick"/>
+      <OnEnter method="OnEnter"/>
+      <OnLeave method="OnLeave"/>
+    </Scripts>
+  </Button>
+</Ui>

@@ -110,6 +110,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
   self.MultiSearch:ApplySearches(prioritisedSearches, attachedItems, everything, function(results)
     self.labelsPool:ReleaseAll()
+    self.results = results
 
     local start2 = debugprofilestop()
     local bagWidth
@@ -161,6 +162,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       if #self.LiveLayouts > #searches + activeLayoutOffset then
         for index = #searches + activeLayoutOffset + 1, #self.LiveLayouts do
           self.LiveLayouts[index]:DeallocateUnusedButtons({})
+          self.LiveLayouts[index]:Hide()
         end
       end
       for _, layout in ipairs(self.CachedLayouts) do
@@ -174,10 +176,14 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       activeLayouts = self.CachedLayouts
     end
 
-    local layoutsShown = {}
+    local layoutsShown, activeLabels = {}, {}
     for searchTerm, details in pairs(results) do
       activeLayouts[details.index + activeLayoutOffset]:ShowGroup(details.all, math.min(bagWidth, #details.all), categoryKeys[searchTerm])
       layoutsShown[details.index] = activeLayouts[details.index + activeLayoutOffset]
+      local label = self.labelsPool:Acquire()
+      label:SetText(searchLabels[details.index])
+      label.categorySearch = searches[details.index]
+      activeLabels[details.index] = label
     end
     if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
       print("category group show", debugprofilestop() - start2)
@@ -190,10 +196,13 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       activeLayouts[1].buttons[1]:SetID(slotID)
       activeLayouts[1].buttons[1].emptySlots = emptySlots
       SetItemButtonCount(activeLayouts[1].buttons[1], emptySlotCount)
-      table.insert(searchLabels, BAGANATOR_L_EMPTY)
+      local label = self.labelsPool:Acquire()
+      label.categorySearch = nil
+      label:SetText(BAGANATOR_L_EMPTY)
+      table.insert(activeLabels, label)
     end
 
-    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, self.labelsPool, searchLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth)
+    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth)
 
     callback(maxWidth, maxHeight)
 
