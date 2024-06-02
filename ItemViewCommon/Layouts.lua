@@ -715,8 +715,8 @@ function BaganatorLiveCategoryLayoutMixin:DeallocateUnusedButtons(cacheList)
   end
   for key, list in pairs(self.buttonsByKey) do
     if not used[key] or used[key] < #list then
-      local max = used[key] and #list - used[key] or 0
-      for index = #list, max + 1, -1 do
+      local max = used[key] and used[key] + 1 or 1
+      for index = #list, max, -1 do
         local button = list[index]
         if not button.isDummy then
           self.buttonPool:Release(button)
