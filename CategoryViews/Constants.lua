@@ -185,6 +185,7 @@ elseif Baganator.Constants.IsClassic then -- Cata
       key = "battlepet",
       name = TOOLTIP_BATTLE_PET,
       search = SYNDICATOR_L_KEYWORD_BATTLE_PET,
+      searchPriority = 140,
     },
     {
       key = "other",
@@ -299,7 +300,7 @@ else -- retail
       key = "battlepet",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Battlepet),
       search = SYNDICATOR_L_KEYWORD_BATTLE_PET,
-      searchPriority = 170,
+      searchPriority = 140,
     },
     {
       key = "toy",
