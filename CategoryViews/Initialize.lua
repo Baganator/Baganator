@@ -2,7 +2,7 @@ local function SetupCategories()
   local alreadyAdded = Baganator.Config.Get(Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED)
   local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
   for index, category in ipairs(Baganator.CategoryViews.Constants.DefaultCategories) do
-    if not alreadyAdded[category.source] then
+    if not alreadyAdded[category.source] and not category.doNotAdd then
       if index > #displayOrder then
         table.insert(displayOrder, category.source)
       else

@@ -1,3 +1,36 @@
+local inventorySlots = {
+  "INVTYPE_HEAD",
+  "INVTYPE_NECK",
+  "INVTYPE_SHOULDER",
+  "INVTYPE_BODY",
+  "INVTYPE_WAIST",
+  "INVTYPE_LEGS",
+  "INVTYPE_FEET",
+  "INVTYPE_WRIST",
+  "INVTYPE_HAND",
+  "INVTYPE_FINGER",
+  "INVTYPE_TRINKET",
+  "INVTYPE_WEAPON",
+  "INVTYPE_RANGED",
+  "INVTYPE_CLOAK",
+  "INVTYPE_2HWEAPON",
+  "INVTYPE_BAG",
+  "INVTYPE_TABARD",
+  "INVTYPE_WEAPONMAINHAND",
+  "INVTYPE_WEAPONOFFHAND",
+  "INVTYPE_SHIELD",
+  "INVTYPE_HOLDABLE",
+  "INVTYPE_AMMO",
+  "INVTYPE_THROWN",
+  "INVTYPE_RANGEDRIGHT",
+  "INVTYPE_QUIVER",
+  "INVTYPE_RELIC",
+  "INVTYPE_PROFESSION_TOOL",
+  "INVTYPE_PROFESSION_GEAR",
+  "INVTYPE_CHEST",
+  "INVTYPE_ROBE",
+}
+
 -- Generate automatic categories, currently only equipment sets
 local function GetAuto(category)
   local searches, searchLabels = {}, {}
@@ -12,10 +45,18 @@ local function GetAuto(category)
         table.insert(searches, SYNDICATOR_L_KEYWORD_EQUIPMENT_SET .. "&" .. name:lower())
       end
     end
-    return {searches = searches, searchLabels = searchLabels}
+  elseif category.auto == "inventory_slots" then
+    for _, slot in ipairs(inventorySlots) do
+      local name = _G[slot]
+      if name then
+        table.insert(searchLabels, name)
+        table.insert(searches, SYNDICATOR_L_KEYWORD_GEAR .. "&" .. name:lower())
+      end
+    end
   else
     error("automatic category type not supported")
   end
+  return {searches = searches, searchLabels = searchLabels}
 end
 
 function Baganator.CategoryViews.ComposeCategories()
