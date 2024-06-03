@@ -15,6 +15,7 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
   local offsetX, offsetY = 0, 0
   local prevLayout, prevLabel = nil, nil
   local hasActiveLayout = false
+  local dividers = {}
   for index, layout in ipairs(activeLayouts) do
     layout:Show()
     if dividerPoints[index] and hasActiveLayout then
@@ -24,7 +25,7 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
       offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
       divider:ClearAllPoints()
       divider:SetPoint("TOPLEFT", baseOffsetX, offsetY + baseOffsetY)
-      divider:SetPoint("TOPRIGHT", divider:GetParent(), "TOPLEFT", baseOffsetX + targetPixelWidth, offsetY)
+      table.insert(dividers, divider)
       offsetY = offsetY - divider:GetHeight() - headerPadding
       offsetX = 0
       hasActiveLayout = false
@@ -49,7 +50,11 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
       prevLabel = label
     end
   end
-  prevLabel:SetWidth(targetPixelWidth - offsetX + categorySpacing + prevLayout:GetWidth())
+
+  for _, divider in ipairs(dividers) do -- Ensure dividers don't overflow when width is reduced
+    divider:SetPoint("RIGHT", divider:GetParent(), "LEFT", baseOffsetX + maxWidth, 0)
+  end
+  prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
 
   return maxWidth, - offsetY + prevLayout:GetHeight() + prevLabel:GetHeight() + headerPadding / 2
 end
