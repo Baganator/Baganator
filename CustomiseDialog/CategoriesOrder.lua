@@ -24,9 +24,9 @@ local function PopulateCategoryOrder(container)
 end
 
 local function GetCategoryContainer(parent, callback)
-  local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, function(value, label)
+  local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, function(value, label, index)
     if value ~= Baganator.CategoryViews.Constants.ProtectedCategory then
-      callback(value, label)
+      callback(value, label, index)
     end
   end)
   container:SetSize(250, 280)
@@ -109,9 +109,8 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   local dropDown = Baganator.CustomiseDialog.GetDropdown(container)
   SetCategoriesToDropDown(dropDown)
 
-  local function Pickup(value, label, mustRemove)
-    local index = tIndexOf(categoryOrder.elements, value)
-    if (mustRemove or value ~= Baganator.CategoryViews.Constants.DividerName) and index ~= nil then
+  local function Pickup(value, label, index)
+    if index ~= nil then
       table.remove(categoryOrder.elements, index)
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, categoryOrder.elements)
     end
@@ -122,9 +121,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
     draggable.value = value
   end
 
-  categoryOrder = GetCategoryContainer(container, function(value, label)
-    Pickup(value, label, true)
-  end)
+  categoryOrder = GetCategoryContainer(container, Pickup)
   categoryOrder:SetPoint("TOPLEFT", 0, 10)
 
   local description = container:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -137,7 +134,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   dropDown:SetText(BAGANATOR_L_ALL_CATEGORIES)
 
   hooksecurefunc(dropDown, "OnEntryClicked", function(_, option)
-    Pickup(option.value, option.label)
+    Pickup(option.value, option.label, option.value ~= Baganator.CategoryViews.Constants.DividerName and tIndexOf(categoryOrder.elements, option.value) or nil)
   end)
   draggable:SetScript("OnHide", function()
     dropDown:SetText(BAGANATOR_L_ALL_CATEGORIES)
