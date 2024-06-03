@@ -127,7 +127,7 @@ if not Baganator.Constants.IsRetail then
       -- Workaround for ItemRack classic not getting the run id correctly for
       -- bag items
       if ItemRack.AppendRuneID then
-        local bagID, slotID = itemLocation:GetBagAndSlot()
+        local bagID, slotID = itemLocation.bagID, itemLocation.slotIndex
         local isEngravable = false
         local runeInfo = nil
         if bagID == Enum.BagIndex.Bank then
