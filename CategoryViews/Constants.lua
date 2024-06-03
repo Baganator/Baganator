@@ -4,7 +4,8 @@ end
 
 Baganator.CategoryViews.Constants = {
   ProtectedCategory = "default_other",
-  CustomCategoryPriority = 250,
+  DividerName = "----",
+  DividerLabel = "——————",
 
   GroupingState = {
     SplitStack = 1,

@@ -1,4 +1,4 @@
-function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth)
+function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth, dividerPoints, dividerPool)
   local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
 
   local headerPadding = 6
@@ -14,9 +14,23 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
 
   local offsetX, offsetY = 0, 0
   local prevLayout, prevLabel = nil, nil
+  local hasActiveLayout = false
   for index, layout in ipairs(activeLayouts) do
     layout:Show()
+    if dividerPoints[index] and hasActiveLayout then
+      local divider = dividerPool:Acquire()
+      divider:Show()
+      divider:SetSize(targetPixelWidth, 1)
+      offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
+      divider:ClearAllPoints()
+      divider:SetPoint("TOPLEFT", baseOffsetX, offsetY + baseOffsetY)
+      divider:SetPoint("TOPRIGHT", divider:GetParent(), "TOPLEFT", baseOffsetX + targetPixelWidth, offsetY)
+      offsetY = offsetY - divider:GetHeight() - headerPadding
+      offsetX = 0
+      hasActiveLayout = false
+    end
     if layout:IsShown() and layout:GetHeight() > 0 then
+      hasActiveLayout = true
       if math.floor(offsetX + layout:GetWidth()) > targetPixelWidth then
         prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
         offsetX = 0

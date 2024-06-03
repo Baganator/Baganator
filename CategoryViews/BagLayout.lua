@@ -114,6 +114,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
   self.MultiSearch:ApplySearches(prioritisedSearches, attachedItems, everything, function(results)
     self.labelsPool:ReleaseAll()
+    self.dividerPool:ReleaseAll()
     self.results = results
 
     local start2 = debugprofilestop()
@@ -212,7 +213,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       activeLayouts[1]:Hide()
     end
 
-    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth)
+    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth, composed.dividerPoints, self.dividerPool)
 
     callback(maxWidth, maxHeight)
 

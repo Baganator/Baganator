@@ -13,6 +13,10 @@ local function PopulateCategoryOrder(container)
       table.insert(dataProviderElements, {value = source, label = category.name .. " (*)"})
       table.insert(elements, source)
     end
+    if source == Baganator.CategoryViews.Constants.DividerName then
+      table.insert(dataProviderElements, {value = source, label = Baganator.CategoryViews.Constants.DividerLabel})
+      table.insert(elements, source)
+    end
   end
 
   container.elements = elements
@@ -42,7 +46,7 @@ local function SetCategoriesToDropDown(dropDown)
   end
   table.sort(options, function(a, b) return a.label < b.label end)
 
-  local entries, values = {}, {}
+  local entries, values = {BAGANATOR_L_CATEGORY_DIVIDER}, {Baganator.CategoryViews.Constants.DividerName}
 
   for _, opt in ipairs(options) do
     table.insert(entries, opt.label)
@@ -105,9 +109,9 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   local dropDown = Baganator.CustomiseDialog.GetDropdown(container)
   SetCategoriesToDropDown(dropDown)
 
-  local function Pickup(value, label)
+  local function Pickup(value, label, mustRemove)
     local index = tIndexOf(categoryOrder.elements, value)
-    if index ~= nil then
+    if (mustRemove or value ~= Baganator.CategoryViews.Constants.DividerName) and index ~= nil then
       table.remove(categoryOrder.elements, index)
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, categoryOrder.elements)
     end
@@ -118,7 +122,9 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
     draggable.value = value
   end
 
-  categoryOrder = GetCategoryContainer(container, Pickup)
+  categoryOrder = GetCategoryContainer(container, function(value, label)
+    Pickup(value, label, true)
+  end)
   categoryOrder:SetPoint("TOPLEFT", 0, 10)
 
   local description = container:CreateFontString(nil, "ARTWORK", "GameFontNormal")

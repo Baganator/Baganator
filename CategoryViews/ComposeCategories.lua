@@ -60,13 +60,16 @@ local function GetAuto(category)
 end
 
 function Baganator.CategoryViews.ComposeCategories()
-  local searches, searchLabels, priorities = {}, {}, {}
+  local searches, searchLabels, priorities, dividerPoints = {}, {}, {}, {}
 
   local customSearches = {}
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
   local attachedItems = {}
   local categoryKeys = {}
   for index, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
+    if source == Baganator.CategoryViews.Constants.DividerName then
+      dividerPoints[#searches + 1] = true
+    end
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
       if category.auto then
@@ -123,5 +126,6 @@ function Baganator.CategoryViews.ComposeCategories()
     categoryKeys = categoryKeys,
     customSearches = customSearches,
     customCategories = customCategories,
+    dividerPoints = dividerPoints,
   }
 end

@@ -12,6 +12,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self:RegisterEvent("CURSOR_CHANGED")
 
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
+  self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
