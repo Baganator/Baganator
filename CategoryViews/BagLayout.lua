@@ -208,6 +208,8 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       label.categorySearch = nil
       label:SetText(BAGANATOR_L_EMPTY)
       table.insert(activeLabels, label)
+    else
+      activeLayouts[1]:Hide()
     end
 
     local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth)
