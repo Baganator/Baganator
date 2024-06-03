@@ -390,6 +390,7 @@ end
 
 function BaganatorBagSlotsContainerMixin:Update(character, isLive)
   if self.updateBagSlotsNeeded then
+    self.updateBagSlotsNeeded = false
     for _, bb in ipairs(self.liveBagSlots) do
       bb:Init()
     end
