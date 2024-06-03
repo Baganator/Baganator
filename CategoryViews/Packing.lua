@@ -3,7 +3,7 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
 
   local headerPadding = 6
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
-    headerPadding = 0
+    headerPadding = 3
   end
 
   local categorySpacing = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING) * (iconSize + iconPadding)
