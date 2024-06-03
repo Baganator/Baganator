@@ -354,6 +354,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     else
       bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
     end
+    Baganator.Skins.AddFrame("ItemButton", bb)
   end
 
   local cachedBagSlotCounter = 0
@@ -370,6 +371,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
   self.cachedBagSlots = {}
   for index = 1, bagSlotsCount do
     local bb = GetCachedBagSlotButton()
+    Baganator.Skins.AddFrame("ItemButton", bb)
     bb:UpdateTextures()
     bb.isBag = true
     table.insert(self.cachedBagSlots, bb)
@@ -385,6 +387,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     else
       bb:SetPoint("TOPLEFT", self.cachedBagSlots[#self.cachedBagSlots - 1], "TOPRIGHT")
     end
+    Baganator.Skins.AddFrame("ItemButton", bb)
   end
 end
 

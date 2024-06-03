@@ -83,6 +83,8 @@ function BaganatorSearchWidgetMixin:OnLoad()
     self.SearchBox:SetText(text)
     self.GlobalSearchButton:SetEnabled(text ~= "")
   end)
+
+  Baganator.Skins.AddFrame("SearchBox", self.SearchBox)
 end
 
 function BaganatorSearchWidgetMixin:OnShow()

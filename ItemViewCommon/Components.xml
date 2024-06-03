@@ -23,7 +23,7 @@
     </Size>
     <Layers>
       <Layer level="BACKGROUND">
-        <Texture file="Interface\SpellBook\SpellBook-SkillLineTab">
+        <Texture parentKey="Background" file="Interface\SpellBook\SpellBook-SkillLineTab">
           <Size>
             <AbsDimension x="64" y="64"/>
           </Size>
@@ -58,6 +58,9 @@
   <Button name="BaganatorTooltipIconButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
     <Size x="32" y="22"/>
     <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("Button", self)
+      </OnLoad>
       <OnEnter>
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetText(self.tooltipHeader)
@@ -115,7 +118,7 @@
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_SORT" type="global"/>
     </KeyValues>
     <Scripts>
-      <OnLoad>
+      <OnLoad inherit="prepend">
         if Baganator.Constants.IsRetail then
           self.icon:SetSize(20, 20)
         end
@@ -145,7 +148,7 @@
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_TRANSFER" type="global"/>
     </KeyValues>
     <Scripts>
-      <OnLoad>
+      <OnLoad inherit="prepend">
         -- Disable transfer button during combat as sorting is partially blocked by Blizzard
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
@@ -165,33 +168,6 @@
         </Texture>
       </Layer>
     </Layers>
-  </Button>
-
-  <Button name="BaganatorToggleReagentsButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
-    <KeyValues>
-      <KeyValue key="tooltipHeader" value="BAGANATOR_L_REAGENTS" type="global"/>
-    </KeyValues>
-    <Layers>
-      <Layer level="ARTWORK">
-        <Texture parentKey="icon">
-          <Size x="17" y="17"/>
-          <Anchors>
-            <Anchor point="CENTER"/>
-          </Anchors>
-        </Texture>
-      </Layer>
-    </Layers>
-    <Scripts>
-      <OnLoad>
-        if Baganator.Constants.IsRetail then
-          self.icon:SetAtlas("Professions_Tracking_Herb")
-          self.tooltipHeader = BAGANATOR_L_REAGENTS
-        elseif Baganator.Constants.IsClassic then
-          self.icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\spell_nature_moonkey")
-          self.tooltipHeader = BAGANATOR_L_KEYS
-        end
-      </OnLoad>
-    </Scripts>
   </Button>
 
   <Button name="BaganatorAllCharactersButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true">
@@ -230,7 +206,7 @@
       </Layer>
     </Layers>
     <Scripts>
-      <OnLoad>
+      <OnLoad inherit="prepend">
         if Baganator.Constants.IsClassic then
           self.icon:SetSize(22, 22)
         end

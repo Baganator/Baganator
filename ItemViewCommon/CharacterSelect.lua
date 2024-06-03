@@ -61,6 +61,8 @@ function BaganatorCharacterSelectMixin:OnLoad()
   self:SetMovable(true)
   self:SetUserPlaced(false)
 
+  Baganator.Skins.AddFrame("ButtonFrame", self)
+
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsVisible() then
@@ -134,6 +136,7 @@ function BaganatorCharacterSelectMixin:OnLoad()
   self.SearchBox:HookScript("OnTextChanged", function()
     self:UpdateList()
   end)
+  Baganator.Skins.AddFrame("SearchBox", self.SearchBox)
 end
 
 function BaganatorCharacterSelectMixin:UpdateList()

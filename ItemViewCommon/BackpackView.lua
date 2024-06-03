@@ -9,7 +9,8 @@ local function PreallocateItemButtons(pool, buttonCount)
   frame:RegisterEvent("PLAYER_LOGIN")
   frame:SetScript("OnEvent", function()
     for i = 1, buttonCount do
-      pool:Acquire()
+      local button = pool:Acquire()
+      Baganator.Skins.AddFrame("ItemButton", button)
     end
     pool:ReleaseAll()
   end)
@@ -23,6 +24,8 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   self:SetMovable(true)
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
+
+  Baganator.Skins.AddFrame("ButtonFrame", self)
 
   self.liveItemButtonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
 
@@ -245,6 +248,7 @@ function BaganatorItemViewCommonBackpackViewMixin:RefreshTabs()
     local details = Syndicator.API.GetCharacter(char).details
     if sameConnected[details.realmNormalized] then
       local tabButton = self.tabsPool:Acquire()
+      Baganator.Skins.AddFrame("TabButton", tabButton)
       tabButton:SetText(details.character)
       tabButton:SetScript("OnClick", function()
         Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", char)

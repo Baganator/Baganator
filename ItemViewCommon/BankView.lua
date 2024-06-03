@@ -10,6 +10,8 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
+  Baganator.Skins.AddFrame("ButtonFrame", self)
+
   self.tabPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
 
   self.Tabs = {}
@@ -53,6 +55,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
     self.Warband:SetPoint("TOPLEFT")
 
     local characterTab = self.tabPool:Acquire()
+    Baganator.Skins.AddFrame("TabButton", characterTab)
     characterTab:SetText(BAGANATOR_L_CHARACTER)
     characterTab:Show()
     characterTab:SetScript("OnClick", function()
@@ -73,6 +76,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
       PanelTemplates_SetTab(self, 2)
       self:UpdateView()
     end)
+    Baganator.Skins.AddFrame("TabButton", warbandTab)
 
     self.Tabs[1]:SetPoint("BOTTOM", 0, -30)
     PanelTemplates_SetNumTabs(self, #self.Tabs)

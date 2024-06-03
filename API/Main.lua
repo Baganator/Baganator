@@ -218,3 +218,16 @@ function Baganator.API.RegisterGuildBankSort(label, id, callback)
     priority = guildSortPriority,
   }
 end
+
+Baganator.API.Skins = {}
+
+function Baganator.API.Skins.GetAllFrames()
+  return addonTable.allFrames
+end
+
+function Baganator.API.Skins.RegisterListener(callback)
+  if not addonTable.skinListeners then
+    addonTable.skinListeners = {}
+  end
+  table.insert(addonTable.skinListeners, callback)
+end

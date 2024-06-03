@@ -13,6 +13,10 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
+  Baganator.Skins.AddFrame("ButtonFrame", self)
+  Baganator.Skins.AddFrame("Button", self.DepositButton)
+  Baganator.Skins.AddFrame("Button", self.WithdrawButton)
+
   self.tabsPool = Baganator.ItemViewCommon.GetSideTabButtonPool(self)
   self.currentTab = 1
   self.otherTabsCache = {}
@@ -289,6 +293,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   self.lastTabData = {}
   for index, tabInfo in ipairs(guildData.bank) do
     local tabButton = self.tabsPool:Acquire()
+    Baganator.Skins.AddFrame("SideTabButton", tabButton)
     tabButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     tabButton.Icon:SetTexture(tabInfo.iconTexture)
     tabButton:SetScript("OnClick", function(_, button)
@@ -609,6 +614,9 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
   self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
 
+  Baganator.Skins.AddFrame("ButtonFrame", self)
+  Baganator.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
+
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsVisible() then
@@ -744,7 +752,13 @@ function BaganatorGuildTabTextTemplateMixin:OnLoad()
   self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
 
+  Baganator.Skins.AddFrame("ButtonFrame", self)
+  Baganator.Skins.AddFrame("Button", self.SaveButton)
+
   self.TextContainer:GetEditBox():SetMaxLetters(500)
+
+  Baganator.Skins.AddFrame("EditBox", self.TextContainer:GetEditBox())
+  Baganator.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then

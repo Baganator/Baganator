@@ -19,6 +19,8 @@ Core\Utilities.lua
 Core\SlashCmd.lua
 Core\Main.lua
 
+Skins.lua
+
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
 Sorting\Order.lua
