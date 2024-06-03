@@ -46,7 +46,9 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         end
       end
     end)
+    self.LiveLayouts[1].buttons[1].isBag = true
     self.CachedLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
+    self.CachedLayouts[1].buttons[1].isBag = true
   end
 
   local prioritisedSearches = CopyTable(searches)
@@ -96,10 +98,12 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         info.key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
         table.insert(everything, info)
       else
+        if bagID ~= Enum.BagIndex.Keyring then
+          emptySlotCount = emptySlotCount + 1
+        end
         if not emptySlots[bagID] then
           emptySlots[bagID] = slotIndex
         end
-        emptySlotCount = emptySlotCount + 1
       end
     end
   end
@@ -189,13 +193,17 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       print("category group show", debugprofilestop() - start2)
     end
 
-    if emptySlotCount ~= 0 then
+    if emptySlotCount ~= 0 or Baganator.Constants.IsEra then
       local bagID, slotID = next(emptySlots)
       table.insert(layoutsShown, activeLayouts[1])
       activeLayouts[1].buttons[1]:GetParent():SetID(bagID)
       activeLayouts[1].buttons[1]:SetID(slotID)
       activeLayouts[1].buttons[1].emptySlots = emptySlots
       SetItemButtonCount(activeLayouts[1].buttons[1], emptySlotCount)
+      if emptySlotCount == 0 then -- Keyring
+        activeLayouts[1].buttons[1].Count:SetText(CreateTextureMarkup(Baganator.Constants.ContainerKeyToInfo.keyring.value, 16, 16, 12, 16, 0, 1, 0, 1))
+        activeLayouts[1].buttons[1].Count:Show()
+      end
       local label = self.labelsPool:Acquire()
       label.categorySearch = nil
       label:SetText(BAGANATOR_L_EMPTY)
