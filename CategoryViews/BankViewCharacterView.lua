@@ -34,6 +34,13 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
+    elseif settingName == Baganator.Config.Options.SORT_METHOD then
+      for _, layout in ipairs(self.Layouts) do
+        layout:InformSettingChanged(settingName)
+      end
+      if self:IsVisible() then
+        self:UpdateForCharacter(self.lastCharacter, self.isLive)
+      end
     elseif settingName == Baganator.Config.Options.JUNK_PLUGIN then
       self.MultiSearch:ResetCaches()
       if self:IsVisible() then
