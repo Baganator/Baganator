@@ -85,6 +85,13 @@ function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
   end
 end
 
+-- Clear new item status on items that are hidden as part of a stack
+function BaganatorCategoryViewBackpackViewMixin:OnHide(eventName)
+  for _, item in ipairs(self.notShown) do
+    C_NewItems.RemoveNewItem(item.bagID, item.slotID)
+  end
+end
+
 function BaganatorCategoryViewBackpackViewMixin:ApplySearch(text)
   if not self:IsVisible() then
     return

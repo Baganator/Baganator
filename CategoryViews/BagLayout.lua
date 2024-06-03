@@ -127,6 +127,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       bagWidth = Baganator.Config.Get(Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH)
     end
 
+    self.notShown = {}
     local anyResults = false
     for searchTerm, details in pairs(results) do
       local entries = {}
@@ -137,6 +138,8 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
           local groupingKey = item.key
           if entriesByKey[groupingKey] then
             entriesByKey[groupingKey].itemCount = entriesByKey[groupingKey].itemCount + item.itemCount
+            -- Used to clear new item status on items that are hidden in a stack
+            table.insert(self.notShown, {bagID = item.bagID, slotID = item.slotID})
           else
             entriesByKey[groupingKey] = item
             table.insert(entries, item)
