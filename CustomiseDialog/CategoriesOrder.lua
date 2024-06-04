@@ -149,6 +149,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   resetOrderToDefault:SetScript("OnClick", function()
     Baganator.CallbackRegistry:TriggerEvent("ResetCategoryOrder")
   end)
+  Baganator.Skins.AddFrame("Button", resetOrderToDefault)
 
   local revertOrderChanges = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
   revertOrderChanges:SetPoint("BOTTOMLEFT", resetOrderToDefault, "BOTTOMRIGHT", 15, 0)
@@ -157,6 +158,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   revertOrderChanges:SetScript("OnClick", function()
     Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, previousOrder)
   end)
+  Baganator.Skins.AddFrame("Button", revertOrderChanges)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == Baganator.Config.Options.CATEGORY_DISPLAY_ORDER then

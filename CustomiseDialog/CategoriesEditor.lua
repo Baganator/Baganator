@@ -115,6 +115,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     end
   end)
+  Baganator.Skins.AddFrame("Button", self.ApplyChangesButton)
 
   self.DeleteButton:SetScript("OnClick", function()
     if self.currentCategory == "" then
@@ -135,6 +136,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 
     self:OnHide()
   end)
+  Baganator.Skins.AddFrame("Button", self.DeleteButton)
+  Baganator.Skins.AddFrame("EditBox", self.CategoryName)
+  Baganator.Skins.AddFrame("EditBox", self.CategorySearch)
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()

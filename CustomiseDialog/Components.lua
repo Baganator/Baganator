@@ -2,6 +2,7 @@ BaganatorCheckBoxMixin = {}
 function BaganatorCheckBoxMixin:Init(details)
   Mixin(self, details)
   self.CheckBox:SetText(self.text)
+  Baganator.Skins.AddFrame("CheckBox", self.CheckBox)
   if self.root then
     self.CheckBox:SetScript("OnClick", function()
       Baganator.Config.Get(self.root)[self.option] = self.CheckBox:GetChecked()
@@ -38,6 +39,7 @@ function BaganatorSliderMixin:Init(details)
   self.Slider.Low:SetText(self.lowText)
   self.Slider:SetValueStep(1)
   self.Slider:SetObeyStepOnDrag(true)
+  Baganator.Skins.AddFrame("Slider", self.Slider)
 
   self.Slider:SetScript("OnValueChanged", function()
     local value = self.Slider:GetValue()
@@ -344,6 +346,7 @@ end
 
 function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
   local container = CreateFrame("Frame", nil, parent, "InsetFrameTemplate")
+  Baganator.Skins.AddFrame("InsetFrame", container)
   container.ScrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")
   container.ScrollBox:SetPoint("TOPLEFT", 1, -2)
   container.ScrollBox:SetPoint("BOTTOMRIGHT", -1, 1)
@@ -371,6 +374,7 @@ function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
   container.ScrollBar:SetPoint("BOTTOMRIGHT")
   ScrollUtil.InitScrollBoxListWithScrollBar(container.ScrollBox, container.ScrollBar, scrollView)
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(container.ScrollBox, container.ScrollBar)
+  Baganator.Skins.AddFrame("TrimScrollBar", container.ScrollBar)
 
   return container
 end
@@ -407,6 +411,7 @@ function BaganatorPrioritySliderMixin:Init(details)
     self.callback(value)
     self.Slider.Text:SetText(self.valuePattern:format(VALUE_TO_PRIORITY_TEXT[value]))
   end)
+  Baganator.Skins.AddFrame("Slider", self.Slider)
 end
 
 function BaganatorPrioritySliderMixin:SetValue(value)

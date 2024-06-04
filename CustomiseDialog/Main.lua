@@ -433,6 +433,8 @@ local function GetTab(parent)
     parent:SetIndex(tabIndex)
   end)
 
+  Baganator.Skins.AddFrame("TabButton", tab)
+
   return tab
 end
 
@@ -455,6 +457,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
+  Baganator.Skins.AddFrame("ButtonFrame", self)
 
   self:SetTitle(BAGANATOR_L_CUSTOMISE_BAGANATOR)
 
@@ -515,6 +518,7 @@ function BaganatorCustomiseDialogMixin:SetupWindow()
   frame.ResetFramePositions:SetScript("OnClick", function()
     Baganator.CallbackRegistry:TriggerEvent("ResetFramePositions")
   end)
+  Baganator.Skins.AddFrame("Button", frame.ResetFramePositions)
 
   do
     local junkPlugins = {
@@ -589,6 +593,7 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
     itemButton = CreateFrame("Button", nil, frame, "ItemButtonTemplate")
   end
   itemButton:SetPoint("CENTER", cornersEditor, 0, -15)
+  Baganator.Skins.AddFrame("ItemButton", itemButton)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
