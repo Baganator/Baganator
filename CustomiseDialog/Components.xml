@@ -23,7 +23,12 @@
     <HighlightTexture parentKey="HighlightTexture" atlas="charactercreate-customize-dropdownbox-open" alphaMode="ADD" alpha="0"/>
     <PushedTextOffset x="2" y="-2"/>
     <Frames>
-      <Frame parentKey="Popout" inherits="SelectionPopoutTemplate" hidden="true" frameStrata="HIGH">
+      <Frame parentKey="Popout" inherits="SelectionPopoutTemplate" hidden="true">
+        <Scripts>
+          <OnShow inherit="prepend">
+            self:SetFrameStrata("DIALOG")
+          </OnShow>
+        </Scripts>
         <Anchors>
           <Anchor point="TOPRIGHT" relativePoint="BOTTOMRIGHT" x="3" y="11"/>
         </Anchors>
