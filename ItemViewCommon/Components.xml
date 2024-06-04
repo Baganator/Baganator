@@ -59,7 +59,7 @@
     <Size x="32" y="22"/>
     <Scripts>
       <OnLoad>
-        Baganator.Skins.AddFrame("Button", self)
+        Baganator.Skins.AddFrame("IconButton", self)
       </OnLoad>
       <OnEnter>
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
