@@ -389,9 +389,9 @@ function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
 end
 
 function Baganator.CustomiseDialog.GetMouseOverInContainer(c)
-  for _, f in c.ScrollBox:EnumerateFrames() do
+  for index, f in c.ScrollBox:EnumerateFrames() do
     if f:IsMouseOver() then
-      return f, f:IsMouseOver(0, f:GetHeight()/2)
+      return f, f:IsMouseOver(0, f:GetHeight()/2), index
     end
   end
 end

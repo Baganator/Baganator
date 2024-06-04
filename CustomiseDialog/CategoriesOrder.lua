@@ -76,11 +76,10 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   local draggable
   draggable = Baganator.CustomiseDialog.GetDraggable(function()
     if categoryOrder:IsMouseOver() then
-      local f, isTop = Baganator.CustomiseDialog.GetMouseOverInContainer(categoryOrder)
+      local f, isTop, index = Baganator.CustomiseDialog.GetMouseOverInContainer(categoryOrder)
       if not f then
         table.insert(categoryOrder.elements, draggable.value)
       else
-        local index = tIndexOf(categoryOrder.elements, f.value)
         if isTop then
           table.insert(categoryOrder.elements, index, draggable.value)
         else
