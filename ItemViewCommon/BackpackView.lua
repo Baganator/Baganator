@@ -378,7 +378,7 @@ end
 function BaganatorItemViewCommonBackpackViewMixin:RunAction(action, getItems)
   action((getItems and getItems()) or self:GetSearchMatches(), self.liveCharacter, function(status, modes)
     self.transferManager:Apply(status, modes or {"BagCacheUpdate"}, function()
-      self:RunAction(action)
+      self:RunAction(action, getItems)
     end, function() end)
   end)
 end
