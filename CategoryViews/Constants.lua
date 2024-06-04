@@ -138,12 +138,12 @@ elseif Baganator.Constants.IsClassic then -- Cata
     {
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower(),
+      search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
     },
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower(),
+      search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
     },
     {
       key = "gem",
