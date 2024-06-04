@@ -5,6 +5,21 @@ function Baganator.SingleViews.GetCollapsingBagSectionsPool(self)
     button:SetPoint("CENTER")
     button.icon:SetSize(17, 17)
     button.icon:SetPoint("CENTER")
+    button:HookScript("OnEnter", function(self)
+      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", button.bagIDsToUse)
+
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+      GameTooltip:SetText(self.tooltipHeader)
+      if self.tooltipText then
+        GameTooltip:AddLine(self.tooltipText, 1, 1, 1, true)
+      end
+      GameTooltip:Show()
+    end)
+    button:HookScript("OnLeave", function(self)
+      Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+
+      GameTooltip:Hide()
+    end)
     return {
       live = CreateFrame("Frame", nil, self, "BaganatorLiveBagLayoutTemplate"),
       cached = CreateFrame("Frame", nil, self, "BaganatorCachedBagLayoutTemplate"),

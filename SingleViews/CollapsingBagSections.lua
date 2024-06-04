@@ -119,21 +119,7 @@ function Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
     layouts.indexesToUse[index] = true
     layouts.bagIDsToUse[bagIDs[index]] = true
   end
-  layouts.button:SetScript("OnEnter", function(self)
-    Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", layouts.bagIDsToUse)
-
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:SetText(self.tooltipHeader)
-    if self.tooltipText then
-      GameTooltip:AddLine(self.tooltipText, 1, 1, 1, true)
-    end
-    GameTooltip:Show()
-  end)
-  layouts.button:SetScript("OnLeave", function(self)
-    Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
-
-    GameTooltip:Hide()
-  end)
+  layouts.button.bagIDsToUse = layouts.bagIDsToUse
 end
 
 function Baganator.SingleViews.ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
