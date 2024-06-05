@@ -309,8 +309,11 @@ BaganatorBagSlotsContainerMixin = {}
 
 function BaganatorBagSlotsContainerMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
-    if updatedBags.containerBags == nil or updatedBags.containerBags[self.mode] then
+    if updatedBags.containerBags == nil or updatedBags.containerBags[self.mode] or next(updatedBags[self.mode]) then
       self.updateBagSlotsNeeded = true
+      if self:IsVisible() then
+        self:Update(character, self.isLive)
+      end
     end
   end)
   self.updateBagSlotsNeeded = true
@@ -392,6 +395,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
 end
 
 function BaganatorBagSlotsContainerMixin:Update(character, isLive)
+  self.isLive = isLive
   if self.updateBagSlotsNeeded then
     self.updateBagSlotsNeeded = false
     for _, bb in ipairs(self.liveBagSlots) do
