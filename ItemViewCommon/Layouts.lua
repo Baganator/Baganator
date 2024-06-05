@@ -1033,7 +1033,7 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
 
   for slotIndex = 1, tabSize do
     local b = self.buttonPool:Acquire()
-    Baganator.Skins.AddFrame("ItemButton", button)
+    Baganator.Skins.AddFrame("ItemButton", b)
     b:SetID(slotIndex)
     b:SetParent(self.indexFrame)
     b:Show()

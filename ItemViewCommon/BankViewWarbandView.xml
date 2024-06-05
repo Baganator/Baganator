@@ -15,7 +15,7 @@
         </Anchors>
       </Button>
 
-      <CheckButton parentKey="IncludeReagentsCheckbox" inherits="BankPanelCheckBoxTemplate" text="BAGANATOR_L_INCLUDE_REAGENTS" mixin="BankPanelIncludeReagentsCheckBoxMixin" parentArray="LiveButtons">
+      <CheckButton parentKey="IncludeReagentsCheckbox" inherits="BankPanelCheckboxTemplate" text="BAGANATOR_L_INCLUDE_REAGENTS" mixin="BankPanelIncludeReagentsCheckboxMixin" parentArray="LiveButtons">
         <Size x="23" y="22"/>
         <KeyValues>
           <KeyValue key="fontObject" value="GameFontHighlight" type="global"/>
