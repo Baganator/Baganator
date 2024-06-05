@@ -506,7 +506,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   end
 
   active:ClearAllPoints()
-  active:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -50)
+  active:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -53)
 
   self.SearchWidget:SetShown(active:IsShown())
   self.NotVisitedText:SetShown(not active:IsShown() and not guildData.details.visited)
@@ -524,7 +524,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   end
   self:SetSize(
     active:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset,
-    height + 60 + detailsHeight
+    height + 63 + detailsHeight
   )
 
   self.ButtonVisibility:Update()
