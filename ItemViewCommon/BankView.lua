@@ -10,7 +10,7 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self)
+  Baganator.Skins.AddFrame("ButtonFrame", self, {"bank"})
 
   self.tabPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
 

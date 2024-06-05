@@ -13,7 +13,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self)
+  Baganator.Skins.AddFrame("ButtonFrame", self, {"guild"})
   Baganator.Skins.AddFrame("Button", self.DepositButton)
   Baganator.Skins.AddFrame("Button", self.WithdrawButton)
 

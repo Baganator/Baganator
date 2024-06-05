@@ -25,7 +25,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self)
+  Baganator.Skins.AddFrame("ButtonFrame", self, {"backpack"})
 
   self.liveItemButtonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
 
