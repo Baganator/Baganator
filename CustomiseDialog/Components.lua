@@ -1,4 +1,15 @@
 BaganatorCheckBoxMixin = {}
+function BaganatorCheckBoxMixin:OnLoad()
+  if DoesTemplateExist("SettingsCheckBoxTemplate") then
+    self.CheckBox = CreateFrame("CheckButton", nil, self, "SettingsCheckBoxTemplate")
+  else
+    self.CheckBox = CreateFrame("CheckButton", nil, self, "SettingsCheckboxTemplate")
+  end
+  self.CheckBox:SetPoint("TOPRIGHT", -130, -5)
+  self.CheckBox:SetText(" ")
+  self.CheckBox:SetNormalFontObject(GameFontHighlight)
+  self.CheckBox:GetFontString():SetPoint("RIGHT", self.CheckBox, "LEFT", -10, 0)
+end
 function BaganatorCheckBoxMixin:Init(details)
   Mixin(self, details)
   self.CheckBox:SetText(self.text)

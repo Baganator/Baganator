@@ -380,7 +380,7 @@ local function GenerateFrames(options, parent)
             for index = 1, #option.entries do
               table.insert(entries, {option.entries[index], option.values[index]})
             end
-            MenuUtil.RegisterRadioMenu(dropdown, function(value)
+            MenuUtil.CreateRadioMenu(dropdown, function(value)
               return Baganator.Config.Get(option.option) == value
             end, function(value)
               Baganator.Config.Set(option.option, value)

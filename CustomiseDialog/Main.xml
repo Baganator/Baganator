@@ -1,19 +1,8 @@
 <Ui>
   <Frame name="BaganatorCheckBoxTemplate" virtual="true" mixin="BaganatorCheckBoxMixin">
     <Size y="40"/>
-    <Frames>
-      <CheckButton parentKey="CheckBox" inherits="SettingsCheckBoxTemplate">
-        <Anchors>
-          <Anchor point="TOPRIGHT" x="-130" y="-5"/>
-        </Anchors>
-        <ButtonText inherits="GameFontHighlight" justifyH="LEFT">
-          <Anchors>
-            <Anchor point="RIGHT" relativePoint="LEFT" x="-10"/>
-          </Anchors>
-        </ButtonText>
-      </CheckButton>
-    </Frames>
     <Scripts>
+      <OnLoad method="OnLoad"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
       <OnMouseUp method="OnMouseUp"/>
