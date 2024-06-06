@@ -433,7 +433,7 @@ local function GetTab(parent)
     parent:SetIndex(tabIndex)
   end)
 
-  Baganator.Skins.AddFrame("TabButton", tab)
+  Baganator.Skins.AddFrame("TopTabButton", tab)
 
   return tab
 end
