@@ -39,14 +39,15 @@ function BaganatorRetailBagSlotButtonMixin:Init()
   local itemID = GetInventoryItemID("player", inventorySlot)
   if itemID ~= nil then
     if C_Item.IsItemDataCachedByID(itemID) then
-      self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
+      -- Passs in itemID so that any skins hooking SetItemButtonQuality can use
+      -- it - as a bonus if Blizzard adds any widgets to bags this will add them
+      self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot), itemID)
     else
       Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
-        self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
+        self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot), itemID)
       end)
     end
   end
-  self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot))
   self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(self:GetID()))
 end
 
