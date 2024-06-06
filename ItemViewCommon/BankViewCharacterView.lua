@@ -52,6 +52,9 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
     end
   end)
 
+  Baganator.Skins.AddFrame("Button", self.DepositIntoReagentsBankButton)
+  Baganator.Skins.AddFrame("Button", self.BuyReagentBankButton)
+
   self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset, 0)
 end
 
