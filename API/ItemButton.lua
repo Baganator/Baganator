@@ -273,7 +273,7 @@ Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
       CIMI_SetIcon(self, CIMI_Update, CanIMogIt:GetTooltipText(details.itemLink))
     end
     CIMI_SetIcon(CIMIOverlay, CIMI_Update, CanIMogIt:GetTooltipText(details.itemLink))
-    return (C_Transmog and C_Transmog.CanTransmogItem(details.itemLink)) or (C_ToyBox and C_ToyBox.GetToyInfo(details.itemID)) or IsPet(details.itemID) or (C_MountJournal and C_MountJournal.GetMountFromItem(details.itemID))
+    return IsEquipment(details.itemLink) or (C_ToyBox and C_ToyBox.GetToyInfo(details.itemID)) or IsPet(details.itemID) or (C_MountJournal and C_MountJournal.GetMountFromItem(details.itemID))
   end,
   function(itemButton)
     CIMI_AddToFrame(itemButton, function() end)
