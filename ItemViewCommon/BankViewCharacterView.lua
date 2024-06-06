@@ -26,7 +26,9 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
     if self.lastCharacter == character then
       self.lastCharacter = self.liveCharacter
     end
-    self:GetParent():UpdateView()
+    if self:IsVisible() then
+      self:GetParent():UpdateView()
+    end
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
