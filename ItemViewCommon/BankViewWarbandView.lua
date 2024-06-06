@@ -261,8 +261,9 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   local warbandBank = Syndicator.API.GetWarband(1).bank[self.currentTab]
 
-  self.BankMissingHint:SetShown(not warbandBank or #warbandBank.slots == 0)
-  self:GetParent().SearchWidget:SetShown(not warbandBank or #warbandBank.slots ~= 0)
+  local isWarbandData = warbandBank and #warbandBank.slots ~= 0
+  self.BankMissingHint:SetShown(not isWarbandData)
+  self:GetParent().SearchWidget:SetShown(isWarbandData)
 
   if self.BankMissingHint:IsShown() then
     if self.isLive then
@@ -277,6 +278,8 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   for _, button in ipairs(self.LiveButtons) do
     button:SetShown(self.isLive)
   end
+  self.DepositItemsButton:SetShown(isWarbandData and self.isLive)
+  self.IncludeReagentsCheckbox:SetShown(isWarbandData and self.isLive)
 
   self:UpdateCurrencies()
 

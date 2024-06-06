@@ -46,8 +46,15 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
 
+  -- Ensure bank missing hint has enough space to display
+  local minWidth = 0
+  if self.BankMissingHint:IsShown() then
+    minWidth = self.BankMissingHint:GetWidth()
+    bankHeight = bankHeight + 30
+  end
+
   self:SetSize(
-    activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2,
+    math.max(minWidth, activeBank:GetWidth()) + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2,
     bankHeight + 55
   )
 
