@@ -71,6 +71,8 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
+
+  self.notShown = {}
 end
 
 function BaganatorCategoryViewBackpackViewMixin:NotifyBagUpdate(updatedBags)
