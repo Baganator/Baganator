@@ -51,11 +51,13 @@ if Baganator.Constants.IsEra then
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
+      searchPriority = 80,
     },
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
+      searchPriority = 80,
     },
     {
       key = "quiver",
@@ -139,11 +141,13 @@ elseif Baganator.Constants.IsClassic then -- Cata
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
+      searchPriority = 80,
     },
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
+      searchPriority = 80,
     },
     {
       key = "gem",
@@ -243,11 +247,13 @@ else -- retail
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
+      searchPriority = 80,
     },
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
       search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
+      searchPriority = 80,
     },
     {
       key = "gem",
