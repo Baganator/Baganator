@@ -32,13 +32,12 @@ if Baganator.Constants.IsEra then
     {
       key = "consumable",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Consumable),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower(),
-      searchPriority = 100,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower() .. "_",
     },
     {
       key = "reagent",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
-      search = SYNDICATOR_L_KEYWORD_REAGENT,
+      search = "_" .. SYNDICATOR_L_KEYWORD_REAGENT .. "_",
       searchPriority = 100,
     },
     {
@@ -50,52 +49,49 @@ if Baganator.Constants.IsEra then
     {
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
-      searchPriority = 80,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "_",
     },
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
-      searchPriority = 80,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "_",
     },
     {
       key = "quiver",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Quiver),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Quiver),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Quiver) .. "_",
     },
     {
       key = "container",
       name = BAGANATOR_L_CATEGORY_BAG,
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Container):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Container):lower() .. "_",
     },
     {
       key = "tradegoods",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods):lower() .. "_",
     },
     {
       key = "recipe",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Recipe),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Recipe):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Recipe):lower() .. "_",
     },
     {
       key = "questitem",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Questitem),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Questitem):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Questitem):lower() .. "_",
     },
     {
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
       -- Only era uses the KEYRING keyword as only era has a keyring bag
-      search = SYNDICATOR_L_KEYWORD_KEYRING or C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      search = "_" .. SYNDICATOR_L_KEYWORD_KEYRING or C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower() .. "_",
       searchPriority = 165,
     },
     {
       key = "miscellaneous",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous):lower(),
-      searchPriority = 50,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous):lower() .. "_",
     },
     {
       key = "other",
@@ -106,7 +102,7 @@ if Baganator.Constants.IsEra then
     {
       key = "junk",
       name = BAGANATOR_L_CATEGORY_JUNK,
-      search = SYNDICATOR_L_KEYWORD_JUNK,
+      search = "_" .. SYNDICATOR_L_KEYWORD_JUNK .. "_",
       searchPriority = 180,
     },
   }
@@ -122,13 +118,12 @@ elseif Baganator.Constants.IsClassic then -- Cata
     {
       key = "consumable",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Consumable),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower(),
-      searchPriority = 160,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower() .. "_",
     },
     {
       key = "reagent",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
-      search = SYNDICATOR_L_KEYWORD_REAGENT,
+      search = "_" .. SYNDICATOR_L_KEYWORD_REAGENT .. "_",
       searchPriority = 100,
     },
     {
@@ -140,56 +135,53 @@ elseif Baganator.Constants.IsClassic then -- Cata
     {
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
-      searchPriority = 80,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "_",
     },
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
-      searchPriority = 80,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "_",
     },
     {
       key = "gem",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Gem),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Gem):lower(),
-      searchPriority = 140,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Gem):lower() .. "_",
     },
     {
       key = "container",
       name = BAGANATOR_L_CATEGORY_BAG,
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Container):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Container):lower() .. "_",
     },
     {
       key = "tradegoods",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods):lower() .. "_",
     },
     {
       key = "recipe",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Recipe),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Recipe):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Recipe):lower() .. "_",
     },
     {
       key = "questitem",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Questitem),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Questitem):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Questitem):lower() .. "_",
     },
     {
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower() .. "_",
       searchPriority = 165,
     },
     {
       key = "miscellaneous",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous):lower() .. "&~" .. SYNDICATOR_L_KEYWORD_BATTLE_PET,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous):lower() .. "&~" .. SYNDICATOR_L_KEYWORD_BATTLE_PET .. "_",
     },
     {
       key = "battlepet",
       name = TOOLTIP_BATTLE_PET,
-      search = SYNDICATOR_L_KEYWORD_BATTLE_PET,
+      search = "_" .. SYNDICATOR_L_KEYWORD_BATTLE_PET .. "_",
       searchPriority = 140,
     },
     {
@@ -201,7 +193,7 @@ elseif Baganator.Constants.IsClassic then -- Cata
     {
       key = "junk",
       name = BAGANATOR_L_CATEGORY_JUNK,
-      search = SYNDICATOR_L_KEYWORD_JUNK,
+      search = "_" .. SYNDICATOR_L_KEYWORD_JUNK .. "_",
       searchPriority = 180,
     },
   }
@@ -216,25 +208,24 @@ else -- retail
     {
       key = "potion",
       name = BAGANATOR_L_CATEGORY_POTION,
-      search = SYNDICATOR_L_KEYWORD_POTION .. "&" .. C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower(),
-      searchPriority = 164,
+      search = "_" .. SYNDICATOR_L_KEYWORD_POTION .. "_",
+      searchPriority = 160,
     },
     {
       key = "food",
       name = BAGANATOR_L_CATEGORY_FOOD,
-      search = SYNDICATOR_L_KEYWORD_FOOD,
-      searchPriority = 162,
+      search = "_" .. SYNDICATOR_L_KEYWORD_FOOD .. "_",
+      searchPriority = 160,
     },
     {
       key = "consumable",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Consumable),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower(),
-      searchPriority = 160,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Consumable):lower() .. "_",
     },
     {
       key = "reagent",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
-      search = SYNDICATOR_L_KEYWORD_REAGENT,
+      search = "_" .. SYNDICATOR_L_KEYWORD_REAGENT .. "_",
       searchPriority = 100,
     },
     {
@@ -246,73 +237,69 @@ else -- retail
     {
       key = "weapon",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
-      searchPriority = 80,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Weapon):lower() .. "_",
     },
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
-      searchPriority = 80,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "_",
     },
     {
       key = "gem",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Gem),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Gem):lower(),
-      searchPriority = 140,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Gem):lower() .. "_",
     },
     {
       key = "itemenhancement",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.ItemEnhancement),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.ItemEnhancement):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.ItemEnhancement):lower() .. "_",
     },
     {
       key = "container",
       name = BAGANATOR_L_CATEGORY_BAG,
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Container):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Container):lower() .. "_",
     },
     {
       key = "tradegoods",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Tradegoods):lower() .. "_",
     },
     {
       key = "profession",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Profession),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Profession):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Profession):lower() .. "_",
     },
     {
       key = "recipe",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Recipe),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Recipe):lower(),
-      searchPriority = 180,
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Recipe):lower() .. "_",
     },
     {
       key = "questitem",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Questitem),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Questitem):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Questitem):lower() .. "_",
     },
     {
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower() .. "_",
       searchPriority = 165,
     },
     {
       key = "miscellaneous",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous),
-      search = C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous):lower(),
+      search = "_" .. C_Item.GetItemClassInfo(Enum.ItemClass.Miscellaneous):lower() .. "_",
     },
     {
       key = "battlepet",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Battlepet),
-      search = SYNDICATOR_L_KEYWORD_BATTLE_PET,
+      search = "_" .. SYNDICATOR_L_KEYWORD_BATTLE_PET .. "_",
       searchPriority = 140,
     },
     {
       key = "toy",
       name = TOY,
-      search = TOY:lower(),
+      search = "_" .. TOY:lower() .. "_",
       searchPriority = 170,
     },
     {
@@ -324,7 +311,7 @@ else -- retail
     {
       key = "junk",
       name = BAGANATOR_L_CATEGORY_JUNK,
-      search = SYNDICATOR_L_KEYWORD_JUNK,
+      search = "_" .. SYNDICATOR_L_KEYWORD_JUNK .. "_",
       searchPriority = 180,
     },
   }
