@@ -402,7 +402,7 @@ end
 function Baganator.CustomiseDialog.GetMouseOverInContainer(c)
   for index, f in c.ScrollBox:EnumerateFrames() do
     if f:IsMouseOver() then
-      return f, f:IsMouseOver(0, f:GetHeight()/2), index
+      return f, f:IsMouseOver(0, f:GetHeight()/2), f.indexValue
     end
   end
 end
