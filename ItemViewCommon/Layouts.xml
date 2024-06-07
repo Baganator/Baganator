@@ -95,6 +95,7 @@
           self.Divider:SetPoint("TOPLEFT", 0, 6)
           self.Divider:SetPoint("TOPRIGHT", 0, 6)
         end
+        Baganator.Skins.AddFrame("Divider", self.Divider)
       </OnLoad>
     </Scripts>
     <Layers>

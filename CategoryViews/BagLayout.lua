@@ -189,6 +189,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       activeLayouts[details.index + activeLayoutOffset]:ShowGroup(details.all, math.min(bagWidth, #details.all), categoryKeys[searchTerm])
       layoutsShown[details.index] = activeLayouts[details.index + activeLayoutOffset]
       local label = self.labelsPool:Acquire()
+      Baganator.Skins.AddFrame("CategoryLabel", label)
       label:SetText(searchLabels[details.index])
       label.categorySearch = searches[details.index]
       activeLabels[details.index] = label
