@@ -118,12 +118,15 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   }
 
   self.AllButtons = {}
-  tAppendAll(self.AllButtons, self.FixedButtons)
+  tAppendAll(self.AllButtons, self.AllFixedButtons)
   tAppendAll(self.AllButtons, self.LiveButtons)
 
   Baganator.Skins.AddFrame("ButtonFrame", self, {"guild"})
   Baganator.Skins.AddFrame("Button", self.DepositButton)
   Baganator.Skins.AddFrame("Button", self.WithdrawButton)
+  Baganator.Skins.AddFrame("IconButton", self.ToggleTabTextButton)
+  Baganator.Skins.AddFrame("IconButton", self.ToggleTabLogsButton)
+  Baganator.Skins.AddFrame("IconButton", self.ToggleGoldLogsButton)
 end
 
 function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)

@@ -83,7 +83,7 @@
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" file="Interface\WorldMap\Gear_64">
+        <Texture parentKey="Icon" file="Interface\WorldMap\Gear_64">
           <TexCoords left="0.5" top="0" right="0" bottom="0.5"/>
           <Size x="19" y="19"/>
           <Anchors>
@@ -110,7 +110,7 @@
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" atlas="Banker">
+        <Texture parentKey="Icon" atlas="Banker">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -127,7 +127,7 @@
     <Scripts>
       <OnLoad>
         if Baganator.Constants.IsRetail then
-          self.icon:SetSize(20, 20)
+          self.Icon:SetSize(20, 20)
         end
         -- Disable sort button during combat as sorting is partially blocked by Blizzard
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
@@ -141,7 +141,7 @@
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" atlas="bags-button-autosort-up">
+        <Texture parentKey="Icon" atlas="bags-button-autosort-up">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -169,7 +169,7 @@
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" atlas="orderhalltalents-choice-arrow-large">
+        <Texture parentKey="Icon" atlas="orderhalltalents-choice-arrow-large">
           <Size x="17" y="13"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -190,7 +190,7 @@
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" atlas="socialqueuing-icon-group">
+        <Texture parentKey="Icon" atlas="socialqueuing-icon-group">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -211,7 +211,7 @@
     </KeyValues>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" atlas="VignetteLoot">
+        <Texture parentKey="Icon" atlas="VignetteLoot">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -222,7 +222,7 @@
     <Scripts>
       <OnLoad>
         if Baganator.Constants.IsClassic then
-          self.icon:SetSize(22, 22)
+          self.Icon:SetSize(22, 22)
         end
         Baganator.Skins.AddFrame("IconButton", self, {"bank"})
       </OnLoad>
@@ -240,13 +240,13 @@
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" atlas="communities-guildbanner-background">
+        <Texture parentKey="Icon" atlas="communities-guildbanner-background">
           <Size x="12" y="12"/>
           <Anchors>
             <Anchor point="CENTER"/>
           </Anchors>
         </Texture>
-        <Texture parentKey="icon2" atlas="communities-guildbanner-border">
+        <Texture parentKey="Icon2" atlas="communities-guildbanner-border">
           <Size x="12" y="12"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -268,7 +268,7 @@
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture parentKey="icon" atlas="worldquest-icon-dungeon">
+        <Texture parentKey="Icon" atlas="worldquest-icon-dungeon">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>

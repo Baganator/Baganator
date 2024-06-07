@@ -9,7 +9,7 @@
       <OnDragStop method="OnDragStop"/>
     </Scripts>
     <Frames>
-      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="FixedButtons">
+      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
         </Anchors>
@@ -27,7 +27,7 @@
           </OnEnter>
         </Scripts>
       </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="FixedButtons">
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
         <KeyValues>
           <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_GUILD_VIEW_TOOLTIP_TEXT" type="global"/>
         </KeyValues>
@@ -50,7 +50,7 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture atlas="poi-workorders">
+            <Texture parentKey="Icon" atlas="poi-workorders">
               <Size x="17" y="17"/>
               <Anchors>
                 <Anchor point="CENTER"/>
@@ -74,7 +74,7 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture atlas="GarrMission_CurrencyIcon-Salvage">
+            <Texture parentKey="Icon" atlas="GarrMission_CurrencyIcon-Salvage">
               <Size x="17" y="17"/>
               <Anchors>
                 <Anchor point="CENTER"/>
@@ -98,7 +98,7 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture atlas="Auctioneer">
+            <Texture parentKey="Icon" atlas="Auctioneer">
               <Size x="17" y="17"/>
               <Anchors>
                 <Anchor point="CENTER"/>
