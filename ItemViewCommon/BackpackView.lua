@@ -25,8 +25,6 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self, {"backpack"})
-
   self.liveItemButtonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
 
   -- DO NOT REMOVE
@@ -124,6 +122,8 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset + 2, 0)
 
   self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset, 0)
+
+  Baganator.Skins.AddFrame("ButtonFrame", self, {"backpack"})
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnShow()

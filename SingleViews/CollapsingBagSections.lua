@@ -89,6 +89,7 @@ function Baganator.SingleViews.AllocateCollapsingSections(character, section, ba
     Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
     layouts.live:SetPool(itemButtonPool)
     layouts.button:Hide()
+    Baganator.Skins.AddFrame("IconButton", layouts.button, {"collapsingBagSection"})
 
     layouts.button:SetScript("OnClick", function()
       local state = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)

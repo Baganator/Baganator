@@ -13,10 +13,6 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self, {"guild"})
-  Baganator.Skins.AddFrame("Button", self.DepositButton)
-  Baganator.Skins.AddFrame("Button", self.WithdrawButton)
-
   self.tabsPool = Baganator.ItemViewCommon.GetSideTabButtonPool(self)
   self.currentTab = 1
   self.otherTabsCache = {}
@@ -124,6 +120,10 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   self.AllButtons = {}
   tAppendAll(self.AllButtons, self.FixedButtons)
   tAppendAll(self.AllButtons, self.LiveButtons)
+
+  Baganator.Skins.AddFrame("ButtonFrame", self, {"guild"})
+  Baganator.Skins.AddFrame("Button", self.DepositButton)
+  Baganator.Skins.AddFrame("Button", self.WithdrawButton)
 end
 
 function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)

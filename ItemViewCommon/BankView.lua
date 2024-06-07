@@ -10,8 +10,6 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self, {"bank"})
-
   self.tabPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
 
   self.Tabs = {}
@@ -46,6 +44,8 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
     hideOnEscape = 1,
   }
   self:UpdateTransferButton()
+
+  Baganator.Skins.AddFrame("ButtonFrame", self, {"bank"})
 end
 
 function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)

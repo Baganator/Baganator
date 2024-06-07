@@ -58,9 +58,6 @@
   <Button name="BaganatorTooltipIconButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
     <Size x="32" y="22"/>
     <Scripts>
-      <OnLoad>
-        Baganator.Skins.AddFrame("IconButton", self)
-      </OnLoad>
       <OnEnter>
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetText(self.tooltipHeader)
@@ -79,9 +76,14 @@
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_CUSTOMISE_BAGANATOR" type="global"/>
     </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"customise"})
+      </OnLoad>
+    </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture file="Interface\WorldMap\Gear_64">
+        <Texture parentKey="icon" file="Interface\WorldMap\Gear_64">
           <TexCoords left="0.5" top="0" right="0" bottom="0.5"/>
           <Size x="19" y="19"/>
           <Anchors>
@@ -101,9 +103,14 @@
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_BAG_SLOTS" type="global"/>
     </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"bagSlots"})
+      </OnLoad>
+    </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture atlas="Banker">
+        <Texture parentKey="icon" atlas="Banker">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -118,7 +125,7 @@
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_SORT" type="global"/>
     </KeyValues>
     <Scripts>
-      <OnLoad inherit="prepend">
+      <OnLoad>
         if Baganator.Constants.IsRetail then
           self.icon:SetSize(20, 20)
         end
@@ -126,6 +133,7 @@
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
         self:SetEnabled(not InCombatLockdown())
+        Baganator.Skins.AddFrame("IconButton", self, {"sort"})
       </OnLoad>
       <OnEvent>
         self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
@@ -148,11 +156,12 @@
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_TRANSFER" type="global"/>
     </KeyValues>
     <Scripts>
-      <OnLoad inherit="prepend">
+      <OnLoad>
         -- Disable transfer button during combat as sorting is partially blocked by Blizzard
         self:RegisterEvent("PLAYER_REGEN_ENABLED")
         self:RegisterEvent("PLAYER_REGEN_DISABLED")
         self:SetEnabled(not InCombatLockdown())
+        Baganator.Skins.AddFrame("IconButton", self, {"transfer"})
       </OnLoad>
       <OnEvent>
         self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
@@ -174,9 +183,14 @@
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_ALL_CHARACTERS" type="global"/>
     </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"allCharacters"})
+      </OnLoad>
+    </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture atlas="socialqueuing-icon-group">
+        <Texture parentKey="icon" atlas="socialqueuing-icon-group">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -206,10 +220,11 @@
       </Layer>
     </Layers>
     <Scripts>
-      <OnLoad inherit="prepend">
+      <OnLoad>
         if Baganator.Constants.IsClassic then
           self.icon:SetSize(22, 22)
         end
+        Baganator.Skins.AddFrame("IconButton", self, {"bank"})
       </OnLoad>
     </Scripts>
   </Button>
@@ -218,15 +233,20 @@
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_GUILD_BANK" type="global"/>
     </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"guildBank"})
+      </OnLoad>
+    </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture atlas="communities-guildbanner-background">
+        <Texture parentKey="icon" atlas="communities-guildbanner-background">
           <Size x="12" y="12"/>
           <Anchors>
             <Anchor point="CENTER"/>
           </Anchors>
         </Texture>
-        <Texture atlas="communities-guildbanner-border">
+        <Texture parentKey="icon2" atlas="communities-guildbanner-border">
           <Size x="12" y="12"/>
           <Anchors>
             <Anchor point="CENTER"/>
@@ -241,9 +261,14 @@
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_SEARCH_EVERYWHERE" type="global"/>
       <KeyValue key="tooltipText" value="BAGANATOR_L_SEARCH_EVERYWHERE_TOOLTIP_TEXT_2" type="global"/>
     </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"searchEverywhere"})
+      </OnLoad>
+    </Scripts>
     <Layers>
       <Layer level="ARTWORK">
-        <Texture atlas="worldquest-icon-dungeon">
+        <Texture parentKey="icon" atlas="worldquest-icon-dungeon">
           <Size x="17" y="17"/>
           <Anchors>
             <Anchor point="CENTER"/>
