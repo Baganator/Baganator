@@ -210,6 +210,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         activeLayouts[1].buttons[1].Count:Show()
       end
       local label = self.labelsPool:Acquire()
+      Baganator.Skins.AddFrame("CategoryLabel", label)
       label.categorySearch = nil
       label:SetText(BAGANATOR_L_EMPTY)
       table.insert(activeLabels, label)
