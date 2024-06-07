@@ -104,12 +104,12 @@ end
 
 function Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
   if info.visual.type == "file" then
-    layouts.button.icon:SetSize(17, 17)
-    layouts.button.icon:SetTexture(info.visual.value)
+    layouts.button.Icon:SetSize(17, 17)
+    layouts.button.Icon:SetTexture(info.visual.value)
   else
     local size = info.visual.size or 64
-    layouts.button.icon:SetSize(size/64 * 17, size/64 * 17)
-    layouts.button.icon:SetAtlas(info.visual.value)
+    layouts.button.Icon:SetSize(size/64 * 17, size/64 * 17)
+    layouts.button.Icon:SetAtlas(info.visual.value)
   end
   layouts.key = info.key
   layouts.button.tooltipHeader = info.visual.tooltipHeader or ""
