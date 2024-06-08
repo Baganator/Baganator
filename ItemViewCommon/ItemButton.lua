@@ -209,6 +209,7 @@ local function ApplyItemDetailSettings(button)
       if setup and not button.cornerPlugins[plugin] then
         button.cornerPlugins[plugin] = setup.onInit(button)
         if button.cornerPlugins[plugin] then
+          Baganator.Skins.AddFrame("CornerWidget", button.cornerPlugins[plugin], {plugin})
           button.cornerPlugins[plugin]:Hide()
         end
       end
