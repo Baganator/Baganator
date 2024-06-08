@@ -462,6 +462,8 @@ function Baganator.CustomiseDialog.GetDropdown(parent)
     dropdown.OnEntryClicked = function() end
     return dropdown
   else
-    return CreateFrame("EventButton", nil, parent, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
+    local dropDown = CreateFrame("EventButton", nil, parent, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
+    Baganator.Skins.AddFrame("DropDownWithPopout", dropDown)
+    return dropDown
   end
 end
