@@ -95,6 +95,7 @@ function BaganatorDropDownMixin:Init(details)
   self.OnEntrySelected = function(_, option)
     Baganator.Config.Set(self.option, option.value)
   end
+  Baganator.Skins.AddFrame("DropDownWithPopout", self)
 end
 
 function BaganatorDropDownMixin:SetValue(value)
