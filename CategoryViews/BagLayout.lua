@@ -198,7 +198,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       print("category group show", debugprofilestop() - start2)
     end
 
-    if emptySlotCount ~= 0 or Baganator.Constants.IsEra then
+    if emptySlotCount ~= 0 or (Baganator.Constants.IsEra and next(emptySlots) ~= nil) then
       local bagID, slotID = next(emptySlots)
       table.insert(layoutsShown, activeLayouts[1])
       activeLayouts[1].buttons[1]:GetParent():SetID(bagID)
