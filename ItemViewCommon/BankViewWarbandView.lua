@@ -50,6 +50,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
       end
     end
   end)
+
+  Baganator.Skins.AddFrame("Button", self.DepositItemsButton)
+  Baganator.Skins.AddFrame("Button", self.WithdrawMoneyButton)
+  Baganator.Skins.AddFrame("Button", self.DepositMoneyButton)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
