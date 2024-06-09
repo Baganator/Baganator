@@ -164,7 +164,7 @@ end
 -- ignoreCount: Number of slots to ignore in the regular bag (start or end
 -- depending on ignoreAtEnd)
 function Baganator.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
-  if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
+  if InCombatLockdown() or UnitIsDead("player") then -- Sorting breaks during combat due to Blizzard restrictions
     return Baganator.Constants.SortStatus.Complete
   end
 
