@@ -74,7 +74,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
         self:UpdateForGuild(self.lastGuild, self.isLive)
       end
     elseif settingName == Baganator.Config.Options.SHOW_TRANSFER_BUTTON then
-      self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
+      self:UpdateTransferButton()
     elseif settingName == Baganator.Config.Options.GUILD_BANK_SORT_METHOD then
       self:UpdateForGuild(self.lastGuild, self.isLive)
     end
@@ -233,6 +233,18 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
         self.Tabs[index].Icon:SetAlpha(0.2)
       end
     end)
+  end
+end
+
+function BaganatorSingleViewGuildViewMixin:UpdateTransferButton()
+  self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
+
+  if self.isLive then
+    if self.SortButton:IsShown() then
+      self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
+    else
+      self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
+    end
   end
 end
 
@@ -487,14 +499,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
       and Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
     )
 
-    if self.SortButton:IsShown() then
-      self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
-    else
-      self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
-    end
-
     self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
-    self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
     self.LogsFrame:ApplyTabTitle()
   else -- not live
     self.wouldShowTransferButton = false
@@ -503,10 +508,10 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 5)
     detailsHeight = 10
 
-    self.TransferButton:Hide()
     self.SortButton:Hide()
     self.LogsFrame:Hide()
   end
+  self:UpdateTransferButton()
 
   active:ClearAllPoints()
   active:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -53)
