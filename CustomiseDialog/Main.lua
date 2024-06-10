@@ -342,7 +342,7 @@ local CATEGORIES_OPTIONS = {
   },
   {
     type = "header",
-    text = BAGANATOR_L_EDIT,
+    text = BAGANATOR_L_MODIFY_CATEGORIES,
     level = 2,
   },
 }

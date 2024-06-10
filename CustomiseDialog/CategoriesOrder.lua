@@ -44,7 +44,7 @@ local function SetCategoriesToDropDown(dropDown)
   for source, category in pairs(Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)) do
     table.insert(options, {label = category.name .. " (*)", value = category.name})
   end
-  table.sort(options, function(a, b) return a.label < b.label end)
+  table.sort(options, function(a, b) return a.label:lower() < b.label:lower() end)
 
   local entries, values = {BAGANATOR_L_CATEGORY_DIVIDER}, {Baganator.CategoryViews.Constants.DividerName}
 

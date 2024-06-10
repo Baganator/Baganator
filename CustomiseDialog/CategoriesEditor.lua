@@ -42,7 +42,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.DropDown = Baganator.CustomiseDialog.GetDropdown(self)
   self.DropDown:SetPoint("TOPRIGHT")
   self.DropDown:SetWidth(200)
-  self.DropDown:SetText(BAGANATOR_L_CHOOSE_TO_EDIT)
+  self.DropDown:SetText(BAGANATOR_L_CREATE_OR_EDIT)
   self.currentCategory = ""
   SetCategoriesToDropDown(self.DropDown)
 
@@ -112,6 +112,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 
     if oldIndex then
       displayOrder[oldIndex] = self.currentCategory
+      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+    else
+      table.insert(displayOrder, 1, self.currentCategory)
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     end
   end)
