@@ -145,7 +145,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()
-  self.DropDown:SetText(BAGANATOR_L_CHOOSE_TO_EDIT)
+  self.DropDown:SetText(BAGANATOR_L_CREATE_OR_EDIT)
   self.CategoryName:SetText("")
   self.CategorySearch:SetText("")
   self.PrioritySlider:SetValue(0)
