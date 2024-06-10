@@ -200,13 +200,18 @@ function(itemButton)
   end
 end)
 
-if Baganator.Constants.IsRetail then
+local function RegisterExpansionWidget()
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION, "expansion", function(Expansion, details)
     details.expacID = details.expacID or Syndicator.Search.GetExpansion(details)
     local xpacText = expansionIDToText[details.expacID]
     Expansion:SetText(xpacText or "")
     return xpacText ~= nil
   end, textInit)
+end
+if Baganator.Constants.IsRetail then
+  RegisterExpansionWidget()
+elseif Syndicator.Search.GetExpansion then
+  Baganator.Utilities.OnAddonLoaded("ItemVersion", RegisterExpansionWidget)
 end
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_EQUIPMENT_SET, "equipment_set", function(EquipmentSet, details)
