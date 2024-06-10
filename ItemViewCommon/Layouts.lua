@@ -777,7 +777,8 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     newButton:SetParent(self.indexFrames[cacheData.bagID] or self)
     newButton:SetID(cacheData.slotID or 0)
     if not cacheData.isDummy then
-      SetItemButtonDesaturated(newButton, (cacheData.itemID ~= nil and C_Item.IsLocked({bagID = cacheData.bagID, slotIndex = cacheData.slotID})) or (newButton.BGR and newButton.BGR.persistIconGrey))
+      local itemLocation = {bagID = cacheData.bagID, slotIndex = cacheData.slotID}
+      SetItemButtonDesaturated(newButton, (C_Item.DoesItemExist(itemLocation) and C_Item.IsLocked(itemLocation)) or (newButton.BGR and newButton.BGR.persistIconGrey))
     end
     table.insert(self.buttons, newButton)
   end
