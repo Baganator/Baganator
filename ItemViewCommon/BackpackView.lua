@@ -347,6 +347,10 @@ function BaganatorItemViewCommonBackpackViewMixin:CombineStacks(callback)
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:UpdateTransferButton()
+  if not self:IsVisible() then
+    return
+  end
+
   self.TransferButton:ClearAllPoints()
   if self.SortButton:IsShown() then
     self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")

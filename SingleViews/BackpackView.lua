@@ -82,9 +82,6 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
 
   self:AllocateBags(character)
 
-  self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
-  self:UpdateTransferButton()
-
   self.BagLive:SetShown(isLive)
   self.BagCached:SetShown(not isLive)
 
