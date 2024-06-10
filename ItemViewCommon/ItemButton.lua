@@ -9,6 +9,27 @@ local equipmentSetBorder = CreateColor(198/255, 166/255, 0/255)
 local itemCallbacks = {}
 local iconSettings = {}
 
+local QueueWidget
+do
+  local widgetsQueued = {}
+  local RetryWidgets = CreateFrame("Frame")
+  QueueWidget = function(callback)
+    table.insert(widgetsQueued, callback)
+    if RetryWidgets:GetScript("OnUpdate") == nil then
+      RetryWidgets:SetScript("OnUpdate", function()
+        local queue = widgetsQueued
+        widgetsQueued = {}
+        for _, callback in ipairs(queue) do
+          callback()
+        end
+        if #widgetsQueued == 0 then
+          RetryWidgets:SetScript("OnUpdate", nil)
+        end
+      end)
+    end
+  end
+end
+
 local registered = false
 function Baganator.ItemButtonUtil.UpdateSettings()
   if not registered  then
@@ -60,7 +81,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
       end
     end
     if #callbacks > 0 then
-      table.insert(itemCallbacks, function(itemButton)
+      local function Callback(itemButton)
         local index = 1
         local toShow = nil
         while index <= #callbacks do
@@ -68,14 +89,23 @@ function Baganator.ItemButtonUtil.UpdateSettings()
           local widget = itemButton.cornerPlugins[plugins[index]]
           if widget then
             local show = cb(widget, itemButton.BGR)
-            if show then
+            if show == nil then
+              local BGR = itemButton.BGR
+              QueueWidget(function()
+                if itemButton.BGR == BGR then
+                  Callback(itemButton)
+                end
+              end)
+              break
+            elseif show then
               widget:Show()
               break
             end
           end
           index = index + 1
         end
-      end)
+      end
+      table.insert(itemCallbacks, Callback)
     end
   end
 end

@@ -191,7 +191,7 @@ end, function(itemButton)
 end)
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_JUNK, "junk", function(JunkIcon, details)
-  return details.isJunk
+  return details.isJunk == true
 end,
 function(itemButton)
   if itemButton.JunkIcon then
@@ -220,7 +220,7 @@ end)
 
 Baganator.Utilities.OnAddonLoaded("Pawn", function()
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_PAWN, "pawn", function(Arrow, details)
-    return HasItemLevel(details) and PawnShouldItemLinkHaveUpgradeArrowUnbudgeted(details.itemLink)
+    return HasItemLevel(details) and PawnShouldItemLinkHaveUpgradeArrow(details.itemLink)
   end, function(itemButton)
     local Arrow = itemButton:CreateTexture(nil, "OVERLAY")
     Arrow:SetTexture("Interface\\AddOns\\Pawn\\Textures\\UpgradeArrow")
