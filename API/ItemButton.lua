@@ -72,6 +72,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", functio
     end
     return true
   end
+  return false
 end, textInit)
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOE, "boe", function(BindingText, details)
@@ -86,6 +87,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOE, "boe", function(BindingText,
     end
     return true
   end
+  return false
 end, textInit)
 
 local function IsBindOnAccount(details)
@@ -116,6 +118,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOA, "boa", function(BindingText,
     end
     return true
   end
+  return false
 end, textInit)
 
 local function IsBindOnUse(details)
@@ -149,6 +152,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOU, "bou", function(BindingText,
     end
     return true
   end
+  return false
 end, textInit)
 
 local TRADEABLE_LOOT_PATTERN = BIND_TRADE_TIME_REMAINING:gsub("([^%w])", "%%%1"):gsub("%%%%s", ".*")
@@ -181,6 +185,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_TRADEABLE_LOOT, "tl", function(Bi
     end
     return true
   end
+  return false
 end, textInit)
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_QUANTITY, "quantity", function(_, details)
