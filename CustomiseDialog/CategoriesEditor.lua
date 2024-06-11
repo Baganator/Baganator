@@ -92,7 +92,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
     local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
     local oldAddedItems, oldIndex
-    if self.currentCategory ~= "" then
+    local isNew = self.currentCategory == ""
+    if not isNew then
       oldIndex = tIndexOf(displayOrder, self.currentCategory)
       oldAddedItems = customCategories[self.currentCategory].addedItems
       customCategories[self.currentCategory] = nil
@@ -113,7 +114,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     if oldIndex then
       displayOrder[oldIndex] = self.currentCategory
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
-    else
+    elseif isNew then
       table.insert(displayOrder, 1, self.currentCategory)
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     end
