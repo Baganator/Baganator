@@ -12,6 +12,7 @@
       <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
         <Anchors>
           <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
+          <Anchor point="TOP" y="-1"/>
         </Anchors>
       </Button>
       <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true" parentArray="AllFixedButtons">
@@ -46,7 +47,7 @@
           <KeyValue key="tooltipText" value="BAGANATOR_L_GUILD_TAB_INFO_TOOLTIP_TEXT" type="global"/>
         </KeyValues>
         <Anchors>
-          <Anchor point="TOPLEFT" x="5"/>
+          <Anchor point="TOPLEFT" x="5" y="-1"/>
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">

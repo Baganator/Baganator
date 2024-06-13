@@ -119,7 +119,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   end
 
   self.TopButtons[1]:ClearAllPoints()
-  self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset + 2, 0)
+  self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset + 2, -1)
 
   self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset, 0)
 
