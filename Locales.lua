@@ -246,6 +246,8 @@ L["ADD_TO_CATEGORY"] = "Add to category"
 L["REMOVE_FROM_CATEGORY"] = "Remove from category"
 L["EMPTY"] = "Empty"
 L["SORT_METHOD_RESET_FOR_CATEGORIES"] = "Sort method reset to be used with categories"
+L["HIDE_CATEGORY"] = "Hide category"
+L["SHOW_CATEGORY"] = "Show category"
 
 L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
 L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."

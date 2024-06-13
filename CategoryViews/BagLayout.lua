@@ -127,6 +127,8 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       bagWidth = Baganator.Config.Get(Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH)
     end
 
+    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
+
     self.notShown = {}
     local anyResults = false
     for searchTerm, details in pairs(results) do
@@ -157,6 +159,12 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         end
       end
       results[searchTerm] = {all = entries, index = tIndexOf(searches, searchTerm)}
+      if hidden[categoryKeys[searchTerm]] then
+        for _, entry in ipairs(results[searchTerm].all) do
+          table.insert(self.notShown, entry)
+        end
+        results[searchTerm].all = {}
+      end
     end
 
     local activeLayouts
@@ -186,7 +194,8 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
     local layoutsShown, activeLabels = {}, {}
     for searchTerm, details in pairs(results) do
-      activeLayouts[details.index + activeLayoutOffset]:ShowGroup(details.all, math.min(bagWidth, #details.all), categoryKeys[searchTerm])
+      local source = categoryKeys[searchTerm]
+      activeLayouts[details.index + activeLayoutOffset]:ShowGroup(details.all, math.min(bagWidth, #details.all), source)
       layoutsShown[details.index] = activeLayouts[details.index + activeLayoutOffset]
       local label = self.labelsPool:Acquire()
       Baganator.Skins.AddFrame("CategoryLabel", label)

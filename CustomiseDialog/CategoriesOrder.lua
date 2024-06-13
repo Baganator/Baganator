@@ -1,16 +1,23 @@
 local function PopulateCategoryOrder(container)
+  local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
+
   local elements = {}
   local dataProviderElements = {}
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
   for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
+    local color = WHITE_FONT_COLOR
+    if hidden[source] then
+      color = GRAY_FONT_COLOR
+    end
+
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
-      table.insert(dataProviderElements, {value = source, label = category.name})
+      table.insert(dataProviderElements, {value = source, label = color:WrapTextInColorCode(category.name)})
       table.insert(elements, source)
     end
     category = customCategories[source]
     if category then
-      table.insert(dataProviderElements, {value = source, label = category.name .. " (*)"})
+      table.insert(dataProviderElements, {value = source, label = color:WrapTextInColorCode(category.name .. " (*)")})
       table.insert(elements, source)
     end
     if source == Baganator.CategoryViews.Constants.DividerName then
@@ -23,13 +30,54 @@ local function PopulateCategoryOrder(container)
   container.ScrollBox:SetDataProvider(CreateDataProvider(dataProviderElements), true)
 end
 
-local function GetCategoryContainer(parent, callback)
+local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
   local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, function(value, label, index)
     if value ~= Baganator.CategoryViews.Constants.ProtectedCategory then
-      callback(value, label, index)
+      pickupCallback(value, label, index)
+    end
+  end, { {
+    tooltipText = BAGANATOR_L_TOGGLE_VISIBILITY,
+    callback = visibilityCallback,
+    atlas = "socialqueuing-icon-eye",
+  } }, Baganator.CategoryViews.Constants.ProtectedCategory)
+  container:SetSize(250, 280)
+
+  container.ScrollBox:GetView():RegisterCallback("OnAcquiredFrame", function(_, frame)
+    if frame.visibilityButton then
+      return
+    end
+
+    local button = CreateFrame("Button", nil, frame)
+    button:SetSize(16, 16)
+    button:SetNormalAtlas("socialqueuing-icon-eye")
+    button:SetScript("OnEnter", function()
+      GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+      if Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[frame.value] then
+        GameTooltip:SetText(BAGANATOR_L_SHOW_CATEGORY)
+      else
+        GameTooltip:SetText(BAGANATOR_L_HIDE_CATEGORY)
+      end
+      GameTooltip:Show()
+      button:SetAlpha(0.5)
+    end)
+    button:SetScript("OnLeave", function()
+      GameTooltip:Hide()
+      button:SetAlpha(1)
+    end)
+    button:SetScript("OnClick", function(self)
+      visibilityCallback(self:GetParent().value, self:GetParent():GetText(), self:GetParent().indexValue)
+    end)
+    button:SetPoint("RIGHT", -30, 1)
+
+    frame.visibilityButton = button
+  end)
+  container.ScrollBox:GetView():RegisterCallback("OnInitializedFrame", function(_, frame)
+    if Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[frame.value] then
+      frame.visibilityButton:GetNormalTexture():SetVertexColor(1, 0, 0)
+    else
+      frame.visibilityButton:GetNormalTexture():SetVertexColor(1, 1, 1)
     end
   end)
-  container:SetSize(250, 280)
 
   PopulateCategoryOrder(container)
 
@@ -120,7 +168,13 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
     draggable.value = value
   end
 
-  categoryOrder = GetCategoryContainer(container, Pickup)
+  local function ToggleVisibility(value, label, index)
+    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
+    hidden[value] = not hidden[value]
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
+  end
+
+  categoryOrder = GetCategoryContainer(container, Pickup, ToggleVisibility)
   categoryOrder:SetPoint("TOPLEFT", 0, 10)
 
   local description = container:CreateFontString(nil, "ARTWORK", "GameFontNormal")
@@ -160,7 +214,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   Baganator.Skins.AddFrame("Button", revertOrderChanges)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == Baganator.Config.Options.CATEGORY_DISPLAY_ORDER then
+    if settingName == Baganator.Config.Options.CATEGORY_DISPLAY_ORDER or settingName == Baganator.Config.Options.CATEGORY_HIDDEN then
       PopulateCategoryOrder(categoryOrder)
     elseif settingName == Baganator.Config.Options.CUSTOM_CATEGORIES then
       SetCategoriesToDropDown(dropDown)
