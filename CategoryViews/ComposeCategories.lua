@@ -53,10 +53,23 @@ function AllTheThingsCategories:IsCollected(attData)
   elseif attData.speciesID then
     return C_PetJournal.GetNumCollectedInfo(attData.speciesID) > 0
   elseif attData.recipeID then
-    return C_PetJournal.GetNumCollectedInfo(attData.speciesID) > 0
+    return IsPlayerSpell(attData.recipeID)
   end
   return false
 end
+
+local expansionIDToText = {
+  [0] = "Cla",
+  [1] = "TBC",
+  [2] = "Wra",
+  [3] = "Cat",
+  [4] = "MoP",
+  [5] = "Dra",
+  [6] = "Leg",
+  [7] = "BfA",
+  [8] = "SL",
+  [9] = "DF",
+}
 
 function AllTheThingsCategories:OnUpdate()
   if not next(self.itemIDsToProcess) then
@@ -68,7 +81,7 @@ function AllTheThingsCategories:OnUpdate()
   for itemID in pairs(self.itemIDsToProcess) do
     self.itemIDsToProcess[itemID] = nil
     local ATTSearch = ATTC.SearchForField("itemIDAsCost", itemID)
-    if #ATTSearch == 1 then
+    if #ATTSearch > 0 and #ATTSearch < 50 then
       local entry = ATTSearch[1]
       local resultItemID
       if entry.itemID then
@@ -89,18 +102,31 @@ function AllTheThingsCategories:OnUpdate()
               if not self:IsCollected(attData) then
                 local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
                 local header = ATTC.GetDeepestRelativeValue(itemSpecific, "headerID")
+                local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
+                if patch then
+                  patch = math.floor(patch / 10000)
+                else
+                  patch = 1
+                end
+                local expansionText = expansionIDToText[patch - 1]
                 if header then
                   local text = ATTC.L.HEADER_NAMES[header]
                   if not text then
                     text = itemName
+                  else
+                    text = expansionText .. ": " .. text
                   end
                   local headerData = ATTC.SearchForField("headerID", header)[1]
                   local oldIndex = tIndexOf(self.searchLabels, text)
                   if oldIndex then
-                    self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. itemName:lower()
+                    self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patch .. "&" .. itemName:lower()
                   else
                     table.insert(self.searchLabels, text)
-                    table.insert(self.searches, itemName:lower())
+                    if patch ~= 1 then
+                      table.insert(self.searches, patch .. "." .. "&" .. itemName:lower())
+                    else
+                      table.insert(self.searches, itemName:lower())
+                    end
                   end
                 end
               end
