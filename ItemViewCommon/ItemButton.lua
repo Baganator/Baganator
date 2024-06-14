@@ -169,7 +169,12 @@ function Baganator.ItemButtonUtil.WidgetsOnly(self)
 
   self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
 
+  local info = self.BGR
+
   local function OnCached()
+    if self.BGR ~= info then -- Check that the item button hasn't been refreshed
+      return
+    end
     for _, callback in ipairs(itemCallbacks) do
       callback(self)
     end
