@@ -10,6 +10,10 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
   local composed = Baganator.CategoryViews.ComposeCategories()
 
+  if composed == nil then
+    return
+  end
+
   local searches, searchLabels, priority, customSearches, customCategories, attachedItems, categoryKeys =
     composed.searches, composed.searchLabels, composed.priorities, composed.customSearches, composed.customCategories, composed.attachedItems, composed.categoryKeys
 
@@ -107,8 +111,6 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       end
     end
   end
-
-  Baganator.CategoryViews.GenerateATTCategories(everything)
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("prearrange", debugprofilestop() - s1)
@@ -245,5 +247,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     callback(maxWidth, maxHeight)
 
     Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+
+    Baganator.CategoryViews.GenerateATTCategories(everything)
   end)
 end

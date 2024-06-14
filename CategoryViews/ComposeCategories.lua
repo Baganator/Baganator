@@ -37,6 +37,34 @@ AllTheThingsCategories.itemIDsToProcess = {}
 AllTheThingsCategories.noName = {}
 AllTheThingsCategories.searches = {}
 AllTheThingsCategories.searchLabels = {}
+function AllTheThingsCategories:IsCollected(attData)
+  if attData.g then
+    for _, entry in ipairs(attData.g) do
+      if not self:IsCollected(entry) then
+        return false
+      end
+    end
+  elseif attData.mountID then
+    return (select(11, C_MountJournal.GetMountInfoByID(attData.mountID)))
+  elseif attData.sourceID then -- transmog
+    return C_TransmogCollection.GetSourceInfo(attData.sourceID).isCollected
+  elseif attData.toyID then
+    return PlayerHasToy(attData.toyID)
+  elseif attData.speciesID then
+    return C_PetJournal.GetNumCollectedInfo(attData.speciesID) > 0
+  elseif attData.recipeID then
+    return C_PetJournal.GetNumCollectedInfo(attData.speciesID) > 0
+  end
+  return false
+end
+
+local function GetHeaderID(attData)
+  while attData and attData.headerID == nil do
+    attData = attData.parent
+  end
+  return attData and attData.headerID
+end
+
 function AllTheThingsCategories:OnUpdate()
   if not next(self.itemIDsToProcess) then
     self:SetScript("OnUpdate", nil)
@@ -64,10 +92,30 @@ function AllTheThingsCategories:OnUpdate()
           if C_Item.DoesItemExistByID(resultItemID) then
             local itemName = C_Item.GetItemNameByID(resultItemID)
             if itemName ~= nil then
-              table.insert(self.searchLabels, itemName)
-              table.insert(self.searches, itemName:lower())
+              local attData = ATTC.SearchForField("itemID", resultItemID)[1]
+              if not self:IsCollected(attData) then
+                local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
+                local header = GetHeaderID(itemSpecific)
+                if header then
+                  local text = ATTC.L.HEADER_NAMES[header]
+                  if not itemSpecific.parent.g and not attData.parent.g then
+                    text = itemName
+                  end
+                  local oldIndex = tIndexOf(self.searchLabels, text)
+                  if oldIndex then
+                    self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. itemName:lower()
+                  else
+                    table.insert(self.searchLabels, text)
+                    table.insert(self.searches, itemName:lower())
+                  end
+                else
+                  print("drop", itemName)
+                end
+              else
+                print("got", itemName)
+              end
             else
-              self.itemIDsToProcess[itemID] = true
+              self.itemIDsToProcess[itemID] = nil
             end
           else
             self.noName[resultItemID] = true
@@ -85,6 +133,7 @@ function AllTheThingsCategories:AddItems(items)
   local anyNew = false
   for _, item in ipairs(items) do
     if not self.seenItemIDs[item.itemID] then
+      print("reprocess")
       self.seenItemIDs[item.itemID] = true
       self.itemIDsToProcess[item.itemID] = true
     end
