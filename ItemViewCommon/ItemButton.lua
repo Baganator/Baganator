@@ -84,6 +84,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
       local function Callback(itemButton)
         local index = 1
         local toShow = nil
+        local queued = false
         while index <= #callbacks do
           local cb = callbacks[index]
           local widget = itemButton.cornerPlugins[plugins[index]]
@@ -91,12 +92,14 @@ function Baganator.ItemButtonUtil.UpdateSettings()
             local show = cb(widget, itemButton.BGR)
             if show == nil then
               local BGR = itemButton.BGR
-              QueueWidget(function()
-                if itemButton.BGR == BGR then
-                  Callback(itemButton)
-                end
-              end)
-              break
+              if not queued then
+                QueueWidget(function()
+                  if itemButton.BGR == BGR then
+                    Callback(itemButton)
+                  end
+                end)
+                queued = true
+              end
             elseif show then
               widget:Show()
               break
