@@ -241,13 +241,13 @@
     <Layers>
       <Layer level="ARTWORK">
         <Texture parentKey="Icon" atlas="communities-guildbanner-background">
-          <Size x="12" y="12"/>
+          <Size x="13" y="13"/>
           <Anchors>
             <Anchor point="CENTER"/>
           </Anchors>
         </Texture>
         <Texture parentKey="Icon2" atlas="communities-guildbanner-border">
-          <Size x="12" y="12"/>
+          <Size x="13" y="13"/>
           <Anchors>
             <Anchor point="CENTER"/>
           </Anchors>
