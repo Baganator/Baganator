@@ -98,7 +98,6 @@ function AllTheThingsCategories:OnUpdate()
       local itemName = C_Item.GetItemNameByID(resultItemID)
       if itemName ~= nil then
         local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
-        local header = ATTC.GetDeepestRelativeValue(itemSpecific, "headerID") or ATTC.GetDeepestRelativeValue(entry, "headerID")
         local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
         if patch then
           patch = math.floor(patch / 10000)
@@ -106,8 +105,9 @@ function AllTheThingsCategories:OnUpdate()
           patch = 1
         end
         local expansionText = expansionIDToText[patch - 1]
-        if header then
-          local text = ATTC.L.HEADER_NAMES[header]
+        local mapID = ATTC.GetRelativeValue(entry, "mapID") or ATTC.GetRelativeValue(itemSpecific, "mapID")
+        if mapID ~= nil then
+          local text = ATTC.GetMapName(mapID) 
           if not text then
             text = itemName
           else
