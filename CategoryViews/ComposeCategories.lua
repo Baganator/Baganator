@@ -105,7 +105,7 @@ function AllTheThingsCategories:OnUpdate()
           patch = 1
         end
         local expansionText = expansionIDToText[patch - 1]
-        local mapID = ATTC.GetRelativeValue(entry, "mapID") or ATTC.GetRelativeValue(itemSpecific, "mapID")
+        local mapID = ATTC.GetRelativeValue(itemSpecific, "mapID") or ATTC.GetRelativeValue(entry, "mapID")
         if mapID ~= nil then
           local text = ATTC.GetMapName(mapID) 
           if not text then
