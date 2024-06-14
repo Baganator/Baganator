@@ -40,22 +40,23 @@ AllTheThingsCategories.searchLabels = {}
 function AllTheThingsCategories:IsCollected(attData)
   if attData.g then
     for _, entry in ipairs(attData.g) do
-      if not self:IsCollected(entry) then
-        return false
+      local collected, result = self:IsCollected(entry)
+      if not collected then
+        return collected, result
       end
     end
   elseif attData.mountID then
-    return (select(11, C_MountJournal.GetMountInfoByID(attData.mountID)))
+    return (select(11, C_MountJournal.GetMountInfoByID(attData.mountID))), attData
   elseif attData.sourceID then -- transmog
-    return C_TransmogCollection.GetSourceInfo(attData.sourceID).isCollected
+    return C_TransmogCollection.GetSourceInfo(attData.sourceID).isCollected, attData
   elseif attData.toyID then
-    return PlayerHasToy(attData.toyID)
+    return PlayerHasToy(attData.toyID), attData
   elseif attData.speciesID then
-    return C_PetJournal.GetNumCollectedInfo(attData.speciesID) > 0
+    return C_PetJournal.GetNumCollectedInfo(attData.speciesID) > 0, attData
   elseif attData.recipeID then
-    return IsPlayerSpell(attData.recipeID)
+    return IsPlayerSpell(attData.recipeID), attData
   end
-  return false
+  return false, attData
 end
 
 local expansionIDToText = {
@@ -81,8 +82,18 @@ function AllTheThingsCategories:OnUpdate()
   for itemID in pairs(self.itemIDsToProcess) do
     self.itemIDsToProcess[itemID] = nil
     local ATTSearch = ATTC.SearchForField("itemIDAsCost", itemID)
-    if #ATTSearch > 0 and #ATTSearch < 50 then
-      local entry = ATTSearch[1]
+    local entry
+    local count = 0
+    for _, attData in ipairs(ATTSearch) do
+      if attData.itemID then
+        count = count + 1
+      end
+      local collected, result = self:IsCollected(attData)
+      if not collected then
+        entry = result
+      end
+    end
+    if entry then
       local resultItemID
       if entry.itemID then
         resultItemID = entry.itemID
@@ -93,49 +104,47 @@ function AllTheThingsCategories:OnUpdate()
           end
         end
       end
-      if resultItemID then
-        if not self.noName[resultItemID] then
-          if C_Item.DoesItemExistByID(resultItemID) then
-            local itemName = C_Item.GetItemNameByID(resultItemID)
-            if itemName ~= nil then
-              local attData = ATTC.SearchForField("itemID", resultItemID)[1]
-              if not self:IsCollected(attData) then
-                local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
-                local header = ATTC.GetDeepestRelativeValue(itemSpecific, "headerID")
-                local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
-                if patch then
-                  patch = math.floor(patch / 10000)
-                else
-                  patch = 1
-                end
-                local expansionText = expansionIDToText[patch - 1]
-                if header then
-                  local text = ATTC.L.HEADER_NAMES[header]
-                  if not text then
-                    text = itemName
-                  else
-                    text = expansionText .. ": " .. text
-                  end
-                  local headerData = ATTC.SearchForField("headerID", header)[1]
-                  local oldIndex = tIndexOf(self.searchLabels, text)
-                  local patchSearch = patch .. ".&"
-                  if patch == 1 then
-                    patchSearch = ""
-                  end
-                  if oldIndex then
-                    self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. itemName:lower()
-                  else
-                    table.insert(self.searchLabels, text)
-                    table.insert(self.searches, patchSearch .. itemName:lower())
-                  end
-                end
+      if resultItemID and not self.noName[resultItemID] then
+        if C_Item.DoesItemExistByID(resultItemID) then
+          local itemName = C_Item.GetItemNameByID(resultItemID)
+          if itemName ~= nil then
+          print(itemName)
+            local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
+            local header = ATTC.GetDeepestRelativeValue(itemSpecific, "headerID") or ATTC.GetDeepestRelativeValue(entry, "headerID")
+            local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
+            if patch then
+              patch = math.floor(patch / 10000)
+            else
+              patch = 1
+            end
+            local expansionText = expansionIDToText[patch - 1]
+            if header then
+              local text = ATTC.L.HEADER_NAMES[header]
+              if not text then
+                text = itemName
+              else
+                text = expansionText .. ": " .. text
+              end
+              local headerData = ATTC.SearchForField("headerID", header)[1]
+              local oldIndex = tIndexOf(self.searchLabels, text)
+              local patchSearch = patch .. ".&"
+              if patch == 1 then
+                patchSearch = ""
+              end
+              if oldIndex then
+                self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. itemName:lower()
+              else
+                table.insert(self.searchLabels, text)
+                table.insert(self.searches, patchSearch .. itemName:lower())
               end
             else
-              self.itemIDsToProcess[itemID] = nil
+              print("no header")
             end
           else
-            self.noName[resultItemID] = true
+            self.itemIDsToProcess[itemID] = nil
           end
+        else
+          self.noName[resultItemID] = true
         end
       end
     end

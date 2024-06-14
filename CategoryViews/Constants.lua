@@ -330,7 +330,7 @@ table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
   key = "auto_all_the_things",
   name = BAGANATOR_L_CATEGORY_ALL_THE_THINGS_AUTO,
   auto = "all_the_things",
-  searchPriority = 150,
+  searchPriority = 160,
   doNotAdd = true,
 })
 
