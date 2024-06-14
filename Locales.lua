@@ -222,6 +222,7 @@ L["CATEGORY_AUTO_EQUIPMENT_SETS"] = "Auto: Equipment Sets"
 L["CATEGORY_EQUIPMENT_SETS_AUTO"] = "Equipment Sets (Auto)"
 L["CATEGORY_EQUIPMENT_SET"] = "Equipment Set"
 L["CATEGORY_INVENTORY_SLOTS_AUTO"] = "Inventory Slots (Auto)"
+L["CATEGORY_ALL_THE_THINGS_AUTO"] = "All The Things (Auto)"
 L["CATEGORY_DIVIDER"] = "———Divider———"
 
 L["X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES"] = "%s%% item button spacing between categories"

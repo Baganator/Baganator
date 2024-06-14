@@ -108,6 +108,8 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     end
   end
 
+  Baganator.CategoryViews.GenerateATTCategories(everything)
+
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("prearrange", debugprofilestop() - s1)
   end
@@ -200,6 +202,16 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       local label = self.labelsPool:Acquire()
       Baganator.Skins.AddFrame("CategoryLabel", label)
       label:SetText(searchLabels[details.index])
+      label:SetScript("OnEnter", function()
+        if label:GetFontString():IsTruncated() then
+          GameTooltip:SetOwner(label, "ANCHOR_TOP")
+          GameTooltip:SetText(label:GetText())
+          GameTooltip:Show()
+        end
+      end)
+      label:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+      end)
       label.categorySearch = searches[details.index]
       activeLabels[details.index] = label
     end

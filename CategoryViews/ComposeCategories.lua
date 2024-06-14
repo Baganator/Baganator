@@ -31,6 +31,71 @@ local inventorySlots = {
   "INVTYPE_ROBE",
 }
 
+local AllTheThingsCategories = CreateFrame("Frame")
+AllTheThingsCategories.seenItemIDs = {}
+AllTheThingsCategories.itemIDsToProcess = {}
+AllTheThingsCategories.noName = {}
+AllTheThingsCategories.searches = {}
+AllTheThingsCategories.searchLabels = {}
+function AllTheThingsCategories:OnUpdate()
+  if not next(self.itemIDsToProcess) then
+    self:SetScript("OnUpdate", nil)
+  else
+    self:SetScript("OnUpdate", self.OnUpdate)
+  end
+
+  for itemID in pairs(self.itemIDsToProcess) do
+    self.itemIDsToProcess[itemID] = nil
+    local ATTSearch = ATTC.SearchForField("itemIDAsCost", itemID)
+    if #ATTSearch == 1 then
+      local entry = ATTSearch[1]
+      local resultItemID
+      if entry.itemID then
+        resultItemID = entry.itemID
+      elseif entry.questID then
+        for _, reward in ipairs(ATTC.SearchForField("questID", entry.questID)[1].g or {}) do
+          if reward.itemID then
+            resultItemID = reward.itemID
+          end
+        end
+      end
+      if resultItemID then
+        if not self.noName[resultItemID] then
+          if C_Item.DoesItemExistByID(resultItemID) then
+            local itemName = C_Item.GetItemNameByID(resultItemID)
+            if itemName ~= nil then
+              table.insert(self.searchLabels, itemName)
+              table.insert(self.searches, itemName:lower())
+            else
+              self.itemIDsToProcess[itemID] = true
+            end
+          else
+            self.noName[resultItemID] = true
+          end
+        end
+      end
+    end
+  end
+
+  if not next(self.itemIDsToProcess) then
+    Baganator.API.RequestItemButtonsRefresh()
+  end
+end
+function AllTheThingsCategories:AddItems(items)
+  local anyNew = false
+  for _, item in ipairs(items) do
+    if not self.seenItemIDs[item.itemID] then
+      self.seenItemIDs[item.itemID] = true
+      self.itemIDsToProcess[item.itemID] = true
+    end
+  end
+  self:OnUpdate()
+end
+
+function Baganator.CategoryViews.GenerateATTCategories(items)
+  AllTheThingsCategories:AddItems(items)
+end
+
 -- Generate automatic categories, currently only equipment sets
 local function GetAuto(category)
   local searches, searchLabels = {}, {}
@@ -53,6 +118,8 @@ local function GetAuto(category)
         table.insert(searches, SYNDICATOR_L_KEYWORD_GEAR .. "&" .. name:lower())
       end
     end
+  elseif category.auto == "all_the_things" then
+    searches, searchLabels = AllTheThingsCategories.searches, AllTheThingsCategories.searchLabels
   else
     error("automatic category type not supported")
   end
