@@ -93,59 +93,40 @@ function AllTheThingsCategories:OnUpdate()
         entry = result
       end
     end
-    if entry then
-      local resultItemID
-      if entry.itemID then
-        resultItemID = entry.itemID
-      elseif entry.questID then
-        for _, reward in ipairs(ATTC.SearchForField("questID", entry.questID)[1].g or {}) do
-          if reward.itemID then
-            resultItemID = reward.itemID
-          end
-        end
-      end
-      if resultItemID and not self.noName[resultItemID] then
-        if C_Item.DoesItemExistByID(resultItemID) then
-          local itemName = C_Item.GetItemNameByID(resultItemID)
-          if itemName ~= nil then
-          print(itemName)
-            local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
-            local header = ATTC.GetDeepestRelativeValue(itemSpecific, "headerID") or ATTC.GetDeepestRelativeValue(entry, "headerID")
-            local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
-            if patch then
-              patch = math.floor(patch / 10000)
-            else
-              patch = 1
-            end
-            local expansionText = expansionIDToText[patch - 1]
-            if header then
-              local text = ATTC.L.HEADER_NAMES[header]
-              if not text then
-                text = itemName
-              else
-                text = expansionText .. ": " .. text
-              end
-              local headerData = ATTC.SearchForField("headerID", header)[1]
-              local oldIndex = tIndexOf(self.searchLabels, text)
-              local patchSearch = patch .. ".&"
-              if patch == 1 then
-                patchSearch = ""
-              end
-              if oldIndex then
-                self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. itemName:lower()
-              else
-                table.insert(self.searchLabels, text)
-                table.insert(self.searches, patchSearch .. itemName:lower())
-              end
-            else
-              print("no header")
-            end
-          else
-            self.itemIDsToProcess[itemID] = nil
-          end
+    if entry and not self.noName[entry.itemID] and entry.itemID and C_Item.DoesItemExistByID(entry.itemID) then
+      local resultItemID = entry.itemID
+      local itemName = C_Item.GetItemNameByID(resultItemID)
+      if itemName ~= nil then
+        local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
+        local header = ATTC.GetDeepestRelativeValue(itemSpecific, "headerID") or ATTC.GetDeepestRelativeValue(entry, "headerID")
+        local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
+        if patch then
+          patch = math.floor(patch / 10000)
         else
-          self.noName[resultItemID] = true
+          patch = 1
         end
+        local expansionText = expansionIDToText[patch - 1]
+        if header then
+          local text = ATTC.L.HEADER_NAMES[header]
+          if not text then
+            text = itemName
+          else
+            text = expansionText .. ": " .. text
+          end
+          local oldIndex = tIndexOf(self.searchLabels, text)
+          local patchSearch = patch .. ".&"
+          if patch == 1 then
+            patchSearch = ""
+          end
+          if oldIndex then
+            self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. itemName:lower()
+          else
+            table.insert(self.searchLabels, text)
+            table.insert(self.searches, patchSearch .. itemName:lower())
+          end
+        end
+      else
+        self.noName[resultItemID] = true
       end
     end
   end
