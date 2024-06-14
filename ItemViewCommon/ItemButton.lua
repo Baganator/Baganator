@@ -164,10 +164,8 @@ function Baganator.ItemButtonUtil.WidgetsOnly(self)
 
   if not iconSettings.usingJunkPlugin and self.JunkIcon then
     self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
-    if iconSettings.markJunk and self.BGR.isJunk then
-      self.BGR.persistIconGrey = true
-      self.icon:SetDesaturated(true)
-    end
+    self.BGR.persistIconGrey = iconSettings.markJunk and self.BGR.isJunk
+    self.icon:SetDesaturated(self.BGR.persistIconGrey)
   end
 
   self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
