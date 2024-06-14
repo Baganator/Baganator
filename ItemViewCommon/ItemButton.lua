@@ -97,7 +97,7 @@ function Baganator.ItemButtonUtil.UpdateSettings()
                     -- Hide any widgets shown immediately because the widget
                     -- wasn't available
                     for i = 1, #callbacks do
-                      local widget = itemButton.cornerPlugins[plugins[index]]
+                      local widget = itemButton.cornerPlugins[plugins[i]]
                       if widget then
                         widget:Hide()
                       end
