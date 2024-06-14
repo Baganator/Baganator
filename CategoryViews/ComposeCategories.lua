@@ -58,13 +58,6 @@ function AllTheThingsCategories:IsCollected(attData)
   return false
 end
 
-local function GetHeaderID(attData)
-  while attData and attData.headerID == nil do
-    attData = attData.parent
-  end
-  return attData and attData.headerID
-end
-
 function AllTheThingsCategories:OnUpdate()
   if not next(self.itemIDsToProcess) then
     self:SetScript("OnUpdate", nil)
@@ -95,12 +88,13 @@ function AllTheThingsCategories:OnUpdate()
               local attData = ATTC.SearchForField("itemID", resultItemID)[1]
               if not self:IsCollected(attData) then
                 local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
-                local header = GetHeaderID(itemSpecific)
+                local header = ATTC.GetDeepestRelativeValue(itemSpecific, "headerID")
                 if header then
                   local text = ATTC.L.HEADER_NAMES[header]
-                  if not itemSpecific.parent.g and not attData.parent.g then
+                  if not text then
                     text = itemName
                   end
+                  local headerData = ATTC.SearchForField("headerID", header)[1]
                   local oldIndex = tIndexOf(self.searchLabels, text)
                   if oldIndex then
                     self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. itemName:lower()
@@ -108,11 +102,7 @@ function AllTheThingsCategories:OnUpdate()
                     table.insert(self.searchLabels, text)
                     table.insert(self.searches, itemName:lower())
                   end
-                else
-                  print("drop", itemName)
                 end
-              else
-                print("got", itemName)
               end
             else
               self.itemIDsToProcess[itemID] = nil
@@ -133,7 +123,6 @@ function AllTheThingsCategories:AddItems(items)
   local anyNew = false
   for _, item in ipairs(items) do
     if not self.seenItemIDs[item.itemID] then
-      print("reprocess")
       self.seenItemIDs[item.itemID] = true
       self.itemIDsToProcess[item.itemID] = true
     end
