@@ -42,6 +42,9 @@ function AllTheThingsCategories:IsCollected(attData)
     for _, entry in ipairs(attData.g) do
       local collected, result = self:IsCollected(entry)
       if not collected then
+        if not result then
+          print("lost", result)
+        end
         return collected, result
       end
     end
@@ -83,50 +86,40 @@ function AllTheThingsCategories:OnUpdate()
     self.itemIDsToProcess[itemID] = nil
     local ATTSearch = ATTC.SearchForField("itemIDAsCost", itemID)
     local entry
-    local count = 0
     for _, attData in ipairs(ATTSearch) do
-      if attData.itemID then
-        count = count + 1
-      end
       local collected, result = self:IsCollected(attData)
       if not collected then
         entry = result
+        break
       end
     end
-    if entry and not self.noName[entry.itemID] and entry.itemID and C_Item.DoesItemExistByID(entry.itemID) then
-      local resultItemID = entry.itemID
-      local itemName = C_Item.GetItemNameByID(resultItemID)
-      if itemName ~= nil then
-        local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
-        local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
-        if patch then
-          patch = math.floor(patch / 10000)
-        else
-          patch = 1
-        end
-        local expansionText = expansionIDToText[patch - 1]
-        local mapID = ATTC.GetRelativeValue(itemSpecific, "mapID") or ATTC.GetRelativeValue(entry, "mapID")
-        if mapID ~= nil then
-          local text = ATTC.GetMapName(mapID) 
-          if not text then
-            text = itemName
-          else
-            text = expansionText .. ": " .. text
-          end
-          local oldIndex = tIndexOf(self.searchLabels, text)
-          local patchSearch = patch .. ".&"
-          if patch == 1 then
-            patchSearch = ""
-          end
-          if oldIndex then
-            self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. itemName:lower()
-          else
-            table.insert(self.searchLabels, text)
-            table.insert(self.searches, patchSearch .. itemName:lower())
-          end
-        end
+    if entry and not Syndicator.Search.AnyDifferentATTHeaders(ATTSearch) then
+      local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
+      local headerText = Syndicator.Search.GetWantedATTHeader(entry) or Syndicator.Search.GetWantedATTHeader(itemSpecific)
+
+      if itemID == 208047 then
+        print("in:", headerText)
+      end
+      local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
+      if patch then
+        patch = math.floor(patch / 10000)
       else
-        self.noName[resultItemID] = true
+        patch = 1
+      end
+      local expansionText = expansionIDToText[patch - 1]
+      if headerText then
+        local searchText = "att:" .. headerText:lower()
+        local oldIndex = tIndexOf(self.searchLabels, text)
+        local patchSearch = patch .. ".&"
+        if patch == 1 then
+          patchSearch = ""
+        end
+        if oldIndex then
+          self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. searchText
+        else
+          table.insert(self.searchLabels, expansionText .. ": " .. headerText)
+          table.insert(self.searches, patchSearch .. searchText)
+        end
       end
     end
   end
@@ -143,7 +136,9 @@ function AllTheThingsCategories:AddItems(items)
       self.itemIDsToProcess[item.itemID] = true
     end
   end
-  self:OnUpdate()
+  if next(self.itemIDsToProcess) then
+    self:OnUpdate()
+  end
 end
 
 function Baganator.CategoryViews.GenerateATTCategories(items)
