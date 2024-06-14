@@ -118,15 +118,15 @@ function AllTheThingsCategories:OnUpdate()
                   end
                   local headerData = ATTC.SearchForField("headerID", header)[1]
                   local oldIndex = tIndexOf(self.searchLabels, text)
+                  local patchSearch = patch .. ".&"
+                  if patch == 1 then
+                    patchSearch = ""
+                  end
                   if oldIndex then
-                    self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patch .. "&" .. itemName:lower()
+                    self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. itemName:lower()
                   else
                     table.insert(self.searchLabels, text)
-                    if patch ~= 1 then
-                      table.insert(self.searches, patch .. "." .. "&" .. itemName:lower())
-                    else
-                      table.insert(self.searches, itemName:lower())
-                    end
+                    table.insert(self.searches, patchSearch .. itemName:lower())
                   end
                 end
               end
