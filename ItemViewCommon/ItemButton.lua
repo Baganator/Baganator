@@ -82,10 +82,9 @@ function Baganator.ItemButtonUtil.UpdateSettings()
     end
     if #callbacks > 0 then
       local function Callback(itemButton)
-        local index = 1
         local toShow = nil
         local queued = false
-        while index <= #callbacks do
+        for index = 1, #callbacks do
           local cb = callbacks[index]
           local widget = itemButton.cornerPlugins[plugins[index]]
           if widget then
@@ -95,6 +94,14 @@ function Baganator.ItemButtonUtil.UpdateSettings()
               if not queued then
                 QueueWidget(function()
                   if itemButton.BGR == BGR then
+                    -- Hide any widgets shown immediately because the widget
+                    -- wasn't available
+                    for i = 1, #callbacks do
+                      local widget = itemButton.cornerPlugins[plugins[index]]
+                      if widget then
+                        widget:Hide()
+                      end
+                    end
                     Callback(itemButton)
                   end
                 end)
@@ -105,7 +112,6 @@ function Baganator.ItemButtonUtil.UpdateSettings()
               break
             end
           end
-          index = index + 1
         end
       end
       table.insert(itemCallbacks, Callback)
