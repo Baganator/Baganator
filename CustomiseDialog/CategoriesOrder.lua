@@ -40,7 +40,7 @@ local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
     callback = visibilityCallback,
     atlas = "socialqueuing-icon-eye",
   } }, Baganator.CategoryViews.Constants.ProtectedCategory)
-  container:SetSize(285, 460)
+  container:SetSize(285, 480)
 
   container.ScrollBox:GetView():RegisterCallback("OnAcquiredFrame", function(_, frame)
     if frame.visibilityButton then
@@ -187,13 +187,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   end
 
   categoryOrder = GetCategoryContainer(container, Pickup, ToggleVisibility)
-  categoryOrder:SetPoint("TOPLEFT", 0, -60)
-
-  local description = container:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-  description:SetText(BAGANATOR_L_ORDER_CATEGORIES_DESCRIPTION)
-  description:SetPoint("TOPLEFT", container)
-  description:SetPoint("RIGHT", -10, 0)
-  description:SetTextColor(1, 1, 1)
+  categoryOrder:SetPoint("TOPLEFT", 0, -40)
 
   dropDown:SetText(BAGANATOR_L_INSERT_CATEGORY)
 
@@ -203,7 +197,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   draggable:SetScript("OnHide", function()
     dropDown:SetText(BAGANATOR_L_INSERT_CATEGORY)
   end)
-  dropDown:SetPoint("TOPLEFT", 0, -20)
+  dropDown:SetPoint("TOPLEFT", 0, 0)
   dropDown:SetPoint("RIGHT", categoryOrder)
 
   local resetOrderToDefault = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")

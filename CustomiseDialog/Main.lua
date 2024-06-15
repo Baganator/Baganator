@@ -735,8 +735,8 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     text = BAGANATOR_L_CUSTOM_CATEGORIES,
     level = 2,
   }}, frame))
-  editorHeader:SetPoint("TOP", top, "BOTTOM")
-  editorHeader:SetPoint("LEFT", frame, "CENTER", 10 + Baganator.Constants.ButtonFrameOffset, -5)
+  editorHeader:SetPoint("TOP", top, "BOTTOM", 0, -10)
+  editorHeader:SetPoint("LEFT", frame, "CENTER", 10 + Baganator.Constants.ButtonFrameOffset, 0)
   editorHeader:SetPoint("RIGHT", frame, 0, 0)
   table.insert(allFrames, editorHeader)
 
@@ -748,8 +748,8 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     },
   }, frame))
 
-  orderHeader:SetPoint("TOP", top, "BOTTOM")
-  orderHeader:SetPoint("RIGHT", frame, "CENTER", -10, -5)
+  orderHeader:SetPoint("TOP", top, "BOTTOM", 0, -10)
+  orderHeader:SetPoint("RIGHT", frame, "CENTER", -10, 0)
   table.insert(allFrames, orderHeader)
 
   top = orderHeader
@@ -758,7 +758,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesEditor:SetPoint("TOP", top, "BOTTOM")
   categoriesEditor:SetPoint("RIGHT", frame, -10, 0)
   categoriesEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset + 10, 0)
-  categoriesEditor:SetHeight(250)
+  categoriesEditor:SetHeight(230)
   table.insert(allFrames, categoriesEditor)
 
   local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)

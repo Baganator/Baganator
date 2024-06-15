@@ -40,7 +40,7 @@ end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.DropDown = Baganator.CustomiseDialog.GetDropdown(self)
-  self.DropDown:SetPoint("TOPRIGHT", -10, -20)
+  self.DropDown:SetPoint("TOPRIGHT", -10, 0)
   self.DropDown:SetPoint("LEFT", 15, 0)
   self.DropDown:SetText(BAGANATOR_L_CREATE_OR_EDIT)
   self.currentCategory = ""
@@ -81,7 +81,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.PrioritySlider:Init({valuePattern = BAGANATOR_L_X_SEARCH_PRIORITY})
   self.PrioritySlider:SetPoint("LEFT")
   self.PrioritySlider:SetPoint("RIGHT")
-  self.PrioritySlider:SetPoint("TOP", 0, -150)
+  self.PrioritySlider:SetPoint("TOP", 0, -130)
   self.PrioritySlider:SetValue(0)
 
   self.ApplyChangesButton:SetScript("OnClick", function()
