@@ -56,10 +56,8 @@ function AllTheThingsCategories:Generate()
       if items[1] then
         local targetItem = ATTC.SearchForField("itemID", items[1])[1]
         headerText = Syndicator.Search.GetWantedATTHeader(targetItem) or Syndicator.Search.GetWantedATTHeader(itemSpecific)
-        print("got item", headerText)
       else
         headerText = Syndicator.Search.GetWantedATTHeader(itemSpecific)
-        print("not got item", headerText)
       end
 
       if headerText then
