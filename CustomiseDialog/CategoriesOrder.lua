@@ -84,13 +84,25 @@ local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
   return container
 end
 
-local function SetCategoriesToDropDown(dropDown)
+local function GetInsertedCategories()
+  local result = {}
+  for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
+    result[source] = true
+  end
+  return result
+end
+
+local function SetCategoriesToDropDown(dropDown, ignore)
   local options = {}
   for source, category in pairs(Baganator.CategoryViews.Constants.SourceToCategory) do
-    table.insert(options, {label = category.name, value = source})
+    if not ignore[source] then
+      table.insert(options, {label = category.name, value = source})
+    end
   end
   for source, category in pairs(Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)) do
-    table.insert(options, {label = category.name .. " (*)", value = category.name})
+    if not ignore[source] then
+      table.insert(options, {label = category.name .. " (*)", value = category.name})
+    end
   end
   table.sort(options, function(a, b) return a.label:lower() < b.label:lower() end)
 
@@ -154,7 +166,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   end)
 
   local dropDown = Baganator.CustomiseDialog.GetDropdown(container)
-  SetCategoriesToDropDown(dropDown)
+  SetCategoriesToDropDown(dropDown, GetInsertedCategories())
 
   local function Pickup(value, label, index)
     if index ~= nil then
@@ -215,9 +227,10 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == Baganator.Config.Options.CATEGORY_DISPLAY_ORDER or settingName == Baganator.Config.Options.CATEGORY_HIDDEN then
+      SetCategoriesToDropDown(dropDown, GetInsertedCategories())
       PopulateCategoryOrder(categoryOrder)
     elseif settingName == Baganator.Config.Options.CUSTOM_CATEGORIES then
-      SetCategoriesToDropDown(dropDown)
+      SetCategoriesToDropDown(dropDown, GetInsertedCategories())
     end
   end)
 
