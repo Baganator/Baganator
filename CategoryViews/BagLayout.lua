@@ -3,61 +3,7 @@ local addonName, addonTable = ...
 local linkMap = {}
 local activeLayoutOffset = 1
 
-function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagIndexes, sideSpacing, topSpacing, callback)
-  local s1 = debugprofilestop()
-
-  local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-
-  local composed = Baganator.CategoryViews.ComposeCategories()
-
-  if composed == nil then
-    return
-  end
-
-  local searches, searchLabels, priority, customSearches, customCategories, attachedItems, categoryKeys =
-    composed.searches, composed.searchLabels, composed.priorities, composed.customSearches, composed.customCategories, composed.attachedItems, composed.categoryKeys
-
-  while #self.LiveLayouts < #searches + activeLayoutOffset do -- +1 for the extra category added when removing a category item
-    table.insert(self.LiveLayouts, CreateFrame("Frame", nil, self, "BaganatorLiveCategoryLayoutTemplate"))
-    if self.liveItemButtonPool then
-      self.LiveLayouts[#self.LiveLayouts]:SetPool(self.liveItemButtonPool)
-    end
-    table.insert(self.CachedLayouts, CreateFrame("Frame", nil, self, "BaganatorCachedCategoryLayoutTemplate"))
-  end
-
-  if not self.setupEmptyLayouts then
-    self.setupEmptyLayouts = true
-
-    self.LiveLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
-    self.LiveLayouts[1].buttons[1]:HookScript("OnEnter", function(self)
-      local cursorType, itemID = GetCursorInfo()
-      if cursorType == "item" then
-        local usageChecks = Baganator.Sorting.GetBagUsageChecks(bagIndexes)
-        local sortedBagIDs = CopyTable(bagIndexes)
-        table.sort(sortedBagIDs, function(a, b) return usageChecks.sortOrder[a] < usageChecks.sortOrder[b] end)
-        local any = false
-        for _, bagID in ipairs(sortedBagIDs) do
-          if self.emptySlots[bagID] and (not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID})) then
-            any = true
-            self:GetParent():SetID(bagID)
-            self:SetID(self.emptySlots[bagID])
-          end
-        end
-        if not any then
-          local bagID, slotID = next(self.emptySlots)
-          self:GetParent():SetID(bagID)
-          self:SetID(slotID)
-        end
-      end
-    end)
-    self.LiveLayouts[1].buttons[1].isBag = true
-    self.CachedLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
-    self.CachedLayouts[1].buttons[1].isBag = true
-  end
-
-  local prioritisedSearches = CopyTable(searches)
-  table.sort(prioritisedSearches, function(a, b) return priority[a] > priority[b] end)
-
+local function GetEverything(self, allBags, bagIndexes)
   local junkPluginID = Baganator.Config.Get("junk_plugin")
   local junkPlugin = addonTable.JunkPlugins[junkPluginID] and addonTable.JunkPlugins[junkPluginID].callback
   if junkPluginID == "poor_quality" then
@@ -111,6 +57,66 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       end
     end
   end
+
+  return emptySlots, emptySlotCount, everything
+end
+
+function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagIndexes, sideSpacing, topSpacing, callback)
+  local s1 = debugprofilestop()
+
+  local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+
+  local emptySlots, emptySlotCount, everything = GetEverything(self, allBags, bagIndexes)
+
+  local composed = Baganator.CategoryViews.ComposeCategories(everything)
+
+  if composed == nil then
+    return
+  end
+
+  local searches, searchLabels, priority, customSearches, customCategories, attachedItems, categoryKeys =
+    composed.searches, composed.searchLabels, composed.priorities, composed.customSearches, composed.customCategories, composed.attachedItems, composed.categoryKeys
+
+  while #self.LiveLayouts < #searches + activeLayoutOffset do -- +1 for the extra category added when removing a category item
+    table.insert(self.LiveLayouts, CreateFrame("Frame", nil, self, "BaganatorLiveCategoryLayoutTemplate"))
+    if self.liveItemButtonPool then
+      self.LiveLayouts[#self.LiveLayouts]:SetPool(self.liveItemButtonPool)
+    end
+    table.insert(self.CachedLayouts, CreateFrame("Frame", nil, self, "BaganatorCachedCategoryLayoutTemplate"))
+  end
+
+  if not self.setupEmptyLayouts then
+    self.setupEmptyLayouts = true
+
+    self.LiveLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
+    self.LiveLayouts[1].buttons[1]:HookScript("OnEnter", function(self)
+      local cursorType, itemID = GetCursorInfo()
+      if cursorType == "item" then
+        local usageChecks = Baganator.Sorting.GetBagUsageChecks(bagIndexes)
+        local sortedBagIDs = CopyTable(bagIndexes)
+        table.sort(sortedBagIDs, function(a, b) return usageChecks.sortOrder[a] < usageChecks.sortOrder[b] end)
+        local any = false
+        for _, bagID in ipairs(sortedBagIDs) do
+          if self.emptySlots[bagID] and (not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID})) then
+            any = true
+            self:GetParent():SetID(bagID)
+            self:SetID(self.emptySlots[bagID])
+          end
+        end
+        if not any then
+          local bagID, slotID = next(self.emptySlots)
+          self:GetParent():SetID(bagID)
+          self:SetID(slotID)
+        end
+      end
+    end)
+    self.LiveLayouts[1].buttons[1].isBag = true
+    self.CachedLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
+    self.CachedLayouts[1].buttons[1].isBag = true
+  end
+
+  local prioritisedSearches = CopyTable(searches)
+  table.sort(prioritisedSearches, function(a, b) return priority[a] > priority[b] end)
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("prearrange", debugprofilestop() - s1)
@@ -247,7 +253,5 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     callback(maxWidth, maxHeight)
 
     Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
-
-    Baganator.CategoryViews.GenerateATTCategories(everything)
   end)
 end

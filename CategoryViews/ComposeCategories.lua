@@ -31,12 +31,12 @@ local inventorySlots = {
   "INVTYPE_ROBE",
 }
 
-local AllTheThingsCategories = CreateFrame("Frame")
-AllTheThingsCategories.seenItemIDs = {}
-AllTheThingsCategories.itemIDsToProcess = {}
-AllTheThingsCategories.noName = {}
-AllTheThingsCategories.searches = {}
-AllTheThingsCategories.searchLabels = {}
+local AllTheThingsCategories = {
+  seenItemIDs = {},
+  itemIDsToProcess = {},
+  searches = {},
+  searchLabels = {},
+}
 function AllTheThingsCategories:IsCollected(attData)
   if attData.g then
     for _, entry in ipairs(attData.g) do
@@ -75,12 +75,8 @@ local expansionIDToText = {
   [9] = "DF",
 }
 
-function AllTheThingsCategories:OnUpdate()
-  if not next(self.itemIDsToProcess) then
-    self:SetScript("OnUpdate", nil)
-  else
-    self:SetScript("OnUpdate", self.OnUpdate)
-  end
+function AllTheThingsCategories:Generate()
+  local start = debugprofilestop()
 
   for itemID in pairs(self.itemIDsToProcess) do
     self.itemIDsToProcess[itemID] = nil
@@ -124,8 +120,8 @@ function AllTheThingsCategories:OnUpdate()
     end
   end
 
-  if not next(self.itemIDsToProcess) then
-    Baganator.API.RequestItemButtonsRefresh()
+  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    print("att categories took", debugprofilestop() - start)
   end
 end
 function AllTheThingsCategories:AddItems(items)
@@ -136,8 +132,9 @@ function AllTheThingsCategories:AddItems(items)
       self.itemIDsToProcess[item.itemID] = true
     end
   end
+
   if next(self.itemIDsToProcess) then
-    self:OnUpdate()
+    self:Generate()
   end
 end
 
@@ -146,7 +143,7 @@ function Baganator.CategoryViews.GenerateATTCategories(items)
 end
 
 -- Generate automatic categories, currently only equipment sets
-local function GetAuto(category)
+local function GetAuto(category, everything)
   local searches, searchLabels = {}, {}
   if category.auto == "equipment_sets" then
     local names = Baganator.ItemViewCommon.GetEquipmentSetNames()
@@ -168,6 +165,7 @@ local function GetAuto(category)
       end
     end
   elseif category.auto == "all_the_things" then
+    AllTheThingsCategories:AddItems(everything)
     searches, searchLabels = AllTheThingsCategories.searches, AllTheThingsCategories.searchLabels
   else
     error("automatic category type not supported")
@@ -175,7 +173,7 @@ local function GetAuto(category)
   return {searches = searches, searchLabels = searchLabels}
 end
 
-function Baganator.CategoryViews.ComposeCategories()
+function Baganator.CategoryViews.ComposeCategories(everything)
   local searches, searchLabels, priorities, dividerPoints = {}, {}, {}, {}
 
   local customSearches = {}
@@ -189,7 +187,7 @@ function Baganator.CategoryViews.ComposeCategories()
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
       if category.auto then
-        local autoDetails = GetAuto(category)
+        local autoDetails = GetAuto(category, everything)
         for index = 1, #autoDetails.searches do
           local search = autoDetails.searches[index]
           if not categoryKeys[search] then
