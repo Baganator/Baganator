@@ -340,11 +340,6 @@ local CATEGORIES_OPTIONS = {
     text = BAGANATOR_L_GROUP_IDENTICAL_ITEMS,
     option = "category_item_grouping",
   },
-  {
-    type = "header",
-    text = BAGANATOR_L_MODIFY_CATEGORIES,
-    level = 2,
-  },
 }
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
@@ -733,9 +728,17 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local allFrames = GenerateFrames(CATEGORIES_OPTIONS, frame)
 
-  local categoriesEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesEditorTemplate")
-  categoriesEditor:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
-  table.insert(allFrames, categoriesEditor)
+  local top = allFrames[#allFrames]
+
+  local editorHeader = unpack(GenerateFrames({{
+    type = "header",
+    text = BAGANATOR_L_MODIFY_CATEGORY,
+    level = 2,
+  }}, frame))
+  editorHeader:SetPoint("TOP", top, "BOTTOM")
+  editorHeader:SetPoint("LEFT", frame, "CENTER", 10 + Baganator.Constants.ButtonFrameOffset, 0)
+  editorHeader:SetPoint("RIGHT", frame, 0, 0)
+  table.insert(allFrames, editorHeader)
 
   local orderHeader = unpack(GenerateFrames({
     {
@@ -745,12 +748,24 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     },
   }, frame))
 
-  orderHeader:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
+  orderHeader:SetPoint("TOP", top, "BOTTOM")
+  orderHeader:SetPoint("RIGHT", frame, "CENTER", -10, 0)
   table.insert(allFrames, orderHeader)
 
+  top = orderHeader
+
+  local categoriesEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesEditorTemplate")
+  categoriesEditor:SetPoint("TOP", top, "BOTTOM")
+  categoriesEditor:SetPoint("RIGHT", frame, -10, 0)
+  categoriesEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset + 10, 0)
+  categoriesEditor:SetHeight(250)
+  table.insert(allFrames, categoriesEditor)
+
   local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)
-  categoriesOrder:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -20)
+  categoriesOrder:SetPoint("TOP", top, "BOTTOM")
   table.insert(allFrames, categoriesOrder)
+  categoriesOrder:SetPoint("LEFT", frame, Baganator.Constants.ButtonFrameOffset + 20, 0)
+  categoriesOrder:SetPoint("RIGHT", frame, "CENTER")
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do

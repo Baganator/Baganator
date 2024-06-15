@@ -40,7 +40,7 @@ local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
     callback = visibilityCallback,
     atlas = "socialqueuing-icon-eye",
   } }, Baganator.CategoryViews.Constants.ProtectedCategory)
-  container:SetSize(250, 280)
+  container:SetSize(285, 460)
 
   container.ScrollBox:GetView():RegisterCallback("OnAcquiredFrame", function(_, frame)
     if frame.visibilityButton then
@@ -118,7 +118,7 @@ end
 
 function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(600, 280)
+  container:SetSize(300, 560)
   container:SetPoint("CENTER")
 
   local previousOrder = CopyTable(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER))
@@ -187,28 +187,27 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   end
 
   categoryOrder = GetCategoryContainer(container, Pickup, ToggleVisibility)
-  categoryOrder:SetPoint("TOPLEFT", 0, 10)
+  categoryOrder:SetPoint("TOPLEFT", 0, -60)
 
   local description = container:CreateFontString(nil, "ARTWORK", "GameFontNormal")
   description:SetText(BAGANATOR_L_ORDER_CATEGORIES_DESCRIPTION)
-  description:SetPoint("TOPLEFT", categoryOrder, "TOPRIGHT", 30, -10)
+  description:SetPoint("TOPLEFT", container)
   description:SetPoint("RIGHT", -10, 0)
   description:SetTextColor(1, 1, 1)
-  description:SetJustifyH("LEFT")
 
-  dropDown:SetText(BAGANATOR_L_ALL_CATEGORIES)
+  dropDown:SetText(BAGANATOR_L_INSERT_CATEGORY)
 
   hooksecurefunc(dropDown, "OnEntryClicked", function(_, option)
     Pickup(option.value, option.label, option.value ~= Baganator.CategoryViews.Constants.DividerName and tIndexOf(categoryOrder.elements, option.value) or nil)
   end)
   draggable:SetScript("OnHide", function()
-    dropDown:SetText(BAGANATOR_L_ALL_CATEGORIES)
+    dropDown:SetText(BAGANATOR_L_INSERT_CATEGORY)
   end)
-  dropDown:SetPoint("TOPLEFT", categoryOrder, "TOPRIGHT", 10, -40)
-  dropDown:SetPoint("TOPRIGHT")
+  dropDown:SetPoint("TOPLEFT", 0, -20)
+  dropDown:SetPoint("RIGHT", categoryOrder)
 
   local resetOrderToDefault = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-  resetOrderToDefault:SetPoint("BOTTOMLEFT", categoryOrder, "BOTTOMRIGHT", 20, 10)
+  resetOrderToDefault:SetPoint("TOPLEFT", categoryOrder, "BOTTOMLEFT", 0, -10)
   resetOrderToDefault:SetText(BAGANATOR_L_USE_DEFAULT)
   DynamicResizeButton_Resize(resetOrderToDefault)
   resetOrderToDefault:SetScript("OnClick", function()
@@ -217,7 +216,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   Baganator.Skins.AddFrame("Button", resetOrderToDefault)
 
   local revertOrderChanges = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-  revertOrderChanges:SetPoint("BOTTOMLEFT", resetOrderToDefault, "BOTTOMRIGHT", 15, 0)
+  revertOrderChanges:SetPoint("TOPRIGHT", categoryOrder, "BOTTOMRIGHT", 0, -10)
   revertOrderChanges:SetText(BAGANATOR_L_REVERT_CHANGES)
   DynamicResizeButton_Resize(revertOrderChanges)
   revertOrderChanges:SetScript("OnClick", function()
