@@ -62,19 +62,6 @@ function AllTheThingsCategories:IsCollected(attData)
   return false, attData
 end
 
-local expansionIDToText = {
-  [0] = "Cla",
-  [1] = "TBC",
-  [2] = "Wra",
-  [3] = "Cat",
-  [4] = "MoP",
-  [5] = "Dra",
-  [6] = "Leg",
-  [7] = "BfA",
-  [8] = "SL",
-  [9] = "DF",
-}
-
 function AllTheThingsCategories:Generate()
   local start = debugprofilestop()
 
@@ -93,28 +80,12 @@ function AllTheThingsCategories:Generate()
       local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
       local headerText = Syndicator.Search.GetWantedATTHeader(entry) or Syndicator.Search.GetWantedATTHeader(itemSpecific)
 
-      if itemID == 208047 then
-        print("in:", headerText)
-      end
-      local patch = ATTC.GetRelativeValue(itemSpecific, "awp")
-      if patch then
-        patch = math.floor(patch / 10000)
-      else
-        patch = 1
-      end
-      local expansionText = expansionIDToText[patch - 1]
       if headerText then
         local searchText = "att:" .. headerText:lower()
         local oldIndex = tIndexOf(self.searchLabels, text)
-        local patchSearch = patch .. ".&"
-        if patch == 1 then
-          patchSearch = ""
-        end
-        if oldIndex then
-          self.searches[oldIndex] = self.searches[oldIndex] .. "|" .. patchSearch .. searchText
-        else
-          table.insert(self.searchLabels, expansionText .. ": " .. headerText)
-          table.insert(self.searches, patchSearch .. searchText)
+        if not oldIndex then
+          table.insert(self.searchLabels, headerText)
+          table.insert(self.searches, searchText)
         end
       end
     end
