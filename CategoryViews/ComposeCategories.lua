@@ -37,30 +37,6 @@ local AllTheThingsCategories = {
   searches = {},
   searchLabels = {},
 }
-function AllTheThingsCategories:IsCollected(attData)
-  if attData.g then
-    for _, entry in ipairs(attData.g) do
-      local collected, result = self:IsCollected(entry)
-      if not collected then
-        if not result then
-          print("lost", result)
-        end
-        return collected, result
-      end
-    end
-  elseif attData.mountID then
-    return (select(11, C_MountJournal.GetMountInfoByID(attData.mountID))), attData
-  elseif attData.sourceID then -- transmog
-    return C_TransmogCollection.GetSourceInfo(attData.sourceID).isCollected, attData
-  elseif attData.toyID then
-    return PlayerHasToy(attData.toyID), attData
-  elseif attData.speciesID then
-    return C_PetJournal.GetNumCollectedInfo(attData.speciesID) > 0, attData
-  elseif attData.recipeID then
-    return IsPlayerSpell(attData.recipeID), attData
-  end
-  return false, attData
-end
 
 function AllTheThingsCategories:Generate()
   local start = debugprofilestop()
@@ -68,21 +44,27 @@ function AllTheThingsCategories:Generate()
   for itemID in pairs(self.itemIDsToProcess) do
     self.itemIDsToProcess[itemID] = nil
     local ATTSearch = ATTC.SearchForField("itemIDAsCost", itemID)
-    local entry
-    for _, attData in ipairs(ATTSearch) do
-      local collected, result = self:IsCollected(attData)
-      if not collected then
-        entry = result
-        break
+
+    if not Syndicator.Search.AnyDifferentATTHeaders(ATTSearch) then
+      local items = {}
+      for _, entry in ipairs(ATTSearch) do
+        Syndicator.Search.GetATTItemsFromEntry(entry, {}, items)
       end
-    end
-    if entry and not Syndicator.Search.AnyDifferentATTHeaders(ATTSearch) then
+
       local itemSpecific = ATTC.SearchForField("itemID", itemID)[1]
-      local headerText = Syndicator.Search.GetWantedATTHeader(entry) or Syndicator.Search.GetWantedATTHeader(itemSpecific)
+      local headerText
+      if items[1] then
+        local targetItem = ATTC.SearchForField("itemID", items[1])[1]
+        headerText = Syndicator.Search.GetWantedATTHeader(targetItem) or Syndicator.Search.GetWantedATTHeader(itemSpecific)
+        print("got item", headerText)
+      else
+        headerText = Syndicator.Search.GetWantedATTHeader(itemSpecific)
+        print("not got item", headerText)
+      end
 
       if headerText then
         local searchText = "att:" .. headerText:lower()
-        local oldIndex = tIndexOf(self.searchLabels, text)
+        local oldIndex = tIndexOf(self.searchLabels, headerText)
         if not oldIndex then
           table.insert(self.searchLabels, headerText)
           table.insert(self.searches, searchText)
