@@ -732,11 +732,11 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local editorHeader = unpack(GenerateFrames({{
     type = "header",
-    text = BAGANATOR_L_MODIFY_CATEGORY,
+    text = BAGANATOR_L_CUSTOM_CATEGORIES,
     level = 2,
   }}, frame))
   editorHeader:SetPoint("TOP", top, "BOTTOM")
-  editorHeader:SetPoint("LEFT", frame, "CENTER", 10 + Baganator.Constants.ButtonFrameOffset, 0)
+  editorHeader:SetPoint("LEFT", frame, "CENTER", 10 + Baganator.Constants.ButtonFrameOffset, -5)
   editorHeader:SetPoint("RIGHT", frame, 0, 0)
   table.insert(allFrames, editorHeader)
 
@@ -749,7 +749,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   }, frame))
 
   orderHeader:SetPoint("TOP", top, "BOTTOM")
-  orderHeader:SetPoint("RIGHT", frame, "CENTER", -10, 0)
+  orderHeader:SetPoint("RIGHT", frame, "CENTER", -10, -5)
   table.insert(allFrames, orderHeader)
 
   top = orderHeader
