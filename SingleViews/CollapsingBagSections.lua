@@ -30,8 +30,10 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
     if not seenIndexes[bagIndex] then
       local bagType = Baganator.Utilities.GetBagType(bagID, nil)
       seenIndexes[bagIndex] = true
-      if bagType and bagType ~= 0 and #characterInfo[section][bagIndex] > 0 then
-        inSlots[bagType] = {bagIndex}
+      if bagType and bagType ~= 0 then
+        if #characterInfo[section][bagIndex] > 0 then
+          inSlots[bagType] = {bagIndex}
+        end
       else
         table.insert(mainBags, bagIndex)
       end
