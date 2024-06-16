@@ -1,9 +1,3 @@
-local keyedTextures = CopyTable(Baganator.Constants.ContainerKeyToInfo)
-
-for subClassType, textureDetails in pairs(Baganator.Constants.ContainerTypeToInfo) do
-  keyedTextures[subClassType] = textureDetails
-end
-
 function Baganator.SingleViews.GetCollapsingBagDetails(character, section, indexes, slotsCount)
   local characterInfo = Syndicator.API.GetCharacter(character)
   if characterInfo.containerInfo == nil or characterInfo.containerInfo[section] == nil then
@@ -22,15 +16,10 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
 
   for index = 1, slotsCount do
     if containerInfo[index] and containerInfo[index].itemID ~= nil then
-      local classID, subClassID = select(6, C_Item.GetItemInfoInstant(containerInfo[index].itemID))
-      local icon = Baganator.Constants.ContainerTypeToInfo[subClassID]
+      local key = Baganator.Utilities.GetBagType(nil, containerInfo[index].itemID)
       local bagIndex = index + 1
-      if classID == Enum.ItemClass.Quiver then
+      if key ~= 0 then
         seenIndexes[bagIndex] = true
-        inSlots["quiver"] = {bagIndex}
-      elseif icon then
-        seenIndexes[bagIndex] = true
-        local key = subClassID
         inSlots[key] = inSlots[key] or {}
         table.insert(inSlots[key], bagIndex)
       end
@@ -39,17 +28,10 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
 
   for bagIndex, bagID in ipairs(indexes) do
     if not seenIndexes[bagIndex] then
+      local bagType = Baganator.Utilities.GetBagType(bagID, nil)
       seenIndexes[bagIndex] = true
-      if Baganator.Constants.IsRetail and bagID == Enum.BagIndex.ReagentBag then
-        if #characterInfo.bags[bagIndex] > 0 then
-          inSlots["reagentBag"] = {bagIndex}
-        end
-      elseif Baganator.Constants.IsRetail and bagID == Enum.BagIndex.Reagentbank then
-        if #characterInfo.bank[bagIndex] > 0 then
-          inSlots["reagentBag"] = {bagIndex}
-        end
-      elseif bagID == Enum.BagIndex.Keyring then
-        inSlots["keyring"] = {bagIndex}
+      if bagType and bagType ~= 0 and #characterInfo[section][bagIndex] > 0 then
+        inSlots[bagType] = {bagIndex}
       else
         table.insert(mainBags, bagIndex)
       end
@@ -60,7 +42,7 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
   for key, bags in pairs(inSlots) do
     table.insert(special, {
       indexesUsed = bags,
-      visual = keyedTextures[key],
+      visual = Baganator.Constants.ContainerKeyToInfo[key],
       key = key,
     })
   end

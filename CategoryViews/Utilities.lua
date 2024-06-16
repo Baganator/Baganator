@@ -11,3 +11,16 @@ function Baganator.CategoryViews.Utilities.GetAddedItemData(itemID, itemLink)
     return { itemID = itemID }
   end
 end
+
+function Baganator.CategoryViews.Utilities.GetBagTypes(characterData, section, indexes)
+  local result = {}
+  local containerInfo = characterData.containerInfo[section] or {}
+
+  for index, bagID in ipairs(indexes) do
+    local details = containerInfo[index - 1]
+    local itemID = details and details.itemID
+
+    table.insert(result, Baganator.Utilities.GetBagType(bagID, itemID))
+  end
+  return result
+end

@@ -133,8 +133,6 @@ Baganator.Constants.ContainerKeyToInfo = {
   quiver = {type = "atlas", value="Ammunition", tooltipHeader=AMMOSLOT},
   reagentBag = {type = "atlas", value="Professions_Tracking_Herb", tooltipHeader = BAGANATOR_L_REAGENTS},
   keyring = {type = "file", value="interface\\addons\\baganator\\assets\\bag_keys", tooltipHeader = BAGANATOR_L_KEYS},
-}
-Baganator.Constants.ContainerTypeToInfo = {
   [0] = nil, -- regular bag
   [1] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_soul_shard", tooltipHeader=BAGANATOR_L_SOUL}, -- soulbag
   [2] = {type = "atlas", value="worldquest-icon-herbalism", tooltipHeader=BAGANATOR_L_HERBALISM, size=50}, --herb

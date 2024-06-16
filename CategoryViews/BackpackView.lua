@@ -9,6 +9,12 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.LiveLayouts = {}
   self.CachedLayouts = {}
 
+  self.liveEmptySlotsPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
+  for i = 1, #Syndicator.Constants.AllBagIndexes do
+    self.liveEmptySlotsPool:Acquire()
+  end
+  self.liveEmptySlotsPool:ReleaseAll()
+
   self:RegisterEvent("CURSOR_CHANGED")
 
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
@@ -140,7 +146,8 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
   end
 
   local characterData = Syndicator.API.GetCharacter(character)
-  Baganator.CategoryViews.LayoutContainers(self, characterData.bags, "bags", Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  local bagTypes = Baganator.CategoryViews.Utilities.GetBagTypes(characterData, "bags", Syndicator.Constants.AllBagIndexes)
+  Baganator.CategoryViews.LayoutContainers(self, characterData.bags, "bags", bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
       math.max(400, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2

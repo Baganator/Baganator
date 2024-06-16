@@ -145,7 +145,8 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
     return
   end
 
-  Baganator.CategoryViews.LayoutContainers(self, characterData.bank, "bank", Syndicator.Constants.AllBankIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  local bagTypes = Baganator.CategoryViews.Utilities.GetBagTypes(characterData, "bank", Syndicator.Constants.AllBankIndexes)
+  Baganator.CategoryViews.LayoutContainers(self, characterData.bank, "bank", bagTypes, Syndicator.Constants.AllBankIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
       math.max(400, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2 + buttonPadding

@@ -222,3 +222,24 @@ function Baganator.Utilities.AutoSetGuildSortMethod()
     end
   end
 end
+
+function Baganator.Utilities.GetBagType(bagID, itemID)
+  local classID, subClassID
+  if itemID then
+    classID, subClassID = select(6, C_Item.GetItemInfoInstant(itemID))
+  end
+  local iconDetails = Baganator.Constants.ContainerKeyToInfo[subClassID]
+  if classID ~= nil and classID == Enum.ItemClass.Quiver then
+    return "quiver"
+  elseif iconDetails then
+    return subClassID
+  elseif Baganator.Constants.IsRetail and bagID == Enum.BagIndex.ReagentBag then
+    return "reagentBag"
+  elseif Baganator.Constants.IsRetail and bagID == Enum.BagIndex.Reagentbank then
+    return "reagentBag"
+  elseif bagID == Enum.BagIndex.Keyring then
+    return "keyring"
+  else
+    return 0 -- regular bag
+  end
+end

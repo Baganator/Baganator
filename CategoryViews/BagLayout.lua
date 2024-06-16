@@ -3,7 +3,7 @@ local addonName, addonTable = ...
 local linkMap = {}
 local activeLayoutOffset = 1
 
-function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagIndexes, sideSpacing, topSpacing, callback)
+function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
 
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
@@ -24,31 +24,9 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
   if not self.setupEmptyLayouts then
     self.setupEmptyLayouts = true
 
-    self.LiveLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
-    self.LiveLayouts[1].buttons[1]:HookScript("OnEnter", function(self)
-      local cursorType, itemID = GetCursorInfo()
-      if cursorType == "item" then
-        local usageChecks = Baganator.Sorting.GetBagUsageChecks(bagIndexes)
-        local sortedBagIDs = CopyTable(bagIndexes)
-        table.sort(sortedBagIDs, function(a, b) return usageChecks.sortOrder[a] < usageChecks.sortOrder[b] end)
-        local any = false
-        for _, bagID in ipairs(sortedBagIDs) do
-          if self.emptySlots[bagID] and (not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID})) then
-            any = true
-            self:GetParent():SetID(bagID)
-            self:SetID(self.emptySlots[bagID])
-          end
-        end
-        if not any then
-          local bagID, slotID = next(self.emptySlots)
-          self:GetParent():SetID(bagID)
-          self:SetID(slotID)
-        end
-      end
-    end)
-    self.LiveLayouts[1].buttons[1].isBag = true
-    self.CachedLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
-    self.CachedLayouts[1].buttons[1].isBag = true
+    if self.liveEmptySlotsPool then
+      self.LiveLayouts[1]:SetPool(self.liveEmptySlotsPool)
+    end
   end
 
   local prioritisedSearches = CopyTable(searches)
@@ -61,7 +39,8 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
   end
 
   local emptySlots = {}
-  local emptySlotCount = 0
+  local emptySlotCount = {}
+  local emptySlotsOrder = {}
   local everything = {}
   for bagIndex, bag in ipairs(allBags) do
     local bagID = bagIndexes[bagIndex]
@@ -98,12 +77,11 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         info.key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
         table.insert(everything, info)
       else
-        if bagID ~= Enum.BagIndex.Keyring then
-          emptySlotCount = emptySlotCount + 1
+        if not emptySlotCount[bagTypes[bagIndex]] then
+          emptySlotCount[bagTypes[bagIndex]] =  0
+          table.insert(emptySlotsOrder, {bagID = bagID, slotID = slotIndex, key = bagTypes[bagIndex]})
         end
-        if not emptySlots[bagID] then
-          emptySlots[bagID] = slotIndex
-        end
+        emptySlotCount[bagTypes[bagIndex]] = emptySlotCount[bagTypes[bagIndex]] + 1
       end
     end
   end
@@ -207,17 +185,47 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       print("category group show", debugprofilestop() - start2)
     end
 
-    if emptySlotCount ~= 0 or (Baganator.Constants.IsEra and next(emptySlots) ~= nil) then
-      local bagID, slotID = next(emptySlots)
+    -- Setup empty slots and tooltips on them
+    if #emptySlotsOrder > 0 or (Baganator.Constants.IsEra and next(emptySlots) ~= nil) then
       table.insert(layoutsShown, activeLayouts[1])
-      activeLayouts[1]:ShowGroup({{bagID = 1, slotID = 0}}, 1)
-      activeLayouts[1].buttons[1]:GetParent():SetID(bagID)
-      activeLayouts[1].buttons[1]:SetID(slotID)
-      activeLayouts[1].buttons[1].emptySlots = emptySlots
-      SetItemButtonCount(activeLayouts[1].buttons[1], emptySlotCount)
-      if emptySlotCount == 0 then -- Keyring
-        activeLayouts[1].buttons[1].Count:SetText(CreateTextureMarkup(Baganator.Constants.ContainerKeyToInfo.keyring.value, 16, 16, 12, 16, 0, 1, 0, 1))
-        activeLayouts[1].buttons[1].Count:Show()
+      local items = {}
+      for _, details in ipairs(emptySlotsOrder) do
+        table.insert(items, {bagID = details.bagID, slotID = details.slotID})
+      end
+      activeLayouts[1]:ShowGroup(items, math.min(#items, bagWidth))
+      for index, button in ipairs(activeLayouts[1].buttons) do
+        local bagType = emptySlotsOrder[index].key
+        button.isBag = true -- Ensure even counts of 1 are shown
+        SetItemButtonCount(button, emptySlotCount[bagType])
+        button.Count:SetShown(bagType ~= "keyring") -- Keyrings have unlimited size
+        if not button.bagTypeIcon then
+          button.bagTypeIcon = button:CreateTexture(nil, "OVERLAY")
+          button.bagTypeIcon:SetSize(20, 20)
+          button.bagTypeIcon:SetPoint("CENTER")
+          button.bagTypeIcon:SetDesaturated(true)
+          button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
+          button:SetScript("OnEnter", function()
+            if button.tooltipHeader then
+              GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+              GameTooltip:SetText(button.tooltipHeader)
+            end
+          end)
+          button:SetScript("OnLeave", function()
+            GameTooltip:Hide()
+          end)
+        end
+        local details = Baganator.Constants.ContainerKeyToInfo[bagType]
+        if details then
+          if details.type == "atlas" then
+            button.bagTypeIcon:SetAtlas(details.value)
+          else
+            button.bagTypeIcon:SetTexture(details.value)
+          end
+          button.tooltipHeader = details.tooltipHeader
+        else
+          button.bagTypeIcon:SetTexture(nil)
+          button.tooltipHeader = nil
+        end
       end
       local label = self.labelsPool:Acquire()
       Baganator.Skins.AddFrame("CategoryLabel", label)
