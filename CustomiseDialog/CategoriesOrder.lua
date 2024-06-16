@@ -40,7 +40,7 @@ local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
     callback = visibilityCallback,
     atlas = "socialqueuing-icon-eye",
   } }, Baganator.CategoryViews.Constants.ProtectedCategory)
-  container:SetSize(285, 480)
+  container:SetSize(250, 420)
 
   container.ScrollBox:GetView():RegisterCallback("OnAcquiredFrame", function(_, frame)
     if frame.visibilityButton then
@@ -118,7 +118,7 @@ end
 
 function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(300, 560)
+  container:SetSize(300, 500)
   container:SetPoint("CENTER")
 
   local previousOrder = CopyTable(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER))

@@ -5,15 +5,18 @@ function BaganatorCheckBoxMixin:OnLoad()
   else
     self.CheckBox = CreateFrame("CheckButton", nil, self, "SettingsCheckboxTemplate")
   end
-  self.CheckBox:SetPoint("TOPRIGHT", -130, -5)
+  self.CheckBox:SetPoint("LEFT", self, "CENTER", -35, 0)
   self.CheckBox:SetText(" ")
   self.CheckBox:SetNormalFontObject(GameFontHighlight)
-  self.CheckBox:GetFontString():SetPoint("RIGHT", self.CheckBox, "LEFT", -10, 0)
+  self.CheckBox:GetFontString():SetPoint("RIGHT", self, "CENTER", -50, 0)
+  self.rightLabel = self:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  self.rightLabel:SetPoint("LEFT", self.CheckBox, "RIGHT", 15, 0)
 end
 function BaganatorCheckBoxMixin:Init(details)
   Mixin(self, details)
   self.CheckBox:SetText(self.text)
   Baganator.Skins.AddFrame("CheckBox", self.CheckBox)
+  self.rightLabel:SetText(self.rightText or "")
   if self.root then
     self.CheckBox:SetScript("OnClick", function()
       Baganator.Config.Get(self.root)[self.option] = self.CheckBox:GetChecked()
@@ -91,6 +94,7 @@ function BaganatorDropDownMixin:Init(details)
     end
     return container:GetData();
   end
+  self.Label:SetText(self.text)
   self.DropDown:SetupSelections(GetOptions(), 1)
   self.OnEntrySelected = function(_, option)
     Baganator.Config.Set(self.option, option.value)

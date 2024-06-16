@@ -16,7 +16,7 @@ end
 
 local function GetCornerContainer(parent, regionName, callback)
   local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
-  container:SetSize(200, 80)
+  container:SetSize(200, 100)
   container.regionName = regionName
 
   SetDataProvider(container)
@@ -43,7 +43,7 @@ end
 
 function Baganator.CustomiseDialog.GetCornersEditor(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(480, 210)
+  container:SetSize(480, 250)
   container:SetPoint("CENTER")
 
   local corners = {}
