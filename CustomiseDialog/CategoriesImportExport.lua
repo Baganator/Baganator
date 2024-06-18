@@ -51,16 +51,24 @@ function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
   importButton:SetText(BAGANATOR_L_IMPORT)
   DynamicResizeButton_Resize(importButton)
   importButton:SetScript("OnClick", function()
-    local import = addonTable.json.decode(input:GetText())
+    local success, import = pcall(addonTable.json.decode, input:GetText())
+    if not success then
+      Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+      return
+    end
     local customCategories = {}
-    assert(type(import.categories) == "table")
-    assert(type(import.order) == "table")
+    if type(import.categories) ~= "table" or type(import.order) ~= "table" or type(import.categories) ~= "table" then
+      Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+      return
+    end
     for _, c in ipairs(import.categories) do
-      assert(type(c.priority) == "number")
-      assert(type(c.search) == "string")
-      assert(type(c.name) == "string" and c.name ~= "")
-      assert(c.items == nil or type(c.items) == "table")
-      assert(c.pets == nil or type(c.pets) == "table")
+      if type(c.priority) ~= "number" or type(c.search) ~= "string" or
+        type(c.name) ~= "string" or c.name == "" or
+        (c.items ~= nil and type(c.items) ~= "table") or
+        (c.pets ~= nil and type(c.pets) ~= "table") then
+        Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+        return
+      end
 
       local newCategory = {
         name = c.name,
@@ -71,7 +79,10 @@ function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
       if c.items then
         newCategory.addedItems = newCategory.addedItems or {}
         for _, itemID in ipairs(c.items) do
-          assert(type(itemID) == "number")
+          if type(itemID) ~= "number" then
+            Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+            return
+          end
           table.insert(newCategory.addedItems, {itemID = itemID})
         end
       end
@@ -79,7 +90,10 @@ function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
       if c.pets then
         newCategory.addedItems = newCategory.addedItems or {}
         for _, petID in ipairs(c.pets) do
-          assert(type(petID) == "number")
+          if type(petID) ~= "number" then
+            Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+            return
+          end
           table.insert(newCategory.addedItems, {petID = petID})
         end
       end
