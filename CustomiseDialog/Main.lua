@@ -829,7 +829,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   local exportHeader = unpack(GenerateFrames({
     {
       type = "header",
-      text = BAGANATOR_L_EXPORT_IMPORT,
+      text = BAGANATOR_L_IMPORT_EXPORT,
       level = 2,
     },
   }, frame))

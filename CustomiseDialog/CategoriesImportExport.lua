@@ -98,7 +98,11 @@ function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
       table.insert(displayOrder, Baganator.CategoryViews.Constants.ProtectedCategory)
     end
 
-    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, customCategories)
+    local currentCustomCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    for source, category in pairs(customCategories) do
+      currentCustomCategories[source] = category
+    end
+    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
     Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)
   end)
   Baganator.Skins.AddFrame("Button", importButton)
