@@ -826,6 +826,23 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesEditor:SetHeight(230)
   table.insert(allFrames, categoriesEditor)
 
+  local exportHeader = unpack(GenerateFrames({
+    {
+      type = "header",
+      text = BAGANATOR_L_EXPORT_IMPORT,
+      level = 2,
+    },
+  }, frame))
+
+  exportHeader:SetPoint("TOP", categoriesEditor, "BOTTOM", 0, -10)
+  exportHeader:SetPoint("LEFT", frame, "CENTER", 10, 0)
+  exportHeader:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
+  table.insert(allFrames, exportHeader)
+
+  local categoriesImportExport = Baganator.CustomiseDialog.GetCategoriesImportExport(frame)
+  categoriesImportExport:SetPoint("TOPLEFT", exportHeader, "BOTTOMLEFT")
+  categoriesImportExport:SetPoint("TOPRIGHT", exportHeader, "BOTTOMRIGHT")
+
   local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)
   categoriesOrder:SetPoint("TOP", top, "BOTTOM")
   table.insert(allFrames, categoriesOrder)

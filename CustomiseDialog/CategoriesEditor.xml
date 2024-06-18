@@ -1,6 +1,6 @@
 <Ui>
   <Frame name="BaganatorCustomiseDialogCategoriesEditorTemplate" virtual="true" mixin="BaganatorCustomiseDialogCategoriesEditorMixin">
-    <Size x="600" y="200"/>
+    <Size x="300" y="200"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnHide method="OnHide"/>

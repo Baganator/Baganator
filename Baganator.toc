@@ -9,6 +9,8 @@
 ## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA
 ## IconTexture: Interface\AddOns\Baganator\Assets\logo.tga
 
+Embeds\json.lua
+
 Locales.lua
 
 Core\Objects.lua
@@ -105,6 +107,7 @@ CustomiseDialog\Corners.lua
 CustomiseDialog\CategoriesOrder.lua
 CustomiseDialog\CategoriesEditor.lua
 CustomiseDialog\CategoriesEditor.xml
+CustomiseDialog\CategoriesImportExport.lua
 CustomiseDialog\Main.lua
 CustomiseDialog\Main.xml
 CustomiseDialog\Initialize.lua
