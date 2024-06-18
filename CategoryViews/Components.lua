@@ -13,7 +13,7 @@ function BaganatorCategoryViewsCategoryButtonMixin:Resize()
 end
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnClick(button)
-  if button == "RightButton" and self.categorySearch and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON) then
+  if button == "RightButton" and self.categorySearch then
     self:GetParent():TransferCategory(self.categorySearch)
   end
 end
