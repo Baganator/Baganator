@@ -73,8 +73,6 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
       if self:IsVisible() then
         self:UpdateForGuild(self.lastGuild, self.isLive)
       end
-    elseif settingName == Baganator.Config.Options.SHOW_TRANSFER_BUTTON then
-      self:UpdateTransferButton()
     elseif settingName == Baganator.Config.Options.GUILD_BANK_SORT_METHOD then
       self:UpdateForGuild(self.lastGuild, self.isLive)
     end
@@ -237,7 +235,7 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
 end
 
 function BaganatorSingleViewGuildViewMixin:UpdateTransferButton()
-  self.TransferButton:SetShown(self.wouldShowTransferButton and Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON))
+  self.TransferButton:SetShown(self.wouldShowTransferButton)
 
   if self.isLive then
     if self.SortButton:IsShown() then

@@ -19,7 +19,7 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
       if characterInfo.className then
         characterName = "|c" .. (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[characterInfo.className].colorStr .. characterName .. "|r"
       end
-      if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and characterInfo.race then
+      if characterInfo.race then
         characterName = Syndicator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
       end
       table.insert(lines, {left = characterName, right = Baganator.Utilities.GetMoneyString(money, true)})

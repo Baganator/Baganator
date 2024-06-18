@@ -90,7 +90,7 @@ function BaganatorCharacterSelectMixin:OnLoad()
     frame:SetNormalFontObject(GameFontHighlight)
     frame.fullName = elementData.fullName
     frame.iconPrefix = ""
-    if Baganator.Config.Get(Baganator.Config.Options.SHOW_CHARACTER_RACE_ICONS) and elementData.race then
+    if elementData.race then
       frame.iconPrefix = Syndicator.Utilities.GetCharacterIcon(elementData.race, elementData.sex) .. " "
     end
     frame:SetText(frame.iconPrefix .. frame.fullName)

@@ -107,7 +107,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     hideOnEscape = 1,
   }
 
-  if Baganator.Constants.IsEra or not Baganator.Config.Get(Baganator.Config.Options.SHOW_GUILD_BANK_BUTTON) then
+  if Baganator.Constants.IsEra then
     local index = tIndexOf(self.TopButtons, self.ToggleGuildBankButton)
     table.remove(self.TopButtons, index)
     self.ToggleGuildBankButton:Hide()
@@ -356,11 +356,6 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateTransferButton()
     self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
   else
     self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
-  end
-
-  if not Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON) then
-    self.TransferButton:Hide()
-    return
   end
 
   for _, info in ipairs(addonTable.BagTransfers) do

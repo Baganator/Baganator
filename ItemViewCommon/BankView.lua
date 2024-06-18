@@ -96,10 +96,6 @@ function BaganatorItemViewCommonBankViewMixin:UpdateTransferButton()
     self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
   end
 
-  if not Baganator.Config.Get(Baganator.Config.Options.SHOW_TRANSFER_BUTTON) then
-    self.TransferButton:Hide()
-    return
-  end
   self.TransferButton:Show()
 end
 
