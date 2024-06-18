@@ -98,15 +98,17 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       oldAddedItems = customCategories[self.currentCategory].addedItems
       customCategories[self.currentCategory] = nil
     end
+    local newName = self.CategoryName:GetText():gsub("_", " ")
 
-    customCategories[self.CategoryName:GetText()] = {
-      name = self.CategoryName:GetText(),
+    customCategories[newName] = {
+      name = newName,
       search = self.CategorySearch:GetText(),
       searchPriority = PRIORITY_MAP[self.PrioritySlider:GetValue()],
       addedItems = oldAddedItems
     }
 
-    self.currentCategory = self.CategoryName:GetText()
+    self.currentCategory = newName
+    self.CategoryName:SetText(newName)
     self.DropDown:SetText(self.currentCategory)
 
     Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
