@@ -164,7 +164,6 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.BANK_VIEW_WIDTH,
   Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH,
   Baganator.Config.Options.GUILD_VIEW_WIDTH,
-  Baganator.Config.Options.SHOW_REAGENTS,
   Baganator.Config.Options.SHOW_SORT_BUTTON,
   Baganator.Config.Options.HIDE_BOE_ON_COMMON,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
