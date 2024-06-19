@@ -14,7 +14,14 @@ end
 
 function Baganator.CategoryViews.Utilities.GetBagTypes(characterData, section, indexes)
   local result = {}
-  local containerInfo = characterData.containerInfo[section] or {}
+  if not characterData.containerInfo or not characterData.containerInfo[section] then
+    for index, bagID in ipairs(indexes) do
+      table.insert(result, 0)
+    end
+    return result
+  end
+
+  local containerInfo = characterData.containerInfo[section]
 
   for index, bagID in ipairs(indexes) do
     local details = containerInfo[index - 1]
