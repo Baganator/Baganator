@@ -51,6 +51,13 @@ local function SetDeleteButton(frame)
   end)
 end
 
+local function SetRaceIcon(frame)
+  frame.RaceIcon = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
+  frame.RaceIcon:SetSize(15, 15)
+  frame.RaceIcon:SetPoint("TOPRIGHT", -15, -2.5)
+end
+
+
 function BaganatorCharacterSelectMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
@@ -76,10 +83,10 @@ function BaganatorCharacterSelectMixin:OnLoad()
   local function UpdateForSelection(frame)
     if frame.fullName ~= self.selectedCharacter then
       frame:Enable()
-      frame:SetText(frame.iconPrefix .. frame.fullName)
+      frame:SetText(frame.fullName)
     else
       frame:Disable()
-      frame:SetText(arrowLeft .. " " .. frame.iconPrefix .. frame.fullName)
+      frame:SetText(arrowLeft .. frame.fullName)
     end
   end
 
@@ -89,11 +96,16 @@ function BaganatorCharacterSelectMixin:OnLoad()
     frame:SetHighlightAtlas("search-highlight")
     frame:SetNormalFontObject(GameFontHighlight)
     frame.fullName = elementData.fullName
-    frame.iconPrefix = ""
-    if elementData.race then
-      frame.iconPrefix = Syndicator.Utilities.GetCharacterIcon(elementData.race, elementData.sex) .. " "
+    if not frame.RaceIcon then
+      SetRaceIcon(frame)
     end
-    frame:SetText(frame.iconPrefix .. frame.fullName)
+    if elementData.race then
+      frame.RaceIcon:SetText(Syndicator.Utilities.GetCharacterIcon(elementData.race, elementData.sex))
+    end
+    frame:SetText(frame.fullName)
+    frame:GetFontString():SetPoint("LEFT", 48, 0)
+    frame:GetFontString():SetPoint("RIGHT", -35, 0)
+    frame:GetFontString():SetJustifyH("CENTER")
     if elementData.className then
       local classColor = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[elementData.className]
       frame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
