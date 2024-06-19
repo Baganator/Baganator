@@ -42,6 +42,12 @@ function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
         pets = #pets > 0 and pets or nil,
       })
     end
+    export.hidden = {}
+    for source, isHidden in pairs(Baganator.Config.Get("category_hidden")) do
+      if isHidden then
+        table.insert(export.hidden, source)
+      end
+    end
     input:SetText(addonTable.json.encode(export))
   end)
   Baganator.Skins.AddFrame("Button", exportButton)
@@ -100,7 +106,16 @@ function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
 
       customCategories[newCategory.name] = newCategory
     end
-
+    local hidden = {}
+    if import.hidden then
+      if type(import.hidden) ~= "table" then
+        Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+        return
+      end
+      for _, source in ipairs(import.hidden) do
+        hidden[source] = true
+      end
+    end
     local displayOrder = {}
     for _, source in ipairs(import.order) do
       local category = Baganator.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
@@ -117,6 +132,7 @@ function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
       currentCustomCategories[source] = category
     end
     Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
     Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)
   end)
   Baganator.Skins.AddFrame("Button", importButton)
