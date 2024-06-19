@@ -47,6 +47,7 @@ end
 local ReflowSettings = {
   Baganator.Config.Options.BAG_ICON_SIZE,
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
+  Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
   Baganator.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
   Baganator.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
@@ -86,6 +87,12 @@ local function FlowButtonsRows(self, rowWidth)
   local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
 
   local rows, cols = 0, 0
+  if Baganator.Config.Get(Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP) then
+    cols = rowWidth - #self.buttons%rowWidth
+    if cols == rowWidth then
+      cols = 0
+    end
+  end
   local iconPaddingScaled = iconPadding * 37 / iconSize
   for _, button in ipairs(self.buttons) do
     button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
