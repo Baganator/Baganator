@@ -54,7 +54,7 @@ end
 local function SetRaceIcon(frame)
   frame.RaceIcon = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
   frame.RaceIcon:SetSize(15, 15)
-  frame.RaceIcon:SetPoint("TOPRIGHT", -15, -2.5)
+  frame.RaceIcon:SetPoint("TOPLEFT", 48, -2.5)
 end
 
 
@@ -103,9 +103,9 @@ function BaganatorCharacterSelectMixin:OnLoad()
       frame.RaceIcon:SetText(Syndicator.Utilities.GetCharacterIcon(elementData.race, elementData.sex))
     end
     frame:SetText(frame.fullName)
-    frame:GetFontString():SetPoint("LEFT", 48, 0)
-    frame:GetFontString():SetPoint("RIGHT", -35, 0)
-    frame:GetFontString():SetJustifyH("CENTER")
+    frame:GetFontString():SetPoint("LEFT", 68, 0)
+    frame:GetFontString():SetPoint("RIGHT", -15, 0)
+    frame:GetFontString():SetJustifyH("LEFT")
     if elementData.className then
       local classColor = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[elementData.className]
       frame:GetFontString():SetTextColor(classColor.r, classColor.g, classColor.b)
