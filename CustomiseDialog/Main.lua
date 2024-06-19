@@ -110,19 +110,6 @@ local LAYOUT_OPTIONS = {
   },
   { type = "spacing" },
   {
-    type = "dropdown",
-    text = BAGANATOR_L_EMPTY_SLOTS,
-    option = "bag_empty_space_at_top",
-    entries = {
-      BAGANATOR_L_AT_THE_BOTTOM,
-      BAGANATOR_L_AT_THE_TOP,
-    },
-    values = {
-      false,
-      true,
-    }
-  },
-  {
     type = "checkbox",
     text = BAGANATOR_L_RECENT_CHARACTER_TABS,
     option = "show_recents_tabs_main_view",

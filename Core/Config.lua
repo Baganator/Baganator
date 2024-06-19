@@ -21,7 +21,6 @@ Baganator.Config.Options = {
   SORT_IGNORE_BANK_SLOTS_COUNT = "sort_ignore_bank_slots_count",
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
   AUTO_SORT_ON_OPEN = "auto_sort_on_open",
-  BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
   REDUCE_SPACING = "reduce_spacing",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
@@ -104,7 +103,6 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
   [Baganator.Config.Options.SHOW_BUTTONS_ON_ALT] = false,
-  [Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = false,
   [Baganator.Config.Options.REDUCE_SPACING] = false,
   [Baganator.Config.Options.SORT_METHOD] = "type",
   [Baganator.Config.Options.REVERSE_GROUPS_SORT_ORDER] = false,
@@ -168,7 +166,6 @@ Baganator.Config.ItemButtonsRelayoutSettings = {
   Baganator.Config.Options.HIDE_BOE_ON_COMMON,
   Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
   Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
-  Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.ICON_GREY_JUNK,
   Baganator.Config.Options.REDUCE_SPACING,
   Baganator.Config.Options.JUNK_PLUGIN,
