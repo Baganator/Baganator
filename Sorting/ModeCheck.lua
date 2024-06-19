@@ -2,9 +2,7 @@ local _, addonTable = ...
 
 local always = {
   "quality",
-  "quality-legacy",
   "type",
-  "type-legacy",
   "combine_stacks_only",
 }
 function Baganator.Sorting.IsModeAvailable(mode)

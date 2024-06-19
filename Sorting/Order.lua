@@ -30,7 +30,7 @@ local allSortKeys = {
     "invertedItemCount",
     "itemLink",
   },
-  ["quality-legacy"] = {
+  ["quality-legacy"] = { -- no longer used
     "priority",
     "quality",
     "classID",
@@ -53,7 +53,7 @@ local allSortKeys = {
     "invertedItemCount",
     "itemLink",
   },
-  ["type-legacy"] = {
+  ["type-legacy"] = { -- no longer used
     "priority",
     "classID",
     "subClassID",
