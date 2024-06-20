@@ -2,7 +2,7 @@ local addonName, addonTable = ...
 
 function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(300, 100)
+  container:SetSize(300, 50)
 
   local input = CreateFrame("EditBox", nil, container, "InputBoxTemplate")
 

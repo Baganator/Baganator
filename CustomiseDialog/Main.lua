@@ -832,7 +832,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     },
   }, frame))
 
-  exportHeader:SetPoint("TOP", categoriesEditor, "BOTTOM", 0, -10)
+  exportHeader:SetPoint("TOP", categoriesEditor, "BOTTOM", 0, -30)
   exportHeader:SetPoint("LEFT", frame, "CENTER", 10, 0)
   exportHeader:SetPoint("RIGHT", frame, "RIGHT", -10, 0)
   table.insert(allFrames, exportHeader)
