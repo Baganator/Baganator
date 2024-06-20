@@ -501,7 +501,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   local itemCount = cacheData.itemCount;
   local locked = info and info.isLocked;
   local quality = cacheData.quality or (info and info.quality);
-  local readable = info and info.IsReadable;
+  local readable = info and info.isReadable;
   local itemLink = info and info.hyperlink;
   local noValue = info and info.hasNoValue;
   local itemID = info and info.itemID;
@@ -775,7 +775,7 @@ function BaganatorRetailLiveWarbandItemButtonMixin:SetItemDetails(cacheData)
   local itemCount = cacheData.itemCount;
   local locked = info and info.isLocked;
   local quality = cacheData.quality or (info and info.quality);
-  local readable = info and info.IsReadable;
+  local readable = info and info.isReadable;
   local itemLink = info and info.hyperlink;
   local noValue = info and info.hasNoValue;
   local itemID = info and info.itemID;
