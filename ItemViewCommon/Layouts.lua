@@ -44,15 +44,18 @@ local function RegisterHighlightSimilarItems(self)
   end, self)
 end
 
-local ReflowSettings = {
-  Baganator.Config.Options.BAG_ICON_SIZE,
+local UpdateTextureSettings = {
   Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
-  Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
   Baganator.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
   Baganator.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
   Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
   Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
+}
+
+local ReflowSettings = {
+  Baganator.Config.Options.BAG_ICON_SIZE,
+  Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
   Baganator.Config.Options.REDUCE_SPACING,
 }
 
@@ -97,7 +100,6 @@ local function FlowButtonsRows(self, rowWidth)
   for _, button in ipairs(self.buttons) do
     button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
     button:SetScale(iconSize / 37)
-    button:UpdateTextures()
     MasqueRegistration(button)
     cols = cols + 1
     if cols >= rowWidth then
@@ -132,6 +134,12 @@ local function FlowButtonsColumns(self, rowWidth)
 
   ApplySizing(self, rowWidth, iconPadding, iconSize, cols, columnHeight - 1)
   self.oldRowWidth = rowWidth
+end
+
+local function UpdateTextures(self)
+  for _, button in ipairs(self.buttons) do
+    button:UpdateTextures()
+  end
 end
 
 local function IsDifferentCachedData(data1, data2)
@@ -187,6 +195,9 @@ end
 function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
+  end
+  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
+    self.updateTextures = true
   end
   if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
@@ -270,6 +281,11 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
     FlowButtonsRows(self, rowWidth)
+  end
+
+  if self.updateTextures then
+    UpdateTextures(self)
+    self.updateTextures = false
   end
 
   if self.refreshContent then
@@ -417,6 +433,9 @@ function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
   end
+  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
+    self.updateTextures = true
+  end
   if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
@@ -519,6 +538,11 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
     FlowButtonsRows(self, rowWidth)
+  end
+
+  if self.updateTextures then
+    UpdateTextures(self)
+    self.updateTextures = false
   end
 
   local refreshContent = self.refreshContent
@@ -632,6 +656,9 @@ end
 function BaganatorLiveCategoryLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil or setting == Baganator.Config.Options.SORT_METHOD then
     self.reflow = true
+  end
+  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
+    self.updateTextures = true
   end
   if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
@@ -792,6 +819,11 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     end
   end
 
+  if self.updateTextures then
+    UpdateTextures(self)
+    self.updateTextures = false
+  end
+
   for _, details in ipairs(toResetCache) do
     Baganator.ItemButtonUtil.ResetCache(details[1], details[2])
   end
@@ -835,6 +867,9 @@ end
 function BaganatorCachedCategoryLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil or setting == Baganator.Config.Options.SORT_METHOD then
     self.reflow = true
+  end
+  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
+    self.updateTextures = true
   end
   if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
@@ -889,6 +924,9 @@ function BaganatorGeneralGuildLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
   end
+  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
+    self.updateTextures = true
+  end
   if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
@@ -924,6 +962,11 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
     FlowButtonsColumns(self, rowWidth)
+  end
+
+  if self.updateTextures then
+    UpdateTextures(self)
+    self.updateTextures = false
   end
 
   if not guildData then
@@ -1007,6 +1050,9 @@ function BaganatorLiveWarbandLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
   end
+  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
+    self.updateTextures = true
+  end
   if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
@@ -1072,6 +1118,11 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     FlowButtonsRows(self, rowWidth)
   end
 
+  if self.updateTextures then
+    UpdateTextures(self)
+    self.updateTextures = false
+  end
+
   local refreshContent = self.refreshContent
   if self.refreshContent then
     self.refreshContent = false
@@ -1128,6 +1179,9 @@ function BaganatorCachedWarbandLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(ReflowSettings, setting) ~= nil then
     self.reflow = true
   end
+  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
+    self.updateTextures = true
+  end
 end
 
 function BaganatorCachedWarbandLayoutMixin:RequestContentRefresh()
@@ -1171,6 +1225,11 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
     FlowButtonsRows(self, rowWidth)
+  end
+
+  if self.updateTextures then
+    UpdateTextures(self)
+    self.updateTextures = false
   end
 
   local refreshContent = self.refreshContent
