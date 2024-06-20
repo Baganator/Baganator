@@ -20,7 +20,7 @@ function Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
     return CreateObjectPool(function(pool)
       classicCachedObjectCounter = classicCachedObjectCounter + 1
       local b = CreateFrame("Button", "BGRLiveItemButton" .. classicCachedObjectCounter, self, "BaganatorClassicLiveContainerItemButtonTemplate")
-      b:UpdateTexture()
+      b:UpdateTextures()
       return b
     end, FramePool_HideAndClearAnchors or Pool_HideAndClearAnchors)
   end
