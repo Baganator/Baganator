@@ -119,6 +119,41 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   end
 end
 
+local function WidgetsOnly(self)
+  for plugin, widget in pairs(self.cornerPlugins) do
+    widget:Hide()
+  end
+
+  if self.BGR.itemID == nil then
+    return
+  end
+
+  if not iconSettings.usingJunkPlugin and self.JunkIcon then
+    self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
+    self.BGR.persistIconGrey = iconSettings.markJunk and self.BGR.isJunk
+    self.icon:SetDesaturated(self.BGR.persistIconGrey)
+  end
+
+  local info = self.BGR
+
+  local function OnCached()
+    if self.BGR ~= info then -- Check that the item button hasn't been refreshed
+      return
+    end
+    for _, callback in ipairs(itemCallbacks) do
+      callback(self)
+    end
+  end
+  if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+    OnCached()
+  else
+    local item = Item:CreateFromItemID(self.BGR.itemID)
+    item:ContinueOnItemLoad(function()
+      OnCached()
+    end)
+  end
+end
+
 local function GetInfo(self, cacheData, earlyCallback, finalCallback)
   local info = Syndicator.Search.GetBaseInfo(cacheData)
   self.BGR = info
@@ -128,7 +163,7 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
 
   self.BGR.earlyCallback()
 
-  Baganator.ItemButtonUtil.WidgetsOnly(self)
+  WidgetsOnly(self)
 
   if self.BaganatorBagHighlight then
     self.BaganatorBagHighlight:Hide()
@@ -149,43 +184,6 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
     self.BGR.finalCallback()
   end
 
-  if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
-    OnCached()
-  else
-    local item = Item:CreateFromItemID(self.BGR.itemID)
-    item:ContinueOnItemLoad(function()
-      OnCached()
-    end)
-  end
-end
-
-function Baganator.ItemButtonUtil.WidgetsOnly(self)
-  for plugin, widget in pairs(self.cornerPlugins) do
-    widget:Hide()
-  end
-
-  if self.BGR.itemID == nil then
-    return
-  end
-
-  if not iconSettings.usingJunkPlugin and self.JunkIcon then
-    self.BGR.isJunk = not self.BGR.hasNoValue and self.BGR.quality == Enum.ItemQuality.Poor
-    self.BGR.persistIconGrey = iconSettings.markJunk and self.BGR.isJunk
-    self.icon:SetDesaturated(self.BGR.persistIconGrey)
-  end
-
-  self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
-
-  local info = self.BGR
-
-  local function OnCached()
-    if self.BGR ~= info then -- Check that the item button hasn't been refreshed
-      return
-    end
-    for _, callback in ipairs(itemCallbacks) do
-      callback(self)
-    end
-  end
   if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
     OnCached()
   else
@@ -540,6 +538,8 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
+    self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+
     self.BGR.hasNoValue = noValue
     self:BGRUpdateQuests()
   end, function()
