@@ -98,11 +98,6 @@ function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
   end
 end
 
-function BaganatorCategoryViewBackpackViewMixin:OnShow()
-  BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
-  Baganator.Recents:ClearRecents()
-end
-
 -- Clear new item status on items that are hidden as part of a stack
 function BaganatorCategoryViewBackpackViewMixin:OnHide()
   BaganatorItemViewCommonBackpackViewMixin.OnHide(self)
@@ -179,8 +174,6 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     if not self.isLive then
       return
     end
-
-    Baganator.Recents:ImportRecents()
 
     for _, item in ipairs(everything) do
       item.isRecent = Baganator.Recents:IsRecent(item.bagID, item.slotID)

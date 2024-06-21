@@ -53,11 +53,11 @@ Baganator.Utilities.OnAddonLoaded("Baganator", function()
   Baganator.Config.InitializeData()
   Baganator.SlashCmd.Initialize()
 
+  Baganator.ItemViewCommon.Initialize()
+
   Baganator.CategoryViews.Initialize()
 
   Baganator.ViewManagement.Initialize()
-
-  Baganator.ItemViewCommon.Initialize()
 
   Baganator.CustomiseDialog.Initialize()
 end)

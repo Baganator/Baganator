@@ -132,6 +132,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnShow()
       self:CombineStacksAndSort()
     end)
   end
+  Baganator.Recents:ClearRecents()
   PlaySound(SOUNDKIT.IG_BACKPACK_OPEN);
 end
 
@@ -318,6 +319,10 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
 
   self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
   self:UpdateTransferButton()
+
+  if self.isLive then
+    Baganator.Recents:ImportRecents()
+  end
 
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
