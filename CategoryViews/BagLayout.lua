@@ -3,7 +3,57 @@ local addonName, addonTable = ...
 local linkMap = {}
 local activeLayoutOffset = 1
 
-function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
+local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
+  local junkPluginID = Baganator.Config.Get("junk_plugin")
+  local junkPlugin = addonTable.JunkPlugins[junkPluginID] and addonTable.JunkPlugins[junkPluginID].callback
+  if junkPluginID == "poor_quality" then
+    junkPlugin = nil
+  end
+
+  local emptySlotCount = {}
+  local emptySlotsOrder = {}
+  local everything = {}
+  for bagIndex, bag in ipairs(allBags) do
+    local bagID = bagIndexes[bagIndex]
+    if not bagID then -- Avoid errors from bags removed from the possible indexes
+      break
+    end
+    for slotIndex, slot in ipairs(bag) do
+      local info = Syndicator.Search.GetBaseInfo(slot)
+      if self.isLive then
+        if Baganator.Constants.IsClassic then
+          info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(bagID, slotIndex) end) end
+        else
+          info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
+        end
+        info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
+      end
+      if info.itemID then
+        info.guid = info.guid or ""
+        info.iconTexture = slot.iconTexture
+        info.keyLink = linkMap[info.itemLink]
+        if not info.keyLink then
+          info.keyLink = info.itemLink:gsub("(item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:)%d+:", "%1:")
+          linkMap[info.itemLink] = info.keyLink
+        end
+        info.bagID = bagID
+        info.slotID = slotIndex
+        info.key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
+        table.insert(everything, info)
+      else
+        if not emptySlotCount[bagTypes[bagIndex]] then
+          emptySlotCount[bagTypes[bagIndex]] =  0
+          table.insert(emptySlotsOrder, {bagID = bagID, slotID = slotIndex, key = bagTypes[bagIndex]})
+        end
+        emptySlotCount[bagTypes[bagIndex]] = emptySlotCount[bagTypes[bagIndex]] + 1
+      end
+    end
+  end
+
+  return emptySlotCount, emptySlotsOrder, everything
+end
+
+function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback, additionalPass)
   local s1 = debugprofilestop()
 
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
@@ -32,58 +82,10 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
   local prioritisedSearches = CopyTable(searches)
   table.sort(prioritisedSearches, function(a, b) return priority[a] > priority[b] end)
 
-  local junkPluginID = Baganator.Config.Get("junk_plugin")
-  local junkPlugin = addonTable.JunkPlugins[junkPluginID] and addonTable.JunkPlugins[junkPluginID].callback
-  if junkPluginID == "poor_quality" then
-    junkPlugin = nil
-  end
+  local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
 
-  local emptySlots = {}
-  local emptySlotCount = {}
-  local emptySlotsOrder = {}
-  local everything = {}
-  for bagIndex, bag in ipairs(allBags) do
-    local bagID = bagIndexes[bagIndex]
-    if not bagID then -- Avoid errors from bags removed from the possible indexes
-      break
-    end
-    for slotIndex, slot in ipairs(bag) do
-      local info = Syndicator.Search.GetBaseInfo(slot)
-      if self.isLive then
-        if Baganator.Constants.IsClassic then
-          info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(bagID, slotIndex) end) end
-        else
-          info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
-        end
-        info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
-        if info.itemID ~= nil then
-          local location = {bagID = bagID, slotIndex = slotIndex}
-          info.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
-          if info.setInfo then
-            info.guid = C_Item.GetItemGUID(location)
-          end
-        end
-      end
-      if info.itemID then
-        info.guid = info.guid or ""
-        info.iconTexture = slot.iconTexture
-        info.keyLink = linkMap[info.itemLink]
-        if not info.keyLink then
-          info.keyLink = info.itemLink:gsub("(item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:)%d+:", "%1:")
-          linkMap[info.itemLink] = info.keyLink
-        end
-        info.bagID = bagID
-        info.slotID = slotIndex
-        info.key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
-        table.insert(everything, info)
-      else
-        if not emptySlotCount[bagTypes[bagIndex]] then
-          emptySlotCount[bagTypes[bagIndex]] =  0
-          table.insert(emptySlotsOrder, {bagID = bagID, slotID = slotIndex, key = bagTypes[bagIndex]})
-        end
-        emptySlotCount[bagTypes[bagIndex]] = emptySlotCount[bagTypes[bagIndex]] + 1
-      end
-    end
+  if additionalPass then
+    additionalPass(everything)
   end
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then

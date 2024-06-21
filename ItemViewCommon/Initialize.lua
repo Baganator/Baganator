@@ -51,4 +51,7 @@ function Baganator.ItemViewCommon.Initialize()
   end, CallErrorHandler)
 
   SetupCharacterSelect()
+
+  Baganator.Recents = CreateFromMixins(BaganatorItemViewCommonRecentsTrackingMixin)
+  Baganator.Recents:OnLoad()
 end

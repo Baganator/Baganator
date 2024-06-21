@@ -20,6 +20,8 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
+  self.recentItems = {}
+
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
     for _, layout in ipairs(self.Layouts) do
@@ -60,6 +62,9 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
   end)
 
+  Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink)
+  end)
+
   self.AllButtons = {}
   tAppendAll(self.AllButtons, self.TopButtons)
   tAppendAll(self.AllButtons, self.AllFixedButtons)
@@ -93,8 +98,14 @@ function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
   end
 end
 
+function BaganatorCategoryViewBackpackViewMixin:OnShow()
+  BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
+  Baganator.Recents:ClearRecents()
+end
+
 -- Clear new item status on items that are hidden as part of a stack
-function BaganatorCategoryViewBackpackViewMixin:OnHide(eventName)
+function BaganatorCategoryViewBackpackViewMixin:OnHide()
+  BaganatorItemViewCommonBackpackViewMixin.OnHide(self)
   for _, item in ipairs(self.notShown) do
     C_NewItems.RemoveNewItem(item.bagID, item.slotID)
   end
@@ -164,5 +175,15 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
       print("-- updateforcharacter backpack", debugprofilestop() - start)
     end
     Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+  end, function(everything)
+    if not self.isLive then
+      return
+    end
+
+    Baganator.Recents:ImportRecents()
+
+    for _, item in ipairs(everything) do
+      item.isRecent = Baganator.Recents:IsRecent(item.bagID, item.slotID)
+    end
   end)
 end

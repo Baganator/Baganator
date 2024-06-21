@@ -29,13 +29,16 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
   self.pending = {}
   for _, item in ipairs(everything) do
     local key = item.key
+    local seen = self.seenData[key]
     if not self.pending[key] then
       self.pending[key] = {}
-      if not self.seenData[key] then
+      if not seen then
         item.isJunk = item.isJunkGetter and item.isJunkGetter()
         self.seenData[key] = item
         Baganator.Sorting.AddSortKeys({item})
       else
+        seen.setInfo = item.setInfo
+        seen.isRecent = item.isRecent
         setmetatable(item, {__index = self.seenData[key], __newindex = self.seenData[key]})
       end
     else
