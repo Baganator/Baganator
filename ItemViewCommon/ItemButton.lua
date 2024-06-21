@@ -358,14 +358,14 @@ end
 
 local function ApplyNewItemAnimation(self, quality)
   -- Modified code from Blizzard for classic
-  local isNewItem = Baganator.Recents:IsRecent(self:GetParent():GetID(), self:GetID());
+  self.BGR.isRecent = Baganator.Recents:IsRecent(self:GetParent():GetID(), self:GetID());
 
   local newItemTexture = self.NewItemTexture;
   local battlepayItemTexture = self.BattlepayItemTexture;
   local flash = self.flashAnim;
   local newItemAnim = self.newitemglowAnim;
 
-  if ( isNewItem ) then
+  if ( self.BGR.isRecent ) then
     if C_Container.IsBattlePayItem and C_Container.IsBattlePayItem(self:GetBagID(), self:GetID()) then
       self.NewItemTexture:Hide();
       self.BattlepayItemTexture:Show();
@@ -556,7 +556,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   SetItemButtonDesaturated(self, locked);
 
   self:UpdateExtended();
-  ApplyNewItemAnimation(self, quality);
   self:UpdateJunkItem(quality, noValue);
   self:UpdateCooldown(texture);
   self:SetReadable(readable);
@@ -580,6 +579,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
     self.BGR.hasNoValue = noValue
     self:BGRUpdateQuests()
+    ApplyNewItemAnimation(self, quality);
   end, function()
     self:BGRUpdateQuests()
     self:UpdateItemContextMatching();
@@ -1091,7 +1091,6 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   SetItemButtonTexture(self, texture or self.emptySlotFilepath);
   SetItemButtonQuality(self, quality, itemID);
   ApplyQualityBorderClassic(self, quality)
-  ApplyNewItemAnimation(self, quality)
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
 
@@ -1118,6 +1117,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   SetWidgetsAlpha(self, true)
 
   GetInfo(self, cacheData, function()
+    ApplyNewItemAnimation(self, quality)
     self:BGRUpdateQuests()
     self.BGR.tooltipGetter = function()
       return Syndicator.Search.DumpClassicTooltip(function(tooltip)
