@@ -143,7 +143,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED] = {},
   [Baganator.Config.Options.CATEGORY_DISPLAY_ORDER] = {},
   [Baganator.Config.Options.CATEGORY_HIDDEN] = {},
-  [Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING] = 0,
+  [Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING] = 0.15,
   [Baganator.Config.Options.CATEGORY_ITEM_GROUPING] = true,
 }
 
