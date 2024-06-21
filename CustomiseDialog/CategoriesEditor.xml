@@ -37,13 +37,13 @@
 
       <Button parentKey="ApplyChangesButton" text="SAVE" inherits="UIPanelDynamicResizeButtonTemplate">
         <Anchors>
-          <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>
+          <Anchor point="BOTTOMLEFT" x="15" y="0"/>
         </Anchors>
       </Button>
 
       <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate">
         <Anchors>
-          <Anchor point="BOTTOMLEFT" x="15" y="0"/>
+          <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>
         </Anchors>
       </Button>
     </Frames>
