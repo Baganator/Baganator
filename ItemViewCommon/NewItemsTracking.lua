@@ -1,6 +1,6 @@
-BaganatorItemViewCommonRecentsTrackingMixin = {}
+BaganatorItemViewCommonNewItemsTrackingMixin = {}
 
-function BaganatorItemViewCommonRecentsTrackingMixin:OnLoad()
+function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
   self.recent = {}
   self.recentByContainer = {}
   self.seen = {}
@@ -37,7 +37,7 @@ function BaganatorItemViewCommonRecentsTrackingMixin:OnLoad()
       local bagIndex = tIndexOf(Syndicator.Constants.AllBankIndexes, bagID)
       ScanBagData(bagID, characterData.bank[bagIndex])
     end
-    Baganator.CallbackRegistry:TriggerEvent("BagCacheAfterRecentsUpdate", character, updatedBags)
+    Baganator.CallbackRegistry:TriggerEvent("BagCacheAfterNewItemsUpdate", character, updatedBags)
   end)
   Syndicator.CallbackRegistry:RegisterCallback("WarbandBankCacheUpdate", function(_, warband, updatedBags)
     for bagID in pairs(updatedBags.bags) do
@@ -57,11 +57,11 @@ function BaganatorItemViewCommonRecentsTrackingMixin:OnLoad()
   end)
 end
 
-function BaganatorItemViewCommonRecentsTrackingMixin:SetTimeout(timeout)
+function BaganatorItemViewCommonNewItemsTrackingMixin:SetTimeout(timeout)
   self.timeout = timeout
 end
 
-function BaganatorItemViewCommonRecentsTrackingMixin:ImportRecents()
+function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems()
   if self.firstStart then
     self.firstStart = false
     for bagID, containerGuids in pairs(self.guidsByContainer) do
@@ -98,7 +98,7 @@ function BaganatorItemViewCommonRecentsTrackingMixin:ImportRecents()
   self.seen = newSeen
 end
 
-function BaganatorItemViewCommonRecentsTrackingMixin:ClearRecents()
+function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItems()
   local time = GetTime()
   for guid, details in pairs(self.recent) do
     if not self.seen[guid] then
@@ -110,11 +110,11 @@ function BaganatorItemViewCommonRecentsTrackingMixin:ClearRecents()
   end
 end
 
-function BaganatorItemViewCommonRecentsTrackingMixin:IsRecent(bagID, slotID)
+function BaganatorItemViewCommonNewItemsTrackingMixin:IsNewItem(bagID, slotID)
   return self.recentByContainer[bagID][slotID] ~= nil
 end
 
-function BaganatorItemViewCommonRecentsTrackingMixin:CheckClearRecent(bagID, slotID)
+function BaganatorItemViewCommonNewItemsTrackingMixin:CheckClearNewItem(bagID, slotID)
   if self.timeout == 0 and self.recentByContainer[bagID] then
     self.recentByContainer[bagID][slotID] = nil
   end

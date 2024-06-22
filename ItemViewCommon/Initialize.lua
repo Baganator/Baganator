@@ -5,6 +5,6 @@ function Baganator.ItemViewCommon.Initialize()
     Baganator.InitializeOpenClose()
   end, CallErrorHandler)
 
-  Baganator.Recents = CreateFromMixins(BaganatorItemViewCommonRecentsTrackingMixin)
-  Baganator.Recents:OnLoad()
+  Baganator.NewItems = CreateFromMixins(BaganatorItemViewCommonNewItemsTrackingMixin)
+  Baganator.NewItems:OnLoad()
 end

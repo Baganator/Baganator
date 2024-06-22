@@ -35,7 +35,7 @@ Baganator.Constants.Events = {
   "GuildHide",
 
   "ViewComplete",
-  "BagCacheAfterRecentsUpdate",
+  "BagCacheAfterNewItemsUpdate",
 
   -- Single view only events
   "SpecialBagToggled",

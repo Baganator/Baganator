@@ -176,7 +176,7 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     end
 
     for _, item in ipairs(everything) do
-      item.isRecent = Baganator.Recents:IsRecent(item.bagID, item.slotID)
+      item.isNewItem = Baganator.NewItems:IsNewItem(item.bagID, item.slotID)
     end
   end)
 end

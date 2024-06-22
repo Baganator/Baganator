@@ -38,7 +38,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
 
   self.tabsPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
 
-  Baganator.CallbackRegistry:RegisterCallback("BagCacheAfterRecentsUpdate",  function(_, character, updatedBags)
+  Baganator.CallbackRegistry:RegisterCallback("BagCacheAfterNewItemsUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
     self.searchToApply = true
     self:NotifyBagUpdate(updatedBags)
@@ -132,7 +132,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnShow()
       self:CombineStacksAndSort()
     end)
   end
-  Baganator.Recents:ClearRecents()
+  Baganator.NewItems:ClearNewItems()
   PlaySound(SOUNDKIT.IG_BACKPACK_OPEN);
 end
 
@@ -321,7 +321,7 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
   self:UpdateTransferButton()
 
   if self.isLive then
-    Baganator.Recents:ImportRecents()
+    Baganator.NewItems:ImportNewItems()
   end
 
   local sideSpacing, topSpacing = 13, 14

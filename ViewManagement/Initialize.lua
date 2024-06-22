@@ -1,9 +1,9 @@
-local function SetRecentsTimeout(viewType)
+local function SetNewItemsTimeout(viewType)
   local viewType = Baganator.Config.Get(Baganator.Config.Options.VIEW_TYPE)
   if viewType == "single" then
-    Baganator.Recents:SetTimeout(0)
+    Baganator.NewItems:SetTimeout(0)
   elseif viewType == "category" then
-    Baganator.Recents:SetTimeout(15)
+    Baganator.NewItems:SetTimeout(15)
   else
     error("no view timeout configured")
   end
@@ -21,7 +21,7 @@ local function SetupBackpackView()
   end
 
   backpackView = allBackpackViews[Baganator.Config.Get(Baganator.Config.Options.VIEW_TYPE)]
-  SetRecentsTimeout()
+  SetNewItemsTimeout()
 
   local bagButtons = {}
 
@@ -96,7 +96,7 @@ local function SetupBackpackView()
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == Baganator.Config.Options.VIEW_TYPE then
-      SetRecentsTimeout()
+      SetNewItemsTimeout()
       local isShown = backpackView:IsShown()
       backpackView:Hide()
       backpackView = allBackpackViews[Baganator.Config.Get(settingName)]

@@ -420,6 +420,10 @@ function BaganatorLiveBagLayoutMixin:OnHide()
   Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
+
+  for _, button in ipairs(self.buttons) do
+    button:ClearNewItem()
+  end
 end
 
 function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)

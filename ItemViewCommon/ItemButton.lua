@@ -358,14 +358,14 @@ end
 
 local function ApplyNewItemAnimation(self, quality)
   -- Modified code from Blizzard for classic
-  self.BGR.isRecent = Baganator.Recents:IsRecent(self:GetParent():GetID(), self:GetID());
+  self.BGR.isNewItem = Baganator.NewItems:IsNewItem(self:GetParent():GetID(), self:GetID());
 
   local newItemTexture = self.NewItemTexture;
   local battlepayItemTexture = self.BattlepayItemTexture;
   local flash = self.flashAnim;
   local newItemAnim = self.newitemglowAnim;
 
-  if ( self.BGR.isRecent ) then
+  if ( self.BGR.isNewItem ) then
     if C_Container.IsBattlePayItem and C_Container.IsBattlePayItem(self:GetBagID(), self:GetID()) then
       self.NewItemTexture:Hide();
       self.BattlepayItemTexture:Show();
@@ -494,7 +494,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   -- Automatically use the reagent bank when at the bank transferring crafting
   -- reagents
   self:HookScript("OnEnter", function()
-    Baganator.Recents:CheckClearRecent(self:GetParent():GetID(), self:GetID())
+    self:ClearNewItem()
     if BankFrame:IsShown() then
       if self.BGR and self.BGR.itemLink and (select(17, C_Item.GetItemInfo(self.BGR.itemLink))) and IsReagentBankActive() then
         BankFrame.selectedTab = 2
@@ -625,12 +625,16 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemFiltered(text)
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:ClearNewItem()
-  -- Copied code from Blizzard Container Frame
-  self.BattlepayItemTexture:Hide();
-  self.NewItemTexture:Hide();
-  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
-    self.flashAnim:Stop();
-    self.newitemglowAnim:Stop();
+  local bagID, slotID = self:GetParent():GetID(), self:GetID()
+  Baganator.NewItems:CheckClearNewItem(bagID, slotID)
+  if not Baganator.NewItems:IsNewItem(bagID, slotID) then
+    -- Copied code from Blizzard Container Frame
+    self.BattlepayItemTexture:Hide();
+    self.NewItemTexture:Hide();
+    if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
+      self.flashAnim:Stop();
+      self.newitemglowAnim:Stop();
+    end
   end
 end
 
@@ -1032,11 +1036,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:GetInventorySlot()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:OnEnter()
-  Baganator.Recents:CheckClearRecent(self:GetParent():GetID(), self:GetID())
-  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
-    self.flashAnim:Stop();
-    self.newitemglowAnim:Stop();
-  end
+  self:ClearNewItem()
 
   if self:GetParent():GetID() == -1 then
     BankFrameItemButton_OnEnter(self)
@@ -1160,11 +1160,14 @@ function BaganatorClassicLiveContainerItemButtonMixin:BGRSetHighlight(isHighligh
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:ClearNewItem()
-  C_NewItems.RemoveNewItem(self:GetParent():GetID(), self:GetID())
-  self.NewItemTexture:Hide();
-  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
-    self.flashAnim:Stop();
-    self.newitemglowAnim:Stop();
+  local bagID, slotID = self:GetParent():GetID(), self:GetID()
+  Baganator.NewItems:CheckClearNewItem(bagID, slotID)
+  if not Baganator.NewItems:IsNewItem(bagID, slotID) then
+    self.NewItemTexture:Hide();
+    if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
+      self.flashAnim:Stop();
+      self.newitemglowAnim:Stop();
+    end
   end
 end
 
