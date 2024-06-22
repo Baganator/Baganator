@@ -55,7 +55,7 @@ local function GetAuto(category, everything)
     end
   elseif category.auto == "recents" then
     table.insert(searches, "")
-    table.insert(searchLabels, BAGANATOR_L_CATEGORY_RECENTS)
+    table.insert(searchLabels, BAGANATOR_L_CATEGORY_RECENT)
     local newItems = {}
     for _, item in ipairs(everything) do
       if Baganator.NewItems:IsNewItemTimeout(item.bagID, item.slotID) then
