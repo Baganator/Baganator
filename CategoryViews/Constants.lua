@@ -330,7 +330,7 @@ table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
   key = "auto_recents",
   name = BAGANATOR_L_CATEGORY_RECENT_AUTO,
   auto = "recents",
-  searchPriority = 300,
+  searchPriority = 600,
   doNotAdd = true,
 })
 
