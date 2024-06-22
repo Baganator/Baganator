@@ -38,7 +38,7 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
         Baganator.Sorting.AddSortKeys({item})
       else
         seen.setInfo = item.setInfo
-        seen.isRecent = item.isRecent
+        seen.isNewItem = item.isNewItem
         setmetatable(item, {__index = self.seenData[key], __newindex = self.seenData[key]})
       end
     else

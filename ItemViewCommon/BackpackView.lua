@@ -132,7 +132,6 @@ function BaganatorItemViewCommonBackpackViewMixin:OnShow()
       self:CombineStacksAndSort()
     end)
   end
-  Baganator.NewItems:ClearNewItems()
   PlaySound(SOUNDKIT.IG_BACKPACK_OPEN);
 end
 

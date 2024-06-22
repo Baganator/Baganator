@@ -645,6 +645,10 @@ function BaganatorLiveCategoryLayoutMixin:OnHide()
   FrameUtil.UnregisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+
+  for _, button in ipairs(self.buttons) do
+    button:ClearNewItem()
+  end
 end
 
 function BaganatorLiveCategoryLayoutMixin:InformSettingChanged(setting)

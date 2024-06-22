@@ -98,11 +98,16 @@ function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
   end
 end
 
+function BaganatorCategoryViewBackpackViewMixin:OnShow()
+  BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
+  Baganator.NewItems:ClearNewItemsForTimeout()
+end
+
 -- Clear new item status on items that are hidden as part of a stack
 function BaganatorCategoryViewBackpackViewMixin:OnHide()
   BaganatorItemViewCommonBackpackViewMixin.OnHide(self)
   for _, item in ipairs(self.notShown) do
-    C_NewItems.RemoveNewItem(item.bagID, item.slotID)
+    Baganator.NewItems:ClearNewItem(item.bagID, item.slotID)
   end
 end
 
@@ -176,7 +181,10 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     end
 
     for _, item in ipairs(everything) do
-      item.isNewItem = Baganator.NewItems:IsNewItem(item.bagID, item.slotID)
+      item.isNewItem = Baganator.NewItems:IsNewItemTimeout(item.bagID, item.slotID)
+      if item.isNewItem then
+        print("hit")
+      end
     end
   end)
 end

@@ -1,8 +1,9 @@
 BaganatorItemViewCommonNewItemsTrackingMixin = {}
 
 function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
-  self.recent = {}
   self.recentByContainer = {}
+  self.recentTimeout = {}
+  self.recentByContainerTimeout = {}
   self.seen = {}
   self.guidsByContainer = {}
   self.guidsEquipped = {}
@@ -10,6 +11,7 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
 
   for _, bagID in ipairs(Syndicator.Constants.AllBagIndexes) do
     self.recentByContainer[bagID] = {}
+    self.recentByContainerTimeout[bagID] = {}
   end
 
   local function ScanBagData(bagID, bagData)
@@ -80,12 +82,16 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems()
   local newSeen = {}
   for bagID, containerGuids in pairs(self.guidsByContainer) do
     for slotID, guid in ipairs(containerGuids) do
-      if guid == -1 and self.recentByContainer[bagID][slotID] then
-        self.recent[self.recentByContainer[bagID][slotID]] = nil
-        self.recentByContainer[bagID][slotID] = nil
+      if guid == -1 then
+        if self.recentByContainer[bagID][slotID] then
+          self.recentByContainer[bagID][slotID] = nil
+        elseif self.recentByContainerTimeout[bagID][slotID] then
+          self.recentByContainerTimeout[bagID][slotID] = nil
+        end
       elseif guild ~= -1 and not self.seen[guid] and self.recentByContainer[bagID] then
-        self.recent[guid] = {time = GetTime(), bagID = bagID, slotID = slotID}
+        self.recentTimeout[guid] = {time = GetTime(), bagID = bagID, slotID = slotID}
         self.recentByContainer[bagID][slotID] = guid
+        self.recentByContainerTimeout[bagID][slotID] = guid
       end
       newSeen[guid] = true
     end
@@ -98,14 +104,14 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems()
   self.seen = newSeen
 end
 
-function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItems()
+function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItemsForTimeout()
   local time = GetTime()
-  for guid, details in pairs(self.recent) do
+  for guid, details in pairs(self.recentTimeout) do
     if not self.seen[guid] then
-      self.recent[guid] = nil
+      self.recentTimeout[guid] = nil
     elseif time - details.time >= self.timeout then
-      self.recent[guid] = nil
-      self.recentByContainer[details.bagID][details.slotID] = nil
+      self.recentTimeout[guid] = nil
+      self.recentByContainerTimeout[details.bagID][details.slotID] = nil
     end
   end
 end
@@ -114,8 +120,12 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:IsNewItem(bagID, slotID)
   return self.recentByContainer[bagID][slotID] ~= nil
 end
 
-function BaganatorItemViewCommonNewItemsTrackingMixin:CheckClearNewItem(bagID, slotID)
-  if self.timeout == 0 and self.recentByContainer[bagID] then
+function BaganatorItemViewCommonNewItemsTrackingMixin:IsNewItemTimeout(bagID, slotID)
+  return self.recentByContainerTimeout[bagID][slotID] ~= nil
+end
+
+function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItem(bagID, slotID)
+  if self.recentByContainer[bagID] then
     self.recentByContainer[bagID][slotID] = nil
   end
 end

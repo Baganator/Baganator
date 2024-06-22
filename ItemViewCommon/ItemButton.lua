@@ -626,15 +626,14 @@ end
 
 function BaganatorRetailLiveContainerItemButtonMixin:ClearNewItem()
   local bagID, slotID = self:GetParent():GetID(), self:GetID()
-  Baganator.NewItems:CheckClearNewItem(bagID, slotID)
-  if not Baganator.NewItems:IsNewItem(bagID, slotID) then
-    -- Copied code from Blizzard Container Frame
-    self.BattlepayItemTexture:Hide();
-    self.NewItemTexture:Hide();
-    if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
-      self.flashAnim:Stop();
-      self.newitemglowAnim:Stop();
-    end
+  Baganator.NewItems:ClearNewItem(bagID, slotID)
+  self.BGR.isNewItem =  false
+  -- Copied code from Blizzard Container Frame
+  self.BattlepayItemTexture:Hide();
+  self.NewItemTexture:Hide();
+  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
+    self.flashAnim:Stop();
+    self.newitemglowAnim:Stop();
   end
 end
 
@@ -1161,13 +1160,12 @@ end
 
 function BaganatorClassicLiveContainerItemButtonMixin:ClearNewItem()
   local bagID, slotID = self:GetParent():GetID(), self:GetID()
-  Baganator.NewItems:CheckClearNewItem(bagID, slotID)
-  if not Baganator.NewItems:IsNewItem(bagID, slotID) then
-    self.NewItemTexture:Hide();
-    if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
-      self.flashAnim:Stop();
-      self.newitemglowAnim:Stop();
-    end
+  Baganator.NewItems:ClearNewItem(bagID, slotID)
+  self.BGR.isNewItem = false
+  self.NewItemTexture:Hide();
+  if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
+    self.flashAnim:Stop();
+    self.newitemglowAnim:Stop();
   end
 end
 
