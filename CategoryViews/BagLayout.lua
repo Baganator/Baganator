@@ -53,12 +53,14 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
   return emptySlotCount, emptySlotsOrder, everything
 end
 
-function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback, additionalPass)
+function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
+
+  local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
 
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
 
-  local composed = Baganator.CategoryViews.ComposeCategories()
+  local composed = Baganator.CategoryViews.ComposeCategories(everything)
 
   local searches, searchLabels, priority, customSearches, customCategories, attachedItems, categoryKeys =
     composed.searches, composed.searchLabels, composed.priorities, composed.customSearches, composed.customCategories, composed.attachedItems, composed.categoryKeys
@@ -81,12 +83,6 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
   local prioritisedSearches = CopyTable(searches)
   table.sort(prioritisedSearches, function(a, b) return priority[a] > priority[b] end)
-
-  local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
-
-  if additionalPass then
-    additionalPass(everything)
-  end
 
   if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
     print("prearrange", debugprofilestop() - s1)

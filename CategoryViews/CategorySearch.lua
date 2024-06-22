@@ -38,11 +38,10 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
         Baganator.Sorting.AddSortKeys({item})
       else
         seen.setInfo = item.setInfo
-        seen.isNewItem = item.isNewItem
-        setmetatable(item, {__index = self.seenData[key], __newindex = self.seenData[key]})
+        setmetatable(item, {__index = self.seenData[key], __newindex = seen})
       end
     else
-      setmetatable(item, {__index = self.seenData[key], __newindex = self.seenData[key]})
+      setmetatable(item, {__index = self.seenData[key], __newindex = seen})
     end
     table.insert(self.pending[key], item)
   end
@@ -101,8 +100,8 @@ function BaganatorCategoryViewsCategorySearchMixin:DoSearch()
   if attachedItems then
     for key in pairs(self.searchPending) do
       local seenData = self.seenData[key]
-      local details = seenData.details or Baganator.CategoryViews.Utilities.GetAddedItemData(seenData.itemID, seenData.itemLink)
-      local match = attachedItems["i:" .. tostring(details.itemID)] or attachedItems["p:" .. tostring(details.petID)]
+      local details = Baganator.CategoryViews.Utilities.GetAddedItemData(seenData.itemID, seenData.itemLink)
+      local match = attachedItems["i:" .. tostring(details.itemID)] or attachedItems["p:" .. tostring(details.petID)] or attachedItems[key]
       if match then
         self.searchPending[key] = nil
         for _, i in ipairs(self.pending[key]) do

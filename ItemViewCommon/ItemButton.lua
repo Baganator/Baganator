@@ -358,14 +358,14 @@ end
 
 local function ApplyNewItemAnimation(self, quality)
   -- Modified code from Blizzard for classic
-  self.BGR.isNewItem = Baganator.NewItems:IsNewItem(self:GetParent():GetID(), self:GetID());
+  local isNewItem = Baganator.NewItems:IsNewItem(self:GetParent():GetID(), self:GetID());
 
   local newItemTexture = self.NewItemTexture;
   local battlepayItemTexture = self.BattlepayItemTexture;
   local flash = self.flashAnim;
   local newItemAnim = self.newitemglowAnim;
 
-  if ( self.BGR.isNewItem ) then
+  if ( isNewItem ) then
     if C_Container.IsBattlePayItem and C_Container.IsBattlePayItem(self:GetBagID(), self:GetID()) then
       self.NewItemTexture:Hide();
       self.BattlepayItemTexture:Show();
@@ -627,7 +627,6 @@ end
 function BaganatorRetailLiveContainerItemButtonMixin:ClearNewItem()
   local bagID, slotID = self:GetParent():GetID(), self:GetID()
   Baganator.NewItems:ClearNewItem(bagID, slotID)
-  self.BGR.isNewItem =  false
   -- Copied code from Blizzard Container Frame
   self.BattlepayItemTexture:Hide();
   self.NewItemTexture:Hide();
@@ -1161,7 +1160,6 @@ end
 function BaganatorClassicLiveContainerItemButtonMixin:ClearNewItem()
   local bagID, slotID = self:GetParent():GetID(), self:GetID()
   Baganator.NewItems:ClearNewItem(bagID, slotID)
-  self.BGR.isNewItem = false
   self.NewItemTexture:Hide();
   if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
     self.flashAnim:Stop();

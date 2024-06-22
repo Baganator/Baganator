@@ -175,16 +175,5 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
       print("-- updateforcharacter backpack", debugprofilestop() - start)
     end
     Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
-  end, function(everything)
-    if not self.isLive then
-      return
-    end
-
-    for _, item in ipairs(everything) do
-      item.isNewItem = Baganator.NewItems:IsNewItemTimeout(item.bagID, item.slotID)
-      if item.isNewItem then
-        print("hit")
-      end
-    end
   end)
 end
