@@ -80,6 +80,10 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   local start = debugprofilestop()
   BaganatorItemViewCommonBackpackViewMixin.UpdateForCharacter(self, character, isLive)
 
+  if self.isLive then
+    Baganator.NewItems:ImportNewItems()
+  end
+
   self:AllocateBags(character)
 
   self.BagLive:SetShown(isLive)

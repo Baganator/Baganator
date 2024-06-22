@@ -415,18 +415,15 @@ end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
   FrameUtil.UnregisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
-  local start = debugprofilestop()
-  for _, button in ipairs(self.buttons) do
-    button:ClearNewItem()
-  end
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
-    print("remove new item", debugprofilestop() - start)
-  end
 
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
+
+  for _, button in ipairs(self.buttons) do
+    button:ClearNewItem()
+  end
 end
 
 function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)
@@ -645,12 +642,13 @@ function BaganatorLiveCategoryLayoutMixin:OnShow()
 end
 
 function BaganatorLiveCategoryLayoutMixin:OnHide()
-  for _, button in ipairs(self.buttons) do
-    button:ClearNewItem()
-  end
   FrameUtil.UnregisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+
+  for _, button in ipairs(self.buttons) do
+    button:ClearNewItem()
+  end
 end
 
 function BaganatorLiveCategoryLayoutMixin:InformSettingChanged(setting)

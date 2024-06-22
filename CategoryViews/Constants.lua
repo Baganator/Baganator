@@ -326,6 +326,14 @@ table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
   doNotAdd = true,
 })
 
+table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
+  key = "auto_recents",
+  name = BAGANATOR_L_CATEGORY_RECENT_AUTO,
+  auto = "recents",
+  searchPriority = 300,
+  doNotAdd = true,
+})
+
 Baganator.CategoryViews.Constants.SourceToCategory = {}
 for index, category in ipairs(Baganator.CategoryViews.Constants.DefaultCategories) do
   category.source = "default_" .. category.key

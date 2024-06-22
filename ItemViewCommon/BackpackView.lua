@@ -38,7 +38,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
 
   self.tabsPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
 
-  Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+  Baganator.CallbackRegistry:RegisterCallback("BagCacheAfterNewItemsUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
     self.searchToApply = true
     self:NotifyBagUpdate(updatedBags)

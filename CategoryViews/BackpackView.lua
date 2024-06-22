@@ -20,6 +20,8 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
+  self.recentItems = {}
+
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
     for _, layout in ipairs(self.Layouts) do
@@ -93,10 +95,16 @@ function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
   end
 end
 
+function BaganatorCategoryViewBackpackViewMixin:OnShow()
+  BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
+  Baganator.NewItems:ClearNewItemsForTimeout()
+end
+
 -- Clear new item status on items that are hidden as part of a stack
-function BaganatorCategoryViewBackpackViewMixin:OnHide(eventName)
+function BaganatorCategoryViewBackpackViewMixin:OnHide()
+  BaganatorItemViewCommonBackpackViewMixin.OnHide(self)
   for _, item in ipairs(self.notShown) do
-    C_NewItems.RemoveNewItem(item.bagID, item.slotID)
+    Baganator.NewItems:ClearNewItem(item.bagID, item.slotID)
   end
 end
 
@@ -132,6 +140,10 @@ end
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)
   local start = debugprofilestop()
   BaganatorItemViewCommonBackpackViewMixin.UpdateForCharacter(self, character, isLive)
+
+  if self.isLive then
+    Baganator.NewItems:ImportNewItems(true)
+  end
 
   local sideSpacing, topSpacing = 13, 14
   if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then

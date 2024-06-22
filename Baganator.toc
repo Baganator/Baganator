@@ -68,6 +68,7 @@ ItemViewCommon\BankViewWarbandView.xml
 ItemViewCommon\BankView.lua
 ItemViewCommon\BankView.xml
 ItemViewCommon\BagTransfers.lua
+ItemViewCommon\NewItemsTracking.lua
 ItemViewCommon\Initialize.lua
 
 SingleViews\Pools.lua

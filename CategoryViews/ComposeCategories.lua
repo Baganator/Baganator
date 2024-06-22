@@ -31,9 +31,9 @@ local inventorySlots = {
   "INVTYPE_ROBE",
 }
 
--- Generate automatic categories, currently only equipment sets
-local function GetAuto(category)
-  local searches, searchLabels = {}, {}
+-- Generate automatic categories
+local function GetAuto(category, everything)
+  local searches, searchLabels, attachedItems = {}, {}, {}
   if category.auto == "equipment_sets" then
     local names = Baganator.ItemViewCommon.GetEquipmentSetNames()
     if #names == 0 then
@@ -53,35 +53,51 @@ local function GetAuto(category)
         table.insert(searches, SYNDICATOR_L_KEYWORD_GEAR .. "&" .. name:lower())
       end
     end
+  elseif category.auto == "recents" then
+    table.insert(searches, "")
+    table.insert(searchLabels, BAGANATOR_L_CATEGORY_RECENT)
+    local newItems = {}
+    for _, item in ipairs(everything) do
+      if Baganator.NewItems:IsNewItemTimeout(item.bagID, item.slotID) then
+        newItems[item.key] = true
+      end
+    end
+    attachedItems[1] = newItems
   else
     error("automatic category type not supported")
   end
-  return {searches = searches, searchLabels = searchLabels}
+  return {searches = searches, searchLabels = searchLabels, attachedItems = attachedItems}
 end
 
-function Baganator.CategoryViews.ComposeCategories()
+function Baganator.CategoryViews.ComposeCategories(everything)
   local searches, searchLabels, priorities, dividerPoints = {}, {}, {}, {}
 
   local customSearches = {}
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
   local attachedItems = {}
   local categoryKeys = {}
-  for index, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
+  for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
     if source == Baganator.CategoryViews.Constants.DividerName then
       dividerPoints[#searches + 1] = true
     end
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
       if category.auto then
-        local autoDetails = GetAuto(category)
+        local autoDetails = GetAuto(category, everything)
         for index = 1, #autoDetails.searches do
           local search = autoDetails.searches[index]
+          if search == "" then
+            search = "________" .. (#searches + 1)
+          end
           if not categoryKeys[search] then
             table.insert(searches, search)
             table.insert(searchLabels, autoDetails.searchLabels[index])
             priorities[search] = category.searchPriority
             customSearches[search] = false
             categoryKeys[search] = category.source .. "_" .. search
+            if autoDetails.attachedItems[index] then
+              attachedItems[search] = autoDetails.attachedItems[index]
+            end
           end
         end
       elseif not categoryKeys[search] then
