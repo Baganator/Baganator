@@ -100,7 +100,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
             end
           end
         end
-      elseif not categoryKeys[search] then
+      elseif not categoryKeys[category.search] then
         table.insert(searches, category.search)
         table.insert(searchLabels, category.name)
         priorities[category.search] = category.searchPriority
