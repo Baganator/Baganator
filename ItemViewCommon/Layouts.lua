@@ -647,7 +647,9 @@ function BaganatorLiveCategoryLayoutMixin:OnHide()
   Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 
   for _, button in ipairs(self.buttons) do
-    button:ClearNewItem()
+    if not button.isDummy then
+      button:ClearNewItem()
+    end
   end
 end
 
