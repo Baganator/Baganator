@@ -86,48 +86,49 @@ function Baganator.CategoryViews.ComposeCategories(everything)
         local autoDetails = GetAuto(category, everything)
         for index = 1, #autoDetails.searches do
           local search = autoDetails.searches[index]
-          if search == "" then
+          if search == "" or categoryKeys[search] then
             search = "________" .. (#searches + 1)
           end
-          if not categoryKeys[search] then
-            table.insert(searches, search)
-            table.insert(searchLabels, autoDetails.searchLabels[index])
-            priorities[search] = category.searchPriority
-            customSearches[search] = false
-            categoryKeys[search] = category.source .. "_" .. search
-            if autoDetails.attachedItems[index] then
-              attachedItems[search] = autoDetails.attachedItems[index]
-            end
+          table.insert(searches, search)
+          table.insert(searchLabels, autoDetails.searchLabels[index])
+          priorities[search] = category.searchPriority
+          customSearches[search] = false
+          categoryKeys[search] = category.source .. "_" .. search
+          if autoDetails.attachedItems[index] then
+            attachedItems[search] = autoDetails.attachedItems[index]
           end
         end
-      elseif not categoryKeys[category.search] then
-        table.insert(searches, category.search)
+      else
+        local search = category.search
+        if categoryKeys[search] then
+          search = "________" .. (#searches + 1)
+        end
+        table.insert(searches, search)
         table.insert(searchLabels, category.name)
-        priorities[category.search] = category.searchPriority
-        customSearches[category.search] = false
-        categoryKeys[category.search] = category.source
+        priorities[search] = category.searchPriority
+        customSearches[search] = false
+        categoryKeys[search] = category.source
       end
     end
     category = customCategories[source]
     if category then
       local search = category.search:lower()
-      if search == "" then
+      if search == "" or categoryKeys[search] then
         search = "________" .. (#searches + 1)
       end
-      if not categoryKeys[search] then
-        table.insert(searches, search)
-        table.insert(searchLabels, category.name)
-        priorities[search] = category.searchPriority
-        customSearches[search] = customSearches[search] == nil
-        categoryKeys[search] = categoryKeys[search] or category.name
-        if category.addedItems and next(category.addedItems) then
-          attachedItems[search] = {}
-          for _, details in ipairs(category.addedItems) do
-            if details.itemID then
-              attachedItems[search]["i:" .. details.itemID] = true
-            elseif details.petID then
-              attachedItems[search]["p:" .. details.petID] = true
-            end
+
+      table.insert(searches, search)
+      table.insert(searchLabels, category.name)
+      priorities[search] = category.searchPriority
+      customSearches[search] = customSearches[search] == nil
+      categoryKeys[search] = categoryKeys[search] or category.name
+      if category.addedItems and next(category.addedItems) then
+        attachedItems[search] = {}
+        for _, details in ipairs(category.addedItems) do
+          if details.itemID then
+            attachedItems[search]["i:" .. details.itemID] = true
+          elseif details.petID then
+            attachedItems[search]["p:" .. details.petID] = true
           end
         end
       end
