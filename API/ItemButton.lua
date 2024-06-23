@@ -300,6 +300,18 @@ Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
   CanIMogIt:RegisterMessage("OptionUpdate", function()
     pcall(Callback)
   end)
+
+  local RefreshFrame = CreateFrame("Frame", nil)
+  RefreshFrame:RegisterEvent("TRANSMOG_COLLECTION_SOURCE_ADDED")
+  RefreshFrame:RegisterEvent("NEW_PET_ADDED")
+  RefreshFrame:RegisterEvent("NEW_TOY_ADDED")
+  RefreshFrame:RegisterEvent("NEW_MOUNT_ADDED")
+  if C_EventUtils.IsEventValid("PET_JOURNAL_PET_DELETED") then
+    RefreshFrame:RegisterEvent("PET_JOURNAL_PET_DELETED")
+  end
+  RefreshFrame:SetScript("OnEvent", function()
+    Callback()
+  end)
 end)
 
 Baganator.Utilities.OnAddonLoaded("BattlePetBreedID", function()
