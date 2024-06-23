@@ -35,7 +35,7 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
       if math.floor(offsetX + layout:GetWidth()) > targetPixelWidth then
         prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
         offsetX = 0
-        offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
+        offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding * 3 / 2
       end
       local label = activeLabels[index]
       label:Resize()
