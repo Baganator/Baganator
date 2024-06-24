@@ -69,16 +69,17 @@ local function GetAuto(category, everything)
   return {searches = searches, searchLabels = searchLabels, attachedItems = attachedItems}
 end
 
+-- Organise category data ready for display, including removing duplicate
+-- searches with priority determining which gets kept.
 function Baganator.CategoryViews.ComposeCategories(everything)
-  local searches, searchLabels, priorities, dividerPoints = {}, {}, {}, {}
+  local allDetails = {}
+  local dividerPoints = {}
 
-  local customSearches = {}
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-  local attachedItems = {}
   local categoryKeys = {}
   for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
     if source == Baganator.CategoryViews.Constants.DividerName then
-      dividerPoints[#searches + 1] = true
+      dividerPoints[#allDetails + 1] = true
     end
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
@@ -86,63 +87,98 @@ function Baganator.CategoryViews.ComposeCategories(everything)
         local autoDetails = GetAuto(category, everything)
         for index = 1, #autoDetails.searches do
           local search = autoDetails.searches[index]
-          if search == "" or categoryKeys[search] then
-            search = "________" .. (#searches + 1)
+          if search == "" then
+            search = "________" .. (#allDetails + 1)
           end
-          table.insert(searches, search)
-          table.insert(searchLabels, autoDetails.searchLabels[index])
-          priorities[search] = category.searchPriority
-          customSearches[search] = false
-          categoryKeys[search] = category.source .. "_" .. search
-          if autoDetails.attachedItems[index] then
-            attachedItems[search] = autoDetails.attachedItems[index]
-          end
+          allDetails[#allDetails + 1] = {
+            source = source,
+            search = search,
+            searchLabel = autoDetails.searchLabels[index],
+            priority = category.searchPriority,
+            isCustom = false,
+            index = #allDetails + 1,
+            attachedItems = autoDetails.attachedItems[index],
+          }
         end
       else
-        local search = category.search
-        if categoryKeys[search] then
-          search = "________" .. (#searches + 1)
-        end
-        table.insert(searches, search)
-        table.insert(searchLabels, category.name)
-        priorities[search] = category.searchPriority
-        customSearches[search] = false
-        categoryKeys[search] = category.source
+        allDetails[#allDetails + 1] = {
+          source = source,
+          search = category.search,
+          searchLabel = category.name,
+          priority = category.searchPriority,
+          isCustom = false,
+          index = #allDetails + 1,
+          attachedItems = nil,
+        }
       end
     end
     category = customCategories[source]
     if category then
       local search = category.search:lower()
-      if search == "" or categoryKeys[search] then
-        search = "________" .. (#searches + 1)
+      if search == "" then
+        search = "________" .. (#allDetails + 1)
       end
 
-      table.insert(searches, search)
-      table.insert(searchLabels, category.name)
-      priorities[search] = category.searchPriority
-      customSearches[search] = customSearches[search] == nil
-      categoryKeys[search] = categoryKeys[search] or category.name
+      allDetails[#allDetails + 1] = {
+        source = source,
+        search = search,
+        searchLabel = category.name,
+        priority = category.searchPriority,
+        isCustom = true,
+        index = #allDetails + 1,
+        attachedItems = nil,
+      }
+
       if category.addedItems and next(category.addedItems) then
-        attachedItems[search] = {}
+        local attachedItems = {}
         for _, details in ipairs(category.addedItems) do
           if details.itemID then
-            attachedItems[search]["i:" .. details.itemID] = true
+            attachedItems["i:" .. details.itemID] = true
           elseif details.petID then
-            attachedItems[search]["p:" .. details.petID] = true
+            attachedItems["p:" .. details.petID] = true
           end
         end
+        allDetails[#allDetails].attachedItems = attachedItems
       end
     end
   end
 
-  return {
-    searches = searches,
-    searchLabels = searchLabels,
-    priorities = priorities,
-    attachedItems = attachedItems,
-    categoryKeys = categoryKeys,
-    customSearches = customSearches,
-    customCategories = customCategories,
+  local copy = CopyTable(allDetails, 1)
+  table.sort(copy, function(a, b)
+    if a.priority == b.priority then
+      return a.index < b.index
+    else
+      return a.priority > b. priority
+    end
+  end)
+
+  local seenSearches = {}
+  local prioritisedSearches = {}
+  for _, details in ipairs(copy) do
+    if seenSearches[details.search] then
+      details.search = "________" .. details.index
+    end
+    prioritisedSearches[#prioritisedSearches + 1] = details.search
+    seenSearches[details.search] = true
+  end
+
+  local result = {
+    searches = {},
+    searchLabels = {},
+    customSearches = {},
+    attachedItems = {},
+    categoryKeys = {},
     dividerPoints = dividerPoints,
+    prioritisedSearches = prioritisedSearches,
   }
+
+  for _, details in ipairs(allDetails) do
+    table.insert(result.searches, details.search)
+    table.insert(result.searchLabels, details.searchLabel)
+    result.customSearches[details.search] = details.isCustom
+    result.attachedItems[details.search] = details.attachedItems
+    result.categoryKeys[details.search] = details.source
+  end
+
+  return result
 end
