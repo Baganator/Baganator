@@ -65,9 +65,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
   local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
 
-  local s2 = debugprofilestop()
   local composed = Baganator.CategoryViews.ComposeCategories(everything)
-  print("compose", debugprofilestop() - s2)
 
   local searches, searchLabels, priority, customSearches, attachedItems, categoryKeys, prioritisedSearches =
     composed.searches, composed.searchLabels, composed.priorities, composed.customSearches, composed.attachedItems, composed.categoryKeys, composed.prioritisedSearches
