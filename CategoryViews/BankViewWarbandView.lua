@@ -107,7 +107,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     topSpacing = 7
   end
 
-  self.isGrouping = false--Baganator.Config.Get(Baganator.Config.Options.CATEGORY_ITEM_GROUPING)
+  self.isGrouping = not self.isLive and Baganator.Config.Get(Baganator.Config.Options.CATEGORY_ITEM_GROUPING)
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = false
