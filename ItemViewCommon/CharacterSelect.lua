@@ -51,6 +51,13 @@ function BaganatorCharacterSelectMixin:OnLoad()
   view:SetElementInitializer("Button", function(frame, elementData)
     frame:SetHighlightAtlas("search-highlight")
     frame:SetNormalFontObject(GameFontHighlight)
+    if not frame.RealmName then
+      frame.RealmName = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
+      frame.RealmName:SetTextColor(0.75, 0.75, 0.75)
+      frame.RealmName:SetPoint("RIGHT", -15, 0)
+      frame.RealmName:SetJustifyH("RIGHT")
+      frame.RealmName:SetJustifyV("MIDDLE")
+    end
     frame.fullName = elementData.fullName
     if not frame.RaceIcon then
       SetRaceIcon(frame)
@@ -61,7 +68,8 @@ function BaganatorCharacterSelectMixin:OnLoad()
     if elementData.race then
       frame.RaceIcon:SetText(Syndicator.Utilities.GetCharacterIcon(elementData.race, elementData.sex))
     end
-    frame:SetText(frame.fullName)
+    frame:SetText(elementData.name)
+    frame.RealmName:SetText(elementData.realm)
     frame:GetFontString():SetPoint("LEFT", 48, 0)
     frame:GetFontString():SetPoint("RIGHT", -15, 0)
     frame:GetFontString():SetJustifyH("LEFT")
@@ -99,7 +107,23 @@ end
 
 function BaganatorCharacterSelectMixin:UpdateList()
   local characters = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
-  self.ScrollBox:SetDataProvider(CreateDataProvider(characters), true)
+  local currentCharacter = Syndicator.API.GetCurrentCharacter()
+  local connectedRealms = Syndicator.Utilities.GetConnectedRealms()
+  local currentCharacterData
+  local currentRealms = {}
+  local everythingElse = {}
+  for _, data in ipairs(characters) do
+    if data.fullName == currentCharacter then
+      table.insert(currentRealms, 1, data)
+    elseif tIndexOf(connectedRealms, data.realmNormalized) ~= nil then
+      table.insert(currentRealms, data)
+    else
+      table.insert(everythingElse, data)
+    end
+  end
+  tAppendAll(currentRealms, everythingElse)
+
+  self.ScrollBox:SetDataProvider(CreateDataProvider(currentRealms), true)
 end
 
 function BaganatorCharacterSelectMixin:OnShow()
