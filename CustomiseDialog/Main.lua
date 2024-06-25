@@ -604,6 +604,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     button:SetScript("OnClick", function()
       Settings.OpenToCategory(SYNDICATOR_L_SYNDICATOR)
     end)
+    Baganator.Skins.AddFrame("Button", button)
   end
 
   table.insert(self.lowestFrames, allFrames[#allFrames])

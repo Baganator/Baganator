@@ -25,6 +25,7 @@ function BaganatorCharacterSelectMixin:OnLoad()
   self:SetUserPlaced(false)
 
   Baganator.Skins.AddFrame("ButtonFrame", self)
+  Baganator.Skins.AddFrame("Button", self.ManageCharactersButton)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
