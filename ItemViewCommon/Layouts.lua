@@ -137,7 +137,7 @@ end
 
 local function UpdateTextures(self)
   for _, button in ipairs(self.buttons) do
-    buttons.texturesSetup = true
+    button.texturesSetup = true
     button:UpdateTextures()
   end
 end
