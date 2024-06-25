@@ -96,9 +96,8 @@ L["FROM_THE_BOTTOM"] = "From the bottom"
 
 L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
 L["BUY_REAGENT_BANK"] = "Buy Reagent Bank"
-L["HIDE_IN_TOOLTIPS"] = "Hide in tooltips"
-L["DELETE_CHARACTER"] = "Delete Character"
-L["SHOW_IN_TOOLTIPS"] = "Show in tooltips"
+
+L["MANAGE_CHARACTERS"] = "Manage Characters"
 
 L["BOE"] = "BoE"
 L["BOA"] = "BoA"
