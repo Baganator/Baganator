@@ -22,7 +22,7 @@ local allSortKeys = {
     "sortedClassID",
     "sortedInvSlotID",
     "sortedSubClassID",
-    "itemLevel",
+    "itemLevelRaw",
     "invertedExpansion", -- table.remove removes this on classic
     "itemName",
     "craftingQuality",
@@ -44,7 +44,7 @@ local allSortKeys = {
     "sortedClassID",
     "sortedInvSlotID",
     "sortedSubClassID",
-    "invertedItemLevel",
+    "invertedItemLevelRaw",
     "invertedExpansion", -- table.remove removes this on classic
     "invertedQuality",
     "itemName",
@@ -67,7 +67,7 @@ local allSortKeys = {
     "sortedClassID",
     "sortedInvSlotID",
     "sortedSubClassID",
-    "invertedItemLevel",
+    "invertedItemLevelRaw",
     "invertedQuality",
     "itemName",
     "invertedCraftingQuality",

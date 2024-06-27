@@ -164,7 +164,7 @@ keysMapping["invertedExpansion"] = function(self)
   return self.expansion and -self.expansion
 end
 
-keysMapping["itemLevel"] = function(self)
+keysMapping["itemLevelRaw"] = function(self)
   if C_Item.IsItemDataCachedByID(self.itemID) then
     local itemLevel = C_Item.GetDetailedItemLevelInfo(self.itemLink)
     return itemLevel or -1
@@ -173,8 +173,8 @@ keysMapping["itemLevel"] = function(self)
   end
 end
 
-keysMapping["invertedItemLevel"] = function(self)
-  return self.itemLevel and -self.itemLevel
+keysMapping["invertedItemLevelRaw"] = function(self)
+  return self.itemLevelRaw and -self.itemLevelRaw
 end
 
 -- Dragonflight crafting reagent quality
