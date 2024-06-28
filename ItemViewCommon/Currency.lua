@@ -103,6 +103,11 @@ local function ShowCurrencies(self, character)
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
           GameTooltip:SetCurrencyByID(currencyID)
         end)
+        self.Currencies[i]:SetScript("OnMouseDown", function(self)
+          if IsModifiedClick("CHATLINK") then
+            ChatEdit_InsertLink(C_CurrencyInfo.GetCurrencyLink(currencyID, count))
+          end
+        end)
       else
         -- SetCurrencyByID doesn't exist on classic, but we want to show the
         -- other characters info via the tooltip anyway
