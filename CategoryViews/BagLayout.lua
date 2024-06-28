@@ -186,12 +186,13 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     end
 
     -- Setup empty slots and tooltips on them
-    if #emptySlotsOrder > 0 or (Baganator.Constants.IsEra and next(emptySlots) ~= nil) then
+    if #emptySlotsOrder > 0 then
       table.insert(layoutsShown, activeLayouts[1])
       local items = {}
       for _, details in ipairs(emptySlotsOrder) do
         table.insert(items, {bagID = details.bagID, slotID = details.slotID})
       end
+      activeLayouts[1]:DeallocateUnusedButtons(items)
       activeLayouts[1]:ShowGroup(items, math.min(#items, bagWidth))
       for index, button in ipairs(activeLayouts[1].buttons) do
         local bagType = emptySlotsOrder[index].key
