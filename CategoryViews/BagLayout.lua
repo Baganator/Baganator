@@ -159,6 +159,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
           self.LiveLayouts[index]:Hide()
         end
       end
+      self.LiveLayouts[1]:DeallocateUnusedButtons(emptySlotsOrder)
       for _, layout in ipairs(self.CachedLayouts) do
         layout:Hide()
       end
@@ -188,12 +189,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     -- Setup empty slots and tooltips on them
     if #emptySlotsOrder > 0 then
       table.insert(layoutsShown, activeLayouts[1])
-      local items = {}
-      for _, details in ipairs(emptySlotsOrder) do
-        table.insert(items, {bagID = details.bagID, slotID = details.slotID})
-      end
-      activeLayouts[1]:DeallocateUnusedButtons(items)
-      activeLayouts[1]:ShowGroup(items, math.min(#items, bagWidth))
+      activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
       for index, button in ipairs(activeLayouts[1].buttons) do
         local bagType = emptySlotsOrder[index].key
         button.isBag = true -- Ensure even counts of 1 are shown
