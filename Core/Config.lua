@@ -62,6 +62,8 @@ Baganator.Config.Options = {
   GUILD_BANK_SORT_METHOD = "guild_bank_sort_method",
 
   CUSTOM_CATEGORIES = "custom_categories",
+  CATEGORY_MODIFICATIONS = "category_modifications",
+  CATEGORY_MIGRATION = "category_migration",
   AUTOMATIC_CATEGORIES_ADDED = "automatic_categories_added",
   CATEGORY_DISPLAY_ORDER = "category_display_order",
   CATEGORY_HIDDEN = "category_hidden",
@@ -128,18 +130,26 @@ Baganator.Config.Defaults = {
 
   [Baganator.Config.Options.CUSTOM_CATEGORIES] = {
     --[[
-    { -- Search group
+    ["Tinker Gems"] = { -- Search group
       name = "Tinker Gems",
       search = "gem&tinker",
-      extraItems = {},
+      searchPriority = 250,
     },
-    { -- Group with specific items in it
+    ["Special Gems"] = { -- Group with specific items in it
       name = "Special Gems",
       search = nil,
-      extraItems = {{itemID = 154128}, {petID = 2959}, --stored by item id or pet id
+      searchPriority = 350,
     },
     ]]
   },
+  [Baganator.Config.Options.CATEGORY_MODIFICATIONS] = {
+    --[[
+    ["default_gem"] = {
+      addedItems = {{itemID = 154128}, {petID = 2959}}, --stored by item id or pet id
+    },
+    ]]
+  },
+  [Baganator.Config.Options.CATEGORY_MIGRATION] = 0,
   [Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED] = {},
   [Baganator.Config.Options.CATEGORY_DISPLAY_ORDER] = {},
   [Baganator.Config.Options.CATEGORY_HIDDEN] = {},

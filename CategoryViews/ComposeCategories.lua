@@ -76,6 +76,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
   local dividerPoints = {}
 
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+  local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
   local categoryKeys = {}
   for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
     if source == Baganator.CategoryViews.Constants.DividerName then
@@ -98,6 +99,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
             isCustom = false,
             index = #allDetails + 1,
             attachedItems = autoDetails.attachedItems[index],
+            auto = true,
           }
         end
       else
@@ -128,18 +130,19 @@ function Baganator.CategoryViews.ComposeCategories(everything)
         index = #allDetails + 1,
         attachedItems = nil,
       }
+    end
 
-      if category.addedItems and next(category.addedItems) then
-        local attachedItems = {}
-        for _, details in ipairs(category.addedItems) do
-          if details.itemID then
-            attachedItems["i:" .. details.itemID] = true
-          elseif details.petID then
-            attachedItems["p:" .. details.petID] = true
-          end
+    local mods = categoryMods[source]
+    if mods and mods.addedItems and next(mods.addedItems) then
+      local attachedItems = {}
+      for _, details in ipairs(mods.addedItems) do
+        if details.itemID then
+          attachedItems["i:" .. details.itemID] = true
+        elseif details.petID then
+          attachedItems["p:" .. details.petID] = true
         end
-        allDetails[#allDetails].attachedItems = attachedItems
       end
+      allDetails[#allDetails].attachedItems = attachedItems
     end
   end
 
@@ -165,7 +168,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
   local result = {
     searches = {},
     searchLabels = {},
-    customSearches = {},
+    autoSearches = {},
     attachedItems = {},
     categoryKeys = {},
     dividerPoints = dividerPoints,
@@ -175,7 +178,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
   for _, details in ipairs(allDetails) do
     table.insert(result.searches, details.search)
     table.insert(result.searchLabels, details.searchLabel)
-    result.customSearches[details.search] = details.isCustom
+    result.autoSearches[details.search] = details.auto
     result.attachedItems[details.search] = details.attachedItems
     result.categoryKeys[details.search] = details.source
   end

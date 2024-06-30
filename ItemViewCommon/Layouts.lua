@@ -689,12 +689,12 @@ function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
     end
 
     if mouseButton == "LeftButton" and C_Cursor.GetCursorItem() ~= nil then
-      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink)
+      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
     end
   end)
   button:HookScript("OnDragStart", function(_)
     if C_Cursor.GetCursorItem() ~= nil then
-      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink)
+      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
     end
   end)
 end
@@ -832,6 +832,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     FlowButtonsRows(self, rowWidth)
     for _, details in ipairs(toSet) do
       details[1]:SetItemDetails(details[2])
+      details[1].addedDirectly = details[2].addedDirectly
     end
   end
 

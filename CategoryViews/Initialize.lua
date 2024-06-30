@@ -1,3 +1,15 @@
+local function MigrateFormat()
+  if Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MIGRATION) == 0 then
+    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+    for key, categoryDetails in pairs(customCategories) do
+      categoryMods[key] = { addedItems = categoryDetails.addedItems }
+      categoryDetails.addedItems = nil
+    end
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MIGRATION, 1)
+  end
+end
+
 local function SetupCategories()
   local alreadyAdded = Baganator.Config.Get(Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED)
   local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
@@ -43,40 +55,44 @@ local function SetupAddRemoveItems()
 
   -- Remove the item from its current category and add it to the new one
   Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemEnd", function(_, toCategory)
-    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
     local details = Baganator.CategoryViews.Utilities.GetAddedItemData(activeItemID, activeItemLink)
-    if customCategories[previousCategory] and customCategories[previousCategory].addedItems then
-      local oldIndex = FindInTableIf(customCategories[previousCategory].addedItems, function(alt)
+    if categoryMods[previousCategory] and categoryMods[previousCategory].addedItems then
+      local oldIndex = FindInTableIf(categoryMods[previousCategory].addedItems, function(alt)
         return alt.itemID == details.itemID and alt.petID == details.petID
       end)
       if oldIndex then
-        table.remove(customCategories[previousCategory].addedItems, oldIndex)
-        if #customCategories[previousCategory].addedItems == 0 then
-          customCategories[previousCategory].addedItems = nil
+        table.remove(categoryMods[previousCategory].addedItems, oldIndex)
+        if #categoryMods[previousCategory].addedItems == 0 then
+          categoryMods[previousCategory].addedItems = nil
         end
       end
     end
 
     -- Either the target doesn't exist or this is a remove from category request
-    if not customCategories[toCategory] then
+    if not toCategory then
       return
     end
 
-    customCategories[toCategory].addedItems = customCategories[toCategory].addedItems or {}
+    if not categoryMods[toCategory] then
+      categoryMods[toCategory] = {}
+    end
 
-    local existingIndex = FindInTableIf(customCategories[toCategory].addedItems, function(alt)
+    categoryMods[toCategory].addedItems = categoryMods[toCategory].addedItems or {}
+
+    local existingIndex = FindInTableIf(categoryMods[toCategory].addedItems, function(alt)
       return alt.itemID == details.itemID and alt.petID == details.petID
     end)
     if existingIndex then
       return
     end
-    table.insert(customCategories[toCategory].addedItems, details)
-
-    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+    table.insert(categoryMods[toCategory].addedItems, details)
   end)
 end
 
 function Baganator.CategoryViews.Initialize()
+  MigrateFormat()
+
   SetupCategories()
 
   Baganator.CallbackRegistry:RegisterCallback("ResetCategoryOrder", function()

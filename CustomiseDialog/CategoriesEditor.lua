@@ -90,13 +90,15 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
 
     local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
     local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
-    local oldAddedItems, oldIndex
+    local oldMods, oldIndex
     local isNew = self.currentCategory == ""
     if not isNew then
       oldIndex = tIndexOf(displayOrder, self.currentCategory)
-      oldAddedItems = customCategories[self.currentCategory].addedItems
       customCategories[self.currentCategory] = nil
+      oldMods = categoryMods[self.currentCategory]
+      categoryMods[self.currentCategory] = nil
     end
     local newName = self.CategoryName:GetText():gsub("_", " ")
 
@@ -104,8 +106,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       name = newName,
       search = self.CategorySearch:GetText(),
       searchPriority = PRIORITY_MAP[self.PrioritySlider:GetValue()],
-      addedItems = oldAddedItems
     }
+    categoryMods[newName] = oldMods
 
     self.currentCategory = newName
     self.CategoryName:SetText(newName)

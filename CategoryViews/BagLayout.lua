@@ -67,8 +67,8 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
 
   local composed = Baganator.CategoryViews.ComposeCategories(everything)
 
-  local searches, searchLabels, priority, customSearches, attachedItems, categoryKeys, prioritisedSearches =
-    composed.searches, composed.searchLabels, composed.priorities, composed.customSearches, composed.attachedItems, composed.categoryKeys, composed.prioritisedSearches
+  local searches, searchLabels, priority, autoSearches, attachedItems, categoryKeys, prioritisedSearches =
+    composed.searches, composed.searchLabels, composed.priorities, composed.autoSearches, composed.attachedItems, composed.categoryKeys, composed.prioritisedSearches
 
   while #self.LiveLayouts < #searches + activeLayoutOffset do -- +1 for the extra category added when removing a category item
     table.insert(self.LiveLayouts, CreateFrame("Frame", nil, self, "BaganatorLiveCategoryLayoutTemplate"))
@@ -129,11 +129,13 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         anyResults = anyResults or #details > 0
         entries = details
       end
-      if self.isLive and self.addToCategoryMode and customSearches[searchTerm] then
+      if self.isLive and self.addToCategoryMode and not autoSearches[searchTerm] then
         if self.addToCategoryMode ~= categoryKeys[searchTerm] then
           table.insert(entries, {isDummy = true, label = BAGANATOR_L_ADD_TO_CATEGORY, dummyType = "add"})
         else
-          table.insert(entries, {isDummy = true, label = BAGANATOR_L_REMOVE_FROM_CATEGORY, dummyType = "remove"})
+          if self.addedToFromCategory then
+            table.insert(entries, {isDummy = true, label = BAGANATOR_L_REMOVE_FROM_CATEGORY, dummyType = "remove"})
+          end
         end
       end
       results[searchTerm] = {all = entries, index = tIndexOf(searches, searchTerm)}

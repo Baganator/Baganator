@@ -55,8 +55,9 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink)
+  Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
     self.addToCategoryMode = fromCategory
+    self.addedToFromCategory = addedDirectly == true
     if self:IsVisible() then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end

@@ -46,6 +46,24 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
     table.insert(self.pending[key], item)
   end
 
+  local attachedItems = self.attachedItems[search]
+  for search, items in pairs(self.attachedItems) do
+    local results = self.results[search]
+
+    for key in pairs(self.pending) do
+      local seenData = self.seenData[key]
+      local details = Baganator.CategoryViews.Utilities.GetAddedItemData(seenData.itemID, seenData.itemLink)
+      local match = items["i:" .. tostring(details.itemID)] or items["p:" .. tostring(details.petID)] or items[key]
+      if match then
+        for _, i in ipairs(self.pending[key]) do
+          i.addedDirectly = true
+          table.insert(results, i)
+        end
+        self.pending[key] = nil
+      end
+    end
+  end
+
   self.sortMethod = Baganator.Config.Get("sort_method")
   if self.sortMethod == "combine_stacks_only" or addonTable.ExternalContainerSorts[self.sortMethod] then
     Baganator.Utilities.Message(BAGANATOR_L_SORT_METHOD_RESET_FOR_CATEGORIES)
@@ -93,24 +111,7 @@ function BaganatorCategoryViewsCategorySearchMixin:DoSearch()
 
   local search = self.searches[self.searchIndex]
 
-  self.results[search] = self.results[search] or {}
   local results = self.results[search]
-
-  local attachedItems = self.attachedItems[search]
-  if attachedItems then
-    for key in pairs(self.searchPending) do
-      local seenData = self.seenData[key]
-      local details = Baganator.CategoryViews.Utilities.GetAddedItemData(seenData.itemID, seenData.itemLink)
-      local match = attachedItems["i:" .. tostring(details.itemID)] or attachedItems["p:" .. tostring(details.petID)] or attachedItems[key]
-      if match then
-        self.searchPending[key] = nil
-        for _, i in ipairs(self.pending[key]) do
-          table.insert(results, i)
-        end
-        self.pending[key] = nil
-      end
-    end
-  end
 
   for key in pairs(self.searchPending) do
     local match = Syndicator.Search.CheckItem(self.seenData[key], search)
