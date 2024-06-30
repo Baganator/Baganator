@@ -43,7 +43,7 @@ end
 
 function Baganator.CustomiseDialog.GetCornersEditor(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(480, 250)
+  container:SetSize(480, 210)
   container:SetPoint("CENTER")
 
   local corners = {}
@@ -108,30 +108,23 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
     draggable.value = value
   end
 
-  dropDown:SetText(BAGANATOR_L_ADD_A_CORNER_ITEM)
+  dropDown:SetText(BAGANATOR_L_ADD_ITEM)
 
   hooksecurefunc(dropDown, "OnEntryClicked", function(_, option)
     Pickup(option.value)
   end)
   draggable:SetScript("OnHide", function()
-    dropDown:SetText(BAGANATOR_L_ADD_A_CORNER_ITEM)
+    dropDown:SetText(BAGANATOR_L_ADD_ITEM)
   end)
-  dropDown:SetPoint("TOPLEFT", 320, 0)
+  dropDown:SetPoint("TOPLEFT", 320, 40)
   dropDown:SetPoint("TOPRIGHT")
 
-  local description = container:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-  description:SetText(BAGANATOR_L_ICON_CORNER_PRIORITIES_EXPLANATION)
-  description:SetPoint("TOPLEFT", 0, 2)
-  description:SetPoint("RIGHT", dropDown, "LEFT", 0, 0)
-  description:SetTextColor(1, 1, 1)
-  description:SetJustifyH("LEFT")
-
   local topLeft = GetCornerContainer(container, "top_left", Pickup)
-  topLeft:SetPoint("TOPLEFT", 0, -40)
+  topLeft:SetPoint("TOPLEFT", 0, 0)
   table.insert(corners, topLeft)
 
   local topRight = GetCornerContainer(container, "top_right", Pickup)
-  topRight:SetPoint("TOPRIGHT", 0, -40)
+  topRight:SetPoint("TOPRIGHT", 0, 0)
   table.insert(corners, topRight)
 
   local bottomLeft = GetCornerContainer(container, "bottom_left", Pickup)

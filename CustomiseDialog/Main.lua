@@ -201,7 +201,7 @@ local ICON_OPTIONS = {
   { type = "spacing" },
   {
     type = "header",
-    text = BAGANATOR_L_ICON_CORNER_PRIORITIES,
+    text = BAGANATOR_L_ICON_CORNERS,
     level = 2,
   },
 }
@@ -618,14 +618,8 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
 
   local allFrames = GenerateFrames(ICON_OPTIONS, frame)
 
-  frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
-      frame:SetValue(Baganator.Config.Get(frame.option))
-    end
-  end)
-
   local cornersEditor = Baganator.CustomiseDialog.GetCornersEditor(frame)
-  cornersEditor:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, 0)
+  cornersEditor:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -3)
   table.insert(allFrames, cornersEditor)
 
   local itemButton
@@ -634,7 +628,7 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
   else
     itemButton = CreateFrame("Button", nil, frame, "ItemButtonTemplate")
   end
-  itemButton:SetPoint("CENTER", cornersEditor, 0, -15)
+  itemButton:SetPoint("CENTER", cornersEditor, 0, 0)
   Baganator.Skins.AddFrame("ItemButton", itemButton)
 
   frame:SetScript("OnShow", function()
