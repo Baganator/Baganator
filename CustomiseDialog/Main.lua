@@ -143,6 +143,12 @@ local LAYOUT_OPTIONS = {
     valuePattern = BAGANATOR_L_X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES,
     option = "category_horizontal_spacing",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_GROUP_IDENTICAL_ITEMS,
+    rightText = BAGANATOR_L_BRACKETS_CATEGORY_VIEW_ONLY,
+    option = "category_item_grouping",
+  },
 }
 
 local THEME_OPTIONS = {
@@ -356,11 +362,6 @@ local SORTING_OPTIONS = {
 }
 
 local CATEGORIES_OPTIONS = {
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_GROUP_IDENTICAL_ITEMS,
-    option = "category_item_grouping",
-  },
 }
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
@@ -785,7 +786,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local frame = GetWrapperFrame(self)
 
-  local allFrames = GenerateFrames(CATEGORIES_OPTIONS, frame)
+  local allFrames = {}--GenerateFrames(CATEGORIES_OPTIONS, frame)
 
   local top = allFrames[#allFrames]
 
@@ -794,7 +795,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     text = BAGANATOR_L_CUSTOM_CATEGORIES,
     level = 2,
   }}, frame))
-  editorHeader:SetPoint("TOP", top, "BOTTOM", 0, -10)
+  editorHeader:SetPoint("TOP")
   editorHeader:SetPoint("LEFT", frame, "CENTER", 10 + Baganator.Constants.ButtonFrameOffset, 0)
   editorHeader:SetPoint("RIGHT", frame, -10, 0)
   table.insert(allFrames, editorHeader)
@@ -807,7 +808,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     },
   }, frame))
 
-  orderHeader:SetPoint("TOP", top, "BOTTOM", 0, -10)
+  orderHeader:SetPoint("TOP")
   orderHeader:SetPoint("RIGHT", frame, "CENTER", -10, 0)
   orderHeader:SetPoint("LEFT", frame, "LEFT", Baganator.Constants.ButtonFrameOffset + 10, 0)
   table.insert(allFrames, orderHeader)
