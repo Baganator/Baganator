@@ -125,7 +125,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
 
     local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
-    if not isDefault then
+    if isNew or not isDefault then
       local newName = self.CategoryName:GetText():gsub("_", " ")
 
       customCategories[newName] = {
