@@ -31,6 +31,11 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
       self.CategorySearch:SetText("")
       self.PrioritySlider:SetValue(0)
+      self.CategoryName:SetAlpha(1)
+      self.CategorySearch:SetAlpha(1)
+      self.PrioritySlider:SetAlpha(1)
+      self.Blocker:Hide()
+      self.DeleteButton:Enable()
       return
     end
 
@@ -179,4 +184,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()
   self.CategorySearch:SetText("")
   self.PrioritySlider:SetValue(0)
   self.currentCategory = ""
+  self.CategoryName:SetAlpha(1)
+  self.CategorySearch:SetAlpha(1)
+  self.PrioritySlider:SetAlpha(1)
+  self.Blocker:Hide()
+  self.DeleteButton:Enable()
 end
