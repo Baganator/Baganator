@@ -36,7 +36,7 @@ local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
       pickupCallback(value, label, index)
     end
   end, Baganator.CategoryViews.Constants.ProtectedCategory)
-  container:SetSize(250, 450)
+  container:SetSize(250, 500)
 
   container.ScrollBox:GetView():RegisterCallback("OnAcquiredFrame", function(_, frame)
     if frame.editButton then
@@ -201,24 +201,6 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   end)
   dropDown:SetPoint("TOPLEFT", 0, 0)
   dropDown:SetPoint("RIGHT", categoryOrder)
-
-  local resetOrderToDefault = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-  resetOrderToDefault:SetPoint("TOPLEFT", categoryOrder, "BOTTOMLEFT", -5, -10)
-  resetOrderToDefault:SetText(BAGANATOR_L_USE_DEFAULT)
-  DynamicResizeButton_Resize(resetOrderToDefault)
-  resetOrderToDefault:SetScript("OnClick", function()
-    Baganator.CallbackRegistry:TriggerEvent("ResetCategoryOrder")
-  end)
-  Baganator.Skins.AddFrame("Button", resetOrderToDefault)
-
-  local revertOrderChanges = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-  revertOrderChanges:SetPoint("TOPRIGHT", categoryOrder, "BOTTOMRIGHT", 5, -10)
-  revertOrderChanges:SetText(BAGANATOR_L_REVERT_CHANGES)
-  DynamicResizeButton_Resize(revertOrderChanges)
-  revertOrderChanges:SetScript("OnClick", function()
-    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, previousOrder)
-  end)
-  Baganator.Skins.AddFrame("Button", revertOrderChanges)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == Baganator.Config.Options.CATEGORY_DISPLAY_ORDER or settingName == Baganator.Config.Options.CATEGORY_HIDDEN then
