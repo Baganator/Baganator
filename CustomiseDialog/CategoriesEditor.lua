@@ -55,6 +55,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.Blocker:Show()
       self.DeleteButton:Disable()
     end
+    self.HiddenCheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[value])
 
     self.CategoryName:SetText(category.name)
     self.CategorySearch:SetText(category.search)
