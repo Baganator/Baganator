@@ -47,6 +47,25 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
   end)
 
+  local checkBoxWrapper = CreateFrame("Frame", nil, self)
+  checkBoxWrapper:SetHeight(40)
+  checkBoxWrapper:SetPoint("LEFT")
+  checkBoxWrapper:SetPoint("RIGHT")
+  checkBoxWrapper:SetPoint("BOTTOM", 0, 30)
+  checkBoxWrapper:SetScript("OnEnter", function() self.HiddenCheckBox:OnEnter() end)
+  checkBoxWrapper:SetScript("OnLeave", function() self.HiddenCheckBox:OnLeave() end)
+  checkBoxWrapper:SetScript("OnMouseUp", function() self.HiddenCheckBox:Click() end)
+  if DoesTemplateExist("SettingsCheckBoxTemplate") then
+    self.HiddenCheckBox = CreateFrame("CheckButton", nil, checkBoxWrapper, "SettingsCheckBoxTemplate")
+  else
+    self.HiddenCheckBox = CreateFrame("CheckButton", nil, checkBoxWrapper, "SettingsCheckboxTemplate")
+  end
+  self.HiddenCheckBox:SetPoint("LEFT", checkBoxWrapper, "CENTER", 0, 0)
+  self.HiddenCheckBox:SetText(BAGANATOR_L_HIDDEN)
+  self.HiddenCheckBox:SetNormalFontObject(GameFontHighlight)
+  self.HiddenCheckBox:GetFontString():SetPoint("RIGHT", checkBoxWrapper, "CENTER", -20, 0)
+  Baganator.Skins.AddFrame("CheckBox", self.HiddenCheckBox)
+
   self.PrioritySlider = CreateFrame("Frame", nil, self, "BaganatorPrioritySliderTemplate")
   self.PrioritySlider:Init({valuePattern = BAGANATOR_L_X_SEARCH_PRIORITY})
   self.PrioritySlider:SetPoint("LEFT")
@@ -78,6 +97,10 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       searchPriority = PRIORITY_MAP[self.PrioritySlider:GetValue()],
     }
     categoryMods[newName] = oldMods
+
+    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
+    hidden[newName] = self.HiddenCheckBox:GetChecked()
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
 
     self.currentCategory = newName
     self.CategoryName:SetText(newName)

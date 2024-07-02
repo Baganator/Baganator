@@ -802,7 +802,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEditor:SetPoint("RIGHT", frame, -10, 0)
   categoriesEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset + 10, 0)
-  categoriesEditor:SetHeight(190)
+  categoriesEditor:SetHeight(220)
   table.insert(allFrames, categoriesEditor)
 
   local exportHeader = unpack(GenerateFrames({

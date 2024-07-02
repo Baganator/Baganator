@@ -30,7 +30,7 @@ local function PopulateCategoryOrder(container)
   container.ScrollBox:SetDataProvider(CreateDataProvider(dataProviderElements), true)
 end
 
-local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
+local function GetCategoryContainer(parent, pickupCallback)
   local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, function(value, label, index)
     if value ~= Baganator.CategoryViews.Constants.ProtectedCategory then
       pickupCallback(value, label, index)
@@ -178,13 +178,7 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
     draggable.value = value
   end
 
-  local function ToggleVisibility(value, label, index)
-    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
-    hidden[value] = not hidden[value]
-    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
-  end
-
-  categoryOrder = GetCategoryContainer(container, Pickup, ToggleVisibility)
+  categoryOrder = GetCategoryContainer(container, Pickup)
   categoryOrder:SetPoint("TOPLEFT", 0, -40)
 
   dropDown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
