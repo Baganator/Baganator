@@ -132,6 +132,17 @@ local LAYOUT_OPTIONS = {
     text = BAGANATOR_L_REDUCE_UI_SPACING,
     option = "reduce_spacing",
   },
+  { type = "spacing" },
+  {
+    type = "slider",
+    min = 0,
+    max = 200,
+    scale = 100,
+    lowText = "0%",
+    highText = "200%",
+    valuePattern = BAGANATOR_L_X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES,
+    option = "category_horizontal_spacing",
+  },
 }
 
 local THEME_OPTIONS = {
@@ -345,16 +356,6 @@ local SORTING_OPTIONS = {
 }
 
 local CATEGORIES_OPTIONS = {
-  {
-    type = "slider",
-    min = 0,
-    max = 200,
-    scale = 100,
-    lowText = "0%",
-    highText = "200%",
-    valuePattern = BAGANATOR_L_X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES,
-    option = "category_horizontal_spacing",
-  },
   {
     type = "checkbox",
     text = BAGANATOR_L_GROUP_IDENTICAL_ITEMS,
@@ -592,7 +593,8 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
   do
     tooltipButtonFrame:SetPoint("LEFT")
     tooltipButtonFrame:SetPoint("RIGHT")
-    tooltipButtonFrame:SetPoint("TOP", allFrames[#allFrames], 0, -30)
+    tooltipButtonFrame:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+    tooltipButtonFrame:SetHeight(40)
     local text = tooltipButtonFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     text:SetPoint("RIGHT", tooltipButtonFrame, "CENTER", -50, 0)
     text:SetText(BAGANATOR_L_TOOLTIP_SETTINGS)
