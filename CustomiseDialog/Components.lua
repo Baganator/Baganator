@@ -369,9 +369,7 @@ function Baganator.CustomiseDialog.GetDraggable(callback, movedCallback)
   return frame
 end
 
-function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback, buttons, lockedValue)
-  buttons = buttons or {}
-
+function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback, lockedValue)
   local container = CreateFrame("Frame", nil, parent, "InsetFrameTemplate")
   Baganator.Skins.AddFrame("InsetFrame", container)
   container.ScrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")

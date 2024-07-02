@@ -9,12 +9,12 @@
       <Layer level="BACKGROUND">
         <FontString inherits="GameFontHighlight" text="NAME">
           <Anchors>
-            <Anchor point="TOPLEFT" x="15" y="-40"/>
+            <Anchor point="TOPLEFT" x="15"/>
           </Anchors>
         </FontString>
         <FontString inherits="GameFontHighlight" text="SEARCH">
           <Anchors>
-            <Anchor point="TOPLEFT" x="15" y="-90"/>
+            <Anchor point="TOPLEFT" x="15" y="-50"/>
           </Anchors>
         </FontString>
       </Layer>
@@ -23,14 +23,14 @@
       <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategoryName" letters="100">
         <Size y="30"/>
         <Anchors>
-          <Anchor point="TOPLEFT" x="20" y="-55"/>
+          <Anchor point="TOPLEFT" x="20" y="-15"/>
           <Anchor point="RIGHT" x="-10"/>
         </Anchors>
       </EditBox>
       <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategorySearch" letters="100">
         <Size y="30"/>
         <Anchors>
-          <Anchor point="TOPLEFT" x="20" y="-105"/>
+          <Anchor point="TOPLEFT" x="20" y="-65"/>
           <Anchor point="RIGHT" x="-10"/>
         </Anchors>
       </EditBox>

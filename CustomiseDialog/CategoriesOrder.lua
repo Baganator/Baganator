@@ -35,48 +35,40 @@ local function GetCategoryContainer(parent, pickupCallback, visibilityCallback)
     if value ~= Baganator.CategoryViews.Constants.ProtectedCategory then
       pickupCallback(value, label, index)
     end
-  end, { {
-    tooltipText = BAGANATOR_L_TOGGLE_VISIBILITY,
-    callback = visibilityCallback,
-    atlas = "socialqueuing-icon-eye",
-  } }, Baganator.CategoryViews.Constants.ProtectedCategory)
-  container:SetSize(250, 420)
+  end, Baganator.CategoryViews.Constants.ProtectedCategory)
+  container:SetSize(250, 450)
 
   container.ScrollBox:GetView():RegisterCallback("OnAcquiredFrame", function(_, frame)
-    if frame.visibilityButton then
+    if frame.editButton then
       return
     end
 
     local button = CreateFrame("Button", nil, frame)
-    button:SetSize(16, 16)
-    button:SetNormalAtlas("socialqueuing-icon-eye")
+    button:SetSize(22, 22)
+    local tex = button:CreateTexture(nil, "ARTWORK")
+    tex:SetTexture("Interface\\AddOns\\Baganator\\Assets\\pen")
+    tex:SetPoint("CENTER")
+    tex:SetSize(14, 14)
+    button:SetAlpha(0.8)
     button:SetScript("OnEnter", function()
       GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-      if Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[frame.value] then
-        GameTooltip:SetText(BAGANATOR_L_SHOW_CATEGORY)
-      else
-        GameTooltip:SetText(BAGANATOR_L_HIDE_CATEGORY)
-      end
+      GameTooltip:SetText(BAGANATOR_L_EDIT)
       GameTooltip:Show()
-      button:SetAlpha(0.5)
+      button:SetAlpha(0.4)
     end)
     button:SetScript("OnLeave", function()
       GameTooltip:Hide()
-      button:SetAlpha(1)
+      button:SetAlpha(0.8)
     end)
     button:SetScript("OnClick", function(self)
-      visibilityCallback(self:GetParent().value, self:GetParent():GetText(), self:GetParent().indexValue)
+      Baganator.CallbackRegistry:TriggerEvent("EditCategory", self:GetParent().value)
     end)
     button:SetPoint("RIGHT", -30, 1)
 
-    frame.visibilityButton = button
+    frame.editButton = button
   end)
   container.ScrollBox:GetView():RegisterCallback("OnInitializedFrame", function(_, frame)
-    if Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[frame.value] then
-      frame.visibilityButton:GetNormalTexture():SetVertexColor(1, 0, 0)
-    else
-      frame.visibilityButton:GetNormalTexture():SetVertexColor(1, 1, 1)
-    end
+    frame.editButton:SetShown(Baganator.Config.Get("custom_categories")[frame.value] ~= nil)
   end)
 
   PopulateCategoryOrder(container)
@@ -106,7 +98,13 @@ local function SetCategoriesToDropDown(dropDown, ignore)
   end
   table.sort(options, function(a, b) return a.label:lower() < b.label:lower() end)
 
-  local entries, values = {BAGANATOR_L_CATEGORY_DIVIDER}, {Baganator.CategoryViews.Constants.DividerName}
+  local entries, values = {
+    BAGANATOR_L_CREATE_NEW,
+    BAGANATOR_L_CATEGORY_DIVIDER,
+  }, {
+    "",
+    Baganator.CategoryViews.Constants.DividerName
+  }
 
   for _, opt in ipairs(options) do
     table.insert(entries, opt.label)
@@ -118,7 +116,7 @@ end
 
 function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(300, 500)
+  container:SetSize(300, 550)
   container:SetPoint("CENTER")
 
   local previousOrder = CopyTable(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER))
@@ -189,13 +187,17 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   categoryOrder = GetCategoryContainer(container, Pickup, ToggleVisibility)
   categoryOrder:SetPoint("TOPLEFT", 0, -40)
 
-  dropDown:SetText(BAGANATOR_L_INSERT_CATEGORY)
+  dropDown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
 
   hooksecurefunc(dropDown, "OnEntryClicked", function(_, option)
-    Pickup(option.value, option.label, option.value ~= Baganator.CategoryViews.Constants.DividerName and tIndexOf(categoryOrder.elements, option.value) or nil)
+    if option.value ~= "" then
+      Pickup(option.value, option.label, option.value ~= Baganator.CategoryViews.Constants.DividerName and tIndexOf(categoryOrder.elements, option.value) or nil)
+    else
+      Baganator.CallbackRegistry:TriggerEvent("EditCategory", option.value)
+    end
   end)
   draggable:SetScript("OnHide", function()
-    dropDown:SetText(BAGANATOR_L_INSERT_CATEGORY)
+    dropDown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
   end)
   dropDown:SetPoint("TOPLEFT", 0, 0)
   dropDown:SetPoint("RIGHT", categoryOrder)

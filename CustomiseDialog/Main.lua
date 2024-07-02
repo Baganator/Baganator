@@ -786,13 +786,11 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local frame = GetWrapperFrame(self)
 
-  local allFrames = {}--GenerateFrames(CATEGORIES_OPTIONS, frame)
-
-  local top = allFrames[#allFrames]
+  local allFrames = {}
 
   local editorHeader = unpack(GenerateFrames({{
     type = "header",
-    text = BAGANATOR_L_CUSTOM_CATEGORIES,
+    text = BAGANATOR_L_EDIT_CATEGORY,
     level = 2,
   }}, frame))
   editorHeader:SetPoint("TOP")
@@ -800,26 +798,11 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   editorHeader:SetPoint("RIGHT", frame, -10, 0)
   table.insert(allFrames, editorHeader)
 
-  local orderHeader = unpack(GenerateFrames({
-    {
-      type = "header",
-      text = BAGANATOR_L_DISPLAY_ORDER,
-      level = 2,
-    },
-  }, frame))
-
-  orderHeader:SetPoint("TOP")
-  orderHeader:SetPoint("RIGHT", frame, "CENTER", -10, 0)
-  orderHeader:SetPoint("LEFT", frame, "LEFT", Baganator.Constants.ButtonFrameOffset + 10, 0)
-  table.insert(allFrames, orderHeader)
-
-  top = orderHeader
-
   local categoriesEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesEditorTemplate")
-  categoriesEditor:SetPoint("TOP", top, "BOTTOM")
+  categoriesEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEditor:SetPoint("RIGHT", frame, -10, 0)
   categoriesEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset + 10, 0)
-  categoriesEditor:SetHeight(230)
+  categoriesEditor:SetHeight(190)
   table.insert(allFrames, categoriesEditor)
 
   local exportHeader = unpack(GenerateFrames({
@@ -840,7 +823,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesImportExport:SetPoint("TOPRIGHT", exportHeader, "BOTTOMRIGHT")
 
   local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)
-  categoriesOrder:SetPoint("TOP", top, "BOTTOM")
+  categoriesOrder:SetPoint("TOP")
   table.insert(allFrames, categoriesOrder)
   categoriesOrder:SetPoint("LEFT", frame, Baganator.Constants.ButtonFrameOffset + 20, 0)
   categoriesOrder:SetPoint("RIGHT", frame, "CENTER")

@@ -1,22 +1,5 @@
 BaganatorCustomiseDialogCategoriesEditorMixin = {}
 
-local function SetCategoriesToDropDown(dropDown)
-  local options = {}
-  for source, category in pairs(Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)) do
-    table.insert(options, {label = category.name, value = category.name})
-  end
-  table.sort(options, function(a, b) return a.label < b.label end)
-
-  local entries, values = {BAGANATOR_L_CREATE_NEW_CATEGORY}, {""}
-
-  for _, opt in ipairs(options) do
-    table.insert(entries, opt.label)
-    table.insert(values, opt.value)
-  end
-
-  dropDown:SetupOptions(entries, values)
-end
-
 local PRIORITY_LIST = {
   220,
   250,
@@ -39,29 +22,16 @@ for index, value in ipairs(PRIORITY_LIST) do
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
-  self.DropDown = Baganator.CustomiseDialog.GetDropdown(self)
-  self.DropDown:SetPoint("TOPRIGHT", -10, 0)
-  self.DropDown:SetPoint("LEFT", 15, 0)
-  self.DropDown:SetText(BAGANATOR_L_CREATE_OR_EDIT)
   self.currentCategory = ""
-  SetCategoriesToDropDown(self.DropDown)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == Baganator.Config.Options.CUSTOM_CATEGORIES then
-      SetCategoriesToDropDown(self.DropDown)
-    end
-  end)
-
-  hooksecurefunc(self.DropDown, "OnEntryClicked", function(_, option)
-    self.currentCategory = option.value
-    if option.value == "" then
+  Baganator.CallbackRegistry:RegisterCallback("EditCategory", function(_, value)
+    self.currentCategory = value
+    if value == "" then
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
       self.CategorySearch:SetText("")
       self.PrioritySlider:SetValue(0)
-      self.DropDown:SetText(BAGANATOR_L_CREATE_NEW_CATEGORY)
     else
-      local category = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)[option.value]
-      self.DropDown:SetText(category.name)
+      local category = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)[value]
       self.CategoryName:SetText(category.name)
       self.CategorySearch:SetText(category.search)
       if category.searchPriority < PRIORITY_LIST[1] then
@@ -81,7 +51,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.PrioritySlider:Init({valuePattern = BAGANATOR_L_X_SEARCH_PRIORITY})
   self.PrioritySlider:SetPoint("LEFT")
   self.PrioritySlider:SetPoint("RIGHT")
-  self.PrioritySlider:SetPoint("TOP", 0, -130)
+  self.PrioritySlider:SetPoint("TOP", 0, -90)
   self.PrioritySlider:SetValue(0)
 
   self.ApplyChangesButton:SetScript("OnClick", function()
@@ -111,7 +81,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 
     self.currentCategory = newName
     self.CategoryName:SetText(newName)
-    self.DropDown:SetText(self.currentCategory)
 
     Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
 
@@ -150,7 +119,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()
-  self.DropDown:SetText(BAGANATOR_L_CREATE_OR_EDIT)
   self.CategoryName:SetText("")
   self.CategorySearch:SetText("")
   self.PrioritySlider:SetValue(0)
