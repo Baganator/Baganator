@@ -142,11 +142,10 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 
       if oldIndex then
         displayOrder[oldIndex] = self.currentCategory
-        Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
-      elseif isNew then
+      elseif isNew and tIndexOf(displayOrder, self.currentCategory) == nil then
         table.insert(displayOrder, 1, self.currentCategory)
-        Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
       end
+      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     else
       hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
     end
