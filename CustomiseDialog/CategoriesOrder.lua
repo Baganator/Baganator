@@ -44,10 +44,10 @@ local function GetCategoryContainer(parent, pickupCallback)
     end
 
     local button = CreateFrame("Button", nil, frame)
-    button:SetSize(22, 22)
+    button:SetSize(52, 22)
     local tex = button:CreateTexture(nil, "ARTWORK")
     tex:SetTexture("Interface\\AddOns\\Baganator\\Assets\\pen")
-    tex:SetPoint("CENTER")
+    tex:SetPoint("LEFT", 4, 0)
     tex:SetSize(14, 14)
     button:SetAlpha(0.8)
     button:SetScript("OnEnter", function()
@@ -63,12 +63,14 @@ local function GetCategoryContainer(parent, pickupCallback)
     button:SetScript("OnClick", function(self)
       Baganator.CallbackRegistry:TriggerEvent("EditCategory", self:GetParent().value)
     end)
-    button:SetPoint("RIGHT", -30, 1)
+    button:SetPoint("RIGHT", 0, 1)
 
     frame.editButton = button
   end)
   container.ScrollBox:GetView():RegisterCallback("OnInitializedFrame", function(_, frame)
-    frame.editButton:SetShown(Baganator.Config.Get("custom_categories")[frame.value] ~= nil)
+    local default = Baganator.CategoryViews.Constants.SourceToCategory[frame.value]
+    local divider = frame.value == Baganator.CategoryViews.Constants.DividerName
+    frame.editButton:SetShown(not divider and (not default or not default.auto))
   end)
 
   PopulateCategoryOrder(container)
