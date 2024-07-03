@@ -471,3 +471,39 @@ function Baganator.CustomiseDialog.GetDropdown(parent)
     return dropDown
   end
 end
+
+-- Dropdown for selecting and storing an option
+function Baganator.CustomiseDialog.GetBasicDropdown(parent)
+  if DoesTemplateExist("SelectionPopoutButtonTemplate") then
+    return CreateFrame("Frame", nil, parent, "BaganatorDropDownTemplate")
+  else
+    local frame = CreateFrame("Frame", nil, parent)
+    local dropdown = CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")
+    dropdown:SetWidth(250)
+    dropdown:SetPoint("LEFT", frame, "CENTER", -32, 0)
+    local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    label:SetPoint("LEFT", 20, 0)
+    label:SetPoint("RIGHT", frame, "CENTER", -50, 0)
+    label:SetJustifyH("RIGHT")
+    frame:SetPoint("LEFT", 30, 0)
+    frame:SetPoint("RIGHT", -30, 0)
+    frame.Init = function(_, option)
+      label:SetText(option.text)
+      local entries = {}
+      for index = 1, #option.entries do
+        table.insert(entries, {option.entries[index], option.values[index]})
+      end
+      MenuUtil.CreateRadioMenu(dropdown, function(value)
+        return Baganator.Config.Get(option.option) == value
+      end, function(value)
+        Baganator.Config.Set(option.option, value)
+      end, unpack(entries))
+    end
+    frame.SetValue = function(_, value)
+      -- don't need to do anything as dropdown's onshow handles this
+    end
+    frame:SetHeight(40)
+
+    return frame
+  end
+end

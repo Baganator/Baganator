@@ -384,31 +384,7 @@ local function GenerateFrames(options, parent)
         frame = CreateFrame("Frame", nil, parent, "BaganatorSliderTemplate")
         frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, offsetY)
       elseif option.type == "dropdown" then
-        if DoesTemplateExist("SelectionPopoutButtonTemplate") then
-          frame = CreateFrame("Frame", nil, parent, "BaganatorDropDownTemplate")
-        else
-          frame = CreateFrame("Frame", nil, parent)
-          local dropdown = CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")
-          dropdown:SetWidth(250)
-          dropdown:SetPoint("CENTER")
-          frame:SetPoint("LEFT", 30, 0)
-          frame:SetPoint("RIGHT", -30, 0)
-          frame.Init = function(_, option)
-            local entries = {}
-            for index = 1, #option.entries do
-              table.insert(entries, {option.entries[index], option.values[index]})
-            end
-            MenuUtil.CreateRadioMenu(dropdown, function(value)
-              return Baganator.Config.Get(option.option) == value
-            end, function(value)
-              Baganator.Config.Set(option.option, value)
-            end, unpack(entries))
-          end
-          frame.SetValue = function(_, value)
-            -- don't need to do anything as dropdown's onshow handles this
-          end
-          frame:SetHeight(40)
-        end
+        frame = Baganator.CustomiseDialog.GetBasicDropdown(parent)
         frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, offsetY)
       elseif option.type == "header" then
         frame = CreateFrame("Frame", nil, parent, "BaganatorHeaderTemplate")
