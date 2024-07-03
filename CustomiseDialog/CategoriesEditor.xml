@@ -7,12 +7,12 @@
     </Scripts>
     <Layers>
       <Layer level="BACKGROUND">
-        <FontString inherits="GameFontHighlight" text="NAME">
+        <FontString inherits="GameFontHighlight" text="NAME" parentArray="ChangeAlpha">
           <Anchors>
             <Anchor point="TOPLEFT" x="15"/>
           </Anchors>
         </FontString>
-        <FontString inherits="GameFontHighlight" text="SEARCH">
+        <FontString inherits="GameFontHighlight" text="SEARCH" parentArray="ChangeAlpha">
           <Anchors>
             <Anchor point="TOPLEFT" x="15" y="-50"/>
           </Anchors>
@@ -20,14 +20,14 @@
       </Layer>
     </Layers>
     <Frames>
-      <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategoryName" letters="100">
+      <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategoryName" letters="100" parentArray="ChangeAlpha">
         <Size y="30"/>
         <Anchors>
           <Anchor point="TOPLEFT" x="20" y="-15"/>
           <Anchor point="RIGHT" x="-10"/>
         </Anchors>
       </EditBox>
-      <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategorySearch" letters="100">
+      <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategorySearch" letters="100" parentArray="ChangeAlpha">
         <Size y="30"/>
         <Anchors>
           <Anchor point="TOPLEFT" x="20" y="-65"/>
@@ -35,7 +35,7 @@
         </Anchors>
       </EditBox>
 
-      <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate">
+      <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="ChangeAlpha">
         <Anchors>
           <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>
         </Anchors>

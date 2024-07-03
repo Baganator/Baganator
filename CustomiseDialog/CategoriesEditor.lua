@@ -8,18 +8,14 @@ local PRIORITY_LIST = {
   400,
 }
 
-local PRIORITY_MAP = {
-  [-1] = 220,
-  [0] = 250,
-  [1] = 300,
-  [2] = 350,
-  [3] = 400,
-}
+local PRIORITY_MAP = {}
 
 local priorityOffset = -2
 for index, value in ipairs(PRIORITY_LIST) do
   PRIORITY_MAP[index + priorityOffset] = value
 end
+
+local disabledAlpha = 0.5
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.currentCategory = ""
@@ -81,6 +77,12 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   local function SetState(value)
     local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
     self.currentCategory = value
+
+    for _, region in ipairs(self.ChangeAlpha) do
+      region:SetAlpha(1)
+    end
+    self.Blocker:SetPoint("BOTTOMRIGHT", self.PrioritySlider)
+
     if value == "" then
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
       self.CategorySearch:SetText("")
@@ -104,9 +106,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.DeleteButton:Enable()
     else
       category = Baganator.CategoryViews.Constants.SourceToCategory[value]
-      self.CategoryName:SetAlpha(0.5)
-      self.CategorySearch:SetAlpha(0.5)
-      self.PrioritySlider:SetAlpha(0.5)
+      self.CategoryName:SetAlpha(disabledAlpha)
+      self.CategorySearch:SetAlpha(disabledAlpha)
+      self.PrioritySlider:SetAlpha(disabledAlpha)
       self.Blocker:Show()
       self.DeleteButton:Disable()
     end
@@ -149,17 +151,19 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.HiddenCheckBox:GetFontString():SetPoint("RIGHT", checkBoxWrapper, "CENTER", -20, 0)
   Baganator.Skins.AddFrame("CheckBox", self.HiddenCheckBox)
 
+  table.insert(self.ChangeAlpha, self.HiddenCheckBox)
+
   self.PrioritySlider = CreateFrame("Frame", nil, self, "BaganatorPrioritySliderTemplate")
   self.PrioritySlider:Init({valuePattern = BAGANATOR_L_X_SEARCH_PRIORITY})
   self.PrioritySlider:SetPoint("LEFT")
   self.PrioritySlider:SetPoint("RIGHT")
   self.PrioritySlider:SetPoint("TOP", 0, -90)
   self.PrioritySlider:SetValue(0)
+  table.insert(self.ChangeAlpha, self.PrioritySlider)
 
   self.Blocker = CreateFrame("Frame", nil, self)
   self.Blocker:EnableMouse(true)
   self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
-  self.Blocker:SetPoint("BOTTOMRIGHT", self.PrioritySlider)
   self.Blocker:SetFrameStrata("DIALOG")
 
   self.CategoryName:SetScript("OnEditFocusLost", Save)
@@ -205,16 +209,23 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   Baganator.Skins.AddFrame("Button", self.DeleteButton)
   Baganator.Skins.AddFrame("EditBox", self.CategoryName)
   Baganator.Skins.AddFrame("EditBox", self.CategorySearch)
+
+  self:Disable()
 end
 
-function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()
+function BaganatorCustomiseDialogCategoriesEditorMixin:Disable()
   self.CategoryName:SetText("")
   self.CategorySearch:SetText("")
   self.PrioritySlider:SetValue(0)
   self.currentCategory = ""
-  self.CategoryName:SetAlpha(1)
-  self.CategorySearch:SetAlpha(1)
-  self.PrioritySlider:SetAlpha(1)
-  self.Blocker:Hide()
-  self.DeleteButton:Enable()
+  self.DeleteButton:Disable()
+  for _, region in ipairs(self.ChangeAlpha) do
+    region:SetAlpha(disabledAlpha)
+  end
+  self.Blocker:Show()
+  self.Blocker:SetPoint("BOTTOMRIGHT", self.DeleteButton)
+end
+
+function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()
+  self:Disable()
 end
