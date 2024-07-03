@@ -107,7 +107,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.Blocker:SetPoint("BOTTOMRIGHT", self.PrioritySlider)
   self.Blocker:SetFrameStrata("DIALOG")
 
-  self.ApplyChangesButton:SetScript("OnClick", function()
+  local function Save()
     if self.CategoryName:GetText() == "" then
       return
     end
@@ -152,8 +152,28 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 
     Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
     Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+  end
+
+  self.CategoryName:SetScript("OnEditFocusLost", Save)
+  self.CategorySearch:SetScript("OnEditFocusLost", Save)
+  self.HiddenCheckBox:SetScript("OnClick", Save)
+
+  self.CategoryName:SetScript("OnKeyDown", function(_, key)
+    if key == "ENTER" then
+      Save()
+    elseif key == "TAB" then
+      self.CategoryName:ClearHighlightText()
+      self.CategorySearch:SetFocus()
+    end
   end)
-  Baganator.Skins.AddFrame("Button", self.ApplyChangesButton)
+  self.CategorySearch:SetScript("OnKeyDown", function(_, key)
+    if key == "ENTER" then
+      Save()
+    elseif key == "TAB" then
+      self.CategorySearch:ClearHighlightText()
+      self.CategoryName:SetFocus()
+    end
+  end)
 
   self.DeleteButton:SetScript("OnClick", function()
     if self.currentCategory == "" then
