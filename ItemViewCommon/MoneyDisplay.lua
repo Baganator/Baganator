@@ -1,3 +1,10 @@
+local function AddWarband(tooltip)
+  local warband = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1).money or 0
+  if warband > 0 then
+    GameTooltip:AddDoubleLine(PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), Baganator.Utilities.GetMoneyString(warband, true), nil, nil, nil, 1, 1, 1)
+  end
+end
+
 function Baganator.ShowGoldSummaryRealm(anchor, point)
   GameTooltip:SetOwner(anchor, point)
 
@@ -32,6 +39,7 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
+
   GameTooltip_AddBlankLineToTooltip(GameTooltip)
   GameTooltip:AddLine(BAGANATOR_L_HOLD_SHIFT_TO_SHOW_ACCOUNT_TOTAL, 0, 1, 0)
   GameTooltip:Show()
@@ -68,8 +76,11 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
 
   GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(Baganator.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
+
+  AddWarband(GameTooltip)
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
+
   GameTooltip:Show()
 end
