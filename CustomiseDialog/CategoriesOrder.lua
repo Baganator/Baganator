@@ -136,7 +136,7 @@ end
 
 function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(300, 550)
+  container:SetSize(300, 570)
   container:SetPoint("CENTER")
 
   local previousOrder = CopyTable(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER))
@@ -224,6 +224,66 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
       SetCategoriesToDropDown(dropDown, GetInsertedCategories())
     end
   end)
+
+  local exportDialog = "Baganator_Export_Dialog"
+  StaticPopupDialogs[exportDialog] = {
+    text = BAGANATOR_L_CTRL_C_TO_COPY,
+    button1 = DONE,
+    hasEditBox = 1,
+    OnShow = function(self, data)
+      self.editBox:SetText(data)
+      self.editBox:HighlightText()
+    end,
+    EditBoxOnEnterPressed = function(self)
+      self:GetParent():Hide()
+    end,
+    EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+    editBoxWidth = 230,
+    timeout = 0,
+    hideOnEscape = 1,
+  }
+
+  local importDialog = "Baganator_Import_Dialog"
+  StaticPopupDialogs[importDialog] = {
+    text = BAGANATOR_L_PASTE_YOUR_IMPORT_STRING_HERE,
+    button1 = BAGANATOR_L_IMPORT,
+    button2 = CANCEL,
+    hasEditBox = 1,
+    OnShow = function(self, data)
+      self.editBox:SetText("")
+    end,
+    OnAccept = function(self)
+      Baganator.CustomiseDialog.CategoriesImport(self.editBox:GetText())
+    end,
+    EditBoxOnEnterPressed = function(self)
+      Baganator.CustomiseDialog.CategoriesImport(self:GetText())
+      self:GetParent():Hide()
+    end,
+    EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+    editBoxWidth = 230,
+    timeout = 0,
+    hideOnEscape = 1,
+  }
+
+  local exportButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+  exportButton:SetPoint("RIGHT", categoryOrder, 0, 0)
+  exportButton:SetPoint("BOTTOM", container)
+  exportButton:SetText(BAGANATOR_L_EXPORT)
+  DynamicResizeButton_Resize(exportButton)
+  exportButton:SetScript("OnClick", function()
+    StaticPopup_Show(exportDialog, nil, nil, Baganator.CustomiseDialog.CategoriesExport())
+  end)
+  Baganator.Skins.AddFrame("Button", exportButton)
+
+  local importButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+  importButton:SetPoint("LEFT", categoryOrder, 0, 0)
+  importButton:SetPoint("BOTTOM", container)
+  importButton:SetText(BAGANATOR_L_IMPORT)
+  DynamicResizeButton_Resize(importButton)
+  importButton:SetScript("OnClick", function()
+    StaticPopup_Show(importDialog)
+  end)
+  Baganator.Skins.AddFrame("Button", importButton)
 
   return container
 end
