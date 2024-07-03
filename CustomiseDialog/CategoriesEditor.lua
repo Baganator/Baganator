@@ -24,6 +24,60 @@ end
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.currentCategory = ""
 
+  local function Save()
+    if self.CategoryName:GetText() == "" then
+      return
+    end
+
+    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+    local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
+    local oldMods, oldIndex
+    local isNew, isDefault = self.currentCategory == "", customCategories[self.currentCategory] == nil
+    if not isNew and not isDefault then
+      oldIndex = tIndexOf(displayOrder, self.currentCategory)
+      customCategories[self.currentCategory] = nil
+      oldMods = categoryMods[self.currentCategory]
+      categoryMods[self.currentCategory] = nil
+    end
+
+    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
+    local oldHidden = hidden[self.currentCategory]
+    if isNew or not isDefault then
+      local newName = self.CategoryName:GetText():gsub("_", " ")
+      local isNewName = newName ~= self.currentCategory
+
+      customCategories[newName] = {
+        name = newName,
+        search = self.CategorySearch:GetText(),
+        searchPriority = PRIORITY_MAP[self.PrioritySlider:GetValue()],
+      }
+      categoryMods[newName] = oldMods
+
+      hidden[newName] = self.HiddenCheckBox:GetChecked()
+
+      self.currentCategory = newName
+      self.CategoryName:SetText(newName)
+
+      if oldIndex then
+        displayOrder[oldIndex] = self.currentCategory
+      elseif isNew and tIndexOf(displayOrder, self.currentCategory) == nil then
+        table.insert(displayOrder, 1, self.currentCategory)
+      end
+      if isNewName then
+        Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+      end
+    else
+      hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
+    end
+
+    if hidden[self.currentCategory] ~= oldHidden then
+      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
+    end
+
+    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+  end
+
   local function SetState(value)
     local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
     self.currentCategory = value
@@ -36,6 +90,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:SetAlpha(1)
       self.Blocker:Hide()
       self.DeleteButton:Enable()
+      Save()
       return
     end
 
@@ -106,53 +161,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
   self.Blocker:SetPoint("BOTTOMRIGHT", self.PrioritySlider)
   self.Blocker:SetFrameStrata("DIALOG")
-
-  local function Save()
-    if self.CategoryName:GetText() == "" then
-      return
-    end
-
-    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
-    local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
-    local oldMods, oldIndex
-    local isNew, isDefault = self.currentCategory == "", customCategories[self.currentCategory] == nil
-    if not isNew and not isDefault then
-      oldIndex = tIndexOf(displayOrder, self.currentCategory)
-      customCategories[self.currentCategory] = nil
-      oldMods = categoryMods[self.currentCategory]
-      categoryMods[self.currentCategory] = nil
-    end
-
-    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
-    if isNew or not isDefault then
-      local newName = self.CategoryName:GetText():gsub("_", " ")
-
-      customCategories[newName] = {
-        name = newName,
-        search = self.CategorySearch:GetText(),
-        searchPriority = PRIORITY_MAP[self.PrioritySlider:GetValue()],
-      }
-      categoryMods[newName] = oldMods
-
-      hidden[newName] = self.HiddenCheckBox:GetChecked()
-
-      self.currentCategory = newName
-      self.CategoryName:SetText(newName)
-
-      if oldIndex then
-        displayOrder[oldIndex] = self.currentCategory
-      elseif isNew and tIndexOf(displayOrder, self.currentCategory) == nil then
-        table.insert(displayOrder, 1, self.currentCategory)
-      end
-      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
-    else
-      hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
-    end
-
-    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
-    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
-  end
 
   self.CategoryName:SetScript("OnEditFocusLost", Save)
   self.CategorySearch:SetScript("OnEditFocusLost", Save)

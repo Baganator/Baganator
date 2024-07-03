@@ -249,7 +249,7 @@ L["ADD_TO_CATEGORY"] = "Add to category"
 L["REMOVE_FROM_CATEGORY"] = "Remove from category"
 L["EMPTY"] = "Empty"
 L["SORT_METHOD_RESET_FOR_CATEGORIES"] = "Sort method reset to be used with categories"
-L["EDIT"] = "Edit"
+L["MOVE"] = "Move"
 L["INVALID_CATEGORY_IMPORT_FORMAT"] = "Invalid category import format"
 L["HIDDEN"] = "Hidden"
 

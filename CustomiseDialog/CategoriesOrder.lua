@@ -31,47 +31,65 @@ local function PopulateCategoryOrder(container)
 end
 
 local function GetCategoryContainer(parent, pickupCallback)
-  local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, function(value, label, index)
-    if value ~= Baganator.CategoryViews.Constants.ProtectedCategory then
-      pickupCallback(value, label, index)
-    end
-  end, Baganator.CategoryViews.Constants.ProtectedCategory)
-  container:SetSize(250, 500)
-
-  container.ScrollBox:GetView():RegisterCallback("OnAcquiredFrame", function(_, frame)
-    if frame.editButton then
-      return
-    end
-
-    local button = CreateFrame("Button", nil, frame)
-    button:SetSize(52, 22)
-    local tex = button:CreateTexture(nil, "ARTWORK")
-    tex:SetTexture("Interface\\AddOns\\Baganator\\Assets\\pen")
-    tex:SetPoint("LEFT", 4, 0)
-    tex:SetSize(14, 14)
-    button:SetAlpha(0.8)
-    button:SetScript("OnEnter", function()
-      GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-      GameTooltip:SetText(BAGANATOR_L_EDIT)
-      GameTooltip:Show()
-      button:SetAlpha(0.4)
-    end)
-    button:SetScript("OnLeave", function()
-      GameTooltip:Hide()
+  local container = CreateFrame("Frame", nil, parent, "InsetFrameTemplate")
+  Baganator.Skins.AddFrame("InsetFrame", container)
+  container.ScrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")
+  container.ScrollBox:SetPoint("TOPLEFT", 1, -3)
+  container.ScrollBox:SetPoint("BOTTOMRIGHT", -1, 3)
+  local scrollView = CreateScrollBoxListLinearView()
+  scrollView:SetElementExtent(22)
+  scrollView:SetElementInitializer("Button", function(frame, elementData)
+    if not frame.initialized then
+      frame.initialized = true
+      frame:SetNormalFontObject(GameFontHighlight)
+      frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
+      frame:SetScript("OnClick", function(self, button)
+        if value ~= Baganator.CategoryViews.Constants.ProtectedCategory then
+          Baganator.CallbackRegistry:TriggerEvent("EditCategory", self.value)
+        end
+      end)
+      local button = CreateFrame("Button", nil, frame)
+      button:SetSize(28, 22)
+      local tex = button:CreateTexture(nil, "ARTWORK")
+      tex:SetTexture("Interface\\PaperDollInfoFrame\\statsortarrows")
+      tex:SetPoint("LEFT", 4, 0)
+      tex:SetSize(14, 14)
       button:SetAlpha(0.8)
-    end)
-    button:SetScript("OnClick", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("EditCategory", self:GetParent().value)
-    end)
-    button:SetPoint("RIGHT", 0, 1)
+      button:SetScript("OnEnter", function()
+        GameTooltip:SetOwner(button, "ANCHOR_RIGHT", -16, 0)
+        GameTooltip:SetText(BAGANATOR_L_MOVE)
+        GameTooltip:Show()
+        button:SetAlpha(0.4)
+      end)
+      button:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+        button:SetAlpha(0.8)
+      end)
+      button:SetScript("OnClick", function(self)
+        pickupCallback(self:GetParent().value, self:GetParent():GetText(), self:GetParent().indexValue)
+      end)
+      button:SetPoint("LEFT", 4, 1)
 
-    frame.editButton = button
-  end)
-  container.ScrollBox:GetView():RegisterCallback("OnInitializedFrame", function(_, frame)
+      frame.repositionButton = button
+    end
+    frame.indexValue = container.ScrollBox:GetDataProvider():FindIndex(elementData)
+    frame.value = elementData.value
+    frame:SetText(elementData.label)
+    frame:GetFontString():SetPoint("RIGHT", -8, 0)
+    frame:GetFontString():SetPoint("LEFT")
     local default = Baganator.CategoryViews.Constants.SourceToCategory[frame.value]
     local divider = frame.value == Baganator.CategoryViews.Constants.DividerName
-    frame.editButton:SetShown(not divider and (not default or not default.auto))
+    frame:SetEnabled(not divider and (not default or not default.auto))
+    local protected = elementData.value == Baganator.CategoryViews.Constants.ProtectedCategory
+    frame.repositionButton:SetShown(not protected)
   end)
+  container.ScrollBar = CreateFrame("EventFrame", nil, container, "WowTrimScrollBar")
+  container.ScrollBar:SetPoint("TOPRIGHT")
+  container.ScrollBar:SetPoint("BOTTOMRIGHT")
+  ScrollUtil.InitScrollBoxListWithScrollBar(container.ScrollBox, container.ScrollBar, scrollView)
+  Baganator.Skins.AddFrame("TrimScrollBar", container.ScrollBar)
+
+  container:SetSize(250, 500)
 
   PopulateCategoryOrder(container)
 
