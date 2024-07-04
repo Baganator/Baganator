@@ -74,13 +74,15 @@ end
 function Baganator.CategoryViews.ComposeCategories(everything)
   local allDetails = {}
   local dividerPoints = {}
+  local dividerOffset = 0
 
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
   local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
   local categoryKeys = {}
+  local emptySlotsIndex = -1
   for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
     if source == Baganator.CategoryViews.Constants.DividerName then
-      dividerPoints[#allDetails + 1] = true
+      dividerPoints[#allDetails + 1 + dividerOffset] = true
     end
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
@@ -102,6 +104,9 @@ function Baganator.CategoryViews.ComposeCategories(everything)
             auto = true,
           }
         end
+      elseif category.emptySlots then
+        emptySlotsIndex = #allDetails + 1
+        dividerOffset = dividerOffset + 1
       else
         allDetails[#allDetails + 1] = {
           source = source,
@@ -171,6 +176,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
     autoSearches = {},
     attachedItems = {},
     categoryKeys = {},
+    emptySlotsIndex = emptySlotsIndex,
     dividerPoints = dividerPoints,
     prioritisedSearches = prioritisedSearches,
   }

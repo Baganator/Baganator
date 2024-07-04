@@ -34,8 +34,10 @@ local function SetupCategories()
       end
     end
   end
-  if #displayOrder == 0 then
-    table.insert(displayOrder, Baganator.CategoryViews.Constants.ProtectedCategory)
+  for _, source in ipairs(Baganator.CategoryViews.Constants.ProtectedCategories) do
+    if tIndexOf(displayOrder, source) == nil then
+      table.insert(displayOrder, source)
+    end
   end
 
   -- Trigger settings changed event

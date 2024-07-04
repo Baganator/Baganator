@@ -189,9 +189,13 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     end
 
     -- Setup empty slots and tooltips on them
-    if #emptySlotsOrder > 0 then
-      table.insert(layoutsShown, activeLayouts[1])
-      activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
+    if #emptySlotsOrder > 0 and composed.emptySlotsIndex ~= -1 then
+      table.insert(layoutsShown, composed.emptySlotsIndex, activeLayouts[1])
+      if hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] then
+        activeLayouts[1]:ShowGroup({}, 1)
+      else
+        activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
+      end
       for index, button in ipairs(activeLayouts[1].buttons) do
         local bagType = emptySlotsOrder[index].key
         button.isBag = true -- Ensure even counts of 1 are shown
@@ -230,7 +234,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       Baganator.Skins.AddFrame("CategoryLabel", label)
       label.categorySearch = nil
       label:SetText(BAGANATOR_L_EMPTY)
-      table.insert(activeLabels, label)
+      table.insert(activeLabels, composed.emptySlotsIndex, label)
     else
       activeLayouts[1]:Hide()
     end

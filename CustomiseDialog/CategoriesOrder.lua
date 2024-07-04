@@ -209,9 +209,11 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   draggable:SetScript("OnHide", function()
     dropDown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
     local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
-    if tIndexOf(displayOrder, Baganator.CategoryViews.Constants.ProtectedCategory) == nil then
-      table.insert(displayOrder, Baganator.CategoryViews.Constants.ProtectedCategory)
-      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+    for _, source in ipairs(Baganator.CategoryViews.Constants.ProtectedCategories) do
+      if tIndexOf(displayOrder, source) == nil then
+        table.insert(displayOrder, source)
+        Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+      end
     end
   end)
   dropDown:SetPoint("TOPLEFT", 0, 0)

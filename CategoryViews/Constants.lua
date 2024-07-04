@@ -3,7 +3,8 @@ if not Syndicator then
 end
 
 Baganator.CategoryViews.Constants = {
-  ProtectedCategory = "default_other",
+  ProtectedCategories = { "default_other", "default_special_empty" },
+  EmptySlotsCategory = "default_special_empty",
   DividerName = "----",
   DividerLabel = "——————",
 
@@ -331,6 +332,13 @@ table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
   name = BAGANATOR_L_CATEGORY_RECENT_AUTO,
   auto = "recents",
   searchPriority = 600,
+  doNotAdd = true,
+})
+
+table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
+  key = "special_empty",
+  name = BAGANATOR_L_EMPTY,
+  emptySlots = true,
   doNotAdd = true,
 })
 
