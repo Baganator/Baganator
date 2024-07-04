@@ -116,7 +116,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     self.HiddenCheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[value])
 
     self.CategoryName:SetText(category.name)
-    self.CategorySearch:SetText(category.search)
+    self.CategorySearch:SetText(category.search or "")
     if category.searchPriority < PRIORITY_LIST[1] then
       self.PrioritySlider:SetValue(-1)
     else
