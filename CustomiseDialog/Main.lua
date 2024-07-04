@@ -457,6 +457,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
   Baganator.Skins.AddFrame("ButtonFrame", self)
+  self:SetScript("OnMouseWheel", function() end)
 
   self:SetTitle(BAGANATOR_L_CUSTOMISE_BAGANATOR)
 

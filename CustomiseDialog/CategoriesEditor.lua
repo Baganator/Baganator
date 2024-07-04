@@ -81,6 +81,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     for _, region in ipairs(self.ChangeAlpha) do
       region:SetAlpha(1)
     end
+    self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
     self.Blocker:SetPoint("BOTTOMRIGHT", self.PrioritySlider)
 
     if value == "" then
@@ -163,6 +164,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 
   self.Blocker = CreateFrame("Frame", nil, self)
   self.Blocker:EnableMouse(true)
+  self.Blocker:SetScript("OnMouseWheel", function() end)
   self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
   self.Blocker:SetFrameStrata("DIALOG")
 
@@ -223,7 +225,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:Disable()
     region:SetAlpha(disabledAlpha)
   end
   self.Blocker:Show()
-  self.Blocker:SetPoint("BOTTOMRIGHT", self.DeleteButton)
+  self.Blocker:SetPoint("TOPLEFT")
+  self.Blocker:SetPoint("BOTTOMRIGHT")
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()
