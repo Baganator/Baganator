@@ -75,7 +75,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", functio
   return false
 end, textInit)
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOE, "boe", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_EQUIP, "boe", function(BindingText, details)
   local classID = select(6, C_Item.GetItemInfoInstant(details.itemLink))
   if (IsEquipment(details.itemLink) or classID == Enum.ItemClass.Container) and not details.isBound and (iconSettings.boe_on_common or details.quality > 1) then
     BindingText:SetText(BAGANATOR_L_BOE)
@@ -107,7 +107,7 @@ local function IsBindOnAccount(details)
   return false
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOA, "boa", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_ACCOUNT, "boa", function(BindingText, details)
   if IsBindOnAccount(details) then
     BindingText:SetText(BAGANATOR_L_BOA)
     if iconSettings.useQualityColors then
@@ -141,7 +141,7 @@ local function IsBindOnUse(details)
   return false
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BOU, "bou", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_USE, "bou", function(BindingText, details)
   if IsBindOnUse(details) then
     BindingText:SetText(BAGANATOR_L_BOU)
     if iconSettings.useQualityColors then
