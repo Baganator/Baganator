@@ -76,7 +76,7 @@ local LAYOUT_OPTIONS = {
     max = 24,
     lowText = "1",
     highText = "24",
-    valuePattern = BAGANATOR_L_X_BAG_COLUMNS,
+    text = BAGANATOR_L_BAG_COLUMNS,
     option = "bag_view_width",
   },
   {
@@ -85,7 +85,7 @@ local LAYOUT_OPTIONS = {
     max = 42,
     lowText = "1",
     highText = "42",
-    valuePattern = BAGANATOR_L_X_BANK_COLUMNS,
+    text = BAGANATOR_L_BANK_COLUMNS,
     option = "bank_view_width",
   },
   {
@@ -94,7 +94,7 @@ local LAYOUT_OPTIONS = {
     max = 42,
     lowText = "1",
     highText = "42",
-    valuePattern = BAGANATOR_L_X_WARBAND_BANK_COLUMNS,
+    text = BAGANATOR_L_WARBAND_BANK_COLUMNS,
     option = "warband_bank_view_width",
     check = function() return Syndicator.Constants.WarbandBankActive end,
   },
@@ -104,7 +104,7 @@ local LAYOUT_OPTIONS = {
     max = 42,
     lowText = "1",
     highText = "42",
-    valuePattern = BAGANATOR_L_X_GUILD_COLUMNS,
+    text = BAGANATOR_L_GUILD_BANK_COLUMNS,
     option = "guild_view_width",
     check = NotIsEraCheck,
   },
@@ -140,8 +140,9 @@ local LAYOUT_OPTIONS = {
     scale = 100,
     lowText = "0%",
     highText = "200%",
-    valuePattern = BAGANATOR_L_X_PERCENT_ITEM_BUTTONS_SPACING_BETWEEN_CATEGORIES,
+    text = BAGANATOR_L_CATEGORY_SPACING,
     option = "category_horizontal_spacing",
+    valuePattern = BAGANATOR_L_PERCENTAGE_PATTERN,
   },
   {
     type = "checkbox",
@@ -159,7 +160,8 @@ local THEME_OPTIONS = {
     lowText = "0%",
     highText = "100%",
     scale = 100,
-    valuePattern = BAGANATOR_L_X_TRANSPARENCY,
+    text = BAGANATOR_L_TRANSPARENCY,
+    valuePattern = BAGANATOR_L_PERCENTAGE_PATTERN,
     option = "view_alpha",
   },
   {
@@ -203,7 +205,8 @@ local ICON_OPTIONS = {
     max = 70,
     lowText = "10",
     highText = "70",
-    valuePattern = BAGANATOR_L_X_ICON_SIZE,
+    text = BAGANATOR_L_ICON_SIZE,
+    valuePattern = BAGANATOR_L_PIXEL_PATTERN,
     option = "bag_icon_size",
   },
   {
@@ -212,7 +215,8 @@ local ICON_OPTIONS = {
     max = 40,
     lowText = "5",
     highText = "40",
-    valuePattern = BAGANATOR_L_X_ICON_TEXT_FONT_SIZE,
+    text = BAGANATOR_L_ICON_TEXT_FONT_SIZE,
+    valuePattern = BAGANATOR_L_PIXEL_PATTERN,
     option = "icon_text_font_size",
   },
   { type = "spacing" },
@@ -347,7 +351,7 @@ local SORTING_OPTIONS = {
     max = 128,
     lowText = "0",
     highText = "128",
-    valuePattern = BAGANATOR_L_X_BAG_SLOTS_TO_IGNORE_WHEN_SORTING_CHARACTER_SPECIFIC,
+    text = BAGANATOR_L_IGNORED_BAG_SLOTS,
     option = "sort_ignore_slots_count_2",
   },
   {
@@ -356,7 +360,7 @@ local SORTING_OPTIONS = {
     max = 500,
     lowText = "0",
     highText = "500",
-    valuePattern = BAGANATOR_L_X_BANK_SLOTS_TO_IGNORE_WHEN_SORTING_CHARACTER_SPECIFIC,
+    text = BAGANATOR_L_IGNORED_BANK_SLOTS,
     option = "sort_ignore_bank_slots_count",
   },
 }
@@ -779,7 +783,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset - 10, 0)
-  categoriesEditor:SetHeight(220)
+  categoriesEditor:SetHeight(210)
   table.insert(allFrames, categoriesEditor)
 
   local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)

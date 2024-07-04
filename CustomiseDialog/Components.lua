@@ -44,23 +44,16 @@ function BaganatorCheckBoxMixin:OnMouseUp()
   self.CheckBox:Click()
 end
 
-local function AdjustSlider(slider)
-  slider:SetValueStep(1)
-  slider:SetObeyStepOnDrag(true)
-  slider.High:SetPoint("TOPRIGHT", slider, "BOTTOMRIGHT", -4, -1)
-  slider.Low:SetPoint("TOPLEFT", slider, "BOTTOMLEFT", 4, -1)
-  slider.Text:ClearAllPoints()
-  slider.Text:SetPoint("BOTTOM", slider, "TOP", 0, 4)
-end
-
 BaganatorSliderMixin = {}
 
 function BaganatorSliderMixin:Init(details)
   Mixin(self, details)
   self.Slider:SetMinMaxValues(self.min, self.max)
-  self.Slider.High:SetText(self.highText)
-  self.Slider.Low:SetText(self.lowText)
-  AdjustSlider(self.Slider)
+
+  self.Slider:SetValueStep(1)
+  self.Slider:SetObeyStepOnDrag(true)
+  self.Label:SetText(self.text)
+  self.valuePattern = self.valuePattern or "%s"
 
   Baganator.Skins.AddFrame("Slider", self.Slider)
 
@@ -71,7 +64,7 @@ function BaganatorSliderMixin:Init(details)
     else
     end
     Baganator.Config.Set(self.option, value)
-    self.Slider.Text:SetText(self.valuePattern:format(math.floor(self.Slider:GetValue())))
+    self.ValueText:SetText(self.valuePattern:format(math.floor(self.Slider:GetValue())))
   end)
 end
 
@@ -425,15 +418,15 @@ function BaganatorPrioritySliderMixin:Init(details)
   self.callback = self.callback or function() end
 
   self.Slider:SetMinMaxValues(-1, 3)
-  self.Slider.High:SetText(BAGANATOR_L_HIGHEST)
-  self.Slider.Low:SetText(BAGANATOR_L_LOW)
+  self.Label:SetText(self.text)
 
-  AdjustSlider(self.Slider)
+  self.Slider:SetValueStep(1)
+  self.Slider:SetObeyStepOnDrag(true)
 
   self.Slider:SetScript("OnValueChanged", function()
     local value = self.Slider:GetValue()
     self.callback(value)
-    self.Slider.Text:SetText(self.valuePattern:format(VALUE_TO_PRIORITY_TEXT[value]))
+    self.ValueText:SetText(VALUE_TO_PRIORITY_TEXT[value])
   end)
   Baganator.Skins.AddFrame("Slider", self.Slider)
 end

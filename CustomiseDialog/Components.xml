@@ -10,16 +10,31 @@
   </Frame>
 
   <Frame name="BaganatorSliderTemplate" virtual="true" mixin="BaganatorSliderMixin">
-    <Size y="50"/>
+    <Size y="40"/>
     <Frames>
-      <Slider parentKey="Slider" inherits="OptionsSliderTemplate">
+      <Slider parentKey="Slider" inherits="UISliderTemplate">
         <Size y="20"/>
         <Anchors>
-          <Anchor point="RIGHT" x="-30" y="-10"/>
-          <Anchor point="LEFT" x="30" y="-10"/>
+          <Anchor point="RIGHT" x="-45"/>
+          <Anchor point="LEFT" relativePoint="CENTER" x="-32"/>
         </Anchors>
       </Slider>
     </Frames>
+    <Layers>
+      <Layer level="OVERLAY">
+        <FontString parentKey="Label" inherits="GameFontHighlight" justifyH="RIGHT" text="XX">
+          <Anchors>
+            <Anchor point="LEFT" x="20"/>
+            <Anchor point="RIGHT" relativePoint="CENTER" x="-50"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="ValueText" inherits="GameFontHighlight" justifyH="LEFT" text="XX">
+          <Anchors>
+            <Anchor point="LEFT" relativePoint="RIGHT" x="-35"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
     <Anchors>
       <Anchor point="RIGHT" x="-30"/>
       <Anchor point="LEFT" x="30"/>
@@ -131,13 +146,27 @@
   </EventButton>
 
   <Frame name="BaganatorPrioritySliderTemplate" virtual="true" mixin="BaganatorPrioritySliderMixin">
-    <Size y="50"/>
+    <Size y="40"/>
+    <Layers>
+      <Layer level="OVERLAY">
+        <FontString parentKey="Label" inherits="GameFontHighlight" justifyH="LEFT" text="XX">
+          <Anchors>
+            <Anchor point="LEFT" x="15"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="ValueText" inherits="GameFontHighlight" justifyH="LEFT" text="XX">
+          <Anchors>
+            <Anchor point="LEFT" relativePoint="RIGHT" x="-55"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
     <Frames>
-      <Slider parentKey="Slider" inherits="OptionsSliderTemplate">
+      <Slider parentKey="Slider" inherits="UISliderTemplate">
         <Size y="20"/>
         <Anchors>
-          <Anchor point="RIGHT" x="-30" y="-10"/>
-          <Anchor point="LEFT" x="30" y="-10"/>
+          <Anchor point="RIGHT" x="-70"/>
+          <Anchor point="LEFT" x="10" relativeKey="$parent.Label" relativePoint="RIGHT"/>
         </Anchors>
       </Slider>
     </Frames>

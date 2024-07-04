@@ -155,10 +155,10 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   table.insert(self.ChangeAlpha, self.HiddenCheckBox)
 
   self.PrioritySlider = CreateFrame("Frame", nil, self, "BaganatorPrioritySliderTemplate")
-  self.PrioritySlider:Init({valuePattern = BAGANATOR_L_X_SEARCH_PRIORITY})
+  self.PrioritySlider:Init({text = BAGANATOR_L_PRIORITY})
   self.PrioritySlider:SetPoint("LEFT")
   self.PrioritySlider:SetPoint("RIGHT")
-  self.PrioritySlider:SetPoint("TOP", 0, -90)
+  self.PrioritySlider:SetPoint("TOP", 0, -100)
   self.PrioritySlider:SetValue(0)
   table.insert(self.ChangeAlpha, self.PrioritySlider)
 
