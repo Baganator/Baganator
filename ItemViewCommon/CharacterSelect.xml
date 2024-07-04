@@ -1,6 +1,6 @@
 <Ui>
   <Frame name="BaganatorCharacterSelectTemplate" virtual="true" mixin="BaganatorCharacterSelectMixin" inherits="ButtonFrameTemplate" enableMouse="true" hidden="true" topLevel="true">
-    <Size x="300" y="420"/>
+    <Size x="300" y="430"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
@@ -18,7 +18,7 @@
       <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
         <Anchors>
           <Anchor point="TOPRIGHT" y="-55" x="-15"/>
-          <Anchor point="BOTTOMRIGHT" y="27"/>
+          <Anchor point="BOTTOMRIGHT" y="37"/>
         </Anchors>
       </EventFrame>
       <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
