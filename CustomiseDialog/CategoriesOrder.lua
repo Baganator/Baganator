@@ -44,9 +44,7 @@ local function GetCategoryContainer(parent, pickupCallback)
       frame:SetNormalFontObject(GameFontHighlight)
       frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
       frame:SetScript("OnClick", function(self, button)
-        if value ~= Baganator.CategoryViews.Constants.ProtectedCategory then
-          Baganator.CallbackRegistry:TriggerEvent("EditCategory", self.value)
-        end
+        Baganator.CallbackRegistry:TriggerEvent("EditCategory", self.value)
       end)
       local button = CreateFrame("Button", nil, frame)
       button:SetSize(28, 22)
@@ -80,8 +78,6 @@ local function GetCategoryContainer(parent, pickupCallback)
     local default = Baganator.CategoryViews.Constants.SourceToCategory[frame.value]
     local divider = frame.value == Baganator.CategoryViews.Constants.DividerName
     frame:SetEnabled(not divider and (not default or not default.auto))
-    local protected = elementData.value == Baganator.CategoryViews.Constants.ProtectedCategory
-    frame.repositionButton:SetShown(not protected)
   end)
   container.ScrollBar = CreateFrame("EventFrame", nil, container, "WowTrimScrollBar")
   container.ScrollBar:SetPoint("TOPRIGHT")
@@ -212,6 +208,11 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   end)
   draggable:SetScript("OnHide", function()
     dropDown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
+    local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
+    if tIndexOf(displayOrder, Baganator.CategoryViews.Constants.ProtectedCategory) == nil then
+      table.insert(displayOrder, Baganator.CategoryViews.Constants.ProtectedCategory)
+      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+    end
   end)
   dropDown:SetPoint("TOPLEFT", 0, 0)
   dropDown:SetPoint("RIGHT", categoryOrder)
