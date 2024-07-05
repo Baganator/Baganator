@@ -77,13 +77,22 @@ function Baganator.CategoryViews.ComposeCategories(everything)
   local dividerOffset = 0
 
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+  local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
   local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
   local categoryKeys = {}
-  local emptySlotsIndex = -1
+  local emptySlots = {index = -1, section = ""}
+  local currentSection = ""
   for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
-    if source == Baganator.CategoryViews.Constants.DividerName then
+    local section = source:match("^_(.*)")
+    if source == Baganator.CategoryViews.Constants.DividerName or (section and not sectionToggled[section]) then
       dividerPoints[#allDetails + 1 + dividerOffset] = true
     end
+    if source == Baganator.CategoryViews.Constants.SectionEnd then
+      currentSection = ""
+    elseif section then
+      currentSection = section
+    end
+
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
       if category.auto then
@@ -102,10 +111,12 @@ function Baganator.CategoryViews.ComposeCategories(everything)
             index = #allDetails + 1,
             attachedItems = autoDetails.attachedItems[index],
             auto = true,
+            section = currentSection,
           }
         end
       elseif category.emptySlots then
-        emptySlotsIndex = #allDetails + 1
+        emptySlots.index = #allDetails + 1
+        emptySlots.section = currentSection
         dividerOffset = dividerOffset + 1
       else
         allDetails[#allDetails + 1] = {
@@ -116,6 +127,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
           isCustom = false,
           index = #allDetails + 1,
           attachedItems = nil,
+          section = currentSection,
         }
       end
     end
@@ -134,6 +146,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
         isCustom = true,
         index = #allDetails + 1,
         attachedItems = nil,
+        section = currentSection,
       }
     end
 
@@ -173,16 +186,18 @@ function Baganator.CategoryViews.ComposeCategories(everything)
   local result = {
     searches = {},
     searchLabels = {},
+    section = {},
     autoSearches = {},
     attachedItems = {},
     categoryKeys = {},
-    emptySlotsIndex = emptySlotsIndex,
+    emptySlots = emptySlots,
     dividerPoints = dividerPoints,
     prioritisedSearches = prioritisedSearches,
   }
 
   for _, details in ipairs(allDetails) do
     table.insert(result.searches, details.search)
+    table.insert(result.section, details.section)
     table.insert(result.searchLabels, details.searchLabel)
     result.autoSearches[details.search] = details.auto
     result.attachedItems[details.search] = details.attachedItems

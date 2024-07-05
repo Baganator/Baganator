@@ -7,6 +7,7 @@ Baganator.CategoryViews.Constants = {
   EmptySlotsCategory = "default_special_empty",
   DividerName = "----",
   DividerLabel = "——————",
+  SectionEnd = "__end",
 
   GroupingState = {
     SplitStack = 1,
@@ -18,6 +19,7 @@ Baganator.CategoryViews.Constants = {
     Baganator.Config.Options.CATEGORY_DISPLAY_ORDER,
     Baganator.Config.Options.CATEGORY_HIDDEN,
     Baganator.Config.Options.CATEGORY_ITEM_GROUPING,
+    Baganator.Config.Options.CATEGORY_SECTION_TOGGLED,
   },
 }
 

@@ -51,6 +51,7 @@ Baganator.Constants.Events = {
   "ShowCustomise",
   "ResetFramePositions",
   "EditCategory",
+  "EditCategorySection",
 
   "HighlightSimilarItems",
   "HighlightIdenticalItems",

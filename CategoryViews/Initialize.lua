@@ -29,7 +29,7 @@ local function SetupCategories()
     for i = #displayOrder, 1, -1 do
       local source = displayOrder[i]
       local category = Baganator.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
-      if not category and source ~= Baganator.CategoryViews.Constants.DividerName then
+      if not category and source ~= Baganator.CategoryViews.Constants.DividerName and not source:match("^_") then
         table.remove(displayOrder, i)
       end
     end

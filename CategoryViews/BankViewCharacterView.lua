@@ -14,6 +14,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   end
 
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
+  self.sectionButtonPool = Baganator.CategoryViews.GetSectionButtonPool(self)
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
   Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()

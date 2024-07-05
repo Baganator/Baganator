@@ -1,0 +1,27 @@
+<Ui>
+  <Frame name="BaganatorCustomiseDialogCategoriesSectionEditorTemplate" virtual="true" mixin="BaganatorCustomiseDialogCategoriesSectionEditorMixin">
+    <Size x="300" y="200"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnHide method="OnHide"/>
+    </Scripts>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString inherits="GameFontHighlight" text="NAME" parentArray="ChangeAlpha">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="15"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="SectionName" letters="100" parentArray="ChangeAlpha">
+        <Size y="30"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" x="20" y="-15"/>
+          <Anchor point="RIGHT" x="-10"/>
+        </Anchors>
+      </EditBox>
+    </Frames>
+  </Frame>
+</Ui>

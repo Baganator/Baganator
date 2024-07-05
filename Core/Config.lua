@@ -67,6 +67,7 @@ Baganator.Config.Options = {
   AUTOMATIC_CATEGORIES_ADDED = "automatic_categories_added",
   CATEGORY_DISPLAY_ORDER = "category_display_order",
   CATEGORY_HIDDEN = "category_hidden",
+  CATEGORY_SECTION_TOGGLED = "category_section_toggled",
   CATEGORY_HORIZONTAL_SPACING = "category_horizontal_spacing",
   CATEGORY_ITEM_GROUPING = "category_item_grouping",
 }
@@ -153,6 +154,7 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED] = {},
   [Baganator.Config.Options.CATEGORY_DISPLAY_ORDER] = {},
   [Baganator.Config.Options.CATEGORY_HIDDEN] = {},
+  [Baganator.Config.Options.CATEGORY_SECTION_TOGGLED] = {},
   [Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING] = 0.15,
   [Baganator.Config.Options.CATEGORY_ITEM_GROUPING] = true,
 }

@@ -771,7 +771,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local editorHeader = unpack(GenerateFrames({{
     type = "header",
-    text = BAGANATOR_L_EDIT_CATEGORY,
+    text = BAGANATOR_L_EDIT,
     level = 2,
   }}, frame))
   editorHeader:SetPoint("TOP")
@@ -786,6 +786,24 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesEditor:SetHeight(210)
   table.insert(allFrames, categoriesEditor)
 
+  local categoriesSectionEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesSectionEditorTemplate")
+  categoriesSectionEditor:SetPoint("TOP", editorHeader, "BOTTOM")
+  categoriesSectionEditor:SetPoint("RIGHT", frame, -28, 0)
+  categoriesSectionEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset - 10, 0)
+  categoriesSectionEditor:SetHeight(210)
+  table.insert(allFrames, categoriesSectionEditor)
+  categoriesSectionEditor:Hide()
+
+  categoriesEditor:HookScript("OnShow", function()
+    categoriesSectionEditor:Hide()
+  end)
+  categoriesSectionEditor:HookScript("OnShow", function()
+    categoriesEditor:Hide()
+  end)
+  categoriesSectionEditor:HookScript("OnHide", function()
+    categoriesEditor:Show()
+  end)
+
   local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)
   categoriesOrder:SetPoint("TOP")
   table.insert(allFrames, categoriesOrder)
@@ -798,6 +816,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
         frame:SetValue(Baganator.Config.Get(frame.option))
       end
     end
+    categoriesSectionEditor:Hide()
   end)
 
   table.insert(self.lowestFrames, allFrames[#allFrames])

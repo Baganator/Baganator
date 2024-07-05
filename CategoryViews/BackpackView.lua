@@ -18,6 +18,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self:RegisterEvent("CURSOR_CHANGED")
 
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
+  self.sectionButtonPool = Baganator.CategoryViews.GetSectionButtonPool(self)
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
   self.recentItems = {}

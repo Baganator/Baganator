@@ -122,7 +122,7 @@ function Baganator.CustomiseDialog.CategoriesImport(input)
   local displayOrder = {}
   for _, source in ipairs(import.order) do
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
-    if category or source == Baganator.CategoryViews.Constants.DividerName then
+    if category or source == Baganator.CategoryViews.Constants.DividerName or source:match("^_") then
       table.insert(displayOrder, source)
     end
   end

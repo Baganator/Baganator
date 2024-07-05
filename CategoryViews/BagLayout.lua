@@ -93,6 +93,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
   self.MultiSearch:ApplySearches(prioritisedSearches, attachedItems, everything, function(results)
     self.labelsPool:ReleaseAll()
     self.dividerPool:ReleaseAll()
+    self.sectionButtonPool:ReleaseAll()
     self.results = results
 
     local start2 = debugprofilestop()
@@ -106,6 +107,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     end
 
     local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
+    local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
 
     self.notShown = {}
     local anyResults = false
@@ -138,8 +140,9 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
           end
         end
       end
-      results[searchTerm] = {all = entries, index = tIndexOf(searches, searchTerm)}
-      if hidden[categoryKeys[searchTerm]] then
+      local index = tIndexOf(searches, searchTerm)
+      results[searchTerm] = {all = entries, index = index}
+      if hidden[categoryKeys[searchTerm]] or sectionToggled[composed.section[index]] then
         for _, entry in ipairs(results[searchTerm].all) do
           table.insert(self.notShown, entry)
         end
@@ -178,6 +181,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       local source = categoryKeys[searchTerm]
       activeLayouts[details.index + activeLayoutOffset]:ShowGroup(details.all, math.min(bagWidth, #details.all), source)
       layoutsShown[details.index] = activeLayouts[details.index + activeLayoutOffset]
+      layoutsShown[details.index].section = composed.section[details.index]
       local label = self.labelsPool:Acquire()
       Baganator.Skins.AddFrame("CategoryLabel", label)
       label:SetText(searchLabels[details.index])
@@ -189,13 +193,14 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     end
 
     -- Setup empty slots and tooltips on them
-    if #emptySlotsOrder > 0 and composed.emptySlotsIndex ~= -1 then
-      table.insert(layoutsShown, composed.emptySlotsIndex, activeLayouts[1])
-      if hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] then
+    if #emptySlotsOrder > 0 and composed.emptySlots.index ~= -1 then
+      table.insert(layoutsShown, composed.emptySlots.index, activeLayouts[1])
+      if hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[composed.emptySlots.section] then
         activeLayouts[1]:ShowGroup({}, 1)
       else
         activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
       end
+      activeLayouts[1].section = composed.emptySlots.section
       for index, button in ipairs(activeLayouts[1].buttons) do
         local bagType = emptySlotsOrder[index].key
         button.isBag = true -- Ensure even counts of 1 are shown
@@ -234,12 +239,36 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       Baganator.Skins.AddFrame("CategoryLabel", label)
       label.categorySearch = nil
       label:SetText(BAGANATOR_L_EMPTY)
-      table.insert(activeLabels, composed.emptySlotsIndex, label)
+      table.insert(activeLabels, composed.emptySlots.index, label)
     else
       activeLayouts[1]:Hide()
     end
 
-    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth, composed.dividerPoints, self.dividerPool)
+    local lastSection = ""
+    local sectionButtons = {}
+    for index, layout in ipairs(layoutsShown) do
+      local section = layout.section
+      if section ~= lastSection then
+        if section ~= "" then
+          local button = self.sectionButtonPool:Acquire()
+          button:SetText(section)
+          if sectionToggled[section] then
+            button:SetCollapsed()
+          else
+            button:SetExpanded()
+          end
+          button:SetScript("OnClick", function()
+            local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
+            sectionToggled[section] = not sectionToggled[section]
+            Baganator.Config.Set(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
+          end)
+          sectionButtons[index] = button
+        end
+        lastSection = section
+      end
+    end
+
+    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth, composed.dividerPoints, self.dividerPool, sectionButtons)
 
     callback(maxWidth, maxHeight)
 

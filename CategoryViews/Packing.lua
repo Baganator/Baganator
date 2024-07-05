@@ -1,4 +1,4 @@
-function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth, dividerPoints, dividerPool)
+function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth, dividerPoints, dividerPool, sectionButtons)
   local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
 
   local headerPadding = 6
@@ -19,6 +19,9 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
   for index, layout in ipairs(activeLayouts) do
     layout:Show()
     if dividerPoints[index] and hasActiveLayout then
+      if prevLabel then
+        prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
+      end
       local divider = dividerPool:Acquire()
       divider:Show()
       divider:SetSize(targetPixelWidth, 1)
@@ -30,6 +33,22 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
       offsetX = 0
       hasActiveLayout = false
     end
+    if sectionButtons[index] then
+      if hasActiveLayout then
+        if prevLabel then
+          prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
+        end
+        offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
+        hasActiveLayout = false
+      end
+      local button = sectionButtons[index]
+      button:Show()
+      button:SetSize(targetPixelWidth, 20)
+      button:SetPoint("TOPLEFT", baseOffsetX, baseOffsetY + offsetY)
+      offsetY = offsetY - button:GetHeight() - headerPadding
+      offsetX = 0
+    end
+
     if layout:IsShown() and layout:GetHeight() > 0 then
       hasActiveLayout = true
       if math.floor(offsetX + layout:GetWidth()) > targetPixelWidth then
@@ -54,7 +73,10 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
   for _, divider in ipairs(dividers) do -- Ensure dividers don't overflow when width is reduced
     divider:SetPoint("RIGHT", divider:GetParent(), "LEFT", baseOffsetX + maxWidth, 0)
   end
-  prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
+  if hasActiveLayout then
+    prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
+    offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
+  end
 
-  return maxWidth, - offsetY + prevLayout:GetHeight() + prevLabel:GetHeight() + headerPadding / 2
+  return maxWidth, -offsetY
 end

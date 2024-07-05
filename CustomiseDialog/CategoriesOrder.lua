@@ -1,9 +1,50 @@
+local exportDialog = "Baganator_Export_Dialog"
+StaticPopupDialogs[exportDialog] = {
+  text = BAGANATOR_L_CTRL_C_TO_COPY,
+  button1 = DONE,
+  hasEditBox = 1,
+  OnShow = function(self, data)
+    self.editBox:SetText(data)
+    self.editBox:HighlightText()
+  end,
+  EditBoxOnEnterPressed = function(self)
+    self:GetParent():Hide()
+  end,
+  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+  editBoxWidth = 230,
+  timeout = 0,
+  hideOnEscape = 1,
+}
+
+local importDialog = "Baganator_Import_Dialog"
+StaticPopupDialogs[importDialog] = {
+  text = BAGANATOR_L_PASTE_YOUR_IMPORT_STRING_HERE,
+  button1 = BAGANATOR_L_IMPORT,
+  button2 = CANCEL,
+  hasEditBox = 1,
+  OnShow = function(self, data)
+    self.editBox:SetText("")
+  end,
+  OnAccept = function(self)
+    Baganator.CustomiseDialog.CategoriesImport(self.editBox:GetText())
+  end,
+  EditBoxOnEnterPressed = function(self)
+    Baganator.CustomiseDialog.CategoriesImport(self:GetText())
+    self:GetParent():Hide()
+  end,
+  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+  editBoxWidth = 230,
+  timeout = 0,
+  hideOnEscape = 1,
+}
+
 local function PopulateCategoryOrder(container)
   local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
 
   local elements = {}
   local dataProviderElements = {}
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+  local indent = ""
   for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
     local color = WHITE_FONT_COLOR
     if hidden[source] then
@@ -12,16 +53,28 @@ local function PopulateCategoryOrder(container)
 
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
     if category then
-      table.insert(dataProviderElements, {value = source, label = color:WrapTextInColorCode(category.name)})
+      table.insert(dataProviderElements, {value = source, label = indent .. color:WrapTextInColorCode(category.name)})
       table.insert(elements, source)
     end
     category = customCategories[source]
     if category then
-      table.insert(dataProviderElements, {value = source, label = color:WrapTextInColorCode(category.name .. " (*)")})
+      table.insert(dataProviderElements, {value = source, label = indent .. color:WrapTextInColorCode(category.name .. " (*)")})
       table.insert(elements, source)
     end
     if source == Baganator.CategoryViews.Constants.DividerName then
-      table.insert(dataProviderElements, {value = source, label = Baganator.CategoryViews.Constants.DividerLabel})
+      table.insert(dataProviderElements, {value = source, label = indent .. Baganator.CategoryViews.Constants.DividerLabel})
+      table.insert(elements, source)
+    end
+    if source:match("^_") then
+      local name
+      if source == Baganator.CategoryViews.Constants.SectionEnd then
+        indent = ""
+        name = " "
+      else
+        indent = "    "
+        name = CreateAtlasMarkup("AnimCreate_Icon_Folder") .. " " .. source:match("^_(.*)")
+      end
+      table.insert(dataProviderElements, {value = source, label = name})
       table.insert(elements, source)
     end
   end
@@ -37,14 +90,24 @@ local function GetCategoryContainer(parent, pickupCallback)
   container.ScrollBox:SetPoint("TOPLEFT", 1, -3)
   container.ScrollBox:SetPoint("BOTTOMRIGHT", -1, 3)
   local scrollView = CreateScrollBoxListLinearView()
-  scrollView:SetElementExtent(22)
+  scrollView:SetElementExtentCalculator(function(index, elementData)
+    if elementData.value ~= Baganator.CategoryViews.Constants.SectionEnd then
+      return 20
+    else
+      return 8
+    end
+  end)
   scrollView:SetElementInitializer("Button", function(frame, elementData)
     if not frame.initialized then
       frame.initialized = true
       frame:SetNormalFontObject(GameFontHighlight)
       frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
       frame:SetScript("OnClick", function(self, button)
-        Baganator.CallbackRegistry:TriggerEvent("EditCategory", self.value)
+        if self.value:match("^_") then
+          Baganator.CallbackRegistry:TriggerEvent("EditCategorySection", self.value)
+        else
+          Baganator.CallbackRegistry:TriggerEvent("EditCategory", self.value)
+        end
       end)
       local button = CreateFrame("Button", nil, frame)
       button:SetSize(28, 22)
@@ -74,10 +137,13 @@ local function GetCategoryContainer(parent, pickupCallback)
     frame.value = elementData.value
     frame:SetText(elementData.label)
     frame:GetFontString():SetPoint("RIGHT", -8, 0)
-    frame:GetFontString():SetPoint("LEFT")
+    frame:GetFontString():SetPoint("LEFT", 40, 0)
+    frame:GetFontString():SetJustifyH("LEFT")
     local default = Baganator.CategoryViews.Constants.SourceToCategory[frame.value]
     local divider = frame.value == Baganator.CategoryViews.Constants.DividerName
-    frame:SetEnabled(not divider and (not default or not default.auto))
+    local categoryEnd = frame.value == Baganator.CategoryViews.Constants.SectionEnd
+    frame:SetEnabled(not categoryEnd and not divider and (not default or not default.auto))
+    frame.repositionButton:SetShown(not categoryEnd)
   end)
   container.ScrollBar = CreateFrame("EventFrame", nil, container, "WowTrimScrollBar")
   container.ScrollBar:SetPoint("TOPRIGHT")
@@ -115,11 +181,13 @@ local function SetCategoriesToDropDown(dropDown, ignore)
   table.sort(options, function(a, b) return a.label:lower() < b.label:lower() end)
 
   local entries, values = {
-    BAGANATOR_L_CREATE_NEW,
+    BAGANATOR_L_CREATE_NEW_CATEGORY,
+    BAGANATOR_L_CREATE_NEW_SECTION,
     BAGANATOR_L_CATEGORY_DIVIDER,
   }, {
     "",
-    Baganator.CategoryViews.Constants.DividerName
+    "_",
+    Baganator.CategoryViews.Constants.DividerName,
   }
 
   for _, opt in ipairs(options) do
@@ -151,14 +219,35 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   draggable = Baganator.CustomiseDialog.GetDraggable(function()
     if categoryOrder:IsMouseOver() then
       local f, isTop, index = Baganator.CustomiseDialog.GetMouseOverInContainer(categoryOrder)
-      if not f then
-        table.insert(categoryOrder.elements, draggable.value)
-      else
+      local insertIndex = #categoryOrder.elements
+      if f then
         if isTop then
-          table.insert(categoryOrder.elements, index, draggable.value)
+          insertIndex = index
         else
-          table.insert(categoryOrder.elements, index + 1, draggable.value)
+          insertIndex = index + 1
         end
+      end
+
+      if draggable.value:match("^_") or draggable.value == Baganator.CategoryViews.Constants.DividerName then
+        for i = insertIndex, #categoryOrder.elements do
+          local element = categoryOrder.elements[i]
+          if element == Baganator.CategoryViews.Constants.SectionEnd then
+            insertIndex = i + 1
+            break
+          elseif element:match("^_") then
+            break
+          end
+        end
+      end
+
+      if draggable.value:match("^_") then
+        table.insert(categoryOrder.elements, insertIndex, draggable.value)
+        for _, value in ipairs(draggable.sectionValues) do
+          insertIndex = insertIndex + 1
+          table.insert(categoryOrder.elements, insertIndex, value)
+        end
+      else
+        table.insert(categoryOrder.elements, insertIndex, draggable.value)
       end
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, categoryOrder.elements)
     end
@@ -183,15 +272,24 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   SetCategoriesToDropDown(dropDown, GetInsertedCategories())
 
   local function Pickup(value, label, index)
+    draggable.value = value
+    draggable.sectionValues = {}
     if index ~= nil then
       table.remove(categoryOrder.elements, index)
+      if value:match("^_") then -- section
+        local tmp
+        while tmp ~= Baganator.CategoryViews.Constants.SectionEnd do
+          tmp = categoryOrder.elements[index]
+          table.insert(draggable.sectionValues, tmp)
+          table.remove(categoryOrder.elements, index)
+        end
+      end
       Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, categoryOrder.elements)
     end
 
     dropDown:SetText(label)
     draggable:Show()
     draggable.text:SetText(label)
-    draggable.value = value
   end
 
   categoryOrder = GetCategoryContainer(container, Pickup)
@@ -200,7 +298,9 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
   dropDown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
 
   hooksecurefunc(dropDown, "OnEntryClicked", function(_, option)
-    if option.value ~= "" then
+    if option.value == "_" then
+      Baganator.CallbackRegistry:TriggerEvent("EditCategorySection", option.value)
+    elseif option.value ~= "" then
       Pickup(option.value, option.label, option.value ~= Baganator.CategoryViews.Constants.DividerName and tIndexOf(categoryOrder.elements, option.value) or nil)
     else
       Baganator.CallbackRegistry:TriggerEvent("EditCategory", option.value)
@@ -227,46 +327,6 @@ function Baganator.CustomiseDialog.GetCategoriesOrganiser(parent)
       SetCategoriesToDropDown(dropDown, GetInsertedCategories())
     end
   end)
-
-  local exportDialog = "Baganator_Export_Dialog"
-  StaticPopupDialogs[exportDialog] = {
-    text = BAGANATOR_L_CTRL_C_TO_COPY,
-    button1 = DONE,
-    hasEditBox = 1,
-    OnShow = function(self, data)
-      self.editBox:SetText(data)
-      self.editBox:HighlightText()
-    end,
-    EditBoxOnEnterPressed = function(self)
-      self:GetParent():Hide()
-    end,
-    EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-    editBoxWidth = 230,
-    timeout = 0,
-    hideOnEscape = 1,
-  }
-
-  local importDialog = "Baganator_Import_Dialog"
-  StaticPopupDialogs[importDialog] = {
-    text = BAGANATOR_L_PASTE_YOUR_IMPORT_STRING_HERE,
-    button1 = BAGANATOR_L_IMPORT,
-    button2 = CANCEL,
-    hasEditBox = 1,
-    OnShow = function(self, data)
-      self.editBox:SetText("")
-    end,
-    OnAccept = function(self)
-      Baganator.CustomiseDialog.CategoriesImport(self.editBox:GetText())
-    end,
-    EditBoxOnEnterPressed = function(self)
-      Baganator.CustomiseDialog.CategoriesImport(self:GetText())
-      self:GetParent():Hide()
-    end,
-    EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-    editBoxWidth = 230,
-    timeout = 0,
-    hideOnEscape = 1,
-  }
 
   local exportButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
   exportButton:SetPoint("RIGHT", categoryOrder, 0, 0)
