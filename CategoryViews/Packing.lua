@@ -14,11 +14,17 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
 
   local offsetX, offsetY = 0, 0
   local prevLayout, prevLabel = nil, nil
+
+  local function NewLine()
+    prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth())
+    offsetX = 0
+    offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding * 3 / 2
+  end
+
   for index, layout in ipairs(activeLayouts) do
     if layout.type == "divider" and prevLayout and prevLayout.type ~= "divider" then
       if prevLayout.type == "category" then
-        prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
-        offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
+        NewLine()
       end
       layout:Show()
       layout:SetSize(targetPixelWidth, 1)
@@ -29,8 +35,7 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
       prevLayout = layout
     elseif layout.type == "section" then
       if prevLayout and prevLayout.type == "category" then
-        prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
-        offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
+        NewLine()
       end
       layout:Show()
       layout:SetSize(targetPixelWidth, 20)
@@ -40,9 +45,7 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
       prevLayout = layout
     elseif layout.type == "category" and layout:GetHeight() > 0 then
       if prevLayout and prevLayout.type == "category" and math.floor(offsetX + layout:GetWidth()) > targetPixelWidth then
-        prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
-        offsetX = 0
-        offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding * 3 / 2
+        NewLine()
       end
       layout:Show()
       local label = activeLabels[index]
@@ -67,7 +70,7 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
 
   if prevLayout then
     if prevLayout.type == "category" then
-      prevLabel:SetWidth(math.max(pixelMinWidth, maxWidth) - offsetX + categorySpacing + prevLayout:GetWidth())
+      prevLabel:SetWidth(math.max(pixelMinWidth, maxWidth) - offsetX + prevLayout:GetWidth())
       offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
     elseif prevLayout.type == "divider" then
       prevLayout:Hide()
