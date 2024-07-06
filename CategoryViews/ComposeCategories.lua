@@ -89,30 +89,20 @@ function Baganator.CategoryViews.ComposeCategories(everything)
       })
     end
     if source == Baganator.CategoryViews.Constants.SectionEnd then
-      if not sectionToggled[currentSection] then
-        table.insert(allDetails, {
-          type = "divider",
-        })
-      end
+      table.insert(allDetails, {
+        type = "divider",
+      })
       prevSection = currentSection
       currentSection = ""
     elseif section then
-      if not sectionToggled[section] then
-        table.insert(allDetails, {
-          type = "divider",
-        })
-      end
+      table.insert(allDetails, {
+        type = "divider",
+      })
       table.insert(allDetails, {
         type = "section",
         label = section,
       })
       currentSection = section
-    elseif prevSection ~= "" and currentSection == "" then
-      if sectionToggled[prevSection] then
-        table.insert(allDetails, {
-          type = "divider",
-        })
-      end
     end
 
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
