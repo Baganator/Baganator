@@ -265,7 +265,9 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
       print("category group show", debugprofilestop() - start2)
     end
 
-    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth)
+    local left = sideSpacing + Baganator.Constants.ButtonFrameOffset - 2
+    local right = sideSpacing
+    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, left, -50 - topSpacing / 4, bagWidth, Baganator.CategoryViews.Constants.MinWidth - left - right)
 
     callback(maxWidth, maxHeight)
 

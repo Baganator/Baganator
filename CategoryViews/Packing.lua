@@ -1,4 +1,4 @@
-function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth)
+function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth, pixelMinWidth)
   local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
 
   local headerPadding = 6
@@ -61,13 +61,13 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
 
   for _, layout in ipairs(activeLayouts) do -- Ensure dividers don't overflow when width is reduced
     if layout.type == "divider" or layout.type == "section" then
-      layout:SetPoint("RIGHT", layout:GetParent(), "LEFT", baseOffsetX + maxWidth, 0)
+      layout:SetPoint("RIGHT", layout:GetParent(), "LEFT", baseOffsetX + math.max(pixelMinWidth, maxWidth), 0)
     end
   end
 
   if prevLayout then
     if prevLayout.type == "category" then
-      prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
+      prevLabel:SetWidth(math.max(pixelMinWidth, maxWidth) - offsetX + categorySpacing + prevLayout:GetWidth())
       offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
     elseif prevLayout.type == "divider" then
       prevLayout:Hide()

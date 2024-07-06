@@ -131,7 +131,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     end
 
     self:SetSize(
-      math.max(minWidth, 400, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
+      math.max(minWidth, Baganator.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2 + buttonPadding
     )
 
