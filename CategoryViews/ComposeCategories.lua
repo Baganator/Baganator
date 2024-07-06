@@ -73,8 +73,6 @@ end
 -- searches with priority determining which gets kept.
 function Baganator.CategoryViews.ComposeCategories(everything)
   local allDetails = {}
-  local dividerPoints = {}
-  local dividerOffset = 0
 
   local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
   local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
@@ -82,15 +80,39 @@ function Baganator.CategoryViews.ComposeCategories(everything)
   local categoryKeys = {}
   local emptySlots = {index = -1, section = ""}
   local currentSection = ""
+  local prevSection = ""
   for _, source in ipairs(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)) do
     local section = source:match("^_(.*)")
-    if source == Baganator.CategoryViews.Constants.DividerName or (section and not sectionToggled[section]) then
-      dividerPoints[#allDetails + 1 + dividerOffset] = true
+    if source == Baganator.CategoryViews.Constants.DividerName and not sectionToggled[currentSection] then
+      table.insert(allDetails, {
+        type = "divider",
+      })
     end
     if source == Baganator.CategoryViews.Constants.SectionEnd then
+      if not sectionToggled[currentSection] then
+        table.insert(allDetails, {
+          type = "divider",
+        })
+      end
+      prevSection = currentSection
       currentSection = ""
     elseif section then
+      if not sectionToggled[section] then
+        table.insert(allDetails, {
+          type = "divider",
+        })
+      end
+      table.insert(allDetails, {
+        type = "section",
+        label = section,
+      })
       currentSection = section
+    elseif prevSection ~= "" and currentSection == "" then
+      if sectionToggled[prevSection] then
+        table.insert(allDetails, {
+          type = "divider",
+        })
+      end
     end
 
     local category = Baganator.CategoryViews.Constants.SourceToCategory[source]
@@ -103,9 +125,10 @@ function Baganator.CategoryViews.ComposeCategories(everything)
             search = "________" .. (#allDetails + 1)
           end
           allDetails[#allDetails + 1] = {
+            type = "category",
             source = source,
             search = search,
-            searchLabel = autoDetails.searchLabels[index],
+            label = autoDetails.searchLabels[index],
             priority = category.searchPriority,
             isCustom = false,
             index = #allDetails + 1,
@@ -117,12 +140,12 @@ function Baganator.CategoryViews.ComposeCategories(everything)
       elseif category.emptySlots then
         emptySlots.index = #allDetails + 1
         emptySlots.section = currentSection
-        dividerOffset = dividerOffset + 1
       else
         allDetails[#allDetails + 1] = {
+          type = "category",
           source = source,
           search = category.search,
-          searchLabel = category.name,
+          label = category.name,
           priority = category.searchPriority,
           isCustom = false,
           index = #allDetails + 1,
@@ -139,9 +162,10 @@ function Baganator.CategoryViews.ComposeCategories(everything)
       end
 
       allDetails[#allDetails + 1] = {
+        type = "category",
         source = source,
         search = search,
-        searchLabel = category.name,
+        label = category.name,
         priority = category.searchPriority,
         isCustom = true,
         index = #allDetails + 1,
@@ -164,7 +188,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
     end
   end
 
-  local copy = CopyTable(allDetails, 1)
+  local copy = tFilter(allDetails, function(a) return a.type == "category" end, true)
   table.sort(copy, function(a, b)
     if a.priority == b.priority then
       return a.index < b.index
@@ -184,24 +208,24 @@ function Baganator.CategoryViews.ComposeCategories(everything)
   end
 
   local result = {
+    details = allDetails,
     searches = {},
-    searchLabels = {},
     section = {},
     autoSearches = {},
     attachedItems = {},
     categoryKeys = {},
     emptySlots = emptySlots,
-    dividerPoints = dividerPoints,
     prioritisedSearches = prioritisedSearches,
   }
 
   for _, details in ipairs(allDetails) do
-    table.insert(result.searches, details.search)
-    table.insert(result.section, details.section)
-    table.insert(result.searchLabels, details.searchLabel)
-    result.autoSearches[details.search] = details.auto
-    result.attachedItems[details.search] = details.attachedItems
-    result.categoryKeys[details.search] = details.source
+    if details.type == "category" then
+      table.insert(result.searches, details.search)
+      table.insert(result.section, details.section)
+      result.autoSearches[details.search] = details.auto
+      result.attachedItems[details.search] = details.attachedItems
+      result.categoryKeys[details.search] = details.source
+    end
   end
 
   return result

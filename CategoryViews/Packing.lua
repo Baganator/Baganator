@@ -1,4 +1,4 @@
-function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth, dividerPoints, dividerPool, sectionButtons)
+function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth)
   local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
 
   local headerPadding = 6
@@ -14,48 +14,37 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
 
   local offsetX, offsetY = 0, 0
   local prevLayout, prevLabel = nil, nil
-  local hasActiveLayout = false
-  local dividers = {}
   for index, layout in ipairs(activeLayouts) do
-    layout:Show()
-    if dividerPoints[index] and hasActiveLayout then
-      if prevLabel then
-        prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
-      end
-      local divider = dividerPool:Acquire()
-      divider:Show()
-      divider:SetSize(targetPixelWidth, 1)
-      offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
-      divider:ClearAllPoints()
-      divider:SetPoint("TOPLEFT", baseOffsetX, offsetY + baseOffsetY)
-      table.insert(dividers, divider)
-      offsetY = offsetY - divider:GetHeight() - headerPadding
-      offsetX = 0
-      hasActiveLayout = false
-    end
-    if sectionButtons[index] then
-      if hasActiveLayout then
-        if prevLabel then
-          prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
-        end
+    if layout.type == "divider" and prevLayout and prevLayout.type ~= "divider" then
+      if prevLayout.type == "category" then
+        prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
         offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
-        hasActiveLayout = false
       end
-      local button = sectionButtons[index]
-      button:Show()
-      button:SetSize(targetPixelWidth, 20)
-      button:SetPoint("TOPLEFT", baseOffsetX, baseOffsetY + offsetY)
-      offsetY = offsetY - button:GetHeight() - headerPadding
+      layout:Show()
+      layout:SetSize(targetPixelWidth, 1)
+      layout:ClearAllPoints()
+      layout:SetPoint("TOPLEFT", baseOffsetX, offsetY + baseOffsetY)
+      offsetY = offsetY - layout:GetHeight() - headerPadding
       offsetX = 0
-    end
-
-    if layout:IsShown() and layout:GetHeight() > 0 then
-      hasActiveLayout = true
-      if math.floor(offsetX + layout:GetWidth()) > targetPixelWidth then
+      prevLayout = layout
+    elseif layout.type == "section" then
+      if prevLayout and prevLayout.type == "category" then
+        prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
+        offsetY = offsetY - prevLayout:GetHeight() - headerPadding * 3/2 - prevLabel:GetHeight()
+      end
+      layout:Show()
+      layout:SetSize(targetPixelWidth, 20)
+      layout:SetPoint("TOPLEFT", baseOffsetX, baseOffsetY + offsetY)
+      offsetY = offsetY - layout:GetHeight() - headerPadding
+      offsetX = 0
+      prevLayout = layout
+    elseif layout.type == "category" and layout:GetHeight() > 0 then
+      if prevLayout and prevLayout.type == "category" and math.floor(offsetX + layout:GetWidth()) > targetPixelWidth then
         prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth() + categorySpacing)
         offsetX = 0
         offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding * 3 / 2
       end
+      layout:Show()
       local label = activeLabels[index]
       label:Resize()
       label:Show()
@@ -70,10 +59,13 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
     end
   end
 
-  for _, divider in ipairs(dividers) do -- Ensure dividers don't overflow when width is reduced
-    divider:SetPoint("RIGHT", divider:GetParent(), "LEFT", baseOffsetX + maxWidth, 0)
+  for _, layout in ipairs(activeLayouts) do -- Ensure dividers don't overflow when width is reduced
+    if layout.type == "divider" or layout.type == "section" then
+      layout:SetPoint("RIGHT", layout:GetParent(), "LEFT", baseOffsetX + maxWidth, 0)
+    end
   end
-  if hasActiveLayout then
+
+  if prevLayout and prevLayout.type == "category" then
     prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
     offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
   end
