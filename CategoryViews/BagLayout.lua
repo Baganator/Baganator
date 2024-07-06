@@ -210,12 +210,12 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         layout.type = details.type
       elseif details.type == "empty slots category" then
         table.insert(layoutsShown, activeLayouts[1])
-        if #emptySlotsOrder == 0 or hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[composed.emptySlots.section] then
+        if #emptySlotsOrder == 0 or hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[details.section] then
           activeLayouts[1]:ShowGroup({}, 1)
         else
           activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
         end
-        activeLayouts[1].section = composed.emptySlots.section
+        activeLayouts[1].section = details.section
         activeLayouts[1].type = "category"
         for index, button in ipairs(activeLayouts[1].buttons) do
           local bagType = emptySlotsOrder[index].key

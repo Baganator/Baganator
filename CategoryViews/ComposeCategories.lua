@@ -207,7 +207,6 @@ function Baganator.CategoryViews.ComposeCategories(everything)
     autoSearches = {},
     attachedItems = {},
     categoryKeys = {},
-    emptySlots = emptySlots,
     prioritisedSearches = prioritisedSearches,
   }
 
