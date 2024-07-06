@@ -71,7 +71,7 @@ local function PopulateCategoryOrder(container)
         indent = ""
         name = " "
       else
-        indent = "    "
+        indent = "      "
         name = CreateAtlasMarkup("AnimCreate_Icon_Folder") .. " " .. source:match("^_(.*)")
       end
       table.insert(dataProviderElements, {value = source, label = name})
