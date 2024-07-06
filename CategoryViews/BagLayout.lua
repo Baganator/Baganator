@@ -110,13 +110,11 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
 
     self.notShown = {}
-    local anyResults = false
     for searchTerm, details in pairs(results) do
       local entries = {}
       if self.isGrouping then
         local entriesByKey = {}
         for _, item in ipairs(details) do
-          anyResults = true
           local groupingKey = item.key
           if entriesByKey[groupingKey] then
             entriesByKey[groupingKey].itemCount = entriesByKey[groupingKey].itemCount + item.itemCount
@@ -128,7 +126,6 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
           end
         end
       else
-        anyResults = anyResults or #details > 0
         entries = details
       end
       if self.isLive and self.addToCategoryMode and not autoSearches[searchTerm] then
@@ -141,7 +138,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         end
       end
       local index = tIndexOf(searches, searchTerm)
-      results[searchTerm] = {all = entries, index = index}
+      results[searchTerm] = {all = entries, index = index, any = #entries > 0 }
       if hidden[categoryKeys[searchTerm]] or sectionToggled[composed.section[index]] then
         for _, entry in ipairs(results[searchTerm].all) do
           table.insert(self.notShown, entry)
@@ -177,25 +174,48 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     end
 
     local layoutsShown, activeLabels = {}, {}
-    for _, details in ipairs(composed.details) do
+    local inactiveSections = {}
+    for index, details in ipairs(composed.details) do
       if details.type == "divider" then
-        table.insert(layoutsShown, (self.dividerPool:Acquire()))
-        layoutsShown[#layoutsShown].type = details.type
-      elseif details.type == "section" then
-        local button = self.sectionButtonPool:Acquire()
-        button:SetText(details.label)
-        if sectionToggled[details.label] then
-          button:SetCollapsed()
+        if inactiveSections[details.section] then
+          table.insert(layoutsShown, {}) -- {} causes the packing code to ignore this
         else
-          button:SetExpanded()
+          table.insert(layoutsShown, (self.dividerPool:Acquire()))
+          layoutsShown[#layoutsShown].type = details.type
         end
-        button:SetScript("OnClick", function()
-          local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
-          sectionToggled[details.label] = not sectionToggled[details.label]
-          Baganator.Config.Set(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
-        end)
-        table.insert(layoutsShown, button)
-        button.type = details.type
+      elseif details.type == "section" then
+        -- Check whether the section has any non-empty items in it
+        local any = false
+        if index < #composed.details then
+          for i = index + 1, #composed.details do
+            local d = composed.details[i]
+            if d.section ~= details.label then
+              break
+            elseif (d.type == "category" and results[d.search].any) or (d.type == "empty slots category" and #emptySlotsOrder > 0) then
+              any = true
+              break
+            end
+          end
+        end
+        inactiveSections[details.label] = not any -- saved to hide any inside dividers
+        if any then
+          local button = self.sectionButtonPool:Acquire()
+          button:SetText(details.label)
+          if sectionToggled[details.label] then
+            button:SetCollapsed()
+          else
+            button:SetExpanded()
+          end
+          button:SetScript("OnClick", function()
+            local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
+            sectionToggled[details.label] = not sectionToggled[details.label]
+            Baganator.Config.Set(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
+          end)
+          table.insert(layoutsShown, button)
+          button.type = details.type
+        else
+          table.insert(layoutsShown, {}) -- {} causes the packing code to ignore this
+        end
       elseif details.type == "category" then
         local searchResults = results[details.search]
         local layout = activeLayouts[searchResults.index + activeLayoutOffset]
