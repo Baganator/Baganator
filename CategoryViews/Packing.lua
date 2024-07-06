@@ -65,9 +65,14 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
     end
   end
 
-  if prevLayout and prevLayout.type == "category" then
-    prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
-    offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
+  if prevLayout then
+    if prevLayout.type == "category" then
+      prevLabel:SetWidth(maxWidth - offsetX + categorySpacing + prevLayout:GetWidth())
+      offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
+    elseif prevLayout.type == "divider" then
+      prevLayout:Hide()
+      offsetY = offsetY + prevLayout:GetHeight() + headerPadding
+    end
   end
 
   return maxWidth, -offsetY
