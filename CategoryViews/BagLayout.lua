@@ -180,6 +180,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     for _, details in ipairs(composed.details) do
       if details.type == "divider" then
         table.insert(layoutsShown, (self.dividerPool:Acquire()))
+        layoutsShown[#layoutsShown].type = details.type
       elseif details.type == "section" then
         local button = self.sectionButtonPool:Acquire()
         button:SetText(details.label)
@@ -194,10 +195,11 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
           Baganator.Config.Set(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
         end)
         table.insert(layoutsShown, button)
+        button.type = details.type
       elseif details.type == "category" then
         local searchResults = results[details.search]
         local layout = activeLayouts[searchResults.index + activeLayoutOffset]
-        layout:ShowGroup(searchResults.all, math.min(bagWidth, #searchResults.all), source)
+        layout:ShowGroup(searchResults.all, math.min(bagWidth, #searchResults.all), details.source)
         table.insert(layoutsShown, layout)
         layout.section = details.section
         local label = self.labelsPool:Acquire()
@@ -205,66 +207,62 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         label:SetText(details.label)
         label.categorySearch = details.search
         activeLabels[details.index] = label
+        layout.type = details.type
+      elseif details.type == "empty slots category" then
+        table.insert(layoutsShown, activeLayouts[1])
+        if #emptySlotsOrder == 0 or hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[composed.emptySlots.section] then
+          activeLayouts[1]:ShowGroup({}, 1)
+        else
+          activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
+        end
+        activeLayouts[1].section = composed.emptySlots.section
+        activeLayouts[1].type = "category"
+        for index, button in ipairs(activeLayouts[1].buttons) do
+          local bagType = emptySlotsOrder[index].key
+          button.isBag = true -- Ensure even counts of 1 are shown
+          SetItemButtonCount(button, emptySlotCount[bagType])
+          button.Count:SetShown(bagType ~= "keyring") -- Keyrings have unlimited size
+          if not button.bagTypeIcon then
+            button.bagTypeIcon = button:CreateTexture(nil, "OVERLAY")
+            button.bagTypeIcon:SetSize(20, 20)
+            button.bagTypeIcon:SetPoint("CENTER")
+            button.bagTypeIcon:SetDesaturated(true)
+            button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
+            button:SetScript("OnEnter", function()
+              if button.tooltipHeader then
+                GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+                GameTooltip:SetText(button.tooltipHeader)
+              end
+            end)
+            button:SetScript("OnLeave", function()
+              GameTooltip:Hide()
+            end)
+          end
+          local details = Baganator.Constants.ContainerKeyToInfo[bagType]
+          if details then
+            if details.type == "atlas" then
+              button.bagTypeIcon:SetAtlas(details.value)
+            else
+              button.bagTypeIcon:SetTexture(details.value)
+            end
+            button.tooltipHeader = details.tooltipHeader
+          else
+            button.bagTypeIcon:SetTexture(nil)
+            button.tooltipHeader = nil
+          end
+        end
+        local label = self.labelsPool:Acquire()
+        Baganator.Skins.AddFrame("CategoryLabel", label)
+        label.categorySearch = nil
+        label:SetText(BAGANATOR_L_EMPTY)
+        activeLabels[details.index] = label
+        activeLayouts[1]:Show()
       else
-        error("unrecognised type")
+        error("unrecognised layout type")
       end
-      layoutsShown[#layoutsShown].type = details.type
     end
     if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
       print("category group show", debugprofilestop() - start2)
-    end
-
-    -- Setup empty slots and tooltips on them
-    if #emptySlotsOrder > 0 and composed.emptySlots.index ~= -1 then
-      table.insert(layoutsShown, composed.emptySlots.index, activeLayouts[1])
-      if hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[composed.emptySlots.section] then
-        activeLayouts[1]:ShowGroup({}, 1)
-      else
-        activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
-      end
-      activeLayouts[1].section = composed.emptySlots.section
-      activeLayouts[1].type = "category"
-      for index, button in ipairs(activeLayouts[1].buttons) do
-        local bagType = emptySlotsOrder[index].key
-        button.isBag = true -- Ensure even counts of 1 are shown
-        SetItemButtonCount(button, emptySlotCount[bagType])
-        button.Count:SetShown(bagType ~= "keyring") -- Keyrings have unlimited size
-        if not button.bagTypeIcon then
-          button.bagTypeIcon = button:CreateTexture(nil, "OVERLAY")
-          button.bagTypeIcon:SetSize(20, 20)
-          button.bagTypeIcon:SetPoint("CENTER")
-          button.bagTypeIcon:SetDesaturated(true)
-          button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
-          button:SetScript("OnEnter", function()
-            if button.tooltipHeader then
-              GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-              GameTooltip:SetText(button.tooltipHeader)
-            end
-          end)
-          button:SetScript("OnLeave", function()
-            GameTooltip:Hide()
-          end)
-        end
-        local details = Baganator.Constants.ContainerKeyToInfo[bagType]
-        if details then
-          if details.type == "atlas" then
-            button.bagTypeIcon:SetAtlas(details.value)
-          else
-            button.bagTypeIcon:SetTexture(details.value)
-          end
-          button.tooltipHeader = details.tooltipHeader
-        else
-          button.bagTypeIcon:SetTexture(nil)
-          button.tooltipHeader = nil
-        end
-      end
-      local label = self.labelsPool:Acquire()
-      Baganator.Skins.AddFrame("CategoryLabel", label)
-      label.categorySearch = nil
-      label:SetText(BAGANATOR_L_EMPTY)
-      table.insert(activeLabels, composed.emptySlots.index, label)
-    else
-      activeLayouts[1]:Hide()
     end
 
     local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4, bagWidth)

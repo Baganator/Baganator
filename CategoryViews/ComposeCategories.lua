@@ -128,8 +128,11 @@ function Baganator.CategoryViews.ComposeCategories(everything)
           }
         end
       elseif category.emptySlots then
-        emptySlots.index = #allDetails + 1
-        emptySlots.section = currentSection
+        allDetails[#allDetails + 1] = {
+          type = "empty slots category",
+          index = #allDetails + 1,
+          section = currentSection,
+        }
       else
         allDetails[#allDetails + 1] = {
           type = "category",
