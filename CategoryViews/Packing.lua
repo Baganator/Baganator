@@ -14,9 +14,11 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
 
   local offsetX, offsetY = 0, 0
   local prevLayout, prevLabel = nil, nil
+  local endOfLineLabels = {}
 
   local function NewLine()
     prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth())
+    table.insert(endOfLineLabels, {label = prevLabel, layout = prevLayout, offsetX = offsetX})
     offsetX = 0
     offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding * 3 / 2
   end
@@ -66,6 +68,10 @@ function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOff
     if layout.type == "divider" or layout.type == "section" then
       layout:SetPoint("RIGHT", layout:GetParent(), "LEFT", baseOffsetX + math.max(pixelMinWidth, maxWidth), 0)
     end
+  end
+
+  for _, details in ipairs(endOfLineLabels) do
+    details.label:SetWidth(math.max(pixelMinWidth, maxWidth) - details.offsetX + details.layout:GetWidth())
   end
 
   if prevLayout then
