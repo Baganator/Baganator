@@ -107,7 +107,7 @@ function Baganator.CustomiseDialog.CategoriesImport(input)
         end
       end
     end
-    categoryMods[c.source] = newMods
+    categoryMods[c.source or c.name] = newMods
   end
   local hidden = {}
   if import.hidden then
