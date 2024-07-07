@@ -292,7 +292,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
     -- Need to add/remove the purchase tab button
     ((not self.isLive and not self.purchaseTabAdded) or (self.isLive and (self.purchaseTabAdded or not IsGuildLeader() or GetNumGuildBankTabs() >= MAX_BUY_GUILDBANK_TABS))) and
     -- Changed tab visual data (name, icon or visibility)
-    self.lastTabData and tCompare(guildData.bank, self.lastTabData, 2) then
+    self.lastTabData and guildData and tCompare(guildData.bank, self.lastTabData, 2) then
     for _, tab in ipairs(self.Tabs) do
       tab:SetScale(tabScale)
     end
@@ -300,6 +300,10 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   end
 
   self.tabsPool:ReleaseAll()
+
+  if not guildData then
+    return
+  end
 
   local lastTab
   local tabs = {}
@@ -414,7 +418,6 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   local guildData = Syndicator.API.GetGuild(guild)
   if not guildData then
     self:SetTitle("")
-    return
   else
     self.lastGuild = guild
     self:SetTitle(BAGANATOR_L_XS_GUILD_BANK:format(guildData.details.guild))
@@ -439,19 +442,21 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
 
   if not self.isLive then
     self.GuildCached:ShowGuild(guild, self.currentTab, guildWidth)
-    self.GuildCached:SetShown(#guildData.bank > 0)
+    self.GuildCached:SetShown(guildData and #guildData.bank > 0)
     active = self.GuildCached
   else
     self.GuildLive:ShowGuild(guild, self.currentTab, guildWidth)
-    self.GuildLive:SetShown(#guildData.bank > 0)
+    self.GuildLive:SetShown(guildData and #guildData.bank > 0)
     active = self.GuildLive
   end
 
   local searchText = self.SearchWidget.SearchBox:GetText()
 
-  self:ApplySearch(searchText)
+  if guildData then
+    self:ApplySearch(searchText)
+  end
 
-  if guildData.bank[1] then
+  if guildData and guildData.bank[1] then
     self.Tabs[1]:SetPoint("LEFT", active, "LEFT")
   end
 
@@ -502,7 +507,9 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   else -- not live
     self.wouldShowTransferButton = false
     self.WithdrawalsInfo:SetText("")
-    self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(Syndicator.API.GetGuild(guild).money, true)))
+    if guildData then
+      self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(guildData.money, true)))
+    end
     self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 5)
     detailsHeight = 10
 
@@ -515,9 +522,9 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   active:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -53)
 
   self.SearchWidget:SetShown(active:IsShown())
-  self.NotVisitedText:SetShown(not active:IsShown() and not guildData.details.visited)
-  self.NoTabsText:SetShown(not active:IsShown() and guildData.details.visited)
-  self.Money:SetShown(active:IsShown() or guildData.details.visited)
+  self.NotVisitedText:SetShown(not active:IsShown() and (not guildData or not guildData.details.visited))
+  self.NoTabsText:SetShown(not active:IsShown() and guildData and guildData.details.visited)
+  self.Money:SetShown(active:IsShown() or guildData and guildData.details.visited)
 
   self.WithdrawalsInfo:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 30)
   self.Money:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 10)
