@@ -642,7 +642,11 @@ end
 function BaganatorGuildLogsTemplateMixin:OnShow()
   Baganator.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
-  self:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)))
+  local anchor = Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)
+  if anchor[2] ~= "UIParent" then
+    anchor[2] = self:GetParent():GetName()
+  end
+  self:SetPoint(unpack(anchor))
   Baganator.Utilities.AutoSetGuildSortMethod()
 end
 
