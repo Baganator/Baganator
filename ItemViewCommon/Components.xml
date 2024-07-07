@@ -229,7 +229,7 @@
     </Scripts>
   </Button>
 
-  <Button name="BaganatorGuildBankButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true">
+  <Button name="BaganatorGuildBankButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true" motionScriptsWhileDisabled="true">
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_GUILD_BANK" type="global"/>
     </KeyValues>
