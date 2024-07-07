@@ -12,7 +12,7 @@
             <Anchor point="TOPLEFT" x="15"/>
           </Anchors>
         </FontString>
-        <FontString inherits="GameFontHighlight" text="SEARCH" parentArray="ChangeAlpha">
+        <FontString inherits="GameFontHighlight" parentKey="SearchLabel" text="SEARCH" parentArray="ChangeAlpha">
           <Anchors>
             <Anchor point="TOPLEFT" x="15" y="-50"/>
           </Anchors>
@@ -27,6 +27,17 @@
           <Anchor point="RIGHT" x="-10"/>
         </Anchors>
       </EditBox>
+      <Button parentKey="HelpButton" inherits="BaganatorHelpButtonTemplate" parentArray="ChangeAlpha">
+        <Anchors>
+          <Anchor point="RIGHT" x="-10"/>
+          <Anchor point="CENTER" relativeKey="$parent.SearchLabel"/>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            Baganator.Help.ShowSearchDialog()
+          </OnClick>
+        </Scripts>
+      </Button>
       <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategorySearch" letters="100" parentArray="ChangeAlpha">
         <Size y="30"/>
         <Anchors>

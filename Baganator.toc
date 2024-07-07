@@ -115,6 +115,8 @@ CustomiseDialog\Main.lua
 CustomiseDialog\Main.xml
 CustomiseDialog\Initialize.lua
 
+Help\Search.lua
+
 API\Main.lua
 API\Junk.lua
 API\ItemButton.lua

@@ -277,4 +277,25 @@
       </Layer>
     </Layers>
   </Button>
+
+  <Button name="BaganatorHelpButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true" motionScriptsWhileDisabled="true">
+    <KeyValues>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_HELP" type="global"/>
+    </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"help"})
+      </OnLoad>
+    </Scripts>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Icon" atlas="QuestTurnin">
+          <Size x="14" y="14"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
 </Ui>

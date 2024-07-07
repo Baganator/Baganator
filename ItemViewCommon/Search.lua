@@ -100,8 +100,10 @@ end
 
 function BaganatorSearchWidgetMixin:SetSpacing(sideSpacing)
   self.SearchBox:ClearAllPoints()
-  self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing - 36, 0)
+  self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing - 71, 0)
   self.SearchBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset + 5, - 28)
   self.GlobalSearchButton:ClearAllPoints()
   self.GlobalSearchButton:SetPoint("LEFT", self.SearchBox, "RIGHT", 3, 0)
+  self.HelpButton:ClearAllPoints()
+  self.HelpButton:SetPoint("LEFT", self.GlobalSearchButton, "RIGHT", 3, 0)
 end

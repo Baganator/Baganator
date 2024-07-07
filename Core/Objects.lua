@@ -14,4 +14,5 @@ Baganator = {
   },
   Sorting = {},
   Transfers = {},
+  Help = {},
 }
