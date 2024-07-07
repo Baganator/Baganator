@@ -171,12 +171,6 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   end
 end
 
-function BaganatorSingleViewBackpackViewMixin:UpdateAllButtons()
-  self.ButtonVisibility:Update()
-  local guildName = Syndicator.API.GetCharacter(self.lastCharacter).details.guild
-  self.ToggleGuildBankButton:SetEnabled(guildName ~= nil and Syndicator.API.GetGuild(guildName))
-end
-
 function BaganatorSingleViewBackpackViewMixin:GetSearchMatches()
   local matches = {}
   tAppendAll(matches, self.BagLive.SearchMonitor:GetMatches())

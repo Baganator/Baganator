@@ -177,6 +177,9 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
       print("-- updateforcharacter backpack", debugprofilestop() - start)
     end
+
+    self:UpdateAllButtons()
+
     Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
   end)
 end
