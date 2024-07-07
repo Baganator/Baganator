@@ -18,6 +18,7 @@ Baganator.CategoryViews.Constants = {
   RedisplaySettings = {
     Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING,
     Baganator.Config.Options.CATEGORY_DISPLAY_ORDER,
+    Baganator.Config.Options.CUSTOM_CATEGORIES,
     Baganator.Config.Options.CATEGORY_HIDDEN,
     Baganator.Config.Options.CATEGORY_ITEM_GROUPING,
     Baganator.Config.Options.CATEGORY_SECTION_TOGGLED,
