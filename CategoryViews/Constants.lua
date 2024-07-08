@@ -60,7 +60,7 @@ if Baganator.Constants.IsEra then
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-      search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower(),
+      search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&#" .. SYNDICATOR_L_KEYWORD_GEAR,
     },
     {
       key = "quiver",
@@ -146,7 +146,7 @@ elseif Baganator.Constants.IsClassic then -- Cata
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-      search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower(),
+      search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&#" .. SYNDICATOR_L_KEYWORD_GEAR,
     },
     {
       key = "gem",
@@ -248,7 +248,7 @@ else -- retail
     {
       key = "armor",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-      search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower(),
+      search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&#" .. SYNDICATOR_L_KEYWORD_GEAR,
     },
     {
       key = "gem",
