@@ -126,8 +126,10 @@ function Baganator.CustomiseDialog.CategoriesImport(input)
       table.insert(displayOrder, source)
     end
   end
-  if tIndexOf(displayOrder,Baganator.CategoryViews.Constants.ProtectedCategory) == nil  then
-    table.insert(displayOrder, Baganator.CategoryViews.Constants.ProtectedCategory)
+  for _, source in ipairs(Baganator.CategoryViews.Constants.ProtectedCategories) do
+    if tIndexOf(displayOrder, source) == nil  then
+      table.insert(displayOrder, source)
+    end
   end
 
   local currentCustomCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
