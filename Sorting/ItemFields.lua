@@ -85,6 +85,7 @@ local sorted = {
     23, -- holdable
     1, -- head
     3, -- shoulder
+    16, -- cloak
     4, -- body/shirt
     5, -- chest
     20, -- robe
@@ -94,7 +95,6 @@ local sorted = {
     7, -- legs
     8, -- feet
     2, -- neck
-    16, -- cloak
     11, -- finger
     12, -- trinket
     29, -- prof tool
