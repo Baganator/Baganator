@@ -52,6 +52,7 @@ Baganator.Config.Options = {
 
   DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
+  DEBUG_KEYWORDS = "debug_keywords",
 
   AUTO_OPEN = "auto_open",
 
@@ -122,6 +123,7 @@ Baganator.Config.Defaults = {
 
   [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
+  [Baganator.Config.Options.DEBUG_KEYWORDS] = false,
 
   [Baganator.Config.Options.ENABLE_BACKPACK_VIEW] = true,
   [Baganator.Config.Options.ENABLE_BANK_VIEW] = true,

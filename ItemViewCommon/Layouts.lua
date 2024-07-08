@@ -677,6 +677,34 @@ function BaganatorLiveCategoryLayoutMixin:RequestContentRefresh()
   self.refreshContent = true
 end
 
+local function AddKeywords(self)
+  if not Baganator.Config.Get(Baganator.Config.Options.DEBUG_KEYWORDS) then
+    return
+  end
+
+  if self.BGR == nil or self.BGR.itemLink == nil then
+    return
+  end
+
+  local seen = {}
+  local matching = {}
+  local searchTerms = Syndicator.API.GetSearchKeywords()
+  for _, d in ipairs(searchTerms) do
+    if not seen[d.keyword] then
+      if Syndicator.Search.CheckItem(self.BGR, "#" .. d.keyword) then
+        table.insert(matching, "#" .. d.keyword)
+      end
+      seen[d.keyword] = true
+    end
+  end
+  table.sort(matching)
+  local text = table.concat(matching, ", ")
+  GameTooltip:AddLine(" ")
+  GameTooltip:AddLine(BAGANATOR_L_HELP_SEARCH_KEYWORDS)
+  GameTooltip:AddLine(text, 1, 1, 1, true)
+  GameTooltip:Show()
+end
+
 function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
   if button.hooked then
     return
@@ -692,6 +720,7 @@ function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
       Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
     end
   end)
+  hooksecurefunc(button, "UpdateTooltip", AddKeywords)
   button:HookScript("OnDragStart", function(_)
     if C_Cursor.GetCursorItem() ~= nil then
       Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
