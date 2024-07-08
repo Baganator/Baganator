@@ -94,10 +94,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
       self.CategorySearch:SetText("")
       self.PrioritySlider:SetValue(0)
-      self.CategoryName:SetAlpha(1)
-      self.CategorySearch:SetAlpha(1)
-      self.HelpButton:SetAlpha(1)
-      self.PrioritySlider:SetAlpha(1)
+      self.GroupDropDown:SetText(BAGANATOR_L_NONE)
+      self.HiddenCheckBox:SetChecked(false)
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.DeleteButton:Enable()
@@ -108,10 +106,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local category
     if customCategories[value] then
       category = customCategories[value]
-      self.CategoryName:SetAlpha(1)
-      self.CategorySearch:SetAlpha(1)
-      self.HelpButton:SetAlpha(1)
-      self.PrioritySlider:SetAlpha(1)
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.DeleteButton:Enable()
@@ -140,11 +134,17 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       end
     end
 
-    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
-    if categoryMods[value] and categoryMods[value].group then
-      self.GroupDropDown:SetText(groupingToLabel[categoryMods[value].group])
+    if value ~= Baganator.CategoryViews.Constants.EmptySlotsCategory then
+      self.GroupDropDown:Enable()
+      local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+      if categoryMods[value] and categoryMods[value].group then
+        self.GroupDropDown:SetText(groupingToLabel[categoryMods[value].group])
+      else
+        self.GroupDropDown:SetText(BAGANATOR_L_NONE)
+      end
     else
-      self.GroupDropDown:SetText(BAGANATOR_L_NONE)
+      self.GroupDropDown:SetAlpha(disabledAlpha)
+      self.GroupDropDown:Disable()
     end
   end
 
@@ -210,6 +210,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.GroupDropDown:SetPoint("TOP", 0, -120)
   self.GroupDropDown:SetPoint("LEFT", 5, 0)
   self.GroupDropDown:SetPoint("RIGHT")
+  table.insert(self.ChangeAlpha, self.GroupDropDown)
 
   self.Blocker = CreateFrame("Frame", nil, self)
   self.Blocker:EnableMouse(true)
@@ -268,6 +269,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:Disable()
   self.CategoryName:SetText("")
   self.CategorySearch:SetText("")
   self.PrioritySlider:SetValue(0)
+  self.GroupDropDown:SetText(BAGANATOR_L_NONE)
+  self.HiddenCheckBox:SetChecked(false)
   self.currentCategory = ""
   self.DeleteButton:Disable()
   for _, region in ipairs(self.ChangeAlpha) do
