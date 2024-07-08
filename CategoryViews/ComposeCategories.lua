@@ -31,6 +31,41 @@ local inventorySlots = {
   "INVTYPE_ROBE",
 }
 
+local groupings = {}
+do
+  groupings["expansion"] = {
+    {label = "Dragonflight", search = "df"},
+    {label = "Shadowlands", search = "shadowlands"},
+    {label = "Battle for Azeroth", search = "bfa"},
+    {label = "Cataclysm", search = "cataclysm"},
+    {label = "Legion", search = "legion"},
+    {label = "Warlords of Draenor", search = "draenor"},
+    {label = "Mists of Pandaria", search = "mop"},
+    {label = "Wrath of the Lich King", search = "wrath"},
+    {label = "The Burning Crusade", search = "tbc"},
+    {label = "Classic", search = "classic"},
+  }
+
+  local qualities = {}
+  for key, quality in pairs(Enum.ItemQuality) do
+    local term = _G["ITEM_QUALITY" .. quality .. "_DESC"]
+    if term then
+      table.insert(qualities, {label = term, search = term:lower(), index = quality})
+    end
+  end
+  table.sort(qualities, function(a, b) return a.index > b.index end)
+  groupings["quality"] = qualities
+
+  local inventorySlotsForGroupings = {}
+  for _, slot in ipairs(inventorySlots) do
+    local name = _G[slot]
+    if name then
+      table.insert(inventorySlotsForGroupings, {label = name, search = name:lower()})
+    end
+  end
+  groupings["slot"] = inventorySlotsForGroupings
+end
+
 -- Generate automatic categories
 local function GetAuto(category, everything)
   local searches, searchLabels, attachedItems = {}, {}, {}
@@ -120,7 +155,6 @@ function Baganator.CategoryViews.ComposeCategories(everything)
             search = search,
             label = autoDetails.searchLabels[index],
             priority = category.searchPriority,
-            isCustom = false,
             index = #allDetails + 1,
             attachedItems = autoDetails.attachedItems[index],
             auto = true,
@@ -140,7 +174,6 @@ function Baganator.CategoryViews.ComposeCategories(everything)
           search = category.search,
           label = category.name,
           priority = category.searchPriority,
-          isCustom = false,
           index = #allDetails + 1,
           attachedItems = nil,
           section = currentSection,
@@ -160,7 +193,6 @@ function Baganator.CategoryViews.ComposeCategories(everything)
         search = search,
         label = category.name,
         priority = category.searchPriority,
-        isCustom = true,
         index = #allDetails + 1,
         attachedItems = nil,
         section = currentSection,
@@ -168,16 +200,37 @@ function Baganator.CategoryViews.ComposeCategories(everything)
     end
 
     local mods = categoryMods[source]
-    if mods and mods.addedItems and next(mods.addedItems) then
-      local attachedItems = {}
-      for _, details in ipairs(mods.addedItems) do
-        if details.itemID then
-          attachedItems["i:" .. details.itemID] = true
-        elseif details.petID then
-          attachedItems["p:" .. details.petID] = true
+    if mods then
+      if mods.addedItems and next(mods.addedItems) then
+        local attachedItems = {}
+        for _, details in ipairs(mods.addedItems) do
+          if details.itemID then
+            attachedItems["i:" .. details.itemID] = true
+          elseif details.petID then
+            attachedItems["p:" .. details.petID] = true
+          end
+        end
+        allDetails[#allDetails].attachedItems = attachedItems
+      end
+      local searchDetails = groupings[mods.group]
+      if searchDetails then
+        local mainSearch = allDetails[#allDetails].search
+        local mainLabel = allDetails[#allDetails].label
+        local mainPriority = allDetails[#allDetails].priority
+        for _, details in ipairs(searchDetails) do
+          allDetails[#allDetails + 1] = {
+            type = "category",
+            source = source,
+            search = mainSearch .. "&#" .. details.search,
+            label = mainLabel .. ": " .. details.label,
+            priority = mainPriority + 1,
+            auto = true,
+            index = #allDetails + 1,
+            attachedItems = nil,
+            section = currentSection,
+          }
         end
       end
-      allDetails[#allDetails].attachedItems = attachedItems
     end
   end
 

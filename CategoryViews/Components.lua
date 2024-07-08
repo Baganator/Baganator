@@ -19,9 +19,14 @@ function BaganatorCategoryViewsCategoryButtonMixin:OnClick(button)
 end
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnEnter()
+  if self:GetFontString():IsTruncated() then
+    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    GameTooltip:SetText(self:GetText())
+  end
 end
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnLeave()
+  GameTooltip:Hide()
 end
 
 function Baganator.CategoryViews.GetSectionButtonPool(parent)

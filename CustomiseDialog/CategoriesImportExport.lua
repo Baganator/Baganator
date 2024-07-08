@@ -32,6 +32,7 @@ function Baganator.CustomiseDialog.CategoriesExport()
       source = key,
       items = #items > 0 and items or nil,
       pets = #pets > 0 and pets or nil,
+      group = mods.group,
     })
   end
   for source, isHidden in pairs(Baganator.Config.Get("category_hidden")) do
@@ -107,6 +108,13 @@ function Baganator.CustomiseDialog.CategoriesImport(input)
         end
       end
     end
+    if type(c.group) then
+      if type(c.group) ~= "string" then
+        Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+        return
+      end
+      newMods.group = group
+    end
     categoryMods[c.source or c.name] = newMods
   end
   local hidden = {}
@@ -157,7 +165,4 @@ function Baganator.CustomiseDialog.CategoriesImport(input)
   Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
   Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
   Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)
-end
-
-function Baganator.CustomiseDialog.GetCategoriesImportExport(parent)
 end

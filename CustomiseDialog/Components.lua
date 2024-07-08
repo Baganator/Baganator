@@ -440,7 +440,17 @@ function BaganatorPrioritySliderMixin:GetValue()
 end
 
 function BaganatorPrioritySliderMixin:OnMouseWheel(delta)
-  self.Slider:SetValue(self.Slider:GetValue() + delta)
+  if self.Slider:IsEnabled() then
+    self.Slider:SetValue(self.Slider:GetValue() + delta)
+  end
+end
+
+function BaganatorPrioritySliderMixin:Disable()
+  self.Slider:Disable()
+end
+
+function BaganatorPrioritySliderMixin:Enable()
+  self.Slider:Enable()
 end
 
 function Baganator.CustomiseDialog.GetDropdown(parent)

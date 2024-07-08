@@ -17,6 +17,11 @@
             <Anchor point="TOPLEFT" x="15" y="-50"/>
           </Anchors>
         </FontString>
+        <FontString inherits="GameFontHighlight" parentKey="GroupLabel" text="BAGANATOR_L_GROUP_BY" parentArray="ChangeAlpha">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="15" y="-105"/>
+          </Anchors>
+        </FontString>
       </Layer>
     </Layers>
     <Frames>

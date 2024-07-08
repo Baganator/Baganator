@@ -260,6 +260,10 @@ L["SORT_METHOD_RESET_FOR_CATEGORIES"] = "Sort method reset to be used with categ
 L["MOVE"] = "Move"
 L["INVALID_CATEGORY_IMPORT_FORMAT"] = "Invalid category import format"
 L["HIDDEN"] = "Hidden"
+L["SLOT"] = "Slot"
+L["QUALITY"] = "Quality"
+L["NONE"] = "None"
+L["GROUP_BY"] = "Group by"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"

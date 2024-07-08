@@ -8,6 +8,12 @@ local PRIORITY_LIST = {
   400,
 }
 
+local groupingToLabel = {
+  ["expansion"] = BAGANATOR_L_EXPANSION,
+  ["slot"] = BAGANATOR_L_SLOT,
+  ["quality"] = BAGANATOR_L_QUALITY,
+}
+
 local PRIORITY_MAP = {}
 
 local priorityOffset = -2
@@ -82,7 +88,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       region:SetAlpha(1)
     end
     self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
-    self.Blocker:SetPoint("BOTTOMRIGHT", self.PrioritySlider)
+    self.Blocker:SetPoint("BOTTOMRIGHT", self.CategorySearch)
 
     if value == "" then
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
@@ -92,6 +98,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategorySearch:SetAlpha(1)
       self.HelpButton:SetAlpha(1)
       self.PrioritySlider:SetAlpha(1)
+      self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.DeleteButton:Enable()
       Save()
@@ -105,6 +112,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategorySearch:SetAlpha(1)
       self.HelpButton:SetAlpha(1)
       self.PrioritySlider:SetAlpha(1)
+      self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.DeleteButton:Enable()
     else
@@ -113,6 +121,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategorySearch:SetAlpha(disabledAlpha)
       self.HelpButton:SetAlpha(disabledAlpha)
       self.PrioritySlider:SetAlpha(disabledAlpha)
+      self.PrioritySlider:Disable()
       self.Blocker:Show()
       self.DeleteButton:Disable()
     end
@@ -129,6 +138,13 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
           break
         end
       end
+    end
+
+    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+    if categoryMods[value] and categoryMods[value].group then
+      self.GroupDropDown:SetText(groupingToLabel[categoryMods[value].group])
+    else
+      self.GroupDropDown:SetText(BAGANATOR_L_NONE)
     end
   end
 
@@ -162,9 +178,38 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.PrioritySlider:Init({text = BAGANATOR_L_PRIORITY})
   self.PrioritySlider:SetPoint("LEFT")
   self.PrioritySlider:SetPoint("RIGHT")
-  self.PrioritySlider:SetPoint("TOP", 0, -100)
+  self.PrioritySlider:SetPoint("TOP", 0, -160)
   self.PrioritySlider:SetValue(0)
   table.insert(self.ChangeAlpha, self.PrioritySlider)
+
+  self.GroupDropDown = Baganator.CustomiseDialog.GetDropdown(self)
+  self.GroupDropDown:SetupOptions({
+    BAGANATOR_L_NONE,
+    BAGANATOR_L_EXPANSION,
+    BAGANATOR_L_SLOT,
+    BAGANATOR_L_QUALITY,
+  }, {
+    "",
+    "expansion",
+    "slot",
+    "quality",
+  })
+  hooksecurefunc(self.GroupDropDown, "OnEntryClicked", function(_, option)
+    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+    if not categoryMods[self.currentCategory] then
+      categoryMods[self.currentCategory] = {}
+    end
+    if option.value == "" then
+      categoryMods[self.currentCategory].group = nil
+    else
+      categoryMods[self.currentCategory].group = option.value
+    end
+    self.GroupDropDown:SetText(option.label)
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+  end)
+  self.GroupDropDown:SetPoint("TOP", 0, -120)
+  self.GroupDropDown:SetPoint("LEFT", 5, 0)
+  self.GroupDropDown:SetPoint("RIGHT")
 
   self.Blocker = CreateFrame("Frame", nil, self)
   self.Blocker:EnableMouse(true)

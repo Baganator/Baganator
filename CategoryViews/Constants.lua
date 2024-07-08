@@ -22,6 +22,7 @@ Baganator.CategoryViews.Constants = {
     Baganator.Config.Options.CATEGORY_HIDDEN,
     Baganator.Config.Options.CATEGORY_ITEM_GROUPING,
     Baganator.Config.Options.CATEGORY_SECTION_TOGGLED,
+    Baganator.Config.Options.CATEGORY_MODIFICATIONS,
   },
 }
 
