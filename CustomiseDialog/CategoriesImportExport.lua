@@ -108,7 +108,7 @@ function Baganator.CustomiseDialog.CategoriesImport(input)
         end
       end
     end
-    if type(c.group) then
+    if c.group then
       if type(c.group) ~= "string" then
         Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
         return
