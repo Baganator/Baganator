@@ -181,8 +181,8 @@ local function SetCategoriesToDropDown(dropDown, ignore)
   table.sort(options, function(a, b) return a.label:lower() < b.label:lower() end)
 
   local entries, values = {
-    BAGANATOR_L_CREATE_NEW_CATEGORY,
-    BAGANATOR_L_CREATE_NEW_SECTION,
+    NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CREATE_NEW_CATEGORY),
+    NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CREATE_NEW_SECTION),
     BAGANATOR_L_CATEGORY_DIVIDER,
   }, {
     "",
