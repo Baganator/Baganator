@@ -97,9 +97,9 @@ local sorted = {
     11, -- finger
     12, -- trinket
     4, -- body/shirt
+    19, -- tabard
     29, -- prof tool
     30, -- prof gear
-    19, -- tabard
     18, -- bag
     31, -- spell offensive
     32, -- spell utility
