@@ -74,19 +74,18 @@ local sorted = {
     17, -- 2h weapon
     13, -- weapon
     21, -- weapon main
+    14, -- shield
+    23, -- holdable
     26, -- ranged right
     22, -- weapon off
     15, -- ranged
     25, -- thrown
     24, -- ammo
-    14, -- shield
     27, -- quiver
     28, -- relic
-    23, -- holdable
     1, -- head
     3, -- shoulder
     16, -- cloak
-    4, -- body/shirt
     5, -- chest
     20, -- robe
     9, -- wrist
@@ -97,6 +96,7 @@ local sorted = {
     2, -- neck
     11, -- finger
     12, -- trinket
+    4, -- body/shirt
     29, -- prof tool
     30, -- prof gear
     19, -- tabard
