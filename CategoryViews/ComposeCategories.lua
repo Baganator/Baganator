@@ -34,23 +34,131 @@ local inventorySlots = {
 local groupings = {}
 do
   groupings["expansion"] = {
-    {label = "Dragonflight", search = "df"},
-    {label = "Shadowlands", search = "shadowlands"},
-    {label = "Battle for Azeroth", search = "bfa"},
-    {label = "Cataclysm", search = "cataclysm"},
-    {label = "Legion", search = "legion"},
-    {label = "Warlords of Draenor", search = "draenor"},
-    {label = "Mists of Pandaria", search = "mop"},
-    {label = "Wrath of the Lich King", search = "wrath"},
-    {label = "The Burning Crusade", search = "tbc"},
-    {label = "Classic", search = "classic"},
+    {label = "Dragonflight", search = "#df"},
+    {label = "Shadowlands", search = "#shadowlands"},
+    {label = "Battle for Azeroth", search = "#bfa"},
+    {label = "Cataclysm", search = "#cataclysm"},
+    {label = "Legion", search = "#legion"},
+    {label = "Warlords of Draenor", search = "#draenor"},
+    {label = "Mists of Pandaria", search = "#mop"},
+    {label = "Wrath of the Lich King", search = "#wrath"},
+    {label = "The Burning Crusade", search = "#tbc"},
+    {label = "Classic", search = "#classic"},
   }
+
+  groupings["type"] = {}
+
+  local subTypes = {
+    -- Weapon
+    2, 0, -- One-Handed Axes
+    2, 4, -- One-Handed Maces
+    2, 7, -- One-Handed Swords
+    2, 9, -- Warglaives
+    2, 15, -- Daggers
+    2, 13, -- Fist Weapons
+    2, 11, -- bear claws
+    2, 12, -- cat claws
+    2, 19, -- Wands
+    2, 1, -- Two-Handed Axes
+    2, 5, -- Two-Handed Maces
+    2, 8, -- Two-Handed Swords
+    2, 6, -- Polearms
+    2, 10, -- Staves
+    2, 2, -- Bows
+    2, 18, -- Crossbows
+    2, 3, -- Guns
+    2, 16, -- Thrown
+    2, 20, -- Fishing Poles
+
+    -- Armor
+    4, 1, -- Cloth
+    4, 2, -- Leather
+    4, 3, -- Mail
+    4, 4, -- Plate
+    4, 6, -- Shield
+    4, 7, -- Libram
+    4, 8, -- Idol
+    4, 9, -- Totem
+    4, 10, -- Sigil
+    4, 11, -- Relic
+    4, 5, -- Cosmetic
+    4, 0, -- Generic
+
+    -- Tradeskill
+    7, 18, -- Optional Reagents
+    7, 1, -- Parts
+    7, 4, -- Jewelcrafting
+    7, 7, -- Metal & Stone
+    7, 6, -- Leather
+    7, 5, -- Cloth
+    7, 12, -- Enchanting
+    7, 16, -- Inscription
+    7, 10, -- Elemental
+    7, 9, -- Herb
+    7, 8, -- Cooking
+    7, 11, -- Other
+
+     -- Profession
+    16, 7, -- Engineering
+    16, 0, -- Blacksmithing
+    16, 1, -- Leatherworking
+    16, 6, -- Tailoring
+    16, 8, -- Enchanting
+    16, 11, -- Jewelcrafting
+    16, 2, -- Alchemy
+    16, 12, -- Inscription
+    16, 5, -- Mining
+    16, 10, -- Skinning
+    16, 3, -- Herbalism
+    16, 4, -- Cooking
+    16, 9, -- Fishing
+    16, 13, -- Archaeology
+
+    -- Recipe
+    9, 3, -- Engineering
+    9, 4, -- Blacksmithing
+    9, 1, -- Leatherworking
+    9, 2, -- Tailoring
+    9, 8, -- Enchanting
+    9, 10, -- Jewelcrafting
+    9, 6, -- Alchemy
+    9, 11, -- Inscription
+    9, 5, -- Cooking
+    9, 8, -- Fishing
+    9, 7, -- First Aid
+    9, 0, -- Book
+
+    -- Battle Pets
+    17, 0, -- Humanoid
+    17, 1, -- Dragonkin
+    17, 2, -- Flying
+    17, 3, -- Undead
+    17, 4, -- Critter
+    17, 5, -- Magic
+    17, 6, -- Elemental
+    17, 7, -- Beast
+    17, 8, -- Aquatic
+    17, 9, -- Mechanical
+  }
+  for i = 1, #subTypes, 2 do
+    local root = C_Item.GetItemClassInfo(subTypes[i])
+    local child = C_Item.GetItemSubClassInfo(subTypes[i], subTypes[i+1])
+    if root and child then
+      local search = "#" .. root:lower() .. "&"
+      if child:find("%&") then
+        search = search .. "_" .. (strsplit("&", child)):lower()
+      else
+        search = search .. "#" .. child:lower()
+      end
+      table.insert(groupings["type"], {label = child, search = search})
+    end
+  end
 
   local qualities = {}
   for key, quality in pairs(Enum.ItemQuality) do
     local term = _G["ITEM_QUALITY" .. quality .. "_DESC"]
     if term then
-      table.insert(qualities, {label = term, search = term:lower(), index = quality})
+      table.insert(qualities, {label = term, search = "#" .. term:lower(), index = quality})
     end
   end
   table.sort(qualities, function(a, b) return a.index > b.index end)
@@ -60,7 +168,7 @@ do
   for _, slot in ipairs(inventorySlots) do
     local name = _G[slot]
     if name then
-      table.insert(inventorySlotsForGroupings, {label = name, search = name:lower()})
+      table.insert(inventorySlotsForGroupings, {label = name, search = "#" .. name:lower()})
     end
   end
   groupings["slot"] = inventorySlotsForGroupings
@@ -221,7 +329,7 @@ function Baganator.CategoryViews.ComposeCategories(everything)
           allDetails[#allDetails + 1] = {
             type = "category",
             source = source,
-            search = mainSearch .. "&#" .. details.search,
+            search = details.search .. "&(" .. mainSearch .. ")",
             label = mainLabel .. ": " .. details.label,
             priority = mainPriority + 1,
             auto = true,

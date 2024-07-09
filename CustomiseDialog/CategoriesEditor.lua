@@ -11,6 +11,7 @@ local PRIORITY_LIST = {
 local groupingToLabel = {
   ["expansion"] = BAGANATOR_L_EXPANSION,
   ["slot"] = BAGANATOR_L_SLOT,
+  ["type"] = BAGANATOR_L_TYPE,
   ["quality"] = BAGANATOR_L_QUALITY,
 }
 
@@ -186,11 +187,13 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.GroupDropDown:SetupOptions({
     BAGANATOR_L_NONE,
     BAGANATOR_L_EXPANSION,
+    BAGANATOR_L_TYPE,
     BAGANATOR_L_SLOT,
     BAGANATOR_L_QUALITY,
   }, {
     "",
     "expansion",
+    "type",
     "slot",
     "quality",
   })
