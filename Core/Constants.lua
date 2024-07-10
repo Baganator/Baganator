@@ -76,6 +76,26 @@ if not Syndicator then
   return
 end
 
+Baganator.Constants.KeywordGroupOrder = {
+  SYNDICATOR_L_GROUP_ITEM_TYPE,
+  SYNDICATOR_L_GROUP_ITEM_DETAIL,
+  SYNDICATOR_L_GROUP_QUALITY,
+
+  SYNDICATOR_L_GROUP_SLOT,
+  SYNDICATOR_L_GROUP_WEAPON_TYPE,
+  SYNDICATOR_L_GROUP_ARMOR_TYPE,
+  SYNDICATOR_L_GROUP_STAT,
+  SYNDICATOR_L_GROUP_SOCKET,
+
+  SYNDICATOR_L_GROUP_TRADE_GOODS,
+  SYNDICATOR_L_GROUP_RECIPE,
+  SYNDICATOR_L_GROUP_GLYPH,
+  SYNDICATOR_L_GROUP_BAG_TYPE,
+
+  SYNDICATOR_L_GROUP_EXPANSION,
+  SYNDICATOR_L_GROUP_BATTLE_PET,
+}
+
 if Syndicator.Constants.WarbandBankActive then
   -- Note constant values are taken from Blizzard code
   Baganator.Constants.BlizzardBankTabConstants = {

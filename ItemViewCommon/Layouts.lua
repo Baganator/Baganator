@@ -686,22 +686,23 @@ local function AddKeywords(self)
     return
   end
 
-  local seen = {}
-  local matching = {}
-  local searchTerms = Syndicator.API.GetSearchKeywords()
-  for _, d in ipairs(searchTerms) do
-    if not seen[d.keyword] then
-      if Syndicator.Search.CheckItem(self.BGR, "#" .. d.keyword) then
-        table.insert(matching, "#" .. d.keyword)
-      end
-      seen[d.keyword] = true
-    end
-  end
-  table.sort(matching)
-  local text = table.concat(matching, ", ")
   GameTooltip:AddLine(" ")
   GameTooltip:AddLine(BAGANATOR_L_HELP_SEARCH_KEYWORDS)
-  GameTooltip:AddLine(text, 1, 1, 1, true)
+
+  local groups = Baganator.Help.GetKeywordGroups()
+
+  for _, key in ipairs(Baganator.Constants.KeywordGroupOrder) do
+    table.sort(groups[key])
+    local matching = {}
+    for _, keyword in ipairs(groups[key]) do
+      if Syndicator.Search.CheckItem(self.BGR, "#" .. keyword) then
+        table.insert(matching, keyword)
+      end
+    end
+    if #matching > 0 then
+      GameTooltip:AddDoubleLine(key, table.concat(matching, ", "), BLUE_FONT_COLOR.r, BLUE_FONT_COLOR.g, BLUE_FONT_COLOR.b, 1, 1, 1)
+    end
+  end
   GameTooltip:Show()
 end
 

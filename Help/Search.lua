@@ -1,24 +1,4 @@
-local groupOrder = {
-  SYNDICATOR_L_GROUP_ITEM_TYPE,
-  SYNDICATOR_L_GROUP_ITEM_DETAIL,
-  SYNDICATOR_L_GROUP_QUALITY,
-
-  SYNDICATOR_L_GROUP_SLOT,
-  SYNDICATOR_L_GROUP_WEAPON_TYPE,
-  SYNDICATOR_L_GROUP_ARMOR_TYPE,
-  SYNDICATOR_L_GROUP_STAT,
-  SYNDICATOR_L_GROUP_SOCKET,
-
-  SYNDICATOR_L_GROUP_TRADE_GOODS,
-  SYNDICATOR_L_GROUP_RECIPE,
-  SYNDICATOR_L_GROUP_GLYPH,
-  SYNDICATOR_L_GROUP_BAG_TYPE,
-
-  SYNDICATOR_L_GROUP_EXPANSION,
-  SYNDICATOR_L_GROUP_BATTLE_PET,
-}
-
-local function GetGroups()
+function Baganator.Help.GetKeywordGroups()
   local searchTerms = Syndicator.API.GetSearchKeywords()
   local groupsList = {}
   local groups = {}
@@ -43,9 +23,9 @@ function Baganator.Help.ShowSearchDialog()
     return
   end
 
-  local groups = GetGroups()
+  local groups = Baganator.Help.GetKeywordGroups()
   local text = ""
-  for _, key in ipairs(groupOrder) do
+  for _, key in ipairs(Baganator.Constants.KeywordGroupOrder) do
     table.sort(groups[key])
     text = text .. "==" .. key .. "\n" .. table.concat(groups[key], ", ") .. "\n"
   end
@@ -102,7 +82,7 @@ function Baganator.Help.ShowSearchDialog()
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS_LINE_1},
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS_LINE_2},
   }
-  for _, key in ipairs(groupOrder) do
+  for _, key in ipairs(Baganator.Constants.KeywordGroupOrder) do
     table.insert(lines, {type = "header_2", text = key})
     table.insert(lines, {type = "content", text = table.concat(groups[key], ", ")})
   end
