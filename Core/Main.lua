@@ -60,4 +60,9 @@ Baganator.Utilities.OnAddonLoaded("Baganator", function()
   Baganator.ViewManagement.Initialize()
 
   Baganator.CustomiseDialog.Initialize()
+
+  if Baganator.Config.Get(Baganator.Config.Options.SEEN_WELCOME) < 1 then
+    Baganator.Config.Set(Baganator.Config.Options.SEEN_WELCOME, 1)
+    Baganator.ShowWelcome()
+  end
 end)

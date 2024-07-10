@@ -19,6 +19,7 @@ Core\Constants.lua
 Core\Config.lua
 Core\Utilities.lua
 Core\SlashCmd.lua
+Core\Welcome.lua
 Core\Main.lua
 
 Skins.lua

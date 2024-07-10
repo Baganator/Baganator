@@ -279,6 +279,12 @@ L["HELP_SEARCH_KEYWORDS"] = "Keywords"
 L["HELP_SEARCH_KEYWORDS_LINE_1"] = "Your search will look for matches in two places: within a set of specified keywords and within the item name and tooltip descriptions. To search for an exact keyword only, use a hashtag (#) before the keyword."
 L["HELP_SEARCH_KEYWORDS_LINE_2"] = "Example: #gear&explorer"
 
+L["WELCOME_TO_BAGANATOR"] = "Welcome to Baganator"
+L["WELCOME_DESCRIPTION"] = "Decide which kind of bags you want. This can be changed later."
+L["CHOOSE"] = "Choose"
+L["SINGLE_BAG_DESCRIPTION"] = "The most common option. Keeps your items in one large container."
+L["CATEGORY_GROUPS_DESCRIPTION"] = "Group items by type, with features to add new custom categories."
+
 L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
 L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
 

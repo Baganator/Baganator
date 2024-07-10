@@ -2,6 +2,7 @@ Baganator.Config = {}
 
 Baganator.Config.Options = {
   VIEW_TYPE = "view_type",
+  SEEN_WELCOME = "seen_welcome",
   BAG_VIEW_WIDTH = "bag_view_width",
   BANK_VIEW_WIDTH = "bank_view_width",
   WARBAND_BANK_VIEW_WIDTH = "warband_bank_view_width",
@@ -75,6 +76,7 @@ Baganator.Config.Options = {
 
 Baganator.Config.Defaults = {
   [Baganator.Config.Options.VIEW_TYPE] = "single", -- "single" or "category"
+  [Baganator.Config.Options.SEEN_WELCOME] = 0,
 
   [Baganator.Config.Options.BAG_VIEW_WIDTH] = 12,
   [Baganator.Config.Options.BANK_VIEW_WIDTH] = Baganator.Constants.IsRetail and 24 or 18,
