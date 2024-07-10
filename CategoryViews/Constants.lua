@@ -92,8 +92,7 @@ if Baganator.Constants.IsEra then
     {
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
-      -- Only era uses the KEYRING keyword as only era has a keyring bag
-      search = "#" .. SYNDICATOR_L_KEYWORD_KEYRING or C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
+      search = "#" .. (SYNDICATOR_L_KEYWORD_KEY or SYNDICATOR_L_KEYWORD_KEYRING),
       searchPriority = 165,
     },
     {
