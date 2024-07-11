@@ -10,25 +10,6 @@ end
 
 local GENERAL_OPTIONS = {
   {
-    type = "dropdown",
-    text = BAGANATOR_L_VIEW_TYPE,
-    option = "view_type",
-    entries = {
-      BAGANATOR_L_SINGLE_BAG,
-      BAGANATOR_L_CATEGORY_GROUPS,
-    },
-    values = {
-      "single",
-      "category",
-    }
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_LOCK_WINDOWS,
-    option = "lock_frames",
-  },
-  { type = "spacing" },
-  {
     type = "checkbox",
     text = BAGANATOR_L_USE_BACKPACK_VIEW,
     rightText = BAGANATOR_L_BRACKETS_RELOAD_REQUIRED,
@@ -53,6 +34,20 @@ local GENERAL_OPTIONS = {
 local LAYOUT_OPTIONS = {
   {
     type = "dropdown",
+    text = BAGANATOR_L_VIEW_TYPE,
+    option = "view_type",
+    entries = {
+      BAGANATOR_L_SINGLE_BAG,
+      BAGANATOR_L_CATEGORY_GROUPS,
+    },
+    values = {
+      "single",
+      "category",
+    }
+  },
+  { type = "spacing" },
+  {
+    type = "dropdown",
     text = BAGANATOR_L_SHOW_BUTTONS,
     option = "show_buttons_on_alt",
     entries = {
@@ -64,12 +59,6 @@ local LAYOUT_OPTIONS = {
       true,
     }
   },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_SHOW_SORT_BUTTON,
-    option = "show_sort_button_2",
-  },
-  { type = "spacing" },
   {
     type = "slider",
     min = 1,
@@ -149,6 +138,12 @@ local LAYOUT_OPTIONS = {
     text = BAGANATOR_L_GROUP_IDENTICAL_ITEMS,
     rightText = BAGANATOR_L_BRACKETS_CATEGORY_VIEW_ONLY,
     option = "category_item_grouping",
+  },
+  { type = "spacing" },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_LOCK_WINDOWS,
+    option = "lock_frames",
   },
 }
 
@@ -306,6 +301,12 @@ local OPEN_CLOSE_OPTIONS = {
   },
 }
 local SORTING_OPTIONS = {
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_SORT_BUTTON,
+    option = "show_sort_button_2",
+  },
+  { type = "spacing" },
   {
     type = "checkbox",
     text = BAGANATOR_L_SORT_ON_OPEN,
@@ -515,16 +516,6 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
   local frame = GetWrapperFrame(self)
 
-  frame.ResetFramePositions = CreateFrame("Button", nil, frame, "UIPanelDynamicResizeButtonTemplate")
-  frame.ResetFramePositions:SetPoint("TOP", frame, 0, -48)
-  frame.ResetFramePositions:SetPoint("LEFT", frame, "CENTER", 55, 0)
-  frame.ResetFramePositions:SetText(BAGANATOR_L_RESET_POSITIONS)
-  DynamicResizeButton_Resize(frame.ResetFramePositions)
-  frame.ResetFramePositions:SetScript("OnClick", function()
-    Baganator.CallbackRegistry:TriggerEvent("ResetFramePositions")
-  end)
-  Baganator.Skins.AddFrame("Button", frame.ResetFramePositions)
-
   do
     local junkPlugins = {
       {label = BAGANATOR_L_POOR_QUALITY, id = "poor_quality"},
@@ -558,14 +549,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
   local allFrames = GenerateFrames(GENERAL_OPTIONS, frame)
 
-  allFrames[2].CheckBox.HoverBackground:SetPoint("RIGHT", frame.ResetFramePositions, "LEFT")
-
   frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
-      frame:SetValue(Baganator.Config.Get(frame.option))
-    end
-  end)
-  frame:SetScript("OnUpdate", function()
     for index, frame in ipairs(allFrames) do
       frame:SetValue(Baganator.Config.Get(frame.option))
     end
@@ -682,7 +666,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
       Baganator.Config.ResetOne("sort_method")
     end
 
-    table.insert(SORTING_OPTIONS, 3, typeDropDown)
+    table.insert(SORTING_OPTIONS, 5, typeDropDown)
   end
   if next(addonTable.ExternalGuildBankSorts) ~= nil then
     local allModes = {}
@@ -734,6 +718,19 @@ function BaganatorCustomiseDialogMixin:SetupLayout()
   local frame = GetWrapperFrame(self)
 
   local allFrames = GenerateFrames(LAYOUT_OPTIONS, frame)
+
+  local _, resetAnchor = FindInTableIf(allFrames, function(f) return f.text == BAGANATOR_L_LOCK_WINDOWS end)
+  frame.ResetFramePositions = CreateFrame("Button", nil, frame, "UIPanelDynamicResizeButtonTemplate")
+  frame.ResetFramePositions:SetPoint("LEFT", resetAnchor, "CENTER", 55, 0)
+  frame.ResetFramePositions:SetText(BAGANATOR_L_RESET_POSITIONS)
+  DynamicResizeButton_Resize(frame.ResetFramePositions)
+  frame.ResetFramePositions:SetScript("OnClick", function()
+    Baganator.CallbackRegistry:TriggerEvent("ResetFramePositions")
+  end)
+  frame.ResetFramePositions:SetFrameLevel(10000)
+  Baganator.Skins.AddFrame("Button", frame.ResetFramePositions)
+
+  resetAnchor.CheckBox.HoverBackground:SetPoint("RIGHT", frame.ResetFramePositions, "LEFT")
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
