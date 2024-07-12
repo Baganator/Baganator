@@ -9,26 +9,6 @@ local NotIsEraCheck = function()
 end
 
 local GENERAL_OPTIONS = {
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_USE_BACKPACK_VIEW,
-    rightText = BAGANATOR_L_BRACKETS_RELOAD_REQUIRED,
-    option = "enable_backpack_view",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_USE_BANK_VIEW,
-    rightText = BAGANATOR_L_BRACKETS_RELOAD_REQUIRED,
-    option = "enable_bank_view",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_USE_GUILD_VIEW,
-    rightText = BAGANATOR_L_BRACKETS_RELOAD_REQUIRED,
-    option = "enable_guild_view",
-    check = NotIsEraCheck,
-  },
-  { type = "spacing" },
 }
 
 local LAYOUT_OPTIONS = {
@@ -559,7 +539,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
   do
     tooltipButtonFrame:SetPoint("LEFT")
     tooltipButtonFrame:SetPoint("RIGHT")
-    tooltipButtonFrame:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+    tooltipButtonFrame:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
     tooltipButtonFrame:SetHeight(40)
     local text = tooltipButtonFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     text:SetPoint("RIGHT", tooltipButtonFrame, "CENTER", -50, 0)

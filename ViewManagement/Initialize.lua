@@ -357,35 +357,23 @@ function Baganator.ViewManagement.Initialize()
   -- other component initialisations won't fail
 
   xpcall(function()
-    if Baganator.Config.Get(Baganator.Config.Options.ENABLE_BACKPACK_VIEW) then
-      SetupBackpackView()
-      HideDefaultBackpack()
-    else
-      function Baganator.ViewManagement.GetBackpackFrame()
-        return nil
-      end
-    end
+    SetupBackpackView()
+    HideDefaultBackpack()
   end, CallErrorHandler)
 
   xpcall(function()
-    if Baganator.Config.Get(Baganator.Config.Options.ENABLE_BANK_VIEW) then
-      SetupBankView()
-      HideDefaultBank()
-    end
+    SetupBankView()
+    HideDefaultBank()
   end, CallErrorHandler)
 
   xpcall(function()
-    if BackpackTokenFrame then
-      local info = C_XMLUtil.GetTemplateInfo("BackpackTokenTemplate")
-      local tokenWidth = info and info.width or 50
-      BackpackTokenFrame:SetWidth(tokenWidth * 3 + 1) -- Support tracking up to 3 currencies
-    end
+    local info = C_XMLUtil.GetTemplateInfo("BackpackTokenTemplate")
+    local tokenWidth = info and info.width or 50
+    BackpackTokenFrame:SetWidth(tokenWidth * 3 + 1) -- Support tracking up to 3 currencies
   end, CallErrorHandler)
 
   xpcall(function()
-    if not Baganator.Constants.IsEra and Baganator.Config.Get(Baganator.Config.Options.ENABLE_GUILD_VIEW) then
-      SetupGuildView()
-    end
+    SetupGuildView()
   end, CallErrorHandler)
 
   SetupCharacterSelect()
