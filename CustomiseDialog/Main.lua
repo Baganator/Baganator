@@ -496,6 +496,58 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
   local frame = GetWrapperFrame(self)
 
+  local infoInset = CreateFrame("Frame", nil, frame, "InsetFrameTemplate")
+
+  do
+    infoInset:SetPoint("TOP")
+    infoInset:SetPoint("LEFT", 20 + Baganator.Constants.ButtonFrameOffset, 0)
+    infoInset:SetPoint("RIGHT", -20, 0)
+    infoInset:SetHeight(75)
+    Baganator.Skins.AddFrame("InsetFrame", infoInset)
+
+    local logo = infoInset:CreateTexture(nil, "ARTWORK")
+    logo:SetTexture("Interface\\AddOns\\Baganator\\Assets\\logo")
+    logo:SetSize(52, 52)
+    logo:SetPoint("LEFT", 8, 0)
+
+    local name = infoInset:CreateFontString(nil, "ARTWORK", "GameFontHighlightHuge")
+    name:SetText(BAGANATOR_L_BAGANATOR)
+    name:SetPoint("TOPLEFT", logo, "TOPRIGHT", 10, 0)
+
+    local credit = infoInset:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    credit:SetText(BAGANATOR_L_BY_PLUSMOUSE)
+    credit:SetPoint("BOTTOMLEFT", name, "BOTTOMRIGHT", 5, 0)
+
+    local discordLinkDialog = "Baganator_General_Settings_Discord_Dialog"
+    StaticPopupDialogs[discordLinkDialog] = {
+      text = BAGANATOR_L_CTRL_C_TO_COPY,
+      button1 = DONE,
+      hasEditBox = 1,
+      OnShow = function(self)
+        self.editBox:SetText("https://discord.gg/TtSN6DxSky")
+        self.editBox:HighlightText()
+      end,
+      EditBoxOnEnterPressed = function(self)
+        self:GetParent():Hide()
+      end,
+      EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+      editBoxWidth = 230,
+      timeout = 0,
+      hideOnEscape = 1,
+    }
+    local discordButton = CreateFrame("Button", nil, infoInset, "UIPanelDynamicResizeButtonTemplate")
+    discordButton:SetText(BAGANATOR_L_JOIN_THE_DISCORD)
+    DynamicResizeButton_Resize(discordButton)
+    discordButton:SetPoint("BOTTOMLEFT", logo, "BOTTOMRIGHT", 8, 0)
+    discordButton:SetScript("OnClick", function()
+      StaticPopup_Show(discordLinkDialog)
+    end)
+    Baganator.Skins.AddFrame("Button", discordButton)
+    local discordText = infoInset:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    discordText:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
+    discordText:SetText(BAGANATOR_L_DISCORD_DESCRIPTION)
+  end
+
   do
     local junkPlugins = {
       {label = BAGANATOR_L_POOR_QUALITY, id = "poor_quality"},
@@ -527,7 +579,72 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     table.insert(GENERAL_OPTIONS, dropdown)
   end
 
-  local allFrames = GenerateFrames(GENERAL_OPTIONS, frame)
+  local allFrames = {infoInset}
+
+  do
+    local function GetTipsSection(rowContainer, details)
+      local header = rowContainer:CreateFontString(nil, "ARTWORK", "GameFontHighlightMedium")
+      header:SetJustifyH("LEFT")
+      header:SetPoint("TOP")
+      header:SetText(details.header)
+      header:SetHeight(30)
+      local text = rowContainer:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+      text:SetJustifyH("LEFT")
+      text:SetPoint("TOP", header, "BOTTOM")
+      text:SetText(details.text)
+      text:SetSpacing(3)
+
+      return {header, text}
+    end
+
+    local function MakeTipsRow(details1, details2)
+      local rowContainer = CreateFrame("Frame", nil, frame)
+      rowContainer:SetPoint("LEFT", 35 + Baganator.Constants.ButtonFrameOffset, 0)
+      rowContainer:SetPoint("RIGHT", -35, 0)
+      rowContainer:SetHeight(110)
+      for _, row in ipairs(GetTipsSection(rowContainer, details1)) do
+        row:SetPoint("LEFT")
+        row:SetPoint("RIGHT", rowContainer, "CENTER", -15, 0)
+      end
+      for _, row in ipairs(GetTipsSection(rowContainer, details2)) do
+        row:SetPoint("RIGHT")
+        row:SetPoint("LEFT", rowContainer, "CENTER", 15, 0)
+      end
+      return rowContainer
+    end
+
+    local tipsRows = {
+      MakeTipsRow({
+        header = CreateAtlasMarkup("common-search-magnifyingglass", 13, 13) .. "  " .. SEARCH,
+        text = BAGANATOR_L_TIPS_SEARCH,
+      }, {
+        header = BAGANATOR_L_PLUGINS,
+        text = BAGANATOR_L_TIPS_PLUGINS,
+      }),
+      MakeTipsRow({
+        header = CreateAtlasMarkup("orderhalltalents-choice-arrow-large", 17, 13) .. " " .. BAGANATOR_L_TRANSFER,
+        text = BAGANATOR_L_TIPS_TRANSFER,
+      }, {
+        header = BAGANATOR_L_SKINS,
+        text = BAGANATOR_L_TIPS_SKINS_2,
+      }),
+    }
+    for _, row in ipairs(tipsRows) do
+      row:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
+      table.insert(allFrames, row)
+    end
+    tipsRows[1]:SetPoint("TOP", allFrames[#allFrames - #tipsRows], "BOTTOM", 0, -30)
+
+    local searchHelpButton = CreateFrame("Button", nil, tipsRows[1], "BaganatorHelpButtonTemplate")
+    searchHelpButton:SetPoint("TOP", 0, -2)
+    searchHelpButton:SetPoint("RIGHT", tipsRows[1], "CENTER", -15, 0)
+    searchHelpButton:SetScript("OnClick", function() Baganator.Help.ShowSearchDialog() end)
+  end
+
+  local optionFrames = GenerateFrames(GENERAL_OPTIONS, frame)
+  optionFrames[1]:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+
+  tAppendAll(allFrames, optionFrames)
 
   local tooltipButtonFrame = CreateFrame("Frame", nil, frame)
   do
@@ -549,67 +666,6 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     Baganator.Skins.AddFrame("Button", button)
     table.insert(allFrames, tooltipButtonFrame)
   end
-
-  local tipsHeader = GenerateFrames({{type = "header", text = BAGANATOR_L_TIPS, level = 2}}, frame)[1]
-  tipsHeader:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
-  table.insert(allFrames, tipsHeader)
-
-  local function GetTipsSection(rowContainer, details)
-    local header = rowContainer:CreateFontString(nil, "ARTWORK", "GameFontHighlightMedium")
-    header:SetJustifyH("LEFT")
-    header:SetPoint("TOP")
-    header:SetText(details.header)
-    header:SetHeight(30)
-    local text = rowContainer:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    text:SetJustifyH("LEFT")
-    text:SetPoint("TOP", header, "BOTTOM")
-    text:SetText(details.text)
-    text:SetSpacing(3)
-
-    return {header, text}
-  end
-
-  local function MakeTipsRow(details1, details2)
-    local rowContainer = CreateFrame("Frame", nil, frame)
-    rowContainer:SetPoint("LEFT", 35 + Baganator.Constants.ButtonFrameOffset, 0)
-    rowContainer:SetPoint("RIGHT", -35, 0)
-    rowContainer:SetHeight(110)
-    for _, row in ipairs(GetTipsSection(rowContainer, details1)) do
-      row:SetPoint("LEFT")
-      row:SetPoint("RIGHT", rowContainer, "CENTER", -15, 0)
-    end
-    for _, row in ipairs(GetTipsSection(rowContainer, details2)) do
-      row:SetPoint("RIGHT")
-      row:SetPoint("LEFT", rowContainer, "CENTER", 15, 0)
-    end
-    return rowContainer
-  end
-
-  local tipsRows = {
-    MakeTipsRow({
-      header = CreateAtlasMarkup("common-search-magnifyingglass", 13, 13) .. "  " .. SEARCH,
-      text = BAGANATOR_L_TIPS_SEARCH
-    }, {
-      header = BAGANATOR_L_PLUGINS,
-      text = BAGANATOR_L_TIPS_PLUGINS
-    }),
-    MakeTipsRow({
-      header = CreateAtlasMarkup("orderhalltalents-choice-arrow-large", 17, 13) .. " " .. BAGANATOR_L_TRANSFER,
-      text = BAGANATOR_L_TIPS_TRANSFER
-    }, {
-      header = BAGANATOR_L_SKINS,
-      text = BAGANATOR_L_TIPS_SKINS
-    }),
-  }
-  for _, row in ipairs(tipsRows) do
-    row:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
-    table.insert(allFrames, row)
-  end
-
-  local button = CreateFrame("Button", nil, tipsRows[1], "BaganatorHelpButtonTemplate")
-  button:SetPoint("TOP", 0, -2)
-  button:SetPoint("RIGHT", tipsRows[1], "CENTER", -15, 0)
-  button:SetScript("OnClick", function() Baganator.Help.ShowSearchDialog() end)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
