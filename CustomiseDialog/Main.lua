@@ -606,10 +606,9 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     table.insert(allFrames, row)
   end
 
-  local button = CreateFrame("Button", nil, tipsRows[1], "UIPanelDynamicResizeButtonTemplate")
-  button:SetText(BAGANATOR_L_SEARCH_HELP)
-  DynamicResizeButton_Resize(button)
-  button:SetPoint("BOTTOMLEFT", 0, 5)
+  local button = CreateFrame("Button", nil, tipsRows[1], "BaganatorHelpButtonTemplate")
+  button:SetPoint("TOP", 0, -2)
+  button:SetPoint("RIGHT", tipsRows[1], "CENTER", -15, 0)
   button:SetScript("OnClick", function() Baganator.Help.ShowSearchDialog() end)
 
   frame:SetScript("OnShow", function()
