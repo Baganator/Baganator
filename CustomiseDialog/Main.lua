@@ -529,12 +529,6 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
   local allFrames = GenerateFrames(GENERAL_OPTIONS, frame)
 
-  frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
-      frame:SetValue(Baganator.Config.Get(frame.option))
-    end
-  end)
-
   local tooltipButtonFrame = CreateFrame("Frame", nil, frame)
   do
     tooltipButtonFrame:SetPoint("LEFT")
@@ -553,7 +547,78 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       Settings.OpenToCategory(SYNDICATOR_L_SYNDICATOR)
     end)
     Baganator.Skins.AddFrame("Button", button)
+    table.insert(allFrames, tooltipButtonFrame)
   end
+
+  local tipsHeader = GenerateFrames({{type = "header", text = BAGANATOR_L_TIPS, level = 2}}, frame)[1]
+  tipsHeader:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+  table.insert(allFrames, tipsHeader)
+
+  local function GetTipsSection(rowContainer, details)
+    local header = rowContainer:CreateFontString(nil, "ARTWORK", "GameFontHighlightMedium")
+    header:SetJustifyH("LEFT")
+    header:SetPoint("TOP")
+    header:SetText(details.header)
+    header:SetHeight(30)
+    local text = rowContainer:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    text:SetJustifyH("LEFT")
+    text:SetPoint("TOP", header, "BOTTOM")
+    text:SetText(details.text)
+    text:SetSpacing(3)
+
+    return {header, text}
+  end
+
+  local function MakeTipsRow(details1, details2)
+    local rowContainer = CreateFrame("Frame", nil, frame)
+    rowContainer:SetPoint("LEFT", 35 + Baganator.Constants.ButtonFrameOffset, 0)
+    rowContainer:SetPoint("RIGHT", -35, 0)
+    rowContainer:SetHeight(110)
+    for _, row in ipairs(GetTipsSection(rowContainer, details1)) do
+      row:SetPoint("LEFT")
+      row:SetPoint("RIGHT", rowContainer, "CENTER", -15, 0)
+    end
+    for _, row in ipairs(GetTipsSection(rowContainer, details2)) do
+      row:SetPoint("RIGHT")
+      row:SetPoint("LEFT", rowContainer, "CENTER", 15, 0)
+    end
+    return rowContainer
+  end
+
+  local tipsRows = {
+    MakeTipsRow({
+      header = CreateAtlasMarkup("common-search-magnifyingglass", 13, 13) .. "  " .. SEARCH,
+      text = BAGANATOR_L_TIPS_SEARCH
+    }, {
+      header = BAGANATOR_L_PLUGINS,
+      text = BAGANATOR_L_TIPS_PLUGINS
+    }),
+    MakeTipsRow({
+      header = CreateAtlasMarkup("orderhalltalents-choice-arrow-large", 17, 13) .. " " .. BAGANATOR_L_TRANSFER,
+      text = BAGANATOR_L_TIPS_TRANSFER
+    }, {
+      header = BAGANATOR_L_SKINS,
+      text = BAGANATOR_L_TIPS_SKINS
+    }),
+  }
+  for _, row in ipairs(tipsRows) do
+    row:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
+    table.insert(allFrames, row)
+  end
+
+  local button = CreateFrame("Button", nil, tipsRows[1], "UIPanelDynamicResizeButtonTemplate")
+  button:SetText(BAGANATOR_L_SEARCH_HELP)
+  DynamicResizeButton_Resize(button)
+  button:SetPoint("BOTTOMLEFT", 0, 5)
+  button:SetScript("OnClick", function() Baganator.Help.ShowSearchDialog() end)
+
+  frame:SetScript("OnShow", function()
+    for index, frame in ipairs(allFrames) do
+      if frame.SetValue then
+        frame:SetValue(Baganator.Config.Get(frame.option))
+      end
+    end
+  end)
 
   table.insert(self.lowestFrames, allFrames[#allFrames])
 end
