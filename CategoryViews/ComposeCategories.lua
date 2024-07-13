@@ -144,12 +144,7 @@ do
     local root = C_Item.GetItemClassInfo(subTypes[i])
     local child = C_Item.GetItemSubClassInfo(subTypes[i], subTypes[i+1])
     if root and child then
-      local search = "#" .. root:lower() .. "&"
-      if child:find("%&") then
-        search = search .. "_" .. (strsplit("&", child)):lower()
-      else
-        search = search .. "#" .. child:lower()
-      end
+      local search = "#" .. Syndicator.Search.CleanKeyword(root:lower()) .. "&#" .. Syndicator.Search.CleanKeyword(child:lower())
       table.insert(groupings["type"], {label = child, search = search})
     end
   end
@@ -158,7 +153,7 @@ do
   for key, quality in pairs(Enum.ItemQuality) do
     local term = _G["ITEM_QUALITY" .. quality .. "_DESC"]
     if term then
-      table.insert(qualities, {label = term, search = "#" .. term:lower(), index = quality})
+      table.insert(qualities, {label = term, search = "#" .. Syndicator.Search.CleanKeyword(term:lower()), index = quality})
     end
   end
   table.sort(qualities, function(a, b) return a.index > b.index end)
@@ -168,7 +163,7 @@ do
   for _, slot in ipairs(inventorySlots) do
     local name = _G[slot]
     if name then
-      table.insert(inventorySlotsForGroupings, {label = name, search = "#" .. name:lower()})
+      table.insert(inventorySlotsForGroupings, {label = name, search = "#" .. Syndicator.Search.CleanKeyword(name:lower())})
     end
   end
   groupings["slot"] = inventorySlotsForGroupings
