@@ -100,7 +100,6 @@ local function FlowButtonsRows(self, rowWidth)
   for _, button in ipairs(self.buttons) do
     button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
     button:SetScale(iconSize / 37)
-    MasqueRegistration(button)
     cols = cols + 1
     if cols >= rowWidth then
       cols = 0
@@ -242,6 +241,7 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
         Baganator.Skins.AddFrame("ItemButton", button)
         if not button.texturesSetup then
           button.texturesSetup = true
+          MasqueRegistration(button)
           button:UpdateTextures()
         end
         button:Show()
@@ -485,6 +485,7 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
         Baganator.Skins.AddFrame("ItemButton", b)
         if not b.texturesSetup then
           b.texturesSetup = true
+          MasqueRegistration(b)
           b:UpdateTextures()
         end
         b:SetID(slotIndex)
@@ -823,6 +824,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
         Baganator.Skins.AddFrame("ItemButton", newButton)
         if not newButton.texturesSetup then
           newButton.texturesSetup = true
+          MasqueRegistration(newButton)
           newButton:UpdateTextures()
         end
         newButton.label = cacheData.label
@@ -832,6 +834,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
         Baganator.Skins.AddFrame("ItemButton", newButton)
         if not newButton.texturesSetup then
           newButton.texturesSetup = true
+          MasqueRegistration(newButton)
           newButton:UpdateTextures()
         end
         self:SetupButton(newButton)
@@ -935,6 +938,7 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
     Baganator.Skins.AddFrame("ItemButton", button)
     if not button.texturesSetup then
       button.texturesSetup = true
+      MasqueRegistration(button)
       button:UpdateTextures()
     end
     table.insert(self.buttons, button)
@@ -996,6 +1000,7 @@ function BaganatorGeneralGuildLayoutMixin:RebuildLayout(rowWidth)
     Baganator.Skins.AddFrame("ItemButton", button)
     if not button.texturesSetup then
       button.texturesSetup = true
+      MasqueRegistration(button)
       button:UpdateTextures()
     end
     button:Show()
@@ -1138,6 +1143,7 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
     Baganator.Skins.AddFrame("ItemButton", b)
     if not b.texturesSetup then
       b.texturesSetup = true
+      MasqueRegistration(b)
       b:UpdateTextures()
     end
     b:SetID(slotIndex)
@@ -1257,6 +1263,7 @@ function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
     Baganator.Skins.AddFrame("ItemButton", button)
     if not b.texturesSetup then
       b.texturesSetup = true
+      MasqueRegistration(b)
       b:UpdateTextures()
     end
     b:Show()
