@@ -63,6 +63,9 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
 
   for _, item in ipairs(everything) do
     local key = item.key
+    -- Needs to be set here as the later code will ensure fields are shared,
+    -- when invertedItemCount shouldn't be
+    item.invertedItemCount = -item.itemCount
     local seen = self.seenData[key]
     if not self.pending[key] then
       self.pending[key] = {}
