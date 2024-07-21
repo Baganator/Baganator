@@ -34,6 +34,7 @@ function BaganatorItemViewButtonVisibilityMixin:OnHide()
   for _, button in ipairs(AllButtons) do
     if button:GetParent() == hiddenParent then
       button:SetParent(self.originalParents[button])
+      button:SetFrameLevel(700)
     end
   end
 end
