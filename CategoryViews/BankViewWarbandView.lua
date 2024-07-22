@@ -28,9 +28,6 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
   end)
 
   Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if not self.lastCharacter then
-      return
-    end
     if tIndexOf(Baganator.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
       if self:IsVisible() then
         self:GetParent():UpdateView()
