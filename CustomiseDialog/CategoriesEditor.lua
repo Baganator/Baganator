@@ -100,6 +100,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.DeleteButton:Enable()
+      self.ExportButton:Enable()
       Save()
       return
     end
@@ -110,6 +111,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.DeleteButton:Enable()
+      self.ExportButton:Enable()
     else
       category = Baganator.CategoryViews.Constants.SourceToCategory[value]
       self.CategoryName:SetAlpha(disabledAlpha)
@@ -119,6 +121,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:Disable()
       self.Blocker:Show()
       self.DeleteButton:Disable()
+      self.ExportButton:Disable()
     end
     self.HiddenCheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[value])
 
@@ -242,6 +245,14 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
   end)
 
+  self.ExportButton:SetScript("OnClick", function()
+    if self.currentCategory == "" then
+      return
+    end
+
+    StaticPopup_Show("Baganator_Export_Dialog", nil, nil, Baganator.CustomiseDialog.SingleCategoryExport(self.currentCategory))
+  end)
+
   self.DeleteButton:SetScript("OnClick", function()
     if self.currentCategory == "" then
       return
@@ -276,6 +287,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:Disable()
   self.HiddenCheckBox:SetChecked(false)
   self.currentCategory = ""
   self.DeleteButton:Disable()
+  self.ExportButton:Disable()
   for _, region in ipairs(self.ChangeAlpha) do
     region:SetAlpha(disabledAlpha)
   end

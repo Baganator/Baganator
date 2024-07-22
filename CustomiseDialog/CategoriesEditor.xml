@@ -51,6 +51,12 @@
         </Anchors>
       </EditBox>
 
+      <Button parentKey="ExportButton" text="BAGANATOR_L_EXPORT" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="ChangeAlpha">
+        <Anchors>
+          <Anchor point="BOTTOMLEFT" x="15" y="0"/>
+        </Anchors>
+      </Button>
+
       <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="ChangeAlpha">
         <Anchors>
           <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>

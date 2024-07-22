@@ -1,5 +1,40 @@
 local addonName, addonTable = ...
 
+function Baganator.CustomiseDialog.SingleCategoryExport(name)
+  local export = {
+    version = 1,
+    categories = {},
+    modifications = {},
+  }
+  local category = Baganator.Config.Get("custom_categories")[name]
+  table.insert(export.categories, {
+    name = category.name,
+    priority = category.searchPriority,
+    search = category.search,
+  })
+  local mods = Baganator.Config.Get("category_modifications")[name]
+  local items, pets = {}, {}
+  if mods.addedItems then
+    for _, item in ipairs(mods.addedItems) do
+      if item.itemID then
+        table.insert(items, item.itemID)
+      elseif item.petID then
+        table.insert(pets, item.petID)
+      else
+        assert(false, "missing item type")
+      end
+    end
+  end
+  table.insert(export.modifications, {
+    source = name,
+    items = #items > 0 and items or nil,
+    pets = #pets > 0 and pets or nil,
+    group = mods.group,
+  })
+
+  return addonTable.json.encode(export)
+end
+
 function Baganator.CustomiseDialog.CategoriesExport()
   local export = {
     version = 1,
@@ -44,18 +79,9 @@ function Baganator.CustomiseDialog.CategoriesExport()
   return addonTable.json.encode(export)
 end
 
-function Baganator.CustomiseDialog.CategoriesImport(input)
-  local success, import = pcall(addonTable.json.decode, input)
-  if not success then
-    Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
-    return
-  end
+local function ImportCategories(import)
   local customCategories = {}
   local categoryMods = {}
-  if type(import.categories) ~= "table" or type(import.order) ~= "table" or type(import.categories) ~= "table" then
-    Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
-    return
-  end
   for _, c in ipairs(import.categories) do
     if type(c.priority) ~= "number" or type(c.search) ~= "string" or
       type(c.name) ~= "string" or c.name == "" or
@@ -117,52 +143,87 @@ function Baganator.CustomiseDialog.CategoriesImport(input)
     end
     categoryMods[c.source or c.name] = newMods
   end
-  local hidden = {}
-  if import.hidden then
-    if type(import.hidden) ~= "table" then
+
+  return customCategories, categoryMods
+end
+
+function Baganator.CustomiseDialog.CategoriesImport(input)
+  local success, import = pcall(addonTable.json.decode, input)
+  if not success then
+    Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+    return
+  end
+  if type(import.categories) ~= "table" or (import.modifications and type(import.modifications) ~= "table") then
+    Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+    return
+  end
+  local customCategories, categoryMods = ImportCategories(import)
+  if import.order then
+    if type(import.order) ~= "table" then
       Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
       return
     end
-    for _, source in ipairs(import.hidden) do
-      hidden[source] = true
+    local hidden = {}
+    if import.hidden then
+      if type(import.hidden) ~= "table" then
+        Baganator.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+        return
+      end
+      for _, source in ipairs(import.hidden) do
+        hidden[source] = true
+      end
     end
-  end
-  local displayOrder = {}
-  for _, source in ipairs(import.order) do
-    local category = Baganator.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
-    if category or source == Baganator.CategoryViews.Constants.DividerName or source:match("^_") then
-      table.insert(displayOrder, source)
+    local displayOrder = {}
+    for _, source in ipairs(import.order) do
+      local category = Baganator.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
+      if category or source == Baganator.CategoryViews.Constants.DividerName or source:match("^_") then
+        table.insert(displayOrder, source)
+      end
     end
-  end
-  for _, source in ipairs(Baganator.CategoryViews.Constants.ProtectedCategories) do
-    if tIndexOf(displayOrder, source) == nil  then
-      table.insert(displayOrder, source)
+    for _, source in ipairs(Baganator.CategoryViews.Constants.ProtectedCategories) do
+      if tIndexOf(displayOrder, source) == nil  then
+        table.insert(displayOrder, source)
+      end
     end
-  end
 
-  local currentCustomCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-  for source, category in pairs(customCategories) do
-    currentCustomCategories[source] = category
-  end
-  local currentCategoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
-  -- Prevent duplicate items in multiple category modifications caused by an import
-  for source, details in pairs(currentCategoryMods) do
-    if categoryMods[source] == nil and details.addedItems and #details.addedItems > 0 then
-      for i = #details.addedItems, 1 do
-        local item = details.addedItems[i]
-        if item.itemID and seenItems["i:" .. item.itemID] then
-          table.remove(details.addedItems, i)
-        elseif item.petID and seenItems["p:" .. item.petID] then
-          table.remove(details.addedItems, i)
+    local currentCustomCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    for source, category in pairs(customCategories) do
+      currentCustomCategories[source] = category
+    end
+    local currentCategoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+    -- Prevent duplicate items in multiple category modifications caused by an import
+    for source, details in pairs(currentCategoryMods) do
+      if categoryMods[source] == nil and details.addedItems and #details.addedItems > 0 then
+        for i = #details.addedItems, 1 do
+          local item = details.addedItems[i]
+          if item.itemID and seenItems["i:" .. item.itemID] then
+            table.remove(details.addedItems, i)
+          elseif item.petID and seenItems["p:" .. item.petID] then
+            table.remove(details.addedItems, i)
+          end
         end
       end
     end
+    for source, details in pairs(categoryMods) do
+      currentCategoryMods[source] = details
+    end
+    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)
+  else
+    local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
+    for key in pairs(customCategories) do
+      if tIndexOf(displayOrder, key) == nil then
+        table.insert(displayOrder, 1, key)
+      end
+    end
+    local currentCustomCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    local currentCategoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+    Mixin(currentCustomCategories, customCategories)
+    Mixin(currentCategoryMods, categoryMods)
+    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
+    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
   end
-  for source, details in pairs(categoryMods) do
-    currentCategoryMods[source] = details
-  end
-  Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
-  Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
-  Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
-  Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)
 end
