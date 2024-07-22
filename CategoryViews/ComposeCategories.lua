@@ -34,6 +34,7 @@ local inventorySlots = {
 local groupings = {}
 do
   groupings["expansion"] = {
+    {label = "The War Within", search = "#war within"},
     {label = "Dragonflight", search = "#df"},
     {label = "Shadowlands", search = "#shadowlands"},
     {label = "Battle for Azeroth", search = "#bfa"},
