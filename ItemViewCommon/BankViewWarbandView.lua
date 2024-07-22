@@ -1,16 +1,17 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
 BaganatorItemViewCommonBankViewWarbandViewMixin = {}
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
-  self.tabsPool = Baganator.ItemViewCommon.GetSideTabButtonPool(self)
+  self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
   self.currentTab = 1
   self.updateTabs = true
 
-  Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
-  Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
+  addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
+  addonTable.Utilities.AddBagTransferManager(self) -- self.transferManager
 
-  Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
+  addonTable.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self:ApplySearch(text)
   end)
 
@@ -31,7 +32,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
@@ -40,8 +41,8 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -51,15 +52,15 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     end
   end)
 
-  Baganator.Skins.AddFrame("Button", self.DepositItemsButton)
-  Baganator.Skins.AddFrame("Button", self.WithdrawMoneyButton)
-  Baganator.Skins.AddFrame("Button", self.DepositMoneyButton)
+  addonTable.Skins.AddFrame("Button", self.DepositItemsButton)
+  addonTable.Skins.AddFrame("Button", self.WithdrawMoneyButton)
+  addonTable.Skins.AddFrame("Button", self.DepositMoneyButton)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
   local bagID = Syndicator.Constants.AllWarbandIndexes[self.currentTab]
   local function DoSortInternal()
-    local status = Baganator.Sorting.ApplyBagOrdering(
+    local status = addonTable.Sorting.ApplyBagOrdering(
       { Syndicator.API.GetWarband(1).bank[self.currentTab].slots },
       { bagID },
       { [1] = true },
@@ -75,7 +76,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(
+  addonTable.Sorting.CombineStacks(
     { Syndicator.API.GetWarband(1).bank[self.currentTab].slots },
     { Syndicator.Constants.AllWarbandIndexes[self.currentTab] },
     function(status)
@@ -89,15 +90,15 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacks(callback)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacksAndSort(isReverse)
-  local sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
+  local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
 
-  if not Baganator.Sorting.IsModeAvailable(sortMethod) then
-    Baganator.Config.ResetOne(Baganator.Config.Options.SORT_METHOD)
-    sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
+  if not addonTable.Sorting.IsModeAvailable(sortMethod) then
+    addonTable.Config.ResetOne(addonTable.Config.Options.SORT_METHOD)
+    sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
   end
 
-  if addonTable.ExternalContainerSorts[sortMethod] then
-    addonTable.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.WarbandBank)
+  if addonTable.API.ExternalContainerSorts[sortMethod] then
+    addonTable.API.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.WarbandBank)
   elseif sortMethod == "combine_stacks_only" then
     self:CombineStacks(function() end)
   else
@@ -110,12 +111,12 @@ end
 function BaganatorItemViewCommonBankViewWarbandViewMixin:RemoveSearchMatches(items)
   local matches = items or self:GetSearchMatches()
 
-  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(
+  local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(
     Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags,
     Syndicator.Constants.AllBagIndexes
   )
 
-  local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
+  local status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
 
   self.transferManager:Apply(status, {"BagCacheUpdate"}, function()
     self:RemoveSearchMatches()
@@ -129,7 +130,7 @@ end
 function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForTab()
   if self.isLive then
 
-    BankFrame.activeTabIndex = Baganator.Constants.BlizzardBankTabConstants.Warband
+    BankFrame.activeTabIndex = addonTable.Constants.BlizzardBankTabConstants.Warband
 
     local tabInfo = Syndicator.API.GetWarband(1).bank[self.currentTab]
     local bagID = Syndicator.Constants.AllWarbandIndexes[self.currentTab]
@@ -160,7 +161,7 @@ end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateCurrencies()
   local warbandData = Syndicator.API.GetWarband(1)
-  self.Money:SetText(Baganator.Utilities.GetMoneyString(warbandData.money, true))
+  self.Money:SetText(addonTable.Utilities.GetMoneyString(warbandData.money, true))
 
   if self.isLive then
     self.DepositMoneyButton:SetEnabled(C_Bank.CanDepositMoney(Enum.BankType.Account))
@@ -176,10 +177,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
   self.updateTabs = false
 
   local tabScaleFactor = 37
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     tabScaleFactor = 40
   end
-  local tabScale = math.min(1, Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE) / tabScaleFactor)
+  local tabScale = math.min(1, addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE) / tabScaleFactor)
 
   self.tabsPool:ReleaseAll()
 
@@ -241,7 +242,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:SetCurrentTab(index)
-  Baganator.CallbackRegistry:TriggerEvent("TransferCancel")
+  addonTable.CallbackRegistry:TriggerEvent("TransferCancel")
   self.currentTab = index
 end
 
@@ -293,14 +294,14 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   -- Copied from ItemViewCommons/BagView.lua
   local sideSpacing, topSpacing = 13, 14
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
   end
 
   if self.isLive then
-    self.IncludeReagentsCheckbox:SetPoint("LEFT", self, "LEFT", Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
-    self.DepositItemsButton:SetPoint("LEFT", self, "LEFT", Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
+    self.IncludeReagentsCheckbox:SetPoint("LEFT", self, "LEFT", addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
+    self.DepositItemsButton:SetPoint("LEFT", self, "LEFT", addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
 
     self.DepositMoneyButton:SetPoint("RIGHT", self, "RIGHT", -sideSpacing, 0)
   end

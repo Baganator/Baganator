@@ -1,4 +1,5 @@
-function Baganator.Transfers.AddToTrade(toMove)
+local _, addonTable = ...
+function addonTable.Transfers.AddToTrade(toMove)
   if #toMove == 0 then
     return
   end
@@ -29,8 +30,8 @@ function Baganator.Transfers.AddToTrade(toMove)
   end
 
   if missing then
-    return Baganator.Constants.SortStatus.WaitingMove
+    return addonTable.Constants.SortStatus.WaitingMove
   else
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 end

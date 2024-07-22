@@ -1,3 +1,4 @@
+local _, addonTable = ...
 -- REGULAR BAGS
 BaganatorRetailBagSlotButtonMixin = {}
 
@@ -14,14 +15,14 @@ local function OnBagSlotClick(self)
 end
 
 local function ShowBagSlotTooltip(self)
-  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
+  addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   GameTooltip:SetInventoryItem("player", GetBagInventorySlot(self))
   GameTooltip:Show()
 end
 
 local function HideBagSlotTooltip(self)
-  Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+  addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
   GameTooltip:Hide()
 end
 
@@ -31,7 +32,7 @@ function BaganatorRetailBagSlotButtonMixin:Init()
   local inventorySlot = GetBagInventorySlot(self)
   local texture = GetInventoryItemTexture("player", inventorySlot)
 
-  if texture == nil and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
+  if texture == nil and not addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND) then
     texture = select(2, GetInventorySlotInfo("Bag1"))
   end
 
@@ -91,7 +92,7 @@ function BaganatorClassicBagSlotButtonMixin:Init()
 
   local texture = GetInventoryItemTexture("player", inventorySlot)
 
-  if texture == nil and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
+  if texture == nil and not addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND) then
     texture = select(2, GetInventorySlotInfo("Bag1"))
   end
 
@@ -139,7 +140,7 @@ local function GetBankInventorySlot(button)
   return BankButtonIDToInvSlotID(button:GetID(), 1)
 end
 
-StaticPopupDialogs["Baganator.ConfirmBuyBankSlot"] = {
+StaticPopupDialogs["addonTable.ConfirmBuyBankSlot"] = {
   text = CONFIRM_BUY_BANK_SLOT,
   button1 = YES,
   button2 = NO,
@@ -162,17 +163,17 @@ local function OnBankSlotClick(self)
       PutItemInBag(GetBankInventorySlot(self))
     end
   else
-    StaticPopup_Show("Baganator.ConfirmBuyBankSlot")
+    StaticPopup_Show("addonTable.ConfirmBuyBankSlot")
   end
 end
 
 local function ShowBankSlotTooltip(self)
-  Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllBankIndexes[self:GetID() + 1]] = true})
+  addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllBankIndexes[self:GetID() + 1]] = true})
 
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   if self.needPurchase then
     GameTooltip:SetText(BANK_BAG_PURCHASE)
-    GameTooltip:AddLine(Baganator.Utilities.GetMoneyString(GetBankSlotCost(GetNumBankSlots()), true), 1, 1, 1)
+    GameTooltip:AddLine(addonTable.Utilities.GetMoneyString(GetBankSlotCost(GetNumBankSlots()), true), 1, 1, 1)
   else
     GameTooltip:SetInventoryItem("player", GetBankInventorySlot(self))
   end
@@ -180,7 +181,7 @@ local function ShowBankSlotTooltip(self)
 end
 
 local function HideBankSlotTooltip(self)
-  Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+  addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
   GameTooltip:Hide()
 end
 
@@ -328,24 +329,24 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
   local GetBagSlotButton
   if self.mode == "bags" then
     GetBagSlotButton = function()
-      if Baganator.Constants.IsRetail then
+      if addonTable.Constants.IsRetail then
         return CreateFrame("ItemButton", nil, self, "BaganatorRetailBagSlotButtonTemplate")
       else
         return CreateFrame("Button", nil, self, "BaganatorClassicBagSlotButtonTemplate")
       end
     end
     bagSlotsCount = Syndicator.Constants.BagSlotsCount
-    self.config = Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS
+    self.config = addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS
   elseif self.mode == "bank" then
     GetBagSlotButton = function()
-      if Baganator.Constants.IsRetail then
+      if addonTable.Constants.IsRetail then
         return CreateFrame("ItemButton", nil, self, "BaganatorRetailBankButtonTemplate")
       else
         return CreateFrame("Button", nil, self, "BaganatorClassicBankButtonTemplate")
       end
     end
     bagSlotsCount = Syndicator.Constants.BankBagSlotsCount
-    self.config = Baganator.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS
+    self.config = addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS
   end
 
   self.liveBagSlots = {}
@@ -358,13 +359,13 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     else
       bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
     end
-    Baganator.Skins.AddFrame("ItemButton", bb)
+    addonTable.Skins.AddFrame("ItemButton", bb)
   end
 
   local cachedBagSlotCounter = 0
   local function GetCachedBagSlotButton()
     -- Use cached item buttons from cached layout views
-    if Baganator.Constants.IsRetail then
+    if addonTable.Constants.IsRetail then
       return CreateFrame("ItemButton", nil, self, "BaganatorRetailCachedItemButtonTemplate")
     else
       cachedBagSlotCounter = cachedBagSlotCounter + 1
@@ -375,23 +376,23 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
   self.cachedBagSlots = {}
   for index = 1, bagSlotsCount do
     local bb = GetCachedBagSlotButton()
-    Baganator.Skins.AddFrame("ItemButton", bb)
+    addonTable.Skins.AddFrame("ItemButton", bb)
     bb:UpdateTextures()
     bb.isBag = true
     table.insert(self.cachedBagSlots, bb)
     bb:SetID(index)
     bb:HookScript("OnEnter", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
+      addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
     end)
     bb:HookScript("OnLeave", function(self)
-      Baganator.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+      addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     end)
     if #self.cachedBagSlots == 1 then
       bb:SetPoint("BOTTOMLEFT")
     else
       bb:SetPoint("TOPLEFT", self.cachedBagSlots[#self.cachedBagSlots - 1], "TOPRIGHT")
     end
-    Baganator.Skins.AddFrame("ItemButton", bb)
+    addonTable.Skins.AddFrame("ItemButton", bb)
   end
 end
 
@@ -404,7 +405,7 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
     end
   end
 
-  local show = isLive and Baganator.Config.Get(self.config)
+  local show = isLive and addonTable.Config.Get(self.config)
   for _, bb in ipairs(self.liveBagSlots) do
     -- Show live bag slots if viewing live bags/bank
     bb:SetShown(show)
@@ -413,12 +414,12 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
   -- Show cached bag slots when viewing cached bags for other characters
   local containerInfo = Syndicator.API.GetCharacter(character).containerInfo
   if not isLive and containerInfo and containerInfo[self.mode] then
-    local show = Baganator.Config.Get(self.config)
+    local show = addonTable.Config.Get(self.config)
     for index, bb in ipairs(self.cachedBagSlots) do
       local details = CopyTable(containerInfo[self.mode][index] or {})
-      details.itemCount = Baganator.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(character)[self.mode][index + 1])
+      details.itemCount = addonTable.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(character)[self.mode][index + 1])
       bb:SetItemDetails(details)
-      if not details.iconTexture and not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
+      if not details.iconTexture and not addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND) then
         local _, texture = GetInventorySlotInfo("Bag1")
         SetItemButtonTexture(bb, texture)
       end

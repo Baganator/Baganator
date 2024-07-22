@@ -1,11 +1,12 @@
+local _, addonTable = ...
 local addonName, addonTable = ...
 
 local linkMap = {}
 local activeLayoutOffset = 1
 
 local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
-  local junkPluginID = Baganator.Config.Get("junk_plugin")
-  local junkPlugin = addonTable.JunkPlugins[junkPluginID] and addonTable.JunkPlugins[junkPluginID].callback
+  local junkPluginID = addonTable.Config.Get("junk_plugin")
+  local junkPlugin = addonTable.API.JunkPlugins[junkPluginID] and addonTable.API.JunkPlugins[junkPluginID].callback
   if junkPluginID == "poor_quality" then
     junkPlugin = nil
   end
@@ -21,7 +22,7 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
     for slotIndex, slot in ipairs(bag) do
       local info = Syndicator.Search.GetBaseInfo(slot)
       if self.isLive then
-        if Baganator.Constants.IsClassic then
+        if addonTable.Constants.IsClassic then
           info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(bagID, slotIndex) end) end
         else
           info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
@@ -29,7 +30,7 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
         info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
         if info.itemID ~= nil then
           local location = {bagID = bagID, slotIndex = slotIndex}
-          info.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
+          info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
           if info.setInfo then
             info.guid = C_Item.GetItemGUID(location)
           end
@@ -45,7 +46,7 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
         end
         info.bagID = bagID
         info.slotID = slotIndex
-        info.key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
+        info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
         table.insert(everything, info)
       else
         if not emptySlotCount[bagTypes[bagIndex]] then
@@ -60,12 +61,12 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
   return emptySlotCount, emptySlotsOrder, everything
 end
 
-function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
+function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
 
   local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
 
-  local composed = Baganator.CategoryViews.ComposeCategories(everything)
+  local composed = addonTable.CategoryViews.ComposeCategories(everything)
 
   local searches, searchLabels, priority, autoSearches, attachedItems, categoryKeys, prioritisedSearches =
     composed.searches, composed.searchLabels, composed.priorities, composed.autoSearches, composed.attachedItems, composed.categoryKeys, composed.prioritisedSearches
@@ -86,7 +87,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     end
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("prearrange", debugprofilestop() - s1)
   end
 
@@ -99,15 +100,15 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
     local start2 = debugprofilestop()
     local bagWidth
     if containerType == "bags" then
-      bagWidth = Baganator.Config.Get(Baganator.Config.Options.BAG_VIEW_WIDTH)
+      bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
     elseif containerType == "bank" then
-      bagWidth = Baganator.Config.Get(Baganator.Config.Options.BANK_VIEW_WIDTH)
+      bagWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
     elseif containerType == "warband" then
-      bagWidth = Baganator.Config.Get(Baganator.Config.Options.WARBAND_BANK_VIEW_WIDTH)
+      bagWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
     end
 
-    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
-    local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
+    local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
+    local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
 
     self.notShown = {}
     for searchTerm, details in pairs(results) do
@@ -207,9 +208,9 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
             button:SetExpanded()
           end
           button:SetScript("OnClick", function()
-            local sectionToggled = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED)
+            local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
             sectionToggled[details.label] = not sectionToggled[details.label]
-            Baganator.Config.Set(Baganator.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
+            addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
           end)
           table.insert(layoutsShown, button)
           button.type = details.type
@@ -223,14 +224,14 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         table.insert(layoutsShown, layout)
         layout.section = details.section
         local label = self.labelsPool:Acquire()
-        Baganator.Skins.AddFrame("CategoryLabel", label)
+        addonTable.Skins.AddFrame("CategoryLabel", label)
         label:SetText(details.label)
         label.categorySearch = details.search
         activeLabels[details.index] = label
         layout.type = details.type
       elseif details.type == "empty slots category" then
         table.insert(layoutsShown, activeLayouts[1])
-        if #emptySlotsOrder == 0 or hidden[Baganator.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[details.section] then
+        if #emptySlotsOrder == 0 or hidden[addonTable.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[details.section] then
           activeLayouts[1]:ShowGroup({}, 1)
         else
           activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
@@ -258,7 +259,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
               GameTooltip:Hide()
             end)
           end
-          local details = Baganator.Constants.ContainerKeyToInfo[bagType]
+          local details = addonTable.Constants.ContainerKeyToInfo[bagType]
           if details then
             if details.type == "atlas" then
               button.bagTypeIcon:SetAtlas(details.value)
@@ -272,7 +273,7 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
           end
         end
         local label = self.labelsPool:Acquire()
-        Baganator.Skins.AddFrame("CategoryLabel", label)
+        addonTable.Skins.AddFrame("CategoryLabel", label)
         label.categorySearch = nil
         label:SetText(BAGANATOR_L_EMPTY)
         activeLabels[details.index] = label
@@ -281,16 +282,16 @@ function Baganator.CategoryViews.LayoutContainers(self, allBags, containerType, 
         error("unrecognised layout type")
       end
     end
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("category group show", debugprofilestop() - start2)
     end
 
-    local left = sideSpacing + Baganator.Constants.ButtonFrameOffset - 2
+    local left = sideSpacing + addonTable.Constants.ButtonFrameOffset - 2
     local right = sideSpacing
-    local maxWidth, maxHeight = Baganator.CategoryViews.PackSimple(layoutsShown, activeLabels, left, -50 - topSpacing / 4, bagWidth, Baganator.CategoryViews.Constants.MinWidth - left - right)
+    local maxWidth, maxHeight = addonTable.CategoryViews.PackSimple(layoutsShown, activeLabels, left, -50 - topSpacing / 4, bagWidth, addonTable.CategoryViews.Constants.MinWidth - left - right)
 
     callback(maxWidth, maxHeight)
 
-    Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
   end)
 end

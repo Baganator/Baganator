@@ -1,4 +1,5 @@
-Baganator.Constants = {
+local _, addonTable = ...
+addonTable.Constants = {
   IsRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
   IsEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
   IsClassic = WOW_PROJECT_ID ~= WOW_PROJECT_MAINLINE,
@@ -10,14 +11,19 @@ Baganator.Constants = {
   MaxPinnedCurrencies = 3,
 }
 
-if Baganator.Constants.IsRetail then
-  Baganator.Constants.ButtonFrameOffset = 6
+Baganator.Constants = {
+  IsRetail = addonTable.Constants.IsRetail,
+  IsClassic = addonTable.Constants.IsClassic,
+}
+
+if addonTable.Constants.IsRetail then
+  addonTable.Constants.ButtonFrameOffset = 6
 end
-if Baganator.Constants.IsClassic then
-  Baganator.Constants.ButtonFrameOffset = 0
+if addonTable.Constants.IsClassic then
+  addonTable.Constants.ButtonFrameOffset = 0
 end
 
-Baganator.Constants.Events = {
+addonTable.Constants.Events = {
   "SettingChangedEarly",
   "SettingChanged",
 
@@ -65,7 +71,7 @@ Baganator.Constants.Events = {
   "TransferCancel",
 }
 
-Baganator.Constants.SortStatus = {
+addonTable.Constants.SortStatus = {
   Complete = 0,
   WaitingMove = 1,
   WaitingUnlock = 2,
@@ -76,7 +82,7 @@ if not Syndicator then
   return
 end
 
-Baganator.Constants.KeywordGroupOrder = {
+addonTable.Constants.KeywordGroupOrder = {
   SYNDICATOR_L_GROUP_ITEM_TYPE,
   SYNDICATOR_L_GROUP_ITEM_DETAIL,
   SYNDICATOR_L_GROUP_QUALITY,
@@ -98,13 +104,13 @@ Baganator.Constants.KeywordGroupOrder = {
 
 if Syndicator.Constants.WarbandBankActive then
   -- Note constant values are taken from Blizzard code
-  Baganator.Constants.BlizzardBankTabConstants = {
+  addonTable.Constants.BlizzardBankTabConstants = {
     Character = 1,
     Warband = 3,
   }
 end
 
-Baganator.Constants.SampleSearchTerms = {
+addonTable.Constants.SampleSearchTerms = {
   "<400",
   SYNDICATOR_L_KEYWORD_BOE,
   INVTYPE_SHOULDER:lower(),
@@ -129,14 +135,14 @@ Baganator.Constants.SampleSearchTerms = {
   SYNDICATOR_L_KEYWORD_SET,
   "~" .. SYNDICATOR_L_KEYWORD_SET .. "&" .. SYNDICATOR_L_KEYWORD_GEAR,
 }
-if not Baganator.Constants.IsEra then
+if not addonTable.Constants.IsEra then
   local socketSearchTerms = {
     SYNDICATOR_L_KEYWORD_SOCKET,
     EMPTY_SOCKET_BLUE:lower(),
   }
-  tAppendAll(Baganator.Constants.SampleSearchTerms, socketSearchTerms)
+  tAppendAll(addonTable.Constants.SampleSearchTerms, socketSearchTerms)
 end
-if Baganator.Constants.IsRetail then
+if addonTable.Constants.IsRetail then
   local retailSearchTerms = {
     "dragonflight",
     SYNDICATOR_L_KEYWORD_BOE .. "&" .. "dragonflight",
@@ -147,12 +153,12 @@ if Baganator.Constants.IsRetail then
     SYNDICATOR_L_KEYWORD_MANUSCRIPT,
     TOY:lower(),
   }
-  tAppendAll(Baganator.Constants.SampleSearchTerms, retailSearchTerms)
+  tAppendAll(addonTable.Constants.SampleSearchTerms, retailSearchTerms)
 end
 
-Baganator.Constants.KeyItemFamily = 256
+addonTable.Constants.KeyItemFamily = 256
 
-Baganator.Constants.ContainerKeyToInfo = {
+addonTable.Constants.ContainerKeyToInfo = {
   quiver = {type = "atlas", value="Ammunition", tooltipHeader=AMMOSLOT},
   reagentBag = {type = "atlas", value="Professions_Tracking_Herb", tooltipHeader = BAGANATOR_L_REAGENTS},
   keyring = {type = "file", value="interface\\addons\\baganator\\assets\\bag_keys", tooltipHeader = BAGANATOR_L_KEYS},

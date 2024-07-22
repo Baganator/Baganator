@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorItemViewCommonBankViewMixin = {}
 
 function BaganatorItemViewCommonBankViewMixin:OnLoad()
@@ -10,7 +11,7 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
-  self.tabPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
+  self.tabPool = addonTable.ItemViewCommon.GetTabButtonPool(self)
 
   self.Tabs = {}
 
@@ -24,15 +25,15 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
     self.hasCharacter = true
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsShown() then
-        Baganator.Utilities.ApplyVisuals(self)
+        addonTable.Utilities.ApplyVisuals(self)
       end
     end
   end)
 
-  self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
+  self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK,
     button1 = YES,
@@ -45,7 +46,7 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
   }
   self:UpdateTransferButton()
 
-  Baganator.Skins.AddFrame("ButtonFrame", self, {"bank"})
+  addonTable.Skins.AddFrame("ButtonFrame", self, {"bank"})
 end
 
 function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
@@ -55,7 +56,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
     self.Warband:SetPoint("TOPLEFT")
 
     local characterTab = self.tabPool:Acquire()
-    Baganator.Skins.AddFrame("TabButton", characterTab)
+    addonTable.Skins.AddFrame("TabButton", characterTab)
     characterTab:SetText(BAGANATOR_L_CHARACTER)
     characterTab:Show()
     characterTab:SetScript("OnClick", function()
@@ -76,7 +77,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
       PanelTemplates_SetTab(self, 2)
       self:UpdateView()
     end)
-    Baganator.Skins.AddFrame("TabButton", warbandTab)
+    addonTable.Skins.AddFrame("TabButton", warbandTab)
 
     self.Tabs[1]:SetPoint("BOTTOM", 0, -30)
     PanelTemplates_SetNumTabs(self, #self.Tabs)
@@ -100,7 +101,7 @@ function BaganatorItemViewCommonBankViewMixin:UpdateTransferButton()
 end
 
 function BaganatorItemViewCommonBankViewMixin:OnDragStart()
-  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
@@ -110,7 +111,7 @@ function BaganatorItemViewCommonBankViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION, {point, x, y})
+  addonTable.Config.Set(addonTable.Config.Options.BANK_ONLY_VIEW_POSITION, {point, x, y})
 end
 
 function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
@@ -144,7 +145,7 @@ function BaganatorItemViewCommonBankViewMixin:OnHide(eventName)
     CloseBankFrame()
   end
 
-  Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateViewToCharacter(characterName)
@@ -168,16 +169,16 @@ end
 function BaganatorItemViewCommonBankViewMixin:UpdateView()
   self.start = debugprofilestop()
 
-  Baganator.Utilities.ApplyVisuals(self)
+  addonTable.Utilities.ApplyVisuals(self)
 
   -- Copied from ItemViewCommons/BagView.lua
   local sideSpacing = 13
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
   end
 
   if self.Tabs[1] then
-    self.Tabs[1]:SetPoint("LEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 0)
+    self.Tabs[1]:SetPoint("LEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 0)
   end
 
   self.SearchWidget:SetSpacing(sideSpacing)
@@ -187,14 +188,14 @@ end
 
 
 function BaganatorItemViewCommonBankViewMixin:OnTabFinished()
-  self.SortButton:SetShown(self.currentTab.isLive and Baganator.Utilities.ShouldShowSortButton())
+  self.SortButton:SetShown(self.currentTab.isLive and addonTable.Utilities.ShouldShowSortButton())
   self:UpdateTransferButton()
 
   self.ButtonVisibility:Update()
 
   self:SetSize(self.currentTab:GetSize())
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("bank", debugprofilestop() - self.start)
   end
 end
@@ -205,4 +206,8 @@ function BaganatorItemViewCommonBankViewMixin:Transfer()
   else
     self.currentTab:RemoveSearchMatches()
   end
+end
+
+function BaganatorItemViewCommonBankViewMixin:GetExternalSortMethodName()
+  return addonTable.Utilities.GetExternalSortMethodName()
 end

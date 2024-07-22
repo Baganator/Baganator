@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorCharacterSelectMixin = {}
 
 local arrowLeft = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\arrow", 22, 22, 18, 18, 0, 1, 0, 1)
@@ -24,13 +25,13 @@ function BaganatorCharacterSelectMixin:OnLoad()
   self:SetMovable(true)
   self:SetUserPlaced(false)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self)
-  Baganator.Skins.AddFrame("Button", self.ManageCharactersButton)
+  addonTable.Skins.AddFrame("ButtonFrame", self)
+  addonTable.Skins.AddFrame("Button", self.ManageCharactersButton)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsVisible() then
-        Baganator.Utilities.ApplyVisuals(self)
+        addonTable.Utilities.ApplyVisuals(self)
       end
     end
   end)
@@ -81,13 +82,13 @@ function BaganatorCharacterSelectMixin:OnLoad()
       frame:GetFontString():SetTextColor(1, 1, 1)
     end
     frame:SetScript("OnClick", function()
-      Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", elementData.fullName)
+      addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", elementData.fullName)
     end)
     UpdateForSelection(frame)
   end)
   ScrollUtil.InitScrollBoxListWithScrollBar(self.ScrollBox, self.ScrollBar, view)
 
-  Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
+  addonTable.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
     self.selectedCharacter = character
     for _, frame in self.ScrollBox:EnumerateFrames() do
       UpdateForSelection(frame)
@@ -96,18 +97,18 @@ function BaganatorCharacterSelectMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
     self:UpdateList()
     if character == self.selectedCharacter then
-      Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", Syndicator.API.GetCurrentCharacter())
+      addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", Syndicator.API.GetCurrentCharacter())
     end
   end)
 
   self.SearchBox:HookScript("OnTextChanged", function()
     self:UpdateList()
   end)
-  Baganator.Skins.AddFrame("SearchBox", self.SearchBox)
+  addonTable.Skins.AddFrame("SearchBox", self.SearchBox)
 end
 
 function BaganatorCharacterSelectMixin:UpdateList()
-  local characters = Baganator.Utilities.GetAllCharacters(self.SearchBox:GetText())
+  local characters = addonTable.Utilities.GetAllCharacters(self.SearchBox:GetText())
   local currentCharacter = Syndicator.API.GetCurrentCharacter()
   local connectedRealms = Syndicator.Utilities.GetConnectedRealms()
   local currentCharacterData
@@ -128,12 +129,12 @@ function BaganatorCharacterSelectMixin:UpdateList()
 end
 
 function BaganatorCharacterSelectMixin:OnShow()
-  Baganator.Utilities.ApplyVisuals(self)
+  addonTable.Utilities.ApplyVisuals(self)
   self:UpdateList()
 end
 
 function BaganatorCharacterSelectMixin:OnDragStart()
-  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
@@ -143,5 +144,5 @@ function BaganatorCharacterSelectMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.CHARACTER_SELECT_POSITION, {point, x, y})
+  addonTable.Config.Set(addonTable.Config.Options.CHARACTER_SELECT_POSITION, {point, x, y})
 end

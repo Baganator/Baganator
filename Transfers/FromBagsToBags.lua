@@ -1,9 +1,10 @@
+local _, addonTable = ...
 -- Check source can be contained in target when its available
 local function CheckFromTo(bagChecks, source, target)
   return not bagChecks.checks[target.bagID] or bagChecks.checks[target.bagID](source)
 end
 
-local IsBagSlotLocked = Baganator.Transfers.IsContainerItemLocked
+local IsBagSlotLocked = addonTable.Transfers.IsContainerItemLocked
 
 local function GetSwap(bagChecks, source, targets)
   if IsBagSlotLocked(source) then
@@ -27,15 +28,15 @@ end
 -- bagIDs: The IDs of bags involved with receiving items
 -- toMove: Items requested to move {itemID: number, bagID: number, slotID: number}
 -- targets: Slots for the items to move to (all empty)
-function Baganator.Transfers.FromBagsToBags(toMove, bagIDs, targets)
+function addonTable.Transfers.FromBagsToBags(toMove, bagIDs, targets)
   if InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 
-  local bagChecks = Baganator.Sorting.GetBagUsageChecks(bagIDs)
+  local bagChecks = addonTable.Sorting.GetBagUsageChecks(bagIDs)
 
   -- Prioritise special bags
-  targets = Baganator.Transfers.SortChecksFirst(bagChecks, targets)
+  targets = addonTable.Transfers.SortChecksFirst(bagChecks, targets)
 
   local locked, moved = false, false
   -- Move items if possible
@@ -52,10 +53,10 @@ function Baganator.Transfers.FromBagsToBags(toMove, bagIDs, targets)
   end
 
   if moved then
-    return Baganator.Constants.SortStatus.WaitingMove
+    return addonTable.Constants.SortStatus.WaitingMove
   elseif locked then
-    return Baganator.Constants.SortStatus.WaitingUnlock
+    return addonTable.Constants.SortStatus.WaitingUnlock
   else
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 end

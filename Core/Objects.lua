@@ -1,4 +1,6 @@
-Baganator = {
+local _, addonTable = ...
+Baganator = {API = { Constants = {} }}
+Mixin(addonTable, {
   Utilities = {},
   InventoryTracking = {},
   Search = {},
@@ -10,9 +12,9 @@ Baganator = {
   CategoryViews = {},
   CustomiseDialog = {},
   API = {
-    Constants = {},
   },
   Sorting = {},
   Transfers = {},
   Help = {},
-}
+  Skins = {},
+})

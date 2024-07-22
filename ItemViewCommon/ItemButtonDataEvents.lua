@@ -1,3 +1,4 @@
+local _, addonTable = ...
 do
   if C_Engraving and C_Engraving.IsEngravingEnabled() then
     local frame = CreateFrame("Frame")

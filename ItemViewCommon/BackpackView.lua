@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local addonName, addonTable = ...
 
 local classicTabObjectCounter = 0
@@ -10,7 +11,7 @@ local function PreallocateItemButtons(pool, buttonCount)
   frame:SetScript("OnEvent", function()
     for i = 1, buttonCount do
       local button = pool:Acquire()
-      Baganator.Skins.AddFrame("ItemButton", button)
+      addonTable.Skins.AddFrame("ItemButton", button)
     end
     pool:ReleaseAll()
   end)
@@ -25,7 +26,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
-  self.liveItemButtonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
+  self.liveItemButtonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
 
   -- DO NOT REMOVE
   -- Preallocating is necessary to avoid taint issues if a
@@ -33,12 +34,12 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   -- 6 is bags + reagent bag (retail) or bags + keyring (wrath)
   PreallocateItemButtons(self.liveItemButtonPool, Syndicator.Constants.MaxBagSize * 6)
 
-  Baganator.Utilities.AddBagSortManager(self) -- self.sortManager
-  Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
+  addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
+  addonTable.Utilities.AddBagTransferManager(self) -- self.transferManager
 
-  self.tabsPool = Baganator.ItemViewCommon.GetTabButtonPool(self)
+  self.tabsPool = addonTable.ItemViewCommon.GetTabButtonPool(self)
 
-  Baganator.CallbackRegistry:RegisterCallback("BagCacheAfterNewItemsUpdate",  function(_, character, updatedBags)
+  addonTable.CallbackRegistry:RegisterCallback("BagCacheAfterNewItemsUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
     self.searchToApply = true
     self:NotifyBagUpdate(updatedBags)
@@ -47,40 +48,40 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if not self.lastCharacter then
       return
     end
-    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsVisible() then
-        Baganator.Utilities.ApplyVisuals(self)
+        addonTable.Utilities.ApplyVisuals(self)
       end
-    elseif tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+    elseif tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == Baganator.Config.Options.SHOW_RECENTS_TABS then
-      local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
+    elseif settingName == addonTable.Config.Options.SHOW_RECENTS_TABS then
+      local isShown = addonTable.Config.Get(addonTable.Config.Options.SHOW_RECENTS_TABS)
       for index, tab in ipairs(self.Tabs) do
         tab:SetShown(isShown)
         if tab.details == self.lastCharacter then
           PanelTemplates_SetTab(self, index)
         end
       end
-    elseif settingName == Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
+    elseif settingName == addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
+  addonTable.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self.searchToApply = true
     self:ApplySearch(text)
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
+  addonTable.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
     if character ~= self.lastCharacter then
       self:AddNewRecent(character)
       if self:IsVisible() then
@@ -89,13 +90,13 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+  addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
     if self:IsVisible() and self.lastCharacter ~= nil then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
 
-  self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
+  self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG,
     button1 = YES,
@@ -107,7 +108,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     hideOnEscape = 1,
   }
 
-  if Baganator.Constants.IsEra then
+  if addonTable.Constants.IsEra then
     local index = tIndexOf(self.TopButtons, self.ToggleGuildBankButton)
     table.remove(self.TopButtons, index)
     self.ToggleGuildBankButton:Hide()
@@ -119,15 +120,15 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   end
 
   self.TopButtons[1]:ClearAllPoints()
-  self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset + 2, -1)
+  self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset + 2, -1)
 
-  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", Baganator.Constants.ButtonFrameOffset, 0)
+  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self, {"backpack"})
+  addonTable.Skins.AddFrame("ButtonFrame", self, {"backpack"})
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnShow()
-  if Baganator.Config.Get(Baganator.Config.Options.AUTO_SORT_ON_OPEN) then
+  if addonTable.Config.Get(addonTable.Config.Options.AUTO_SORT_ON_OPEN) then
     C_Timer.After(0, function()
       self:CombineStacksAndSort()
     end)
@@ -144,7 +145,7 @@ function BaganatorItemViewCommonBackpackViewMixin:SetLiveCharacter(character)
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnDragStart()
-  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
@@ -154,24 +155,24 @@ function BaganatorItemViewCommonBackpackViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.MAIN_VIEW_POSITION, {point, x, y})
+  addonTable.Config.Set(addonTable.Config.Options.MAIN_VIEW_POSITION, {point, x, y})
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:ToggleBank()
-  Baganator.CallbackRegistry:TriggerEvent("BankToggle", self.lastCharacter)
+  addonTable.CallbackRegistry:TriggerEvent("BankToggle", self.lastCharacter)
   self:Raise()
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:ToggleGuildBank()
-  Baganator.CallbackRegistry:TriggerEvent("GuildToggle", Syndicator.API.GetCharacter(self.lastCharacter).details.guild)
+  addonTable.CallbackRegistry:TriggerEvent("GuildToggle", Syndicator.API.GetCharacter(self.lastCharacter).details.guild)
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:ToggleReagents()
-  Baganator.Config.Set(Baganator.Config.Options.SHOW_REAGENTS, not Baganator.Config.Get(Baganator.Config.Options.SHOW_REAGENTS))
+  addonTable.Config.Set(addonTable.Config.Options.SHOW_REAGENTS, not addonTable.Config.Get(addonTable.Config.Options.SHOW_REAGENTS))
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:ToggleBagSlots()
-  Baganator.Config.Set(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS, not Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS))
+  addonTable.Config.Set(addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS, not addonTable.Config.Get(addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS))
 end
 
 
@@ -185,16 +186,16 @@ function BaganatorItemViewCommonBackpackViewMixin:SelectTab(character)
 end
 
 local function DeDuplicateRecents()
-  local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
+  local recents = addonTable.Config.Get(addonTable.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
   local newRecents = {}
   local seen = {}
   for _, character in ipairs(recents) do
-    if Syndicator.API.GetCharacter(character) and not seen[character] and #newRecents < Baganator.Constants.MaxRecents then
+    if Syndicator.API.GetCharacter(character) and not seen[character] and #newRecents < addonTable.Constants.MaxRecents then
       table.insert(newRecents, character)
     end
     seen[character] = true
   end
-  Baganator.Config.Set(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW, newRecents)
+  addonTable.Config.Set(addonTable.Config.Options.RECENT_CHARACTERS_MAIN_VIEW, newRecents)
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:FillRecents(characters)
@@ -202,7 +203,7 @@ function BaganatorItemViewCommonBackpackViewMixin:FillRecents(characters)
 
   table.sort(characters, function(a, b) return a < b end)
 
-  local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
+  local recents = addonTable.Config.Get(addonTable.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
 
   table.insert(recents, 1, self.liveCharacter)
 
@@ -216,7 +217,7 @@ function BaganatorItemViewCommonBackpackViewMixin:FillRecents(characters)
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:AddNewRecent(character)
-  local recents = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
+  local recents = addonTable.Config.Get(addonTable.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
   local data = Syndicator.API.GetCharacter(character)
   if not data then
     return
@@ -232,9 +233,9 @@ end
 function BaganatorItemViewCommonBackpackViewMixin:RefreshTabs()
   self.tabsPool:ReleaseAll()
 
-  local characters = Baganator.Config.Get(Baganator.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
+  local characters = addonTable.Config.Get(addonTable.Config.Options.RECENT_CHARACTERS_MAIN_VIEW)
 
-  local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
+  local isShown = addonTable.Config.Get(addonTable.Config.Options.SHOW_RECENTS_TABS)
   local sameConnected = {}
   for _, realmNormalized in ipairs(Syndicator.Utilities.GetConnectedRealms()) do
     sameConnected[realmNormalized] = true
@@ -243,15 +244,15 @@ function BaganatorItemViewCommonBackpackViewMixin:RefreshTabs()
   local lastTab
   local tabs = {}
   local index = 1
-  while #tabs < Baganator.Constants.MaxRecentsTabs and index <= #characters do
+  while #tabs < addonTable.Constants.MaxRecentsTabs and index <= #characters do
     local char = characters[index]
     local details = Syndicator.API.GetCharacter(char).details
     if sameConnected[details.realmNormalized] then
       local tabButton = self.tabsPool:Acquire()
-      Baganator.Skins.AddFrame("TabButton", tabButton)
+      addonTable.Skins.AddFrame("TabButton", tabButton)
       tabButton:SetText(details.character)
       tabButton:SetScript("OnClick", function()
-        Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", char)
+        addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", char)
       end)
       if not lastTab then
         tabButton:SetPoint("BOTTOM", 0, -30)
@@ -282,7 +283,7 @@ function BaganatorItemViewCommonBackpackViewMixin:SetupTabs()
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:HideExtraTabs()
-  local isShown = Baganator.Config.Get(Baganator.Config.Options.SHOW_RECENTS_TABS)
+  local isShown = addonTable.Config.Get(addonTable.Config.Options.SHOW_RECENTS_TABS)
   for _, tab in ipairs(self.Tabs) do
     tab:SetShown(isShown and tab:GetRight() < self:GetRight())
   end
@@ -290,7 +291,7 @@ end
 
 function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, isLive)
   local start = debugprofilestop()
-  Baganator.Utilities.ApplyVisuals(self)
+  addonTable.Utilities.ApplyVisuals(self)
 
   local characterData = Syndicator.API.GetCharacter(character)
 
@@ -313,20 +314,20 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
   self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bags))
 
   if oldLast ~= character then
-    Baganator.CallbackRegistry:TriggerEvent("CharacterSelect", character)
+    addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", character)
   end
 
-  self.SortButton:SetShown(Baganator.Utilities.ShouldShowSortButton() and isLive)
+  self.SortButton:SetShown(addonTable.Utilities.ShouldShowSortButton() and isLive)
   self:UpdateTransferButton()
 
   local sideSpacing, topSpacing = 13, 14
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
   end
 
   if self.tabsSetup then -- Not ready immediately on PLAYER_ENTERING_WORLD
-    self.Tabs[1]:SetPoint("LEFT", self, "LEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 0)
+    self.Tabs[1]:SetPoint("LEFT", self, "LEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 0)
   end
 
   self.SearchWidget:SetSpacing(sideSpacing)
@@ -337,7 +338,7 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:CombineStacks(callback)
-  Baganator.Sorting.CombineStacks(Syndicator.API.GetCharacter(self.liveCharacter).bags, Syndicator.Constants.AllBagIndexes, function(status)
+  addonTable.Sorting.CombineStacks(Syndicator.API.GetCharacter(self.liveCharacter).bags, Syndicator.Constants.AllBagIndexes, function(status)
     self.sortManager:Apply(status, function()
       self:CombineStacks(callback)
     end, function()
@@ -401,16 +402,16 @@ function BaganatorItemViewCommonBackpackViewMixin:DoSort(isReverse)
   for index, bagID in ipairs(Syndicator.Constants.AllBagIndexes) do
     bagsToSort[index] = true
   end
-  local bagChecks = Baganator.Sorting.GetBagUsageChecks(Syndicator.Constants.AllBagIndexes)
+  local bagChecks = addonTable.Sorting.GetBagUsageChecks(Syndicator.Constants.AllBagIndexes)
   local function DoSortInternal()
-    local status = Baganator.Sorting.ApplyBagOrdering(
+    local status = addonTable.Sorting.ApplyBagOrdering(
       Syndicator.API.GetCharacter(self.liveCharacter).bags,
       Syndicator.Constants.AllBagIndexes,
       bagsToSort,
       bagChecks,
       isReverse,
-      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_SLOTS_AT_END),
-      Baganator.Config.Get(Baganator.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT)
+      addonTable.Config.Get(addonTable.Config.Options.SORT_IGNORE_SLOTS_AT_END),
+      addonTable.Config.Get(addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT)
     )
     self.sortManager:Apply(status, DoSortInternal, function() end)
   end
@@ -418,15 +419,15 @@ function BaganatorItemViewCommonBackpackViewMixin:DoSort(isReverse)
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:CombineStacksAndSort(isReverse)
-  local sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
+  local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
 
-  if not Baganator.Sorting.IsModeAvailable(sortMethod) then
-    Baganator.Config.ResetOne(Baganator.Config.Options.SORT_METHOD)
-    sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
+  if not addonTable.Sorting.IsModeAvailable(sortMethod) then
+    addonTable.Config.ResetOne(addonTable.Config.Options.SORT_METHOD)
+    sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
   end
 
-  if addonTable.ExternalContainerSorts[sortMethod] then
-    addonTable.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.Backpack)
+  if addonTable.API.ExternalContainerSorts[sortMethod] then
+    addonTable.API.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.Backpack)
   elseif sortMethod == "combine_stacks_only" then
     self:CombineStacks(function() end)
   else
@@ -434,4 +435,8 @@ function BaganatorItemViewCommonBackpackViewMixin:CombineStacksAndSort(isReverse
       self:DoSort(isReverse)
     end)
   end
+end
+
+function BaganatorItemViewCommonBackpackViewMixin:GetExternalSortMethodName()
+  return addonTable.Utilities.GetExternalSortMethodName()
 end

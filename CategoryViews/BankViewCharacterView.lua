@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorCategoryViewBankViewCharacterViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewCharacterViewMixin)
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
@@ -14,10 +15,10 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   end
 
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
-  self.sectionButtonPool = Baganator.CategoryViews.GetSectionButtonPool(self)
+  self.sectionButtonPool = addonTable.CategoryViews.GetSectionButtonPool(self)
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
-  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
@@ -27,22 +28,22 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if not self.lastCharacter then
       return
     end
-    if tIndexOf(Baganator.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
+    if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
-    elseif settingName == Baganator.Config.Options.SORT_METHOD then
+    elseif settingName == addonTable.Config.Options.SORT_METHOD then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == Baganator.Config.Options.JUNK_PLUGIN then
+    elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
       self.MultiSearch:ResetCaches()
       if self:IsVisible() then
         self:GetParent():UpdateView()
@@ -50,7 +51,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
+  addonTable.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
     self.addToCategoryMode = fromCategory
     self.addedToFromCategory = addedDirectly == true
     if self:IsVisible() then
@@ -109,7 +110,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
   -- Copied from SingleViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
   end
@@ -119,19 +120,19 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
   if self.BuyReagentBankButton:IsShown() then
     table.insert(self:GetParent().AllButtons, self.BuyReagentBankButton)
     self.BuyReagentBankButton:ClearAllPoints()
-    self.BuyReagentBankButton:SetPoint("LEFT", self, Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
+    self.BuyReagentBankButton:SetPoint("LEFT", self, addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
     self.BuyReagentBankButton:SetPoint("BOTTOM", self, 0, 6)
     buttonPadding = 2
   end
   if self.DepositIntoReagentsBankButton:IsShown() then
     table.insert(self:GetParent().AllButtons, self.DepositIntoReagentsBankButton)
     self.DepositIntoReagentsBankButton:ClearAllPoints()
-    self.DepositIntoReagentsBankButton:SetPoint("LEFT", self, Baganator.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
+    self.DepositIntoReagentsBankButton:SetPoint("LEFT", self, addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
     self.DepositIntoReagentsBankButton:SetPoint("BOTTOM", self, 0, 6)
     buttonPadding = 2
   end
 
-  self.isGrouping = not self.isLive and Baganator.Config.Get(Baganator.Config.Options.CATEGORY_ITEM_GROUPING)
+  self.isGrouping = not self.isLive and addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING)
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = false
@@ -140,7 +141,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
   local characterData = Syndicator.API.GetCharacter(character)
   if characterData.bank == nil or #characterData.bank == 0 then
     self:SetSize(
-      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset + 40,
+      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
       80 + topSpacing / 2 + buttonPadding
     )
     for _, l in ipairs(self.Layouts) do
@@ -153,10 +154,10 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
     return
   end
 
-  local bagTypes = Baganator.CategoryViews.Utilities.GetBagTypes(characterData, "bank", Syndicator.Constants.AllBankIndexes)
-  Baganator.CategoryViews.LayoutContainers(self, characterData.bank, "bank", bagTypes, Syndicator.Constants.AllBankIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bank", Syndicator.Constants.AllBankIndexes)
+  addonTable.CategoryViews.LayoutContainers(self, characterData.bank, "bank", bagTypes, Syndicator.Constants.AllBankIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
-      math.max(Baganator.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
+      math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2 + buttonPadding
     )
 
@@ -165,7 +166,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
       self:ApplySearch(searchText)
     end
 
-    Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
     self:GetParent():OnTabFinished()
   end)

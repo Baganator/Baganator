@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local addonName, addonTable = ...
 
 addonTable.BagTransfers = {}
@@ -40,24 +41,24 @@ if Syndicator and Syndicator.Constants.WarbandBankActive then
   TransferToBank = function(matches, characterName, callback)
     local emptyBankSlots
     if BankFrame:GetActiveBankType() == Enum.BankType.Character then
-      emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
+      emptyBankSlots = addonTable.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
     elseif BankFrame:GetActiveBankType() == Enum.BankType.Account then
       matches = tFilter(matches, function(m) return C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, ItemLocation:CreateFromBagAndSlot(m.bagID, m.slotID)) end, true)
       local bagID = AccountBankPanel:GetSelectedTabID()
       local tabIndex = tIndexOf(Syndicator.Constants.AllWarbandIndexes, bagID)
       local bagsData = {Syndicator.API.GetWarband(1).bank[tabIndex].slots}
-      emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(bagsData, {bagID})
+      emptyBankSlots = addonTable.Transfers.GetEmptyBagsSlots(bagsData, {bagID})
     else
       error("unrecognised bank type")
     end
 
-    local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
+    local status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
     callback(status)
   end
 else
   TransferToBank = function(matches, characterName, callback)
-    local emptyBankSlots = Baganator.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
-    local status = Baganator.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
+    local emptyBankSlots = addonTable.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
+    local status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBankIndexes, emptyBankSlots)
     callback(status)
   end
 end
@@ -69,7 +70,7 @@ RegisterBagTransfer(
 )
 
 local function TransferToMail(matches, characterName, callback)
-  local status = Baganator.Transfers.AddToMail(matches)
+  local status = addonTable.Transfers.AddToMail(matches)
   callback(status)
 end
 
@@ -98,7 +99,7 @@ local function AddToScrapper(matches, characterName, callback)
           C_Container.UseContainerItem(item.bagID, item.slotID)
         end
         if loopFinished and waiting == 0 then
-          callback(Baganator.Constants.SortStatus.Complete)
+          callback(addonTable.Constants.SortStatus.Complete)
         end
       end)
     else
@@ -107,7 +108,7 @@ local function AddToScrapper(matches, characterName, callback)
   end
   loopFinished = true
   if waiting == 0 then
-    callback(Baganator.Constants.SortStatus.Complete)
+    callback(addonTable.Constants.SortStatus.Complete)
   end
 end
 
@@ -120,7 +121,7 @@ RegisterBagTransfer(
 RegisterBagTransfer(
   function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Merchant) end,
   function(matches, characterName, callback)
-    local status = Baganator.Transfers.VendorItems(matches)
+    local status = addonTable.Transfers.VendorItems(matches)
     callback(status)
   end,
   true, BAGANATOR_L_TRANSFER_MAIN_VIEW_MERCHANT_TOOLTIP_TEXT
@@ -129,7 +130,7 @@ RegisterBagTransfer(
 RegisterBagTransfer(
   function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.TradePartner) end,
   function(matches, characterName, callback)
-    local status = Baganator.Transfers.AddToTrade(matches)
+    local status = addonTable.Transfers.AddToTrade(matches)
     callback(status)
   end,
   false, BAGANATOR_L_TRANSFER_MAIN_VIEW_TRADE_TOOLTIP_TEXT
@@ -140,8 +141,8 @@ RegisterBagTransfer(
   function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) and (select(4, GetGuildBankTabInfo(GetCurrentGuildBankTab()))) end,
   function(matches, characterName, callback)
     local guildTab = GetCurrentGuildBankTab()
-    local emptyGuildSlots = Baganator.Transfers.GetEmptyGuildSlots(Syndicator.API.GetGuild(Syndicator.API.GetCurrentGuild()).bank[guildTab], guildTab)
-    local status, modes = Baganator.Transfers.FromBagsToGuild(matches, emptyGuildSlots)
+    local emptyGuildSlots = addonTable.Transfers.GetEmptyGuildSlots(Syndicator.API.GetGuild(Syndicator.API.GetCurrentGuild()).bank[guildTab], guildTab)
+    local status, modes = addonTable.Transfers.FromBagsToGuild(matches, emptyGuildSlots)
     callback(status, modes)
   end,
   true, BAGANATOR_L_TRANSFER_MAIN_VIEW_GUILD_TOOLTIP_TEXT

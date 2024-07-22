@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local function SetupBackpackView()
   local backpackView
   local allBackpackViews = {
@@ -5,16 +6,16 @@ local function SetupBackpackView()
     category = CreateFrame("Frame", "Baganator_CategoryViewBackpackViewFrame", UIParent, "BaganatorCategoryViewBackpackViewTemplate"),
   }
 
-  function Baganator.ViewManagement.GetBackpackFrame()
+  function addonTable.ViewManagement.GetBackpackFrame()
     return backpackView
   end
 
-  backpackView = allBackpackViews[Baganator.Config.Get(Baganator.Config.Options.VIEW_TYPE)]
+  backpackView = allBackpackViews[addonTable.Config.Get(addonTable.Config.Options.VIEW_TYPE)]
 
   local bagButtons = {}
 
   local UpdateButtons
-  if Baganator.Constants.IsClassic then
+  if addonTable.Constants.IsClassic then
     UpdateButtons = function()
       for _, b in ipairs(bagButtons) do
         b:SetChecked(backpackView:IsVisible())
@@ -31,12 +32,12 @@ local function SetupBackpackView()
   local function SetPositions()
     for _, backpackView in pairs(allBackpackViews) do
       backpackView:ClearAllPoints()
-      backpackView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.MAIN_VIEW_POSITION)))
+      backpackView:SetPoint(unpack(addonTable.Config.Get(addonTable.Config.Options.MAIN_VIEW_POSITION)))
     end
   end
 
   local function ResetPositions()
-    Baganator.Config.ResetOne(Baganator.Config.Options.MAIN_VIEW_POSITION)
+    addonTable.Config.ResetOne(addonTable.Config.Options.MAIN_VIEW_POSITION)
     SetPositions()
   end
 
@@ -53,7 +54,7 @@ local function SetupBackpackView()
     end)
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
+  addonTable.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
   end)
 
@@ -70,28 +71,28 @@ local function SetupBackpackView()
     UpdateButtons()
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
+  addonTable.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
     characterName = characterName or Syndicator.API.GetCurrentCharacter()
     backpackView:Show()
     backpackView:UpdateForCharacter(characterName, characterName == backpackView.liveCharacter)
     UpdateButtons()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BagHide",  function(_)
+  addonTable.CallbackRegistry:RegisterCallback("BagHide",  function(_)
     backpackView:Hide()
     UpdateButtons()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == Baganator.Config.Options.VIEW_TYPE then
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == addonTable.Config.Options.VIEW_TYPE then
       local isShown = backpackView:IsShown()
       backpackView:Hide()
-      backpackView = allBackpackViews[Baganator.Config.Get(settingName)]
+      backpackView = allBackpackViews[addonTable.Config.Get(settingName)]
       if isShown then
-        Baganator.CallbackRegistry:TriggerEvent("BagShow")
+        addonTable.CallbackRegistry:TriggerEvent("BagShow")
       end
-      Baganator.CallbackRegistry:TriggerEvent("BackpackFrameChanged", backpackView)
-    elseif settingName == Baganator.Config.Options.MAIN_VIEW_POSITION then
+      addonTable.CallbackRegistry:TriggerEvent("BackpackFrameChanged", backpackView)
+    elseif settingName == addonTable.Config.Options.MAIN_VIEW_POSITION then
       SetPositions()
     end
   end)
@@ -144,7 +145,7 @@ local function SetupBankView()
     category = CreateFrame("Frame", "Baganator_CategoryViewBankViewFrame", UIParent, "BaganatorCategoryViewBankViewTemplate"),
   }
 
-  bankView = allBankViews[Baganator.Config.Get(Baganator.Config.Options.VIEW_TYPE)]
+  bankView = allBankViews[addonTable.Config.Get(addonTable.Config.Options.VIEW_TYPE)]
 
   FrameUtil.RegisterFrameForEvents(bankView, {
     "BANKFRAME_OPENED",
@@ -158,12 +159,12 @@ local function SetupBankView()
   local function SetPositions()
     for key, bankView in pairs(allBankViews) do
       bankView:ClearAllPoints()
-      bankView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)))
+      bankView:SetPoint(unpack(addonTable.Config.Get(addonTable.Config.Options.BANK_ONLY_VIEW_POSITION)))
     end
   end
 
   local function ResetPositions()
-    Baganator.Config.ResetOne(Baganator.Config.Options.BANK_ONLY_VIEW_POSITION)
+    addonTable.Config.ResetOne(addonTable.Config.Options.BANK_ONLY_VIEW_POSITION)
     SetPositions()
   end
 
@@ -172,17 +173,17 @@ local function SetupBankView()
     ResetPositions()
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
+  addonTable.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
+  addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
     characterName = characterName or Syndicator.API.GetCurrentCharacter()
     bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
     bankView:UpdateViewToCharacter(characterName)
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BankShow", function(_, entity, subView)
+  addonTable.CallbackRegistry:RegisterCallback("BankShow", function(_, entity, subView)
     if type(entity) == "string" or entity == nil then -- Character bank
       local characterName = entity or Syndicator.API.GetCurrentCharacter()
       bankView:Show()
@@ -194,23 +195,23 @@ local function SetupBankView()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BankHide", function(_, characterName)
+  addonTable.CallbackRegistry:RegisterCallback("BankHide", function(_, characterName)
     bankView:Hide()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == Baganator.Config.Options.VIEW_TYPE then
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == addonTable.Config.Options.VIEW_TYPE then
       bankView:Hide()
       FrameUtil.UnregisterFrameForEvents(bankView, {
         "BANKFRAME_OPENED",
         "BANKFRAME_CLOSED",
       })
-      bankView = allBankViews[Baganator.Config.Get(settingName)]
+      bankView = allBankViews[addonTable.Config.Get(settingName)]
       FrameUtil.RegisterFrameForEvents(bankView, {
         "BANKFRAME_OPENED",
         "BANKFRAME_CLOSED",
       })
-    elseif settingName == Baganator.Config.Options.BANK_ONLY_VIEW_POSITION then
+    elseif settingName == addonTable.Config.Options.BANK_ONLY_VIEW_POSITION then
       SetPositions()
     end
   end)
@@ -226,12 +227,12 @@ local function SetupGuildView()
   local function SetPositions()
     guildView:HideInfoDialogs()
     guildView:ClearAllPoints()
-    guildView:SetPoint(unpack(Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_POSITION)))
+    guildView:SetPoint(unpack(addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_POSITION)))
   end
 
   local function ResetPositions()
-    Baganator.Config.ResetOne(Baganator.Config.Options.GUILD_VIEW_POSITION)
-    Baganator.Config.ResetOne(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)
+    addonTable.Config.ResetOne(addonTable.Config.Options.GUILD_VIEW_POSITION)
+    addonTable.Config.ResetOne(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
     SetPositions()
   end
 
@@ -240,17 +241,17 @@ local function SetupGuildView()
     ResetPositions()
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
+  addonTable.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("GuildToggle", function(_, guildName)
+  addonTable.CallbackRegistry:RegisterCallback("GuildToggle", function(_, guildName)
     local guildName = guildName or Syndicator.API.GetCurrentGuild()
     guildView:SetShown(guildName ~= guildView.lastGuild or not guildView:IsShown())
     guildView:UpdateForGuild(guildName, Syndicator.API.GetCurrentGuild() == guildName and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("GuildShow",  function(_, guildName, tabIndex)
+  addonTable.CallbackRegistry:RegisterCallback("GuildShow",  function(_, guildName, tabIndex)
     guildName = guildName or Syndicator.API.GetCurrentGuild()
     guildView:Show()
     if tabIndex ~= nil then
@@ -262,7 +263,7 @@ local function SetupGuildView()
     )
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("GuildHide",  function(_, ...)
+  addonTable.CallbackRegistry:RegisterCallback("GuildHide",  function(_, ...)
     guildView:Hide()
   end)
 end
@@ -279,7 +280,7 @@ local function HideDefaultBackpack()
     _G["ContainerFrame" .. i]:SetParent(hidden)
   end
 
-  if Baganator.Constants.IsRetail then
+  if addonTable.Constants.IsRetail then
     ContainerFrameCombinedBags:SetParent(hidden)
 
     local frame = CreateFrame("Frame")
@@ -317,20 +318,20 @@ local function SetupCharacterSelect()
     -- Fix for setting storing frame instead of just the frame name in previous
     -- versions, also makes the frame snap to the backpack when it is
     -- enabled/disabled
-    local setting = Baganator.Config.Get(Baganator.Config.Options.CHARACTER_SELECT_POSITION)
+    local setting = addonTable.Config.Get(addonTable.Config.Options.CHARACTER_SELECT_POSITION)
     if type(setting[2]) == "table" or type(setting[2]) == "string" then
       setting[2] = nil
     end
     local anchor = CopyTable(setting)
     if setting[2] == nil then -- Accommodate renamed backpack frames
-      anchor[2] = Baganator.ViewManagement.GetBackpackFrame() or UIParent
+      anchor[2] = addonTable.ViewManagement.GetBackpackFrame() or UIParent
       setting[2] = anchor[2]:GetName()
     end
     characterSelect:SetPoint(unpack(anchor))
   end
 
   local function ResetPositions()
-    Baganator.Config.ResetOne(Baganator.Config.Options.CHARACTER_SELECT_POSITION)
+    addonTable.Config.ResetOne(addonTable.Config.Options.CHARACTER_SELECT_POSITION)
     SetPositions()
   end
 
@@ -339,20 +340,20 @@ local function SetupCharacterSelect()
     ResetPositions()
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
+  addonTable.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("BackpackFrameChanged", function()
+  addonTable.CallbackRegistry:RegisterCallback("BackpackFrameChanged", function()
     SetPositions()
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("CharacterSelectToggle", function(_, guildName)
+  addonTable.CallbackRegistry:RegisterCallback("CharacterSelectToggle", function(_, guildName)
     characterSelect:SetShown(not characterSelect:IsShown())
   end)
 end
 
-function Baganator.ViewManagement.Initialize()
+function addonTable.ViewManagement.Initialize()
   -- Use xpcall to so that if Blizzard reworks a component the rest of the
   -- other component initialisations won't fail
 

@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local addonName, addonTable = ...
 
 BaganatorSingleViewBackpackViewMixin = CreateFromMixins(BaganatorItemViewCommonBackpackViewMixin)
@@ -6,11 +7,11 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
   BaganatorItemViewCommonBackpackViewMixin.OnLoad(self)
 
   self.BagLive:SetPool(self.liveItemButtonPool)
-  self.CollapsingBagSectionsPool = Baganator.SingleViews.GetCollapsingBagSectionsPool(self)
+  self.CollapsingBagSectionsPool = addonTable.SingleViews.GetCollapsingBagSectionsPool(self)
   self.CollapsingBags = {}
   self.bagDetailsForComparison = {}
 
-  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
@@ -19,7 +20,7 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+  addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
     if self:IsVisible() and self.lastCharacter ~= nil then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
@@ -31,10 +32,10 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
 end
 
 function BaganatorSingleViewBackpackViewMixin:AllocateBags(character)
-  local newDetails = Baganator.SingleViews.GetCollapsingBagDetails(character, "bags", Syndicator.Constants.AllBagIndexes, Syndicator.Constants.BagSlotsCount)
+  local newDetails = addonTable.SingleViews.GetCollapsingBagDetails(character, "bags", Syndicator.Constants.AllBagIndexes, Syndicator.Constants.BagSlotsCount)
   if self.bagDetailsForComparison.bags == nil or not tCompare(self.bagDetailsForComparison.bags, newDetails, 15) then
     self.bagDetailsForComparison.bags = CopyTable(newDetails)
-    self.CollapsingBags = Baganator.SingleViews.AllocateCollapsingSections(
+    self.CollapsingBags = addonTable.SingleViews.AllocateCollapsingSections(
       character, "bags", Syndicator.Constants.AllBagIndexes,
       newDetails, self.CollapsingBags,
       self.CollapsingBagSectionsPool, self.liveItemButtonPool)
@@ -81,7 +82,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   BaganatorItemViewCommonBackpackViewMixin.UpdateForCharacter(self, character, isLive)
 
   if self.isLive then
-    Baganator.NewItems:ImportNewItems()
+    addonTable.NewItems:ImportNewItems()
   end
 
   self:AllocateBags(character)
@@ -105,7 +106,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
     end
   end
 
-  local bagWidth = Baganator.Config.Get(Baganator.Config.Options.BAG_VIEW_WIDTH)
+  local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
 
   activeBag:ShowCharacter(character, "bags", Syndicator.Constants.AllBagIndexes, self.lastBagDetails.mainIndexesToUse, bagWidth)
 
@@ -118,14 +119,14 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   end
 
   local sideSpacing, topSpacing = 13, 14
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
   end
 
   local bagHeight = activeBag:GetHeight() + topSpacing / 2
 
-  bagHeight = bagHeight + Baganator.SingleViews.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
+  bagHeight = bagHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
 
   for _, layouts in ipairs(self.CollapsingBags) do
     layouts.live:SetShown(isLive and layouts.live:IsShown())
@@ -135,7 +136,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   activeBag:SetPoint("TOPRIGHT", -sideSpacing, -50 - topSpacing / 4)
 
   self:SetSize(
-    activeBag:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2,
+    activeBag:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
     bagHeight + 75
   )
 
@@ -164,9 +165,9 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
 
   self:UpdateAllButtons()
 
-  Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+  addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("-- updateforcharacter backpack", debugprofilestop() - start)
   end
 end

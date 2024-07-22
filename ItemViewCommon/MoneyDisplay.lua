@@ -1,11 +1,12 @@
+local _, addonTable = ...
 local function AddWarband(tooltip)
   local warband = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1).money or 0
   if warband > 0 then
-    GameTooltip:AddDoubleLine(PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), Baganator.Utilities.GetMoneyString(warband, true), nil, nil, nil, 1, 1, 1)
+    GameTooltip:AddDoubleLine(PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), addonTable.Utilities.GetMoneyString(warband, true), nil, nil, nil, 1, 1, 1)
   end
 end
 
-function Baganator.ShowGoldSummaryRealm(anchor, point)
+function addonTable.ShowGoldSummaryRealm(anchor, point)
   GameTooltip:SetOwner(anchor, point)
 
   local connectedRealms = Syndicator.Utilities.GetConnectedRealms()
@@ -16,7 +17,7 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
 
   local lines = {}
   local total = 0
-  for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
+  for _, characterInfo in ipairs(addonTable.Utilities.GetAllCharacters()) do
     if realmsToInclude[characterInfo.realmNormalized] and not Syndicator.API.GetCharacter(characterInfo.fullName).details.hidden then
       local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
       local characterName = characterInfo.name
@@ -29,12 +30,12 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
       if characterInfo.race then
         characterName = Syndicator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
       end
-      table.insert(lines, {left = characterName, right = Baganator.Utilities.GetMoneyString(money, true)})
+      table.insert(lines, {left = characterName, right = addonTable.Utilities.GetMoneyString(money, true)})
       total = total + money
     end
   end
 
-  GameTooltip:AddDoubleLine(BAGANATOR_L_REALM_WIDE_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(Baganator.Utilities.GetMoneyString(total, true)))
+  GameTooltip:AddDoubleLine(BAGANATOR_L_REALM_WIDE_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
@@ -45,18 +46,18 @@ function Baganator.ShowGoldSummaryRealm(anchor, point)
   GameTooltip:Show()
 end
 
-function Baganator.ShowGoldSummaryAccount(anchor, point)
+function addonTable.ShowGoldSummaryAccount(anchor, point)
   GameTooltip:SetOwner(anchor, point)
 
   local lines = {}
   local function AddRealm(realmName, realmCount, realmTotal)
-    table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = Baganator.Utilities.GetMoneyString(realmTotal, true)})
+    table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = addonTable.Utilities.GetMoneyString(realmTotal, true)})
   end
   local total = 0
   local realmTotal = 0
   local realmCount = 0
   local currentRealm
-  for _, characterInfo in ipairs(Baganator.Utilities.GetAllCharacters()) do
+  for _, characterInfo in ipairs(addonTable.Utilities.GetAllCharacters()) do
     if not Syndicator.API.GetCharacter(characterInfo.fullName).details.hidden then
       if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
         AddRealm(currentRealm, realmCount, realmTotal)
@@ -74,7 +75,7 @@ function Baganator.ShowGoldSummaryAccount(anchor, point)
   end
   AddRealm(currentRealm, realmCount, realmTotal)
 
-  GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(Baganator.Utilities.GetMoneyString(total, true)))
+  GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
 
   AddWarband(GameTooltip)

@@ -1,4 +1,5 @@
-function Baganator.SingleViews.GetCollapsingBagDetails(character, section, indexes, slotsCount)
+local _, addonTable = ...
+function addonTable.SingleViews.GetCollapsingBagDetails(character, section, indexes, slotsCount)
   local characterInfo = Syndicator.API.GetCharacter(character)
   if characterInfo.containerInfo == nil or characterInfo.containerInfo[section] == nil then
     local cleanMain = {}
@@ -16,7 +17,7 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
 
   for index = 1, slotsCount do
     if containerInfo[index] and containerInfo[index].itemID ~= nil then
-      local key = Baganator.Utilities.GetBagType(nil, containerInfo[index].itemID)
+      local key = addonTable.Utilities.GetBagType(nil, containerInfo[index].itemID)
       local bagIndex = index + 1
       if key ~= 0 then
         seenIndexes[bagIndex] = true
@@ -28,7 +29,7 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
 
   for bagIndex, bagID in ipairs(indexes) do
     if not seenIndexes[bagIndex] then
-      local bagType = Baganator.Utilities.GetBagType(bagID, nil)
+      local bagType = addonTable.Utilities.GetBagType(bagID, nil)
       seenIndexes[bagIndex] = true
       if bagType and bagType ~= 0 and characterInfo[section][bagIndex] then
         if #characterInfo[section][bagIndex] > 0 then
@@ -44,7 +45,7 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
   for key, bags in pairs(inSlots) do
     table.insert(special, {
       indexesUsed = bags,
-      visual = Baganator.Constants.ContainerKeyToInfo[key],
+      visual = addonTable.Constants.ContainerKeyToInfo[key],
       key = key,
     })
   end
@@ -58,7 +59,7 @@ function Baganator.SingleViews.GetCollapsingBagDetails(character, section, index
   }
 end
 
-function Baganator.SingleViews.AllocateCollapsingSections(character, section, bagIDs, collapsingInfo, previousSections, sectionPool, itemButtonPool, refreshCallback)
+function addonTable.SingleViews.AllocateCollapsingSections(character, section, bagIDs, collapsingInfo, previousSections, sectionPool, itemButtonPool, refreshCallback)
   collapsingInfo.mainIndexesToUse = {}
   for _, index in ipairs(collapsingInfo.main) do
     collapsingInfo.mainIndexesToUse[index] = true
@@ -70,15 +71,15 @@ function Baganator.SingleViews.AllocateCollapsingSections(character, section, ba
 
   for _, info in ipairs(collapsingInfo.special) do
     local layouts = sectionPool:Acquire()
-    Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
+    addonTable.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
     layouts.live:SetPool(itemButtonPool)
     layouts.button:Hide()
-    Baganator.Skins.AddFrame("IconButton", layouts.button, {"collapsingBagSection"})
+    addonTable.Skins.AddFrame("IconButton", layouts.button, {"collapsingBagSection"})
 
     layouts.button:SetScript("OnClick", function()
-      local state = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)
+      local state = addonTable.Config.Get(addonTable.Config.Options.HIDE_SPECIAL_CONTAINER)
       state[info.key] = not state[info.key]
-      Baganator.CallbackRegistry:TriggerEvent("SpecialBagToggled")
+      addonTable.CallbackRegistry:TriggerEvent("SpecialBagToggled")
     end)
 
     table.insert(CollapsingBags, layouts)
@@ -86,7 +87,7 @@ function Baganator.SingleViews.AllocateCollapsingSections(character, section, ba
   return CollapsingBags
 end
 
-function Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
+function addonTable.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
   if info.visual.type == "file" then
     layouts.button.Icon:SetSize(17, 17)
     layouts.button.Icon:SetTexture(info.visual.value)
@@ -107,9 +108,9 @@ function Baganator.SingleViews.SetupCollapsingBagSection(layouts, info, bagIDs)
   layouts.button.bagIDsToUse = layouts.bagIDsToUse
 end
 
-function Baganator.SingleViews.ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
+function addonTable.SingleViews.ArrangeCollapsibles(activeCollapsibles, originBag, originCollapsibles)
   local topSpacing, dividerOffset, endPadding = 14, 2, 0
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     topSpacing = 7
     dividerOffset = 1
     endPadding = 3
@@ -119,7 +120,7 @@ function Baganator.SingleViews.ArrangeCollapsibles(activeCollapsibles, originBag
   local addedHeight = 0
   for index, layout in ipairs(activeCollapsibles) do
     local key = originCollapsibles[index].key
-    local hidden = Baganator.Config.Get(Baganator.Config.Options.HIDE_SPECIAL_CONTAINER)[key]
+    local hidden = addonTable.Config.Get(addonTable.Config.Options.HIDE_SPECIAL_CONTAINER)[key]
     local divider = originCollapsibles[index].divider
     divider:SetShown(not hidden)
     layout:SetShown(not hidden)

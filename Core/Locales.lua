@@ -1,7 +1,8 @@
-Baganator.Locales = CopyTable(BAGANATOR_LOCALES.enUS)
+local _, addonTable = ...
+addonTable.Locales = CopyTable(BAGANATOR_LOCALES.enUS)
 for key, translation in pairs(BAGANATOR_LOCALES[GetLocale()]) do
-  Baganator.Locales[key] = translation
+  addonTable.Locales[key] = translation
 end
-for key, translation in pairs(Baganator.Locales) do
+for key, translation in pairs(addonTable.Locales) do
   _G["BAGANATOR_L_" .. key] = translation
 end

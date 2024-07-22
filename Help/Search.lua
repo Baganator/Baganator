@@ -1,4 +1,5 @@
-function Baganator.Help.GetKeywordGroups()
+local _, addonTable = ...
+function addonTable.Help.GetKeywordGroups()
   local searchTerms = Syndicator.API.GetSearchKeywords()
   local groupsList = {}
   local groups = {}
@@ -16,16 +17,16 @@ function Baganator.Help.GetKeywordGroups()
   return groups
 end
 
-function Baganator.Help.ShowSearchDialog()
+function addonTable.Help.ShowSearchDialog()
   if Baganator_SearchHelpFrame then
     Baganator_SearchHelpFrame:SetShown(not Baganator_SearchHelpFrame:IsShown())
     Baganator_SearchHelpFrame:Raise()
     return
   end
 
-  local groups = Baganator.Help.GetKeywordGroups()
+  local groups = addonTable.Help.GetKeywordGroups()
   local text = ""
-  for _, key in ipairs(Baganator.Constants.KeywordGroupOrder) do
+  for _, key in ipairs(addonTable.Constants.KeywordGroupOrder) do
     table.sort(groups[key])
     text = text .. "==" .. key .. "\n" .. table.concat(groups[key], ", ") .. "\n"
   end
@@ -34,7 +35,7 @@ function Baganator.Help.ShowSearchDialog()
   ButtonFrameTemplate_HidePortrait(frame)
   ButtonFrameTemplate_HideButtonBar(frame)
   frame.Inset:Hide()
-  Baganator.Skins.AddFrame("ButtonFrame", frame)
+  addonTable.Skins.AddFrame("ButtonFrame", frame)
   frame:EnableMouse(true)
   frame:SetPoint("CENTER")
   frame:SetToplevel(true)
@@ -61,7 +62,7 @@ function Baganator.Help.ShowSearchDialog()
 
   frame.ScrollBox = CreateFrame("Frame", nil, frame, "WowScrollBox")
   frame.ScrollBox:SetPoint("TOP", 0, -25)
-  frame.ScrollBox:SetPoint("LEFT", Baganator.Constants.ButtonFrameOffset + 20, 0)
+  frame.ScrollBox:SetPoint("LEFT", addonTable.Constants.ButtonFrameOffset + 20, 0)
   frame.ScrollBox.Content = CreateFrame("Frame", nil, frame.ScrollBox, "ResizeLayoutFrame")
   frame.ScrollBox.Content.scrollable = true
   frame.ScrollBar = CreateFrame("EventFrame", nil, frame, "MinimalScrollBar")
@@ -82,7 +83,7 @@ function Baganator.Help.ShowSearchDialog()
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS_LINE_1},
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS_LINE_2},
   }
-  for _, key in ipairs(Baganator.Constants.KeywordGroupOrder) do
+  for _, key in ipairs(addonTable.Constants.KeywordGroupOrder) do
     table.insert(lines, {type = "header_2", text = key})
     table.insert(lines, {type = "content", text = table.concat(groups[key], ", ")})
   end

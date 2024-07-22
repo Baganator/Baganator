@@ -1,3 +1,4 @@
+local _, addonTable = ...
 if not Syndicator then
   return
 end
@@ -22,41 +23,41 @@ Syndicator.API.RegisterShowItemLocation(function(mode, entity, container, itemLi
 
   local self = {}
 
-  Baganator.CallbackRegistry:RegisterCallback("ViewComplete", function()
-    Baganator.CallbackRegistry:UnregisterCallback("ViewComplete", self)
-    Baganator.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
+  addonTable.CallbackRegistry:RegisterCallback("ViewComplete", function()
+    addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", self)
+    addonTable.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
   end, self)
 
   if mode == "character" then
     if container == "bag" then
-      Baganator.CallbackRegistry:TriggerEvent("GuildHide")
-      Baganator.CallbackRegistry:TriggerEvent("BankHide")
-      Baganator.CallbackRegistry:TriggerEvent("BagShow", entity)
-      Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
+      addonTable.CallbackRegistry:TriggerEvent("GuildHide")
+      addonTable.CallbackRegistry:TriggerEvent("BankHide")
+      addonTable.CallbackRegistry:TriggerEvent("BagShow", entity)
+      addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
     elseif container == "bank" then
-      Baganator.CallbackRegistry:TriggerEvent("GuildHide")
-      Baganator.CallbackRegistry:TriggerEvent("BagHide")
-      Baganator.CallbackRegistry:TriggerEvent("BankShow", entity)
-      Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
+      addonTable.CallbackRegistry:TriggerEvent("GuildHide")
+      addonTable.CallbackRegistry:TriggerEvent("BagHide")
+      addonTable.CallbackRegistry:TriggerEvent("BankShow", entity)
+      addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
     else
       StaticPopupDialogs[dialogName].text = CONTAINER_TYPE_TO_MESSAGE[container]
       StaticPopup_Show(dialogName)
-      Baganator.CallbackRegistry:UnregisterCallback("ViewComplete", self)
+      addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", self)
       return
     end
   elseif mode == "guild" then
-    Baganator.CallbackRegistry:TriggerEvent("BagHide")
-    Baganator.CallbackRegistry:TriggerEvent("BankHide")
-    Baganator.CallbackRegistry:TriggerEvent("GuildShow", entity, tonumber(container))
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
-    Baganator.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
+    addonTable.CallbackRegistry:TriggerEvent("BagHide")
+    addonTable.CallbackRegistry:TriggerEvent("BankHide")
+    addonTable.CallbackRegistry:TriggerEvent("GuildShow", entity, tonumber(container))
+    addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
+    addonTable.CallbackRegistry:TriggerEvent("HighlightIdenticalItems", itemLink)
   elseif mode == "warband" then
-    Baganator.CallbackRegistry:TriggerEvent("GuildHide")
-    Baganator.CallbackRegistry:TriggerEvent("BagHide")
-    Baganator.CallbackRegistry:TriggerEvent("BankShow", tonumber(entity), tonumber(container))
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
+    addonTable.CallbackRegistry:TriggerEvent("GuildHide")
+    addonTable.CallbackRegistry:TriggerEvent("BagHide")
+    addonTable.CallbackRegistry:TriggerEvent("BankShow", tonumber(entity), tonumber(container))
+    addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
   else
-    Baganator.CallbackRegistry:UnregisterCallback("ViewComplete", self)
+    addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", self)
     return
   end
 end)
@@ -67,33 +68,37 @@ function BaganatorSearchWidgetMixin:OnLoad()
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
       local text = self.SearchBox:GetText()
-      Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
+      addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", text:lower())
     end
     if self.SearchBox:GetText() == "" then
-      self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
+      self.SearchBox.Instructions:SetText(addonTable.Utilities.GetRandomSearchesText())
     end
   end)
   self.SearchBox.clearButton:SetScript("OnClick", function()
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+    addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   end)
 
   self.GlobalSearchButton:Disable()
 
-  Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
+  addonTable.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self.SearchBox:SetText(text)
     self.GlobalSearchButton:SetEnabled(text ~= "")
   end)
 
-  Baganator.Skins.AddFrame("SearchBox", self.SearchBox)
+  self.HelpButton:SetScript("OnClick", function()
+    addonTable.Help.ShowSearchDialog()
+  end)
+
+  addonTable.Skins.AddFrame("SearchBox", self.SearchBox)
 end
 
 function BaganatorSearchWidgetMixin:OnShow()
-  self.SearchBox.Instructions:SetText(Baganator.Utilities.GetRandomSearchesText())
+  self.SearchBox.Instructions:SetText(addonTable.Utilities.GetRandomSearchesText())
 end
 
 function BaganatorSearchWidgetMixin:OnHide()
   if self.SearchBox:GetText() ~= "" then
-    Baganator.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+    addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   end
   Syndicator.Search.ClearCache()
 end
@@ -101,7 +106,7 @@ end
 function BaganatorSearchWidgetMixin:SetSpacing(sideSpacing)
   self.SearchBox:ClearAllPoints()
   self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing - 71, 0)
-  self.SearchBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset + 5, - 28)
+  self.SearchBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset + 5, - 28)
   self.GlobalSearchButton:ClearAllPoints()
   self.GlobalSearchButton:SetPoint("LEFT", self.SearchBox, "RIGHT", 3, 0)
   self.HelpButton:ClearAllPoints()

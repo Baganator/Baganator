@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local iconSettings = {}
 
 local IsEquipment = Syndicator and Syndicator.Utilities.IsEquipment
@@ -40,17 +41,17 @@ local expansionIDToText = {
 
 local function CacheSettings()
   iconSettings = {
-    markJunk = Baganator.Config.Get("icon_grey_junk"),
-    junkPlugin = Baganator.Config.Get("junk_plugin"),
-    useQualityColors = Baganator.Config.Get("icon_text_quality_colors"),
-    boe_on_common = not Baganator.Config.Get("hide_boe_on_common"),
+    markJunk = addonTable.Config.Get("icon_grey_junk"),
+    junkPlugin = addonTable.Config.Get("junk_plugin"),
+    useQualityColors = addonTable.Config.Get("icon_text_quality_colors"),
+    boe_on_common = not addonTable.Config.Get("hide_boe_on_common"),
   }
   if iconSettings.junkPlugin == "poor_quality" then
     iconSettings.junkPlugin = nil
   end
 end
-Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", CacheSettings)
-Baganator.Utilities.OnAddonLoaded("Baganator", CacheSettings)
+addonTable.CallbackRegistry:RegisterCallback("SettingChangedEarly", CacheSettings)
+addonTable.Utilities.OnAddonLoaded("Baganator", CacheSettings)
 
 local function textInit(itemButton)
   local text = itemButton:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
@@ -213,10 +214,10 @@ local function RegisterExpansionWidget()
     return xpacText ~= nil
   end, textInit)
 end
-if Baganator.Constants.IsRetail then
+if addonTable.Constants.IsRetail then
   RegisterExpansionWidget()
 elseif Syndicator.Search.GetExpansion then
-  Baganator.Utilities.OnAddonLoaded("ItemVersion", RegisterExpansionWidget)
+  addonTable.Utilities.OnAddonLoaded("ItemVersion", RegisterExpansionWidget)
 end
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_EQUIPMENT_SET, "equipment_set", function(EquipmentSet, details)
@@ -228,7 +229,7 @@ end, function(itemButton)
   return EquipmentSet
 end)
 
-Baganator.Utilities.OnAddonLoaded("Pawn", function()
+addonTable.Utilities.OnAddonLoaded("Pawn", function()
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_PAWN, "pawn", function(Arrow, details)
     return HasItemLevel(details) and PawnShouldItemLinkHaveUpgradeArrow(details.itemLink)
   end, function(itemButton)
@@ -266,7 +267,7 @@ Baganator.Utilities.OnAddonLoaded("Pawn", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
+addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
   local function IsPet(itemID)
     local classID, subClassID = select(6, GetItemInfoInstant(itemID))
     return classID == Enum.ItemClass.Battlepet or classID == Enum.ItemClass.Miscellaneous and subClassID == Enum.ItemMiscellaneousSubclass.CompanionPet
@@ -314,7 +315,7 @@ Baganator.Utilities.OnAddonLoaded("CanIMogIt", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("BattlePetBreedID", function()
+addonTable.Utilities.OnAddonLoaded("BattlePetBreedID", function()
   if not BPBID_Internal or not BPBID_Internal.CalculateBreedID or not BPBID_Internal.RetrieveBreedName then
     return
   end
@@ -338,7 +339,7 @@ Baganator.Utilities.OnAddonLoaded("BattlePetBreedID", function()
   textInit, {corner = "bottom_left", priority = 1})
 end)
 
-if Baganator.Constants.IsRetail then
+if addonTable.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_LEVEL, "battle_pet_level", function(Level, details)
     if details.itemID ~= Syndicator.Constants.BattlePetCageID then
       return false
@@ -371,7 +372,7 @@ if C_Engraving and C_Engraving.IsEngravingEnabled() then
   end, {corner = "top_right", priority = 1})
 end
 
-if Baganator.Constants.IsRetail then
+if addonTable.Constants.IsRetail then
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_KEYSTONE_LEVEL, "keystone_level", function(KeystoneText, details)
     local level = details.itemLink:match("keystone:[^:]*:[^:]*:(%d+)")
     if not level then

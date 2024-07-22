@@ -1,4 +1,5 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
 -- See comment in Sorting/ItemFields.lua.
 -- Values generated are cached across the current sort iteration.
@@ -79,7 +80,7 @@ local allSortKeys = {
 
 -- Remove expansion sort criteria on classic, as there isn't much expansion
 -- content to sort among
-if Baganator.Constants.IsClassic then
+if addonTable.Constants.IsClassic then
   table.remove(allSortKeys["quality"], tIndexOf(allSortKeys["quality"], "invertedExpansion"))
   table.remove(allSortKeys["type"], tIndexOf(allSortKeys["type"], "invertedExpansion"))
 end
@@ -94,7 +95,7 @@ for _, itemID in ipairs(PriorityItems) do
   PriorityMap[itemID] = true
 end
 
-function Baganator.Sorting.AddSortKeys(list)
+function addonTable.Sorting.AddSortKeys(list)
   for index, item in ipairs(list) do
     if item.itemLink then
       setmetatable(item, itemMetatable)
@@ -107,7 +108,7 @@ function Baganator.Sorting.AddSortKeys(list)
       item.classID, item.subClassID = select(6, C_Item.GetItemInfoInstant(linkToCheck))
       item.invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID)
       item.index = index
-      if item.itemID == Baganator.Constants.BattlePetCageID then
+      if item.itemID == addonTable.Constants.BattlePetCageID then
         local speciesID = tonumber(item.itemLink:match("battlepet:(%d+)"))
         local petName, _, subClassID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
         item.itemName = petName
@@ -117,8 +118,8 @@ function Baganator.Sorting.AddSortKeys(list)
   end
 end
 
-function Baganator.Sorting.OrderOneListOffline(list, sortMethod)
-  local reverse = Baganator.Config.Get(Baganator.Config.Options.REVERSE_GROUPS_SORT_ORDER)
+function addonTable.Sorting.OrderOneListOffline(list, sortMethod)
+  local reverse = addonTable.Config.Get(addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER)
 
   list = tFilter(list, function(a) return a.itemLink ~= nil end, true)
 

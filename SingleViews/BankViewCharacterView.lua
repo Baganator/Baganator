@@ -1,14 +1,15 @@
+local _, addonTable = ...
 BaganatorSingleViewBankViewCharacterViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewCharacterViewMixin)
 
 function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
   BaganatorItemViewCommonBankViewCharacterViewMixin.OnLoad(self)
 
-  self.unallocatedItemButtonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
-  self.CollapsingBagSectionsPool = Baganator.SingleViews.GetCollapsingBagSectionsPool(self)
+  self.unallocatedItemButtonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
+  self.CollapsingBagSectionsPool = addonTable.SingleViews.GetCollapsingBagSectionsPool(self)
   self.CollapsingBankBags = {}
   self.bagDetailsForComparison = {}
 
-  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
@@ -17,7 +18,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+  addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
     if self:IsVisible() and self.lastCharacter ~= nil then
       self:GetParent():UpdateView()
     end
@@ -44,10 +45,10 @@ end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:AllocateBankBags(character)
   -- Copied from SingleViews/BagView.lua
-  local newDetails = Baganator.SingleViews.GetCollapsingBagDetails(character, "bank", Syndicator.Constants.AllBankIndexes, Syndicator.Constants.BankBagSlotsCount)
+  local newDetails = addonTable.SingleViews.GetCollapsingBagDetails(character, "bank", Syndicator.Constants.AllBankIndexes, Syndicator.Constants.BankBagSlotsCount)
   if self.bagDetailsForComparison.bank == nil or not tCompare(self.bagDetailsForComparison.bank, newDetails, 15) then
     self.bagDetailsForComparison.bank = CopyTable(newDetails)
-    self.CollapsingBankBags = Baganator.SingleViews.AllocateCollapsingSections(
+    self.CollapsingBankBags = addonTable.SingleViews.AllocateCollapsingSections(
       character, "bank", Syndicator.Constants.AllBankIndexes,
       newDetails, self.CollapsingBankBags,
       self.CollapsingBagSectionsPool, self.unallocatedItemButtonPool,
@@ -111,7 +112,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
     end
   end
 
-  local bankWidth = Baganator.Config.Get(Baganator.Config.Options.BANK_VIEW_WIDTH)
+  local bankWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
 
   activeBank:ShowCharacter(character, "bank", Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
 
@@ -124,7 +125,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   -- Copied from SingleViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
   end
@@ -132,7 +133,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   local bankHeight = activeBank:GetHeight() + topSpacing / 2
 
   -- Copied from SingleViews/BagView.lua
-  bankHeight = bankHeight + Baganator.SingleViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
+  bankHeight = bankHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
 
   self:GetParent().AllButtons = {}
   tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
@@ -172,12 +173,12 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   end
 
   activeBank:ClearAllPoints()
-  activeBank:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset - 2, - 50 - topSpacing / 4)
+  activeBank:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2, - 50 - topSpacing / 4)
 
-  Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+  addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
   self:SetSize(
-    activeBank:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2,
+    activeBank:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
     bankHeight + 75
   )
 

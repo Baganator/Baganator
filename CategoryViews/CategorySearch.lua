@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local addonName, addonTable = ...
 
 BaganatorCategoryViewsCategorySearchMixin = {}
@@ -35,7 +36,7 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
 
       for key in pairs(self.pending) do
         local seenData = self.seenData[key]
-        local details = Baganator.CategoryViews.Utilities.GetAddedItemData(seenData.itemID, seenData.itemLink)
+        local details = addonTable.CategoryViews.Utilities.GetAddedItemData(seenData.itemID, seenData.itemLink)
         local match = items["i:" .. tostring(details.itemID)] or items["p:" .. tostring(details.petID)] or items[key]
         if match then
           for _, i in ipairs(self.pending[key]) do
@@ -47,11 +48,11 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
       end
     end
 
-    self.sortMethod = Baganator.Config.Get("sort_method")
-    if self.sortMethod == "combine_stacks_only" or addonTable.ExternalContainerSorts[self.sortMethod] then
-      Baganator.Utilities.Message(BAGANATOR_L_SORT_METHOD_RESET_FOR_CATEGORIES)
-      Baganator.Config.ResetOne(Baganator.Config.Options.SORT_METHOD)
-      self.sortMethod = Baganator.Config.Get(Baganator.Config.Options.SORT_METHOD)
+    self.sortMethod = addonTable.Config.Get("sort_method")
+    if self.sortMethod == "combine_stacks_only" or addonTable.API.ExternalContainerSorts[self.sortMethod] then
+      addonTable.Utilities.Message(BAGANATOR_L_SORT_METHOD_RESET_FOR_CATEGORIES)
+      addonTable.Config.ResetOne(addonTable.Config.Options.SORT_METHOD)
+      self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
     end
 
     self:DoSearch()
@@ -88,7 +89,7 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
           end
         end
         self.seenData[key] = item
-        Baganator.Sorting.AddSortKeys({item})
+        addonTable.Sorting.AddSortKeys({item})
       else
         seen.setInfo = item.setInfo
         setmetatable(item, {__index = self.seenData[key], __newindex = seen})
@@ -108,7 +109,7 @@ end
 function BaganatorCategoryViewsCategorySearchMixin:SortResults()
   local incomplete
   for search in pairs(self.sortPending) do
-    self.results[search], incomplete = Baganator.Sorting.OrderOneListOffline(self.results[search], self.sortMethod)
+    self.results[search], incomplete = addonTable.Sorting.OrderOneListOffline(self.results[search], self.sortMethod)
     if not incomplete then
       self.sortPending[search] = nil
     end
@@ -116,7 +117,7 @@ function BaganatorCategoryViewsCategorySearchMixin:SortResults()
 
   if next(self.sortPending) == nil then
     self:SetScript("OnUpdate", nil)
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("search and sort took", debugprofilestop() - self.start)
     end
     self.callback(self.results)

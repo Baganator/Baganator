@@ -1,4 +1,5 @@
-function Baganator.Transfers.AddToMail(toMove)
+local _, addonTable = ...
+function addonTable.Transfers.AddToMail(toMove)
   if InCombatLockdown() then -- Transfers may not work during combat due to Blizzard restrictions
     return
   end
@@ -25,8 +26,8 @@ function Baganator.Transfers.AddToMail(toMove)
   end
 
   if missing then
-    return Baganator.Constants.SortStatus.WaitingMove
+    return addonTable.Constants.SortStatus.WaitingMove
   else
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 end

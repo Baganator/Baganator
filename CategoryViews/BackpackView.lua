@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local addonName, addonTable = ...
 
 BaganatorCategoryViewBackpackViewMixin = CreateFromMixins(BaganatorItemViewCommonBackpackViewMixin)
@@ -9,7 +10,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.LiveLayouts = {}
   self.CachedLayouts = {}
 
-  self.liveEmptySlotsPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
+  self.liveEmptySlotsPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
   for i = 1, #Syndicator.Constants.AllBagIndexes do
     self.liveEmptySlotsPool:Acquire()
   end
@@ -18,12 +19,12 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self:RegisterEvent("CURSOR_CHANGED")
 
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
-  self.sectionButtonPool = Baganator.CategoryViews.GetSectionButtonPool(self)
+  self.sectionButtonPool = addonTable.CategoryViews.GetSectionButtonPool(self)
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
   self.recentItems = {}
 
-  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
@@ -33,22 +34,22 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if not self.lastCharacter then
       return
     end
-    if tIndexOf(Baganator.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
+    if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == Baganator.Config.Options.SORT_METHOD then
+    elseif settingName == addonTable.Config.Options.SORT_METHOD then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == Baganator.Config.Options.JUNK_PLUGIN then
+    elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
       self.MultiSearch:ResetCaches()
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
@@ -56,7 +57,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
+  addonTable.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
     self.addToCategoryMode = fromCategory
     self.addedToFromCategory = addedDirectly == true
     if self:IsVisible() then
@@ -99,14 +100,14 @@ end
 
 function BaganatorCategoryViewBackpackViewMixin:OnShow()
   BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
-  Baganator.NewItems:ClearNewItemsForTimeout()
+  addonTable.NewItems:ClearNewItemsForTimeout()
 end
 
 -- Clear new item status on items that are hidden as part of a stack
 function BaganatorCategoryViewBackpackViewMixin:OnHide()
   BaganatorItemViewCommonBackpackViewMixin.OnHide(self)
   for _, item in ipairs(self.notShown) do
-    Baganator.NewItems:ClearNewItem(item.bagID, item.slotID)
+    addonTable.NewItems:ClearNewItem(item.bagID, item.slotID)
   end
 end
 
@@ -144,26 +145,26 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
   BaganatorItemViewCommonBackpackViewMixin.UpdateForCharacter(self, character, isLive)
 
   if self.isLive then
-    Baganator.NewItems:ImportNewItems(true)
+    addonTable.NewItems:ImportNewItems(true)
   end
 
   local sideSpacing, topSpacing = 13, 14
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
     topSpacing = 7
   end
 
-  self.isGrouping = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_ITEM_GROUPING) and not self.splitStacksDueToTransfer
+  self.isGrouping = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING) and not self.splitStacksDueToTransfer
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = false
   end
 
   local characterData = Syndicator.API.GetCharacter(character)
-  local bagTypes = Baganator.CategoryViews.Utilities.GetBagTypes(characterData, "bags", Syndicator.Constants.AllBagIndexes)
-  Baganator.CategoryViews.LayoutContainers(self, characterData.bags, "bags", bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bags", Syndicator.Constants.AllBagIndexes)
+  addonTable.CategoryViews.LayoutContainers(self, characterData.bags, "bags", bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
-      math.max(Baganator.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset - 2),
+      math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2
     )
 
@@ -174,12 +175,12 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
 
     self:HideExtraTabs()
 
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("-- updateforcharacter backpack", debugprofilestop() - start)
     end
 
     self:UpdateAllButtons()
 
-    Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
   end)
 end

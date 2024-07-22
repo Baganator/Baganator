@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local IT = Enum.PlayerInteractionType
 
 local event_drivers = {
@@ -11,7 +12,7 @@ local event_drivers = {
 local interactions = {
   [IT.GuildBanker] = { option = "guild_bank", default = false },
   [IT.VoidStorageBanker] = {option = "void_storage", default = false },
-  [IT.Auctioneer] = {option = "auction_house", default = Baganator.Constants.IsRetail },
+  [IT.Auctioneer] = {option = "auction_house", default = addonTable.Constants.IsRetail },
   [IT.MailInfo] = {option = "mail", default = false },
   [IT.Merchant] = {option = "merchant", default = true },
   [IT.TradePartner] = {option = "trade_partner", default = false },
@@ -24,13 +25,13 @@ local frames = {
 }
 
 local function CheckOption(option)
-  return Baganator.Config.Get(Baganator.Config.Options.AUTO_OPEN)[option]
+  return addonTable.Config.Get(addonTable.Config.Options.AUTO_OPEN)[option]
 end
 
 BaganatorOpenCloseMixin = {}
 
 function BaganatorOpenCloseMixin:OnLoad()
-  local data = Baganator.Config.Get(Baganator.Config.Options.AUTO_OPEN)
+  local data = addonTable.Config.Get(addonTable.Config.Options.AUTO_OPEN)
 
   for _, details in pairs(event_drivers) do
     if data[details.option] == nil then
@@ -59,9 +60,9 @@ function BaganatorOpenCloseMixin:OnLoad()
       return
     end
     if CharacterFrame:IsShown() then
-      Baganator.CallbackRegistry:TriggerEvent("BagShow")
+      addonTable.CallbackRegistry:TriggerEvent("BagShow")
     else
-      Baganator.CallbackRegistry:TriggerEvent("BagHide")
+      addonTable.CallbackRegistry:TriggerEvent("BagHide")
     end
   end)
 end
@@ -77,9 +78,9 @@ function BaganatorOpenCloseMixin:OnEvent(eventName, ...)
       return
     end
     if eventName == "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" then
-      Baganator.CallbackRegistry:TriggerEvent("BagShow")
+      addonTable.CallbackRegistry:TriggerEvent("BagShow")
     else
-      Baganator.CallbackRegistry:TriggerEvent("BagHide")
+      addonTable.CallbackRegistry:TriggerEvent("BagHide")
     end
   else
     local details = event_drivers[eventName]
@@ -87,15 +88,15 @@ function BaganatorOpenCloseMixin:OnEvent(eventName, ...)
       return
     end
     if details.isOpen then
-      Baganator.CallbackRegistry:TriggerEvent("BagShow")
+      addonTable.CallbackRegistry:TriggerEvent("BagShow")
     else
-      Baganator.CallbackRegistry:TriggerEvent("BagHide")
+      addonTable.CallbackRegistry:TriggerEvent("BagHide")
     end
   end
 end
 
 
-function Baganator.InitializeOpenClose()
+function addonTable.InitializeOpenClose()
   local frame = CreateFrame("Frame")
   Mixin(frame, BaganatorOpenCloseMixin)
   frame:SetScript("OnEvent", frame.OnEvent)

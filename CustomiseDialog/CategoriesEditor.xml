@@ -37,11 +37,6 @@
           <Anchor point="RIGHT" x="-10"/>
           <Anchor point="CENTER" relativeKey="$parent.SearchLabel"/>
         </Anchors>
-        <Scripts>
-          <OnClick>
-            Baganator.Help.ShowSearchDialog()
-          </OnClick>
-        </Scripts>
       </Button>
       <EditBox autoFocus="false" inherits="InputBoxTemplate" parentKey="CategorySearch" letters="100" parentArray="ChangeAlpha">
         <Size y="30"/>

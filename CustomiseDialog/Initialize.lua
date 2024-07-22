@@ -1,9 +1,10 @@
+local _, addonTable = ...
 local addonName = ...
 
-function Baganator.CustomiseDialog.Initialize()
+function addonTable.CustomiseDialog.Initialize()
   local customiseDialog
 
-  Baganator.CallbackRegistry:RegisterCallback("ShowCustomise", function()
+  addonTable.CallbackRegistry:RegisterCallback("ShowCustomise", function()
     if not customiseDialog then
       customiseDialog = CreateFrame("Frame", "BaganatorCustomiseDialogFrame", UIParent, "BaganatorCustomiseDialogTemplate")
       customiseDialog:SetPoint("CENTER")
@@ -46,7 +47,7 @@ function Baganator.CustomiseDialog.Initialize()
     button:SetPoint("CENTER", optionsFrame, 0, -30)
     button:SetScale(2)
     button:SetScript("OnClick", function()
-      Baganator.CallbackRegistry:TriggerEvent("ShowCustomise")
+      addonTable.CallbackRegistry:TriggerEvent("ShowCustomise")
     end)
 
 

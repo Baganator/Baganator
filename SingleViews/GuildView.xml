@@ -24,7 +24,7 @@
             self:GetParent():CombineStacksAndSort(button == "RightButton")
           </OnClick>
           <OnEnter inherit="append">
-            self.tooltipText = Baganator.Utilities.GetGuildSortMethodName()
+            self.tooltipText = self:GetParent():GetGuildSortMethodName()
           </OnEnter>
         </Scripts>
       </Button>

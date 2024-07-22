@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorCheckBoxMixin = {}
 function BaganatorCheckBoxMixin:OnLoad()
   if DoesTemplateExist("SettingsCheckBoxTemplate") then
@@ -15,15 +16,15 @@ end
 function BaganatorCheckBoxMixin:Init(details)
   Mixin(self, details)
   self.CheckBox:SetText(self.text)
-  Baganator.Skins.AddFrame("CheckBox", self.CheckBox)
+  addonTable.Skins.AddFrame("CheckBox", self.CheckBox)
   self.rightLabel:SetText(self.rightText or "")
   if self.root then
     self.CheckBox:SetScript("OnClick", function()
-      Baganator.Config.Get(self.root)[self.option] = self.CheckBox:GetChecked()
+      addonTable.Config.Get(self.root)[self.option] = self.CheckBox:GetChecked()
     end)
   else
     self.CheckBox:SetScript("OnClick", function()
-      Baganator.Config.Set(self.option, self.CheckBox:GetChecked())
+      addonTable.Config.Set(self.option, self.CheckBox:GetChecked())
     end)
   end
 end
@@ -55,7 +56,7 @@ function BaganatorSliderMixin:Init(details)
   self.Label:SetText(self.text)
   self.valuePattern = self.valuePattern or "%s"
 
-  Baganator.Skins.AddFrame("Slider", self.Slider)
+  addonTable.Skins.AddFrame("Slider", self.Slider)
 
   self.Slider:SetScript("OnValueChanged", function()
     local value = self.Slider:GetValue()
@@ -63,7 +64,7 @@ function BaganatorSliderMixin:Init(details)
       value = value / self.scale
     else
     end
-    Baganator.Config.Set(self.option, value)
+    addonTable.Config.Set(self.option, value)
     self.ValueText:SetText(self.valuePattern:format(math.floor(self.Slider:GetValue())))
   end)
 end
@@ -90,9 +91,9 @@ function BaganatorDropDownMixin:Init(details)
   self.Label:SetText(self.text)
   self.DropDown:SetupSelections(GetOptions(), 1)
   self.OnEntrySelected = function(_, option)
-    Baganator.Config.Set(self.option, option.value)
+    addonTable.Config.Set(self.option, option.value)
   end
-  Baganator.Skins.AddFrame("DropDownWithPopout", self.DropDown)
+  addonTable.Skins.AddFrame("DropDownWithPopout", self.DropDown)
 end
 
 function BaganatorDropDownMixin:SetValue(value)
@@ -333,7 +334,7 @@ function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEntryMouseLeave(entry
   end
 end
 
-function Baganator.CustomiseDialog.GetDraggable(callback, movedCallback)
+function addonTable.CustomiseDialog.GetDraggable(callback, movedCallback)
   local frame = CreateFrame("Frame", nil, UIParent)
   frame:SetSize(80, 20)
   frame.background = frame:CreateTexture(nil, "OVERLAY", nil)
@@ -362,9 +363,9 @@ function Baganator.CustomiseDialog.GetDraggable(callback, movedCallback)
   return frame
 end
 
-function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
+function addonTable.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
   local container = CreateFrame("Frame", nil, parent, "InsetFrameTemplate")
-  Baganator.Skins.AddFrame("InsetFrame", container)
+  addonTable.Skins.AddFrame("InsetFrame", container)
   container.ScrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")
   container.ScrollBox:SetPoint("TOPLEFT", 1, -3)
   container.ScrollBox:SetPoint("BOTTOMRIGHT", -1, 3)
@@ -391,12 +392,12 @@ function Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
   container.ScrollBar:SetPoint("BOTTOMRIGHT")
   ScrollUtil.InitScrollBoxListWithScrollBar(container.ScrollBox, container.ScrollBar, scrollView)
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(container.ScrollBox, container.ScrollBar)
-  Baganator.Skins.AddFrame("TrimScrollBar", container.ScrollBar)
+  addonTable.Skins.AddFrame("TrimScrollBar", container.ScrollBar)
 
   return container
 end
 
-function Baganator.CustomiseDialog.GetMouseOverInContainer(c)
+function addonTable.CustomiseDialog.GetMouseOverInContainer(c)
   for index, f in c.ScrollBox:EnumerateFrames() do
     if f:IsMouseOver() then
       return f, f:IsMouseOver(0, f:GetHeight()/2), f.indexValue
@@ -428,7 +429,7 @@ function BaganatorPrioritySliderMixin:Init(details)
     self.callback(value)
     self.ValueText:SetText(VALUE_TO_PRIORITY_TEXT[value])
   end)
-  Baganator.Skins.AddFrame("Slider", self.Slider)
+  addonTable.Skins.AddFrame("Slider", self.Slider)
 end
 
 function BaganatorPrioritySliderMixin:SetValue(value)
@@ -453,7 +454,7 @@ function BaganatorPrioritySliderMixin:Enable()
   self.Slider:Enable()
 end
 
-function Baganator.CustomiseDialog.GetDropdown(parent)
+function addonTable.CustomiseDialog.GetDropdown(parent)
   if DoesTemplateExist("WowStyle1DropdownTemplate") then
     local dropdown = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
     dropdown.SetupOptions = function(_, entries, values)
@@ -469,13 +470,13 @@ function Baganator.CustomiseDialog.GetDropdown(parent)
     return dropdown
   else
     local dropDown = CreateFrame("EventButton", nil, parent, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
-    Baganator.Skins.AddFrame("DropDownWithPopout", dropDown)
+    addonTable.Skins.AddFrame("DropDownWithPopout", dropDown)
     return dropDown
   end
 end
 
 -- Dropdown for selecting and storing an option
-function Baganator.CustomiseDialog.GetBasicDropdown(parent)
+function addonTable.CustomiseDialog.GetBasicDropdown(parent)
   if DoesTemplateExist("SelectionPopoutButtonTemplate") then
     return CreateFrame("Frame", nil, parent, "BaganatorDropDownTemplate")
   else
@@ -496,9 +497,9 @@ function Baganator.CustomiseDialog.GetBasicDropdown(parent)
         table.insert(entries, {option.entries[index], option.values[index]})
       end
       MenuUtil.CreateRadioMenu(dropdown, function(value)
-        return Baganator.Config.Get(option.option) == value
+        return addonTable.Config.Get(option.option) == value
       end, function(value)
-        Baganator.Config.Set(option.option, value)
+        addonTable.Config.Set(option.option, value)
       end, unpack(entries))
     end
     frame.SetValue = function(_, value)

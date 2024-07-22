@@ -1,4 +1,5 @@
-local IsBagSlotLocked = Baganator.Transfers.IsContainerItemLocked
+local _, addonTable = ...
+local IsBagSlotLocked = addonTable.Transfers.IsContainerItemLocked
 
 local function GetSwap(source, targets)
   if IsBagSlotLocked(source) then
@@ -24,9 +25,9 @@ local modes = {
 -- toMove: Items requested to move {itemID: number, tabIndex: number, slotID: number}
 -- bagIDs: The IDs of bags involved with taking or receiving items
 -- guildTargets: Slots for the items to move to (all empty)
-function Baganator.Transfers.FromBagsToGuild(toMove, guildTargets)
+function addonTable.Transfers.FromBagsToGuild(toMove, guildTargets)
   if #toMove == 0 or InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 
   local oldCount = #toMove
@@ -53,10 +54,10 @@ function Baganator.Transfers.FromBagsToGuild(toMove, guildTargets)
   end
 
   if moved then
-    return Baganator.Constants.SortStatus.WaitingMove, modes
+    return addonTable.Constants.SortStatus.WaitingMove, modes
   elseif locked then
-    return Baganator.Constants.SortStatus.WaitingUnlock, modes
+    return addonTable.Constants.SortStatus.WaitingUnlock, modes
   else
-    return Baganator.Constants.SortStatus.Complete, modes
+    return addonTable.Constants.SortStatus.Complete, modes
   end
 end

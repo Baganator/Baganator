@@ -1,12 +1,13 @@
-function Baganator.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth, pixelMinWidth)
-  local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
+local _, addonTable = ...
+function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOffsetX, baseOffsetY, bagWidth, pixelMinWidth)
+  local iconPadding, iconSize = addonTable.ItemButtonUtil.GetPaddingAndSize()
 
   local headerPadding = 6
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     headerPadding = 3
   end
 
-  local categorySpacing = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING) * (iconSize + iconPadding)
+  local categorySpacing = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HORIZONTAL_SPACING) * (iconSize + iconPadding)
 
   local targetPixelWidth = bagWidth * (iconSize + iconPadding) - iconPadding
 

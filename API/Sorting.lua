@@ -1,4 +1,5 @@
-if Baganator.Constants.IsRetail then
+local _, addonTable = ...
+if addonTable.Constants.IsRetail then
   Baganator.API.RegisterContainerSort(BAGANATOR_L_BLIZZARD, "blizzard", function(isReverse, containerType)
     C_Container.SetSortBagsRightToLeft(not isReverse)
     if containerType == Baganator.API.Constants.ContainerType.Backpack then
@@ -14,7 +15,7 @@ if Baganator.Constants.IsRetail then
   end)
 end
 
-Baganator.Utilities.OnAddonLoaded("SortBags", function()
+addonTable.Utilities.OnAddonLoaded("SortBags", function()
   Baganator.API.RegisterContainerSort(BAGANATOR_L_SORTBAGS, "SortBags", function(isReverse, containerType)
     SetSortBagsRightToLeft(not isReverse)
     if containerType == Baganator.API.Constants.ContainerType.Backpack then
@@ -25,7 +26,7 @@ Baganator.Utilities.OnAddonLoaded("SortBags", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("tdPack2", function()
+addonTable.Utilities.OnAddonLoaded("tdPack2", function()
   local addon = LibStub('AceAddon-3.0'):GetAddon("tdPack2")
   local bagButton = CreateFrame("Button", nil, UIParent)
   local bankButton = CreateFrame("Button", nil, UIParent)
@@ -41,7 +42,7 @@ Baganator.Utilities.OnAddonLoaded("tdPack2", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("BankStack", function()
+addonTable.Utilities.OnAddonLoaded("BankStack", function()
   local sortBank, sortBags
   if BankStack.CommandDecorator then
     sortBank = BankStack.CommandDecorator(BankStack.SortBags, "bank")

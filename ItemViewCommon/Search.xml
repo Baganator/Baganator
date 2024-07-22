@@ -16,11 +16,6 @@
         <Anchors>
           <Anchor point="RIGHT" x="-45" y="0"/>
         </Anchors>
-        <Scripts>
-          <OnClick>
-            Baganator.Help.ShowSearchDialog()
-          </OnClick>
-        </Scripts>
       </Button>
       <Button parentKey="GlobalSearchButton" inherits="BaganatorMegaSearchButtonTemplate">
         <Anchors>

@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorItemViewCommonNewItemsTrackingMixin = {}
 
 function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
@@ -48,7 +49,7 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
       local bagIndex = tIndexOf(Syndicator.Constants.AllBagIndexes, bagID)
       ScanBagData(bagID, characterData.bags[bagIndex])
     end
-    Baganator.CallbackRegistry:TriggerEvent("BagCacheAfterNewItemsUpdate", character, updatedBags)
+    addonTable.CallbackRegistry:TriggerEvent("BagCacheAfterNewItemsUpdate", character, updatedBags)
   end)
 
   Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function(_, character)

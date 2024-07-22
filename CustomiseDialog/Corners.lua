@@ -1,21 +1,22 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
 local arrayName = "icon_%s_corner_array"
 
 local function SetDataProvider(c)
   c.elements = {}
   local forDataProvider = {}
-  for _, widgetValue in ipairs(Baganator.Config.Get(arrayName:format(c.regionName))) do
-    if addonTable.IconCornerPlugins[widgetValue] then
+  for _, widgetValue in ipairs(addonTable.Config.Get(arrayName:format(c.regionName))) do
+    if addonTable.API.IconCornerPlugins[widgetValue] then
       table.insert(c.elements, widgetValue)
-      table.insert(forDataProvider, { value = widgetValue, label = addonTable.IconCornerPlugins[widgetValue].label})
+      table.insert(forDataProvider, { value = widgetValue, label = addonTable.API.IconCornerPlugins[widgetValue].label})
     end
   end
   c.ScrollBox:SetDataProvider(CreateDataProvider(forDataProvider))
 end
 
 local function GetCornerContainer(parent, regionName, callback)
-  local container = Baganator.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
+  local container = addonTable.CustomiseDialog.GetContainerForDragAndDrop(parent, callback)
   container:SetSize(200, 100)
   container.regionName = regionName
 
@@ -26,7 +27,7 @@ end
 
 local function SetAddCornerPriorities(dropDown)
   local options = {}
-  for key, details in pairs(addonTable.IconCornerPlugins) do
+  for key, details in pairs(addonTable.API.IconCornerPlugins) do
     table.insert(options, {label = details.label, value = key})
   end
   table.sort(options, function(a, b) return a.label < b.label end)
@@ -41,7 +42,7 @@ local function SetAddCornerPriorities(dropDown)
   dropDown:SetupOptions(entries, values)
 end
 
-function Baganator.CustomiseDialog.GetCornersEditor(parent)
+function addonTable.CustomiseDialog.GetCornersEditor(parent)
   local container = CreateFrame("Frame", nil, parent)
   container:SetSize(480, 210)
   container:SetPoint("CENTER")
@@ -53,10 +54,10 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
   highlight:SetAtlas("128-RedButton-Highlight")
   highlight:Hide()
   local draggable
-  draggable = Baganator.CustomiseDialog.GetDraggable(function()
+  draggable = addonTable.CustomiseDialog.GetDraggable(function()
     for _, c in ipairs(corners) do
       if c:IsMouseOver() then
-        local f, isTop = Baganator.CustomiseDialog.GetMouseOverInContainer(c)
+        local f, isTop = addonTable.CustomiseDialog.GetMouseOverInContainer(c)
         if not f then
           table.insert(c.elements, draggable.value)
         else
@@ -67,7 +68,7 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
             table.insert(c.elements, index + 1, draggable.value)
           end
         end
-        Baganator.Config.Set(arrayName:format(c.regionName), c.elements)
+        addonTable.Config.Set(arrayName:format(c.regionName), c.elements)
       end
     end
     highlight:Hide()
@@ -77,7 +78,7 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
     for _, c in ipairs(corners) do
       if c:IsMouseOver() then
         highlight:Show()
-        local f, isTop = Baganator.CustomiseDialog.GetMouseOverInContainer(c)
+        local f, isTop = addonTable.CustomiseDialog.GetMouseOverInContainer(c)
         if f and isTop then
           highlight:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
         elseif f then
@@ -89,7 +90,7 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
     end
   end)
 
-  local dropDown = Baganator.CustomiseDialog.GetDropdown(container)
+  local dropDown = addonTable.CustomiseDialog.GetDropdown(container)
   SetAddCornerPriorities(dropDown)
 
   local function Pickup(value)
@@ -97,11 +98,11 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
       local index = tIndexOf(c.elements, value)
       if index ~= nil then
         table.remove(c.elements, index)
-        Baganator.Config.Set(arrayName:format(c.regionName), c.elements)
+        addonTable.Config.Set(arrayName:format(c.regionName), c.elements)
       end
     end
 
-    local label = addonTable.IconCornerPlugins[value].label
+    local label = addonTable.API.IconCornerPlugins[value].label
     dropDown:SetText(label)
     draggable:Show()
     draggable.text:SetText(label)
@@ -135,10 +136,10 @@ function Baganator.CustomiseDialog.GetCornersEditor(parent)
   bottomRight:SetPoint("BOTTOMRIGHT")
   table.insert(corners, bottomRight)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     local region = settingName:match("^icon_(.*)_corner_array$")
     if region then
-      local newElements = Baganator.Config.Get(arrayName:format(region))
+      local newElements = addonTable.Config.Get(arrayName:format(region))
       for _, c in ipairs(corners) do
         if c.regionName == region then
           SetDataProvider(c)

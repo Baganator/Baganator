@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local itemIDToStackSize = {}
 
 local function DoMovement(stacks)
@@ -44,11 +45,11 @@ local function DoMovement(stacks)
     end
   end
   if moved then
-    return Baganator.Constants.SortStatus.WaitingMove
+    return addonTable.Constants.SortStatus.WaitingMove
   elseif locked then
-    return Baganator.Constants.SortStatus.WaitingUnlock
+    return addonTable.Constants.SortStatus.WaitingUnlock
   else
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 end
 
@@ -91,9 +92,9 @@ local function GetBagStacks(bags, bagIDs, callback)
   end
 end
 
-function Baganator.Sorting.CombineStacks(bags, bagIDs, callback)
+function addonTable.Sorting.CombineStacks(bags, bagIDs, callback)
   if InCombatLockdown() then -- Sorting breaks during combat due to Blizzard restrictions
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 
   GetBagStacks(bags, bagIDs, function(stacks)

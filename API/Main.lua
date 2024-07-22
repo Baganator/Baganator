@@ -9,7 +9,7 @@ local function ReportPluginAdded()
   if not queuedPlugin then
     queuedPlugin = true
     C_Timer.After(0, function()
-      Baganator.CallbackRegistry:TriggerEvent("PluginsUpdated")
+      addonTable.CallbackRegistry:TriggerEvent("PluginsUpdated")
       queuedPlugin = false
     end)
   end
@@ -20,11 +20,13 @@ function Baganator.API.RequestItemButtonsRefresh()
   if not queuedRefresh then
     queuedRefresh = true
     C_Timer.After(0, function()
-      Baganator.CallbackRegistry:TriggerEvent("ContentRefreshRequired")
+      addonTable.CallbackRegistry:TriggerEvent("ContentRefreshRequired")
       queuedRefresh = false
     end)
   end
 end
+
+addonTable.API.JunkPlugins = {}
 
 do
   local addonLoaded = false
@@ -33,21 +35,21 @@ do
     if id == "none" then
       return
     end
-    local currentOption = Baganator.Config.Get(Baganator.Config.Options.JUNK_PLUGIN)
-    local ignored = Baganator.Config.Get(Baganator.Config.Options.JUNK_PLUGINS_IGNORED)
-    if addonTable.JunkPlugins[currentOption] == nil and not ignored[id] then
-      Baganator.Config.Set(Baganator.Config.Options.JUNK_PLUGIN, id)
+    local currentOption = addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGIN)
+    local ignored = addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGINS_IGNORED)
+    if addonTable.API.JunkPlugins[currentOption] == nil and not ignored[id] then
+      addonTable.Config.Set(addonTable.Config.Options.JUNK_PLUGIN, id)
     end
   end
 
-  Baganator.Utilities.OnAddonLoaded("Baganator", function()
+  addonTable.Utilities.OnAddonLoaded("Baganator", function()
     addonLoaded = true
 
-    for id in pairs(addonTable.JunkPlugins) do
+    for id in pairs(addonTable.API.JunkPlugins) do
       AutoSet(id)
     end
 
-    if next(addonTable.JunkPlugins) then
+    if next(addonTable.API.JunkPlugins) then
       ReportPluginAdded()
     end
   end)
@@ -61,7 +63,7 @@ do
       error("Bad junk plugin arguments")
     end
 
-    addonTable.JunkPlugins[id] = {
+    addonTable.API.JunkPlugins[id] = {
       label = label,
       callback = callback,
     }
@@ -73,18 +75,18 @@ do
     ReportPluginAdded()
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == Baganator.Config.Options.JUNK_PLUGIN then
-      local ignored = Baganator.Config.Get(Baganator.Config.Options.JUNK_PLUGINS_IGNORED)
-      for id in pairs(addonTable.JunkPlugins) do
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == addonTable.Config.Options.JUNK_PLUGIN then
+      local ignored = addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGINS_IGNORED)
+      for id in pairs(addonTable.API.JunkPlugins) do
         ignored[id] = true
       end
-      ignored[Baganator.Config.Get(Baganator.Config.Options.JUNK_PLUGIN)] = nil
+      ignored[addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGIN)] = nil
     end
   end)
 end
 
-addonTable.IconCornerPlugins = {}
+addonTable.API.IconCornerPlugins = {}
 
 do
   local addonLoaded = false
@@ -104,11 +106,11 @@ do
   }
 
   local function AutoInsert(id, defaultPosition)
-    local alreadyApplied = Baganator.Config.Get(Baganator.Config.Options.ICON_CORNERS_AUTO_INSERT_APPLIED)
+    local alreadyApplied = addonTable.Config.Get(addonTable.Config.Options.ICON_CORNERS_AUTO_INSERT_APPLIED)
     if not alreadyApplied[id] then
       alreadyApplied[id] = true
       if not Baganator.API.IsCornerWidgetActive(id) then
-        local cornerArray = Baganator.Config.Get(corners[cornersMap[defaultPosition.corner]])
+        local cornerArray = addonTable.Config.Get(corners[cornersMap[defaultPosition.corner]])
         if defaultPosition.priority > #cornerArray then
           table.insert(cornerArray, id)
         else
@@ -118,7 +120,7 @@ do
     end
   end
 
-  Baganator.Utilities.OnAddonLoaded("Baganator", function()
+  addonTable.Utilities.OnAddonLoaded("Baganator", function()
     addonLoaded = true
 
     for _, entry in ipairs(autoAddQueue) do
@@ -145,8 +147,8 @@ do
   --  priority: number (priority for the corner to be placed at in the corner sort
   --    order)
   function Baganator.API.RegisterCornerWidget(label, id, onUpdate, onInit, defaultPosition)
-    assert(id and label and onUpdate and onInit and not addonTable.IconCornerPlugins[id])
-    addonTable.IconCornerPlugins[id] = {label = label, onUpdate = onUpdate, onInit = onInit}
+    assert(id and label and onUpdate and onInit and not addonTable.API.IconCornerPlugins[id])
+    addonTable.API.IconCornerPlugins[id] = {label = label, onUpdate = onUpdate, onInit = onInit}
 
     if defaultPosition and cornersMap[defaultPosition.corner] and type(defaultPosition.priority) == "number" then
       if not addonLoaded then
@@ -161,7 +163,7 @@ do
 
   function Baganator.API.IsCornerWidgetActive(id)
     for _, key in ipairs(corners) do
-      if tIndexOf(Baganator.Config.Get(key), id) ~= nil then
+      if tIndexOf(addonTable.Config.Get(key), id) ~= nil then
         return true
       end
     end
@@ -169,11 +171,11 @@ do
   end
 end
 
-addonTable.ItemSetSources = {}
+addonTable.API.ItemSetSources = {}
 
 function Baganator.API.RegisterItemSetSource(label, id, getItemSetInfo, getAllSetNames)
   assert(type(label) == "string" and type(id) == "string" and type(getItemSetInfo) == "function" and (getAllSetNames == nil or type(getAllSetNames) == "function"))
-  table.insert(addonTable.ItemSetSources, {
+  table.insert(addonTable.API.ItemSetSources, {
     label = label,
     id = id,
     getItemSetInfo = getItemSetInfo,
@@ -181,7 +183,7 @@ function Baganator.API.RegisterItemSetSource(label, id, getItemSetInfo, getAllSe
   })
 end
 
-addonTable.ExternalContainerSorts = {}
+addonTable.API.ExternalContainerSorts = {}
 
 Baganator.API.Constants.ContainerType = {
   Backpack = "backpack",
@@ -196,23 +198,23 @@ Baganator.API.Constants.ContainerType = {
 --  containerType: Baganator.API.Constants.ContainerType
 function Baganator.API.RegisterContainerSort(label, id, callback)
   assert(type(label) == "string" and type(id) == "string" and type(callback) == "function")
-  assert(not Baganator.Sorting.IsModeAvailable(id), "id already exists")
-  addonTable.ExternalContainerSorts[id] = {
+  assert(not addonTable.Sorting.IsModeAvailable(id), "id already exists")
+  addonTable.API.ExternalContainerSorts[id] = {
     label = label,
     callback = callback,
   }
 end
 
-addonTable.ExternalGuildBankSorts = {}
+addonTable.API.ExternalGuildBankSorts = {}
 
 local guildSortPriority = 0
 -- Register a sort function for guild bank.
 -- callback: function()
 function Baganator.API.RegisterGuildBankSort(label, id, callback)
   assert(type(label) == "string" and type(id) == "string" and type(callback) == "function")
-  assert(not addonTable.ExternalGuildBankSorts[id], "id already exists")
+  assert(not addonTable.API.ExternalGuildBankSorts[id], "id already exists")
   guildSortPriority = guildSortPriority + 1
-  addonTable.ExternalGuildBankSorts[id] = {
+  addonTable.API.ExternalGuildBankSorts[id] = {
     label = label,
     callback = callback,
     priority = guildSortPriority,
@@ -222,12 +224,12 @@ end
 Baganator.API.Skins = {}
 
 function Baganator.API.Skins.GetAllFrames()
-  return addonTable.allFrames
+  return addonTable.Skins.allFrames
 end
 
 function Baganator.API.Skins.RegisterListener(callback)
-  if not addonTable.skinListeners then
-    addonTable.skinListeners = {}
+  if not addonTable.Skins.skinListeners then
+    addonTable.Skins.skinListeners = {}
   end
-  table.insert(addonTable.skinListeners, callback)
+  table.insert(addonTable.Skins.skinListeners, callback)
 end

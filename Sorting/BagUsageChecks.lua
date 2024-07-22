@@ -1,24 +1,25 @@
+local _, addonTable = ...
 -- Check the sort priority (so special bags get filled up first) and
 -- corresponding bag contents checks (e.g. reagents only) if any
-function Baganator.Sorting.GetBagUsageChecks(bagIDs)
+function addonTable.Sorting.GetBagUsageChecks(bagIDs)
   local checks = {}
   local sortOrder = {}
-  if Baganator.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.ReagentBag) ~= nil then
+  if addonTable.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.ReagentBag) ~= nil then
     checks[Enum.BagIndex.ReagentBag] = function(item)
       return item.itemID and (select(17, C_Item.GetItemInfo(item.itemID)))
     end
     sortOrder[Enum.BagIndex.ReagentBag] = 10 -- reagent bags go after special bags
   end
-  if Baganator.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.Reagentbank) ~= nil then
+  if addonTable.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.Reagentbank) ~= nil then
     checks[Enum.BagIndex.Reagentbank] = function(item)
       return (select(17, C_Item.GetItemInfo(item.itemID)))
     end
     sortOrder[Enum.BagIndex.Reagentbank] = 10 -- reagent bags go after special bags
   end
-  if not Baganator.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.Keyring) ~= nil then
+  if not addonTable.Constants.IsRetail and tIndexOf(bagIDs, Enum.BagIndex.Keyring) ~= nil then
     checks[Enum.BagIndex.Keyring] = function(item)
       local itemFamily = item.itemID and C_Item.GetItemFamily(item.itemID)
-      return itemFamily == Baganator.Constants.KeyItemFamily
+      return itemFamily == addonTable.Constants.KeyItemFamily
     end
     sortOrder[Enum.BagIndex.Keyring] = 1
   end

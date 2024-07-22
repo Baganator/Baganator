@@ -1,3 +1,4 @@
+local _, addonTable = ...
 local MasqueRegistration = function() end
 
 if LibStub then
@@ -23,8 +24,8 @@ local function GetNameFromLink(itemLink)
 end
 
 local function RegisterHighlightSimilarItems(self)
-  Baganator.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemLink)
-    if not Baganator.Config.Get(Baganator.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemLink == "" then
+  addonTable.CallbackRegistry:RegisterCallback("HighlightSimilarItems", function(_, itemLink)
+    if not addonTable.Config.Get(addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT) or itemLink == "" then
       return
     end
     local itemName = GetNameFromLink(itemLink)
@@ -35,7 +36,7 @@ local function RegisterHighlightSimilarItems(self)
     end
   end, self)
 
-  Baganator.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
+  addonTable.CallbackRegistry:RegisterCallback("HighlightIdenticalItems", function(_, itemLink)
     for _, button in ipairs(self.buttons) do
       if button.BGR.itemLink == itemLink then
         button:BGRStartFlashing()
@@ -45,39 +46,39 @@ local function RegisterHighlightSimilarItems(self)
 end
 
 local UpdateTextureSettings = {
-  Baganator.Config.Options.EMPTY_SLOT_BACKGROUND,
-  Baganator.Config.Options.ICON_TEXT_FONT_SIZE,
-  Baganator.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
-  Baganator.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
-  Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
-  Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
+  addonTable.Config.Options.EMPTY_SLOT_BACKGROUND,
+  addonTable.Config.Options.ICON_TEXT_FONT_SIZE,
+  addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
+  addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
+  addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
+  addonTable.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
 }
 
 local ReflowSettings = {
-  Baganator.Config.Options.BAG_ICON_SIZE,
-  Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
-  Baganator.Config.Options.REDUCE_SPACING,
+  addonTable.Config.Options.BAG_ICON_SIZE,
+  addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
+  addonTable.Config.Options.REDUCE_SPACING,
 }
 
 local RefreshContentSettings = {
-  Baganator.Config.Options.HIDE_BOE_ON_COMMON,
-  Baganator.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
-  Baganator.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
-  Baganator.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
-  Baganator.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
-  Baganator.Config.Options.ICON_TEXT_QUALITY_COLORS,
-  Baganator.Config.Options.ICON_GREY_JUNK,
-  Baganator.Config.Options.JUNK_PLUGIN,
+  addonTable.Config.Options.HIDE_BOE_ON_COMMON,
+  addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
+  addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
+  addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
+  addonTable.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
+  addonTable.Config.Options.ICON_TEXT_QUALITY_COLORS,
+  addonTable.Config.Options.ICON_GREY_JUNK,
+  addonTable.Config.Options.JUNK_PLUGIN,
 }
 
-function Baganator.ItemButtonUtil.GetPaddingAndSize()
+function addonTable.ItemButtonUtil.GetPaddingAndSize()
   local iconPadding = 4
 
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     iconPadding = 1
   end
 
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+  local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
   return iconPadding, iconSize
 end
@@ -87,10 +88,10 @@ local function ApplySizing(self, rowWidth, iconPadding, iconSize, flexDimension,
 end
 
 local function FlowButtonsRows(self, rowWidth)
-  local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
+  local iconPadding, iconSize = addonTable.ItemButtonUtil.GetPaddingAndSize()
 
   local rows, cols = 0, 0
-  if Baganator.Config.Get(Baganator.Config.Options.BAG_EMPTY_SPACE_AT_TOP) then
+  if addonTable.Config.Get(addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP) then
     cols = rowWidth - #self.buttons%rowWidth
     if cols == rowWidth then
       cols = 0
@@ -112,7 +113,7 @@ local function FlowButtonsRows(self, rowWidth)
 end
 
 local function FlowButtonsColumns(self, rowWidth)
-  local iconPadding, iconSize = Baganator.ItemButtonUtil.GetPaddingAndSize()
+  local iconPadding, iconSize = addonTable.ItemButtonUtil.GetPaddingAndSize()
 
   local columnHeight = math.ceil(#self.buttons / rowWidth)
 
@@ -145,11 +146,11 @@ local function IsDifferentCachedData(data1, data2)
   return data1 == nil or data1.itemLink ~= data2.itemLink or not data1.isBound ~= not data2.isBound or (data1.itemCount or 1) ~= (data2.itemCount or 1) or data1.quality ~= data2.quality
 end
 
-function Baganator.ItemViewCommon.Utilities.GetCategoryDataKey(data)
+function addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(data)
   return data ~= nil and (tostring(data.keyLink) .. tostring(data.isBound) .. tostring(data.itemCount or 1) .. "_" .. tostring(data.quality)) or ""
 end
 
-function Baganator.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(data)
+function addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(data)
   return data ~= nil and (tostring(data.keyLink) .. tostring(data.isBound) .. tostring(data.quality)) or ""
 end
 
@@ -183,7 +184,7 @@ end
 BaganatorCachedBagLayoutMixin = {}
 
 function BaganatorCachedBagLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.buttonsByBag = {}
@@ -229,7 +230,7 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
   self.buttonsByBag = {}
   self.buttonPool:ReleaseAll()
 
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+  local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
   local rows, cols = 0, 0
   for bagIndex = 1, #newBags do
@@ -238,7 +239,7 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
       self.buttonsByBag[indexes[bagIndex]] = bagButtons
       for slotIndex = 1, #newBags[bagIndex] do
         local button = self.buttonPool:Acquire()
-        Baganator.Skins.AddFrame("ItemButton", button)
+        addonTable.Skins.AddFrame("ItemButton", button)
         if not button.texturesSetup then
           button.texturesSetup = true
           MasqueRegistration(button)
@@ -273,7 +274,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
 
   local sectionData = characterData[section]
 
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+  local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
   if self.prevState.character ~= character or self.prevState.section ~= section or
       self:CompareButtonIndexes(indexes, indexesToUse, sectionData) then
@@ -314,7 +315,7 @@ function BaganatorCachedBagLayoutMixin:ShowCharacter(character, section, indexes
     end
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     local c = 0
     for _ in pairs(indexesToUse) do
       c = c+ 1
@@ -334,7 +335,7 @@ function BaganatorCachedBagLayoutMixin:ApplySearch(text)
 end
 
 function BaganatorCachedBagLayoutMixin:OnShow()
-  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, highlightBagIDs)
+  addonTable.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, highlightBagIDs)
     for bagID, bag in pairs(self.buttonsByBag) do
       for slotID, button in ipairs(bag) do
         button:BGRSetHighlight(highlightBagIDs[bagID])
@@ -342,7 +343,7 @@ function BaganatorCachedBagLayoutMixin:OnShow()
     end
   end, self)
 
-  Baganator.CallbackRegistry:RegisterCallback("ClearHighlightBag", function(_, itemName)
+  addonTable.CallbackRegistry:RegisterCallback("ClearHighlightBag", function(_, itemName)
     for _, button in ipairs(self.buttons) do
       button:BGRSetHighlight(false)
     end
@@ -352,8 +353,8 @@ function BaganatorCachedBagLayoutMixin:OnShow()
 end
 
 function BaganatorCachedBagLayoutMixin:OnHide()
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 end
 
 BaganatorLiveBagLayoutMixin = {}
@@ -365,7 +366,7 @@ local LIVE_LAYOUT_EVENTS = {
 }
 
 function BaganatorLiveBagLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByBag = {}
@@ -397,18 +398,18 @@ function BaganatorLiveBagLayoutMixin:OnShow()
   FrameUtil.RegisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
   local start = debugprofilestop()
   self:UpdateCooldowns()
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("update cooldowns show", debugprofilestop() - start)
   end
   self:UpdateQuests()
 
-  Baganator.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, bagIDs)
+  addonTable.CallbackRegistry:RegisterCallback("HighlightBagItems", function(_, bagIDs)
     for _, button in ipairs(self.buttons) do
       button:BGRSetHighlight(bagIDs[button:GetParent():GetID()])
     end
   end, self)
 
-  Baganator.CallbackRegistry:RegisterCallback("ClearHighlightBag", function(_, itemName)
+  addonTable.CallbackRegistry:RegisterCallback("ClearHighlightBag", function(_, itemName)
     for _, button in ipairs(self.buttons) do
       button:BGRSetHighlight(false)
     end
@@ -420,10 +421,10 @@ end
 function BaganatorLiveBagLayoutMixin:OnHide()
   FrameUtil.UnregisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
 
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightBagItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("ClearHighlightBag", self)
 
   for _, button in ipairs(self.buttons) do
     button:ClearNewItem()
@@ -482,7 +483,7 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
       local size = C_Container.GetContainerNumSlots(bagID)
       for slotIndex = 1, size do
         local b = self.buttonPool:Acquire()
-        Baganator.Skins.AddFrame("ItemButton", b)
+        addonTable.Skins.AddFrame("ItemButton", b)
         if not b.texturesSetup then
           b.texturesSetup = true
           MasqueRegistration(b)
@@ -530,10 +531,10 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
 
   local characterData = Syndicator.API.GetCharacter(character)
 
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+  local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
   if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.character ~= character or self.prevState.section ~= section then
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("rebuild")
     end
     self:RebuildLayout(indexes, indexesToUse, rowWidth)
@@ -571,14 +572,14 @@ function BaganatorLiveBagLayoutMixin:ShowCharacter(character, section, indexes, 
           if IsDifferentCachedData(button.BGR, cacheData) then
             button:SetItemDetails(cacheData)
           elseif refreshContent then
-            Baganator.ItemButtonUtil.ResetCache(button, cacheData)
+            addonTable.ItemButtonUtil.ResetCache(button, cacheData)
           end
         end
       end
     end
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("live bag layout took", section, debugprofilestop() - start)
   end
 
@@ -596,8 +597,8 @@ end
 BaganatorLiveCategoryLayoutMixin = {}
 
 function BaganatorLiveCategoryLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
-  self.dummyButtonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
+  self.dummyButtonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByKey = {}
@@ -652,8 +653,8 @@ end
 
 function BaganatorLiveCategoryLayoutMixin:OnHide()
   FrameUtil.UnregisterFrameForEvents(self, LIVE_LAYOUT_EVENTS)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 
   for _, button in ipairs(self.buttons) do
     if not button.isDummy then
@@ -663,7 +664,7 @@ function BaganatorLiveCategoryLayoutMixin:OnHide()
 end
 
 function BaganatorLiveCategoryLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil or setting == Baganator.Config.Options.SORT_METHOD then
+  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD then
     self.reflow = true
   end
   if tIndexOf(UpdateTextureSettings, setting) ~= nil then
@@ -679,7 +680,7 @@ function BaganatorLiveCategoryLayoutMixin:RequestContentRefresh()
 end
 
 local function AddKeywords(self)
-  if not Baganator.Config.Get(Baganator.Config.Options.DEBUG_KEYWORDS) then
+  if not addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS) then
     return
   end
 
@@ -690,9 +691,9 @@ local function AddKeywords(self)
   GameTooltip:AddLine(" ")
   GameTooltip:AddLine(BAGANATOR_L_HELP_SEARCH_KEYWORDS)
 
-  local groups = Baganator.Help.GetKeywordGroups()
+  local groups = addonTable.Help.GetKeywordGroups()
 
-  for _, key in ipairs(Baganator.Constants.KeywordGroupOrder) do
+  for _, key in ipairs(addonTable.Constants.KeywordGroupOrder) do
     table.sort(groups[key])
     local matching = {}
     for _, keyword in ipairs(groups[key]) do
@@ -719,13 +720,13 @@ function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
     end
 
     if mouseButton == "LeftButton" and C_Cursor.GetCursorItem() ~= nil then
-      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
+      addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
     end
   end)
   hooksecurefunc(button, "UpdateTooltip", AddKeywords)
   button:HookScript("OnDragStart", function(_)
     if C_Cursor.GetCursorItem() ~= nil then
-      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
+      addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
     end
   end)
 end
@@ -739,7 +740,7 @@ function BaganatorLiveCategoryLayoutMixin:SetupDummyButton(button)
 
   local function ProcessCursor()
     if C_Cursor.GetCursorItem() ~= nil then
-      Baganator.CallbackRegistry:TriggerEvent("CategoryAddItemEnd", button.dummyType == "add" and button.BGR.category or nil)
+      addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemEnd", button.dummyType == "add" and button.BGR.category or nil)
       ClearCursor()
     end
   end
@@ -778,7 +779,7 @@ end
 function BaganatorLiveCategoryLayoutMixin:DeallocateUnusedButtons(cacheList)
   local used = {}
   for _, cacheData in ipairs(cacheList) do
-    local key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
+    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
     used[key] = (used[key] or 0) + 1
   end
   for key, list in pairs(self.buttonsByKey) do
@@ -807,7 +808,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
   local toResetCache = {}
   self.buttons = {}
   for _, cacheData in ipairs(cacheList) do
-    local key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
+    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
     local newButton
     if self.buttonsByKey[key] then
       newButton = self.buttonsByKey[key][1]
@@ -821,7 +822,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     else
       if cacheData.isDummy then
         newButton = self.dummyButtonPool:Acquire()
-        Baganator.Skins.AddFrame("ItemButton", newButton)
+        addonTable.Skins.AddFrame("ItemButton", newButton)
         if not newButton.texturesSetup then
           newButton.texturesSetup = true
           MasqueRegistration(newButton)
@@ -831,7 +832,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
         self:SetupDummyButton(newButton)
       else
         newButton = self.buttonPool:Acquire()
-        Baganator.Skins.AddFrame("ItemButton", newButton)
+        addonTable.Skins.AddFrame("ItemButton", newButton)
         if not newButton.texturesSetup then
           newButton.texturesSetup = true
           MasqueRegistration(newButton)
@@ -875,7 +876,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
   end
 
   for _, details in ipairs(toResetCache) do
-    Baganator.ItemButtonUtil.ResetCache(details[1], details[2])
+    addonTable.ItemButtonUtil.ResetCache(details[1], details[2])
   end
 
   self.refreshContent = false
@@ -883,7 +884,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
   self.buttonsByKey = {}
   for index, button in ipairs(self.buttons) do
     button.BGR.category = category
-    local key = Baganator.ItemViewCommon.Utilities.GetCategoryDataKey(cacheList[index])
+    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheList[index])
     self.buttonsByKey[key] = self.buttonsByKey[key] or {}
     table.insert(self.buttonsByKey[key], button)
   end
@@ -892,7 +893,7 @@ end
 BaganatorCachedCategoryLayoutMixin = {}
 
 function BaganatorCachedCategoryLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.indexFramesPool = CreateFramePool("Frame", self)
   self.buttons = {}
   self.buttonsByKey = {}
@@ -910,12 +911,12 @@ function BaganatorCachedCategoryLayoutMixin:OnShow()
 end
 
 function BaganatorCachedCategoryLayoutMixin:OnHide()
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 end
 
 function BaganatorCachedCategoryLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil or setting == Baganator.Config.Options.SORT_METHOD then
+  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD then
     self.reflow = true
   end
   if tIndexOf(UpdateTextureSettings, setting) ~= nil then
@@ -935,7 +936,7 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
   self.buttons = {}
   for _, cacheData in ipairs(cacheList) do
     local button = self.buttonPool:Acquire()
-    Baganator.Skins.AddFrame("ItemButton", button)
+    addonTable.Skins.AddFrame("ItemButton", button)
     if not button.texturesSetup then
       button.texturesSetup = true
       MasqueRegistration(button)
@@ -955,7 +956,7 @@ end
 BaganatorGeneralGuildLayoutMixin = {}
 
 function BaganatorGeneralGuildLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
@@ -971,8 +972,8 @@ function BaganatorGeneralGuildLayoutMixin:OnShow()
 end
 
 function BaganatorGeneralGuildLayoutMixin:OnHide()
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 end
 
 function BaganatorGeneralGuildLayoutMixin:InformSettingChanged(setting)
@@ -997,7 +998,7 @@ function BaganatorGeneralGuildLayoutMixin:RebuildLayout(rowWidth)
 
   for index = 1, Syndicator.Constants.MaxGuildBankTabItemSlots do
     local button = self.buttonPool:Acquire()
-    Baganator.Skins.AddFrame("ItemButton", button)
+    addonTable.Skins.AddFrame("ItemButton", button)
     if not button.texturesSetup then
       button.texturesSetup = true
       MasqueRegistration(button)
@@ -1052,7 +1053,7 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
     end
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print(self.layoutType .. " guild layout took", tabIndex, debugprofilestop() - start)
   end
 
@@ -1065,7 +1066,7 @@ end
 BaganatorLiveGuildLayoutMixin = CreateFromMixins(BaganatorGeneralGuildLayoutMixin)
 
 function BaganatorLiveGuildLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetLiveGuildItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetLiveGuildItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
@@ -1085,7 +1086,7 @@ end
 BaganatorLiveWarbandLayoutMixin = {}
 
 function BaganatorLiveWarbandLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetLiveWarbandItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetLiveWarbandItemButtonPool(self)
   self.indexFrame = CreateFrame("Frame", nil, self)
   self.buttons = {}
   self.waitingUpdate = true
@@ -1102,8 +1103,8 @@ function BaganatorLiveWarbandLayoutMixin:OnShow()
 end
 
 function BaganatorLiveWarbandLayoutMixin:OnHide()
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 end
 
 function BaganatorLiveWarbandLayoutMixin:InformSettingChanged(setting)
@@ -1140,7 +1141,7 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
 
   for slotIndex = 1, tabSize do
     local b = self.buttonPool:Acquire()
-    Baganator.Skins.AddFrame("ItemButton", b)
+    addonTable.Skins.AddFrame("ItemButton", b)
     if not b.texturesSetup then
       b.texturesSetup = true
       MasqueRegistration(b)
@@ -1170,10 +1171,10 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     return
   end
 
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+  local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
   if not self.initialized then
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("rebuild")
     end
     self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
@@ -1203,12 +1204,12 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
       if IsDifferentCachedData(button.BGR, cacheData) then
         button:SetItemDetails(cacheData)
       elseif refreshContent then
-        Baganator.ItemButtonUtil.ResetCache(button, cacheData)
+        addonTable.ItemButtonUtil.ResetCache(button, cacheData)
       end
     end
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("live warband layout took", debugprofilestop() - start)
   end
 
@@ -1226,7 +1227,7 @@ end
 BaganatorCachedWarbandLayoutMixin = {}
 
 function BaganatorCachedWarbandLayoutMixin:OnLoad()
-  self.buttonPool = Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
+  self.buttonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
 end
@@ -1236,8 +1237,8 @@ function BaganatorCachedWarbandLayoutMixin:OnShow()
 end
 
 function BaganatorCachedWarbandLayoutMixin:OnHide()
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
-  Baganator.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 end
 
 function BaganatorCachedWarbandLayoutMixin:InformSettingChanged(setting)
@@ -1260,7 +1261,7 @@ function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
 
   for slotIndex = 1, tabSize do
     local b = self.buttonPool:Acquire()
-    Baganator.Skins.AddFrame("ItemButton", button)
+    addonTable.Skins.AddFrame("ItemButton", button)
     if not b.texturesSetup then
       b.texturesSetup = true
       MasqueRegistration(b)
@@ -1284,10 +1285,10 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     return
   end
 
-  local iconSize = Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE)
+  local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
   if not self.initialized then
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("rebuild")
     end
     self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
@@ -1313,7 +1314,7 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     button:SetItemDetails(cacheData)
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("cached warband layout took", debugprofilestop() - start)
   end
 end
@@ -1387,4 +1388,18 @@ function BaganatorGuildSearchLayoutMonitorMixin:GetMatches()
     end
   end
   return matches
+end
+
+BaganatorBagDividerMixin = {}
+function BaganatorBagDividerMixin:OnLoad()
+  if addonTable.Constants.IsRetail then
+    self.Divider:SetAtlas("activities-divider", true)
+  else
+    self.Divider:SetAtlas("battlefieldminimap-border-top")
+    self.Divider:SetHeight(15)
+    self.Divider:ClearAllPoints()
+    self.Divider:SetPoint("TOPLEFT", 0, 6)
+    self.Divider:SetPoint("TOPRIGHT", 0, 6)
+  end
+  addonTable.Skins.AddFrame("Divider", self.Divider)
 end

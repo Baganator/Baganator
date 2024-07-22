@@ -23,7 +23,7 @@
             self:GetParent():CombineStacksAndSort(button == "RightButton")
           </OnClick>
           <OnEnter inherit="append">
-            self.tooltipText = Baganator.Utilities.GetExternalSortMethodName()
+            self.tooltipText = self:GetParent():GetExternalSortMethodName()
           </OnEnter>
         </Scripts>
       </Button>

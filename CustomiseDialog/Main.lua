@@ -1,11 +1,12 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
 local IsRetailCheck = function()
-  return Baganator.Constants.IsRetail
+  return addonTable.Constants.IsRetail
 end
 
 local NotIsEraCheck = function()
-  return not Baganator.Constants.IsEra
+  return not addonTable.Constants.IsEra
 end
 
 local GENERAL_OPTIONS = {
@@ -369,7 +370,7 @@ local function GenerateFrames(options, parent)
         frame = CreateFrame("Frame", nil, parent, "BaganatorSliderTemplate")
         frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, offsetY)
       elseif option.type == "dropdown" then
-        frame = Baganator.CustomiseDialog.GetBasicDropdown(parent)
+        frame = addonTable.CustomiseDialog.GetBasicDropdown(parent)
         frame:SetPoint("TOP", lastFrame, "BOTTOM", 0, offsetY)
       elseif option.type == "header" then
         frame = CreateFrame("Frame", nil, parent, "BaganatorHeaderTemplate")
@@ -396,7 +397,7 @@ end
 
 local function GetTab(parent)
   local tab
-  if Baganator.Constants.IsRetail then
+  if addonTable.Constants.IsRetail then
     tab = CreateFrame("Button", nil, parent, "BaganatorRetailTabTopTemplate")
   else
     tab = CreateFrame("Button", nil, parent, "BaganatorClassicTabTopTemplate")
@@ -417,7 +418,7 @@ local function GetTab(parent)
     parent:SetIndex(tabIndex)
   end)
 
-  Baganator.Skins.AddFrame("TopTabButton", tab)
+  addonTable.Skins.AddFrame("TopTabButton", tab)
 
   return tab
 end
@@ -441,7 +442,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
-  Baganator.Skins.AddFrame("ButtonFrame", self)
+  addonTable.Skins.AddFrame("ButtonFrame", self)
   self:SetScript("OnMouseWheel", function() end)
 
   self:SetTitle(BAGANATOR_L_CUSTOMISE_BAGANATOR)
@@ -500,10 +501,10 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
   do
     infoInset:SetPoint("TOP")
-    infoInset:SetPoint("LEFT", 20 + Baganator.Constants.ButtonFrameOffset, 0)
+    infoInset:SetPoint("LEFT", 20 + addonTable.Constants.ButtonFrameOffset, 0)
     infoInset:SetPoint("RIGHT", -20, 0)
     infoInset:SetHeight(75)
-    Baganator.Skins.AddFrame("InsetFrame", infoInset)
+    addonTable.Skins.AddFrame("InsetFrame", infoInset)
 
     local logo = infoInset:CreateTexture(nil, "ARTWORK")
     logo:SetTexture("Interface\\AddOns\\Baganator\\Assets\\logo")
@@ -542,7 +543,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     discordButton:SetScript("OnClick", function()
       StaticPopup_Show(discordLinkDialog)
     end)
-    Baganator.Skins.AddFrame("Button", discordButton)
+    addonTable.Skins.AddFrame("Button", discordButton)
     local discordText = infoInset:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     discordText:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
     discordText:SetText(BAGANATOR_L_DISCORD_DESCRIPTION)
@@ -552,7 +553,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     local junkPlugins = {
       {label = BAGANATOR_L_POOR_QUALITY, id = "poor_quality"},
     }
-    for id, pluginDetails in pairs(addonTable.JunkPlugins) do
+    for id, pluginDetails in pairs(addonTable.API.JunkPlugins) do
       table.insert(junkPlugins, {
         label = pluginDetails.label,
         id = id,
@@ -572,8 +573,8 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       table.insert(dropdown.entries, pluginInfo.label)
       table.insert(dropdown.values, pluginInfo.id)
     end
-    if addonTable.JunkPlugins[Baganator.Config.Get("junk_plugin")] == nil then
-      Baganator.Config.ResetOne("junk_plugin")
+    if addonTable.API.JunkPlugins[addonTable.Config.Get("junk_plugin")] == nil then
+      addonTable.Config.ResetOne("junk_plugin")
     end
 
     table.insert(GENERAL_OPTIONS, dropdown)
@@ -599,7 +600,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
     local function MakeTipsRow(details1, details2)
       local rowContainer = CreateFrame("Frame", nil, frame)
-      rowContainer:SetPoint("LEFT", 35 + Baganator.Constants.ButtonFrameOffset, 0)
+      rowContainer:SetPoint("LEFT", 35 + addonTable.Constants.ButtonFrameOffset, 0)
       rowContainer:SetPoint("RIGHT", -35, 0)
       rowContainer:SetHeight(110)
       for _, row in ipairs(GetTipsSection(rowContainer, details1)) do
@@ -638,7 +639,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     local searchHelpButton = CreateFrame("Button", nil, tipsRows[1], "BaganatorHelpButtonTemplate")
     searchHelpButton:SetPoint("TOP", 0, -2)
     searchHelpButton:SetPoint("RIGHT", tipsRows[1], "CENTER", -15, 0)
-    searchHelpButton:SetScript("OnClick", function() Baganator.Help.ShowSearchDialog() end)
+    searchHelpButton:SetScript("OnClick", function() addonTable.Help.ShowSearchDialog() end)
   end
 
   local optionFrames = GenerateFrames(GENERAL_OPTIONS, frame)
@@ -663,14 +664,14 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     button:SetScript("OnClick", function()
       Settings.OpenToCategory(SYNDICATOR_L_SYNDICATOR)
     end)
-    Baganator.Skins.AddFrame("Button", button)
+    addonTable.Skins.AddFrame("Button", button)
     table.insert(allFrames, tooltipButtonFrame)
   end
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       if frame.SetValue then
-        frame:SetValue(Baganator.Config.Get(frame.option))
+        frame:SetValue(addonTable.Config.Get(frame.option))
       end
     end
   end)
@@ -686,23 +687,23 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
 
   local allFrames = GenerateFrames(ICON_OPTIONS, frame)
 
-  local cornersEditor = Baganator.CustomiseDialog.GetCornersEditor(frame)
+  local cornersEditor = addonTable.CustomiseDialog.GetCornersEditor(frame)
   cornersEditor:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -3)
   table.insert(allFrames, cornersEditor)
 
   local itemButton
-  if Baganator.Constants.IsRetail then
+  if addonTable.Constants.IsRetail then
     itemButton = CreateFrame("ItemButton", nil, frame)
   else
     itemButton = CreateFrame("Button", nil, frame, "ItemButtonTemplate")
   end
   itemButton:SetPoint("CENTER", cornersEditor, 0, 0)
-  Baganator.Skins.AddFrame("ItemButton", itemButton)
+  addonTable.Skins.AddFrame("ItemButton", itemButton)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       if frame.SetValue then
-        frame:SetValue(Baganator.Config.Get(frame.option))
+        frame:SetValue(addonTable.Config.Get(frame.option))
       end
     end
   end)
@@ -720,7 +721,7 @@ function BaganatorCustomiseDialogMixin:SetupOpenClose()
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(Baganator.Config.Get(Baganator.Config.Options.AUTO_OPEN)[frame.option])
+      frame:SetValue(addonTable.Config.Get(addonTable.Config.Options.AUTO_OPEN)[frame.option])
     end
   end)
 
@@ -741,7 +742,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
       {"expansion", BAGANATOR_L_EXPANSION},
     }
 
-    for id, details in pairs(addonTable.ExternalContainerSorts) do
+    for id, details in pairs(addonTable.API.ExternalContainerSorts) do
       table.insert(allModes, {id, details.label})
     end
 
@@ -756,24 +757,24 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
     }
 
     for _, details in ipairs(allModes) do
-      if Baganator.Sorting.IsModeAvailable(details[1]) then
+      if addonTable.Sorting.IsModeAvailable(details[1]) then
         table.insert(typeDropDown.values, details[1])
         table.insert(typeDropDown.entries, details[2])
       end
     end
 
-    if not Baganator.Sorting.IsModeAvailable(Baganator.Config.Get("sort_method")) then
-      Baganator.Config.ResetOne("sort_method")
+    if not addonTable.Sorting.IsModeAvailable(addonTable.Config.Get("sort_method")) then
+      addonTable.Config.ResetOne("sort_method")
     end
 
     table.insert(SORTING_OPTIONS, 5, typeDropDown)
   end
-  if next(addonTable.ExternalGuildBankSorts) ~= nil then
+  if next(addonTable.API.ExternalGuildBankSorts) ~= nil then
     local allModes = {}
 
-    Baganator.Utilities.AutoSetGuildSortMethod()
+    addonTable.Utilities.AutoSetGuildSortMethod()
 
-    for id, details in pairs(addonTable.ExternalGuildBankSorts) do
+    for id, details in pairs(addonTable.API.ExternalGuildBankSorts) do
       table.insert(allModes, {id, details.label})
     end
 
@@ -804,7 +805,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(Baganator.Config.Get(frame.option))
+      frame:SetValue(addonTable.Config.Get(frame.option))
     end
   end)
 
@@ -825,16 +826,16 @@ function BaganatorCustomiseDialogMixin:SetupLayout()
   frame.ResetFramePositions:SetText(BAGANATOR_L_RESET_POSITIONS)
   DynamicResizeButton_Resize(frame.ResetFramePositions)
   frame.ResetFramePositions:SetScript("OnClick", function()
-    Baganator.CallbackRegistry:TriggerEvent("ResetFramePositions")
+    addonTable.CallbackRegistry:TriggerEvent("ResetFramePositions")
   end)
   frame.ResetFramePositions:SetFrameLevel(10000)
-  Baganator.Skins.AddFrame("Button", frame.ResetFramePositions)
+  addonTable.Skins.AddFrame("Button", frame.ResetFramePositions)
 
   resetAnchor.CheckBox.HoverBackground:SetPoint("RIGHT", frame.ResetFramePositions, "LEFT")
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(Baganator.Config.Get(frame.option))
+      frame:SetValue(addonTable.Config.Get(frame.option))
     end
   end)
 
@@ -851,7 +852,7 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(Baganator.Config.Get(frame.option))
+      frame:SetValue(addonTable.Config.Get(frame.option))
     end
   end)
 
@@ -872,21 +873,21 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     level = 2,
   }}, frame))
   editorHeader:SetPoint("TOP")
-  editorHeader:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset, 0)
+  editorHeader:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset, 0)
   editorHeader:SetPoint("RIGHT", frame, -28, 0)
   table.insert(allFrames, editorHeader)
 
   local categoriesEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesEditorTemplate")
   categoriesEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEditor:SetPoint("RIGHT", frame, -28, 0)
-  categoriesEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset - 10, 0)
+  categoriesEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
   categoriesEditor:SetHeight(270)
   table.insert(allFrames, categoriesEditor)
 
   local categoriesSectionEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesSectionEditorTemplate")
   categoriesSectionEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesSectionEditor:SetPoint("RIGHT", frame, -28, 0)
-  categoriesSectionEditor:SetPoint("LEFT", frame, "CENTER", Baganator.Constants.ButtonFrameOffset - 10, 0)
+  categoriesSectionEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
   categoriesSectionEditor:SetHeight(210)
   table.insert(allFrames, categoriesSectionEditor)
   categoriesSectionEditor:Hide()
@@ -901,16 +902,16 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     categoriesEditor:Show()
   end)
 
-  local categoriesOrder = Baganator.CustomiseDialog.GetCategoriesOrganiser(frame)
+  local categoriesOrder = addonTable.CustomiseDialog.GetCategoriesOrganiser(frame)
   categoriesOrder:SetPoint("TOP")
   table.insert(allFrames, categoriesOrder)
-  categoriesOrder:SetPoint("LEFT", frame, Baganator.Constants.ButtonFrameOffset + 20, 0)
+  categoriesOrder:SetPoint("LEFT", frame, addonTable.Constants.ButtonFrameOffset + 20, 0)
   categoriesOrder:SetPoint("RIGHT", frame, "CENTER")
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       if frame.SetValue then
-        frame:SetValue(Baganator.Config.Get(frame.option))
+        frame:SetValue(addonTable.Config.Get(frame.option))
       end
     end
     categoriesSectionEditor:Hide()

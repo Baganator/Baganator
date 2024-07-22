@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorCategoryViewsCategoryButtonMixin = {}
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnLoad()
@@ -29,7 +30,7 @@ function BaganatorCategoryViewsCategoryButtonMixin:OnLeave()
   GameTooltip:Hide()
 end
 
-function Baganator.CategoryViews.GetSectionButtonPool(parent)
+function addonTable.CategoryViews.GetSectionButtonPool(parent)
   return CreateFramePool("Button", parent, nil, nil, false, function(button)
     if button.arrow then
       return
@@ -50,7 +51,7 @@ function Baganator.CategoryViews.GetSectionButtonPool(parent)
     function button:SetCollapsed()
       button.arrow:SetRotation(-math.pi)
     end
-    Baganator.Skins.AddFrame("CategorySectionHeader", button)
+    addonTable.Skins.AddFrame("CategorySectionHeader", button)
     return button
   end)
 end

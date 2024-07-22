@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorCustomiseDialogCategoriesEditorMixin = {}
 
 local PRIORITY_LIST = {
@@ -27,14 +28,18 @@ local disabledAlpha = 0.5
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.currentCategory = ""
 
+  self.HelpButton:SetScript("OnClick", function()
+    addonTable.Help.ShowSearchDialog()
+  end)
+
   local function Save()
     if self.CategoryName:GetText() == "" then
       return
     end
 
-    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
-    local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
+    local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
     local oldMods, oldIndex
     local isNew, isDefault = self.currentCategory == "", customCategories[self.currentCategory] == nil
     if not isNew and not isDefault then
@@ -44,7 +49,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       categoryMods[self.currentCategory] = nil
     end
 
-    local hidden = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)
+    local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
     local oldHidden = hidden[self.currentCategory]
     if isNew or not isDefault then
       local newName = self.CategoryName:GetText():gsub("_", " ")
@@ -68,21 +73,21 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
         table.insert(displayOrder, 1, self.currentCategory)
       end
       if isNewName then
-        Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+        addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
       end
     else
       hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
     end
 
     if hidden[self.currentCategory] ~= oldHidden then
-      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
     end
 
-    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+    addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
   end
 
   local function SetState(value)
-    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+    local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     self.currentCategory = value
 
     for _, region in ipairs(self.ChangeAlpha) do
@@ -113,7 +118,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.DeleteButton:Enable()
       self.ExportButton:Enable()
     else
-      category = Baganator.CategoryViews.Constants.SourceToCategory[value]
+      category = addonTable.CategoryViews.Constants.SourceToCategory[value]
       self.CategoryName:SetAlpha(disabledAlpha)
       self.CategorySearch:SetAlpha(disabledAlpha)
       self.HelpButton:SetAlpha(disabledAlpha)
@@ -123,7 +128,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.DeleteButton:Disable()
       self.ExportButton:Disable()
     end
-    self.HiddenCheckBox:SetChecked(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_HIDDEN)[value])
+    self.HiddenCheckBox:SetChecked(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)[value])
 
     self.CategoryName:SetText(category.name)
     self.CategorySearch:SetText(category.search or "")
@@ -138,9 +143,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       end
     end
 
-    if value ~= Baganator.CategoryViews.Constants.EmptySlotsCategory then
+    if value ~= addonTable.CategoryViews.Constants.EmptySlotsCategory then
       self.GroupDropDown:Enable()
-      local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+      local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
       if categoryMods[value] and categoryMods[value].group then
         self.GroupDropDown:SetText(groupingToLabel[categoryMods[value].group])
       else
@@ -152,7 +157,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
   end
 
-  Baganator.CallbackRegistry:RegisterCallback("EditCategory", function(_, value)
+  addonTable.CallbackRegistry:RegisterCallback("EditCategory", function(_, value)
     self:Show()
     SetState(value)
   end)
@@ -174,7 +179,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.HiddenCheckBox:SetText(BAGANATOR_L_HIDDEN)
   self.HiddenCheckBox:SetNormalFontObject(GameFontHighlight)
   self.HiddenCheckBox:GetFontString():SetPoint("RIGHT", checkBoxWrapper, "CENTER", -20, 0)
-  Baganator.Skins.AddFrame("CheckBox", self.HiddenCheckBox)
+  addonTable.Skins.AddFrame("CheckBox", self.HiddenCheckBox)
 
   table.insert(self.ChangeAlpha, self.HiddenCheckBox)
 
@@ -186,7 +191,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.PrioritySlider:SetValue(0)
   table.insert(self.ChangeAlpha, self.PrioritySlider)
 
-  self.GroupDropDown = Baganator.CustomiseDialog.GetDropdown(self)
+  self.GroupDropDown = addonTable.CustomiseDialog.GetDropdown(self)
   self.GroupDropDown:SetupOptions({
     BAGANATOR_L_NONE,
     BAGANATOR_L_EXPANSION,
@@ -201,7 +206,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     "quality",
   })
   hooksecurefunc(self.GroupDropDown, "OnEntryClicked", function(_, option)
-    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     if not categoryMods[self.currentCategory] then
       categoryMods[self.currentCategory] = {}
     end
@@ -211,7 +216,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       categoryMods[self.currentCategory].group = option.value
     end
     self.GroupDropDown:SetText(option.label)
-    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
   end)
   self.GroupDropDown:SetPoint("TOP", 0, -120)
   self.GroupDropDown:SetPoint("LEFT", 5, 0)
@@ -250,7 +255,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       return
     end
 
-    StaticPopup_Show("Baganator_Export_Dialog", nil, nil, Baganator.CustomiseDialog.SingleCategoryExport(self.currentCategory))
+    StaticPopup_Show("Baganator_Export_Dialog", nil, nil, addonTable.CustomiseDialog.SingleCategoryExport(self.currentCategory))
   end)
 
   self.DeleteButton:SetScript("OnClick", function()
@@ -258,23 +263,23 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       return
     end
 
-    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-    local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
+    local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+    local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
 
     local oldIndex = tIndexOf(displayOrder, self.currentCategory)
     if oldIndex then
       table.remove(displayOrder, oldIndex)
-      Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     end
 
     customCategories[self.currentCategory] = nil
-    Baganator.Config.Set(Baganator.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+    addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
 
     self:OnHide()
   end)
-  Baganator.Skins.AddFrame("Button", self.DeleteButton)
-  Baganator.Skins.AddFrame("EditBox", self.CategoryName)
-  Baganator.Skins.AddFrame("EditBox", self.CategorySearch)
+  addonTable.Skins.AddFrame("Button", self.DeleteButton)
+  addonTable.Skins.AddFrame("EditBox", self.CategoryName)
+  addonTable.Skins.AddFrame("EditBox", self.CategorySearch)
 
   self:Disable()
 end

@@ -1,8 +1,9 @@
+local _, addonTable = ...
 if not Syndicator then
   return
 end
 
-Baganator.CategoryViews.Constants = {
+addonTable.CategoryViews.Constants = {
   ProtectedCategories = { "default_other", "default_special_empty" },
   EmptySlotsCategory = "default_special_empty",
   DividerName = "----",
@@ -16,21 +17,21 @@ Baganator.CategoryViews.Constants = {
   },
 
   RedisplaySettings = {
-    Baganator.Config.Options.CATEGORY_HORIZONTAL_SPACING,
-    Baganator.Config.Options.CATEGORY_DISPLAY_ORDER,
-    Baganator.Config.Options.CUSTOM_CATEGORIES,
-    Baganator.Config.Options.CATEGORY_HIDDEN,
-    Baganator.Config.Options.CATEGORY_ITEM_GROUPING,
-    Baganator.Config.Options.CATEGORY_SECTION_TOGGLED,
-    Baganator.Config.Options.CUSTOM_CATEGORIES,
-    Baganator.Config.Options.CATEGORY_MODIFICATIONS,
+    addonTable.Config.Options.CATEGORY_HORIZONTAL_SPACING,
+    addonTable.Config.Options.CATEGORY_DISPLAY_ORDER,
+    addonTable.Config.Options.CUSTOM_CATEGORIES,
+    addonTable.Config.Options.CATEGORY_HIDDEN,
+    addonTable.Config.Options.CATEGORY_ITEM_GROUPING,
+    addonTable.Config.Options.CATEGORY_SECTION_TOGGLED,
+    addonTable.Config.Options.CUSTOM_CATEGORIES,
+    addonTable.Config.Options.CATEGORY_MODIFICATIONS,
   },
 }
 
 local notJunk = "&~" .. SYNDICATOR_L_KEYWORD_JUNK
---Baganator.Constants.DefaultCategories
-if Baganator.Constants.IsEra then
-  Baganator.CategoryViews.Constants.DefaultCategories = {
+--addonTable.Constants.DefaultCategories
+if addonTable.Constants.IsEra then
+  addonTable.CategoryViews.Constants.DefaultCategories = {
     {
       key = "hearthstone",
       name = BAGANATOR_L_CATEGORY_HEARTHSTONE,
@@ -114,8 +115,8 @@ if Baganator.Constants.IsEra then
     },
   }
 
-elseif Baganator.Constants.IsClassic then -- Cata
-  Baganator.CategoryViews.Constants.DefaultCategories = {
+elseif addonTable.Constants.IsClassic then -- Cata
+  addonTable.CategoryViews.Constants.DefaultCategories = {
     {
       key = "hearthstone",
       name = BAGANATOR_L_CATEGORY_HEARTHSTONE,
@@ -205,7 +206,7 @@ elseif Baganator.Constants.IsClassic then -- Cata
     },
   }
 else -- retail
-  Baganator.CategoryViews.Constants.DefaultCategories = {
+  addonTable.CategoryViews.Constants.DefaultCategories = {
     {
       key = "hearthstone",
       name = BAGANATOR_L_CATEGORY_HEARTHSTONE,
@@ -324,7 +325,7 @@ else -- retail
   }
 end
 
-table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
+table.insert(addonTable.CategoryViews.Constants.DefaultCategories, {
   key = "auto_inventory_slots",
   name = BAGANATOR_L_CATEGORY_INVENTORY_SLOTS_AUTO,
   auto = "inventory_slots",
@@ -332,7 +333,7 @@ table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
   doNotAdd = true,
 })
 
-table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
+table.insert(addonTable.CategoryViews.Constants.DefaultCategories, {
   key = "auto_recents",
   name = BAGANATOR_L_CATEGORY_RECENT_AUTO,
   auto = "recents",
@@ -340,16 +341,16 @@ table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
   doNotAdd = true,
 })
 
-table.insert(Baganator.CategoryViews.Constants.DefaultCategories, {
+table.insert(addonTable.CategoryViews.Constants.DefaultCategories, {
   key = "special_empty",
   name = BAGANATOR_L_EMPTY,
   emptySlots = true,
   doNotAdd = true,
 })
 
-Baganator.CategoryViews.Constants.SourceToCategory = {}
-for index, category in ipairs(Baganator.CategoryViews.Constants.DefaultCategories) do
+addonTable.CategoryViews.Constants.SourceToCategory = {}
+for index, category in ipairs(addonTable.CategoryViews.Constants.DefaultCategories) do
   category.source = "default_" .. category.key
   category.searchPriority = category.searchPriority or 50
-  Baganator.CategoryViews.Constants.SourceToCategory[category.source] = category
+  addonTable.CategoryViews.Constants.SourceToCategory[category.source] = category
 end

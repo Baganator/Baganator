@@ -1,4 +1,5 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
 local function ConvertToOneList(bags, indexesToUse)
   -- Get one long list of the items involved
@@ -163,24 +164,24 @@ end
 -- end of the regular bags.
 -- ignoreCount: Number of slots to ignore in the regular bag (start or end
 -- depending on ignoreAtEnd)
-function Baganator.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
+function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
   if InCombatLockdown() or UnitIsDead("player") then -- Sorting breaks during combat due to Blizzard restrictions
-    return Baganator.Constants.SortStatus.Complete
+    return addonTable.Constants.SortStatus.Complete
   end
 
   if Syndicator.API.IsBagEventPending() then
-    return Baganator.Constants.SortStatus.WaitingMove
+    return addonTable.Constants.SortStatus.WaitingMove
   end
 
   if ignoreCount == nil then
     ignoreCount = 0
   end
 
-  if Baganator.Config.Get(Baganator.Config.Options.SORT_START_AT_BOTTOM) then
+  if addonTable.Config.Get(addonTable.Config.Options.SORT_START_AT_BOTTOM) then
     isReverse = not isReverse
   end
 
-  local showTimers = Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS)
+  local showTimers = addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS)
   local start = debugprofilestop()
 
   local bagIDsAvailable, bagSizes = GetUsableBags(bagIDs, indexesToUse, bagChecks, false)
@@ -194,13 +195,13 @@ function Baganator.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagCheck
     RemoveIgnoredSlotsFromOneList(oneList, bagIDs, bagChecks, ignoreAtEnd, ignoreCount)
   end
 
-  Baganator.Sorting.AddSortKeys(oneList)
+  addonTable.Sorting.AddSortKeys(oneList)
 
    -- Change the indexes as sorting into all the different bag types affects the
    -- final order
   SetIndexes(oneList, bagIDs)
 
-  local sortedItems, incomplete = Baganator.Sorting.OrderOneListOffline(oneList, Baganator.Config.Get("sort_method"))
+  local sortedItems, incomplete = addonTable.Sorting.OrderOneListOffline(oneList, addonTable.Config.Get("sort_method"))
 
   if showTimers then
     print("sort initial", debugprofilestop() - start)
@@ -238,7 +239,7 @@ function Baganator.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagCheck
 
   -- Split junk items for placing them at the opposite end of the bags compared
   -- to the other items
-  local junkPlugin = addonTable.JunkPlugins[Baganator.Config.Get("junk_plugin")]
+  local junkPlugin = addonTable.API.JunkPlugins[addonTable.Config.Get("junk_plugin")]
   local groupA, groupB
   if junkPlugin then
     groupA, groupB = {}, {}
@@ -353,13 +354,13 @@ function Baganator.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagCheck
 
   local pending
   if incomplete then
-    pending = Baganator.Constants.SortStatus.WaitingItemData
+    pending = addonTable.Constants.SortStatus.WaitingItemData
   elseif moved then
-    pending = Baganator.Constants.SortStatus.WaitingMove
+    pending = addonTable.Constants.SortStatus.WaitingMove
   elseif locked then
-    pending = Baganator.Constants.SortStatus.WaitingUnlock
+    pending = addonTable.Constants.SortStatus.WaitingUnlock
   else
-    pending = Baganator.Constants.SortStatus.Complete
+    pending = addonTable.Constants.SortStatus.Complete
   end
 
   if showTimers then

@@ -1,7 +1,8 @@
+local _, addonTable = ...
 local classicCachedObjectCounter = 0
 
-function Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
-  if Baganator.Constants.IsRetail then
+function addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
+  if addonTable.Constants.IsRetail then
     return CreateFramePool("ItemButton", self, "BaganatorRetailCachedItemButtonTemplate", nil, false, function(b) b:UpdateTextures() end)
   else
     return CreateObjectPool(function(pool)
@@ -13,8 +14,8 @@ function Baganator.ItemViewCommon.GetCachedItemButtonPool(self)
   end
 end
 
-function Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
-  if Baganator.Constants.IsRetail then
+function addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
+  if addonTable.Constants.IsRetail then
     return CreateFramePool("ItemButton", self, "BaganatorRetailLiveContainerItemButtonTemplate", nil, false, function(b) b:UpdateTextures() end)
   else
     return CreateObjectPool(function(pool)
@@ -26,8 +27,8 @@ function Baganator.ItemViewCommon.GetLiveItemButtonPool(self)
   end
 end
 
-function Baganator.ItemViewCommon.GetLiveGuildItemButtonPool(parent)
-  if Baganator.Constants.IsRetail then
+function addonTable.ItemViewCommon.GetLiveGuildItemButtonPool(parent)
+  if addonTable.Constants.IsRetail then
     return CreateFramePool("ItemButton", parent, "BaganatorRetailLiveGuildItemButtonTemplate", nil, false, function(b) b:UpdateTextures() end)
   else
     return CreateObjectPool(function(pool)
@@ -39,16 +40,16 @@ function Baganator.ItemViewCommon.GetLiveGuildItemButtonPool(parent)
   end
 end
 
-function Baganator.ItemViewCommon.GetLiveWarbandItemButtonPool(self)
-  if Baganator.Constants.IsRetail then
+function addonTable.ItemViewCommon.GetLiveWarbandItemButtonPool(self)
+  if addonTable.Constants.IsRetail then
     return CreateFramePool("ItemButton", self, "BaganatorRetailLiveWarbandItemButtonTemplate", nil, false, function(b) b:UpdateTextures() end)
   else
     error("no warbands here")
   end
 end
 
-function Baganator.ItemViewCommon.GetTabButtonPool(parent)
-  if Baganator.Constants.IsRetail then
+function addonTable.ItemViewCommon.GetTabButtonPool(parent)
+  if addonTable.Constants.IsRetail then
     return CreateFramePool("Button", parent, "BaganatorRetailTabButtonTemplate")
   else
     return CreateObjectPool(function(pool)
@@ -58,7 +59,7 @@ function Baganator.ItemViewCommon.GetTabButtonPool(parent)
   end
 end
 
-function Baganator.ItemViewCommon.GetSideTabButtonPool(parent)
+function addonTable.ItemViewCommon.GetSideTabButtonPool(parent)
   return CreateObjectPool(function(pool)
     classicCachedObjectCounter = classicCachedObjectCounter + 1
     return CreateFrame("Button", "BGRItemViewCommonTabButton" .. classicCachedObjectCounter, parent, "BaganatorRightSideTabButtonTemplate")

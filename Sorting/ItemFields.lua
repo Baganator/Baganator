@@ -1,4 +1,5 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
 -- Translate from a base item info to get information hidden behind further API
 -- calls
@@ -140,7 +141,7 @@ for key, list in pairs(sorted) do
   sortedMap[key] = map
 end
 
-local petCageID = Baganator.Constants.BattlePetCageID
+local petCageID = addonTable.Constants.BattlePetCageID
 
 keysMapping["expansion"] = function(self)
   -- Use ItemVersion addon's database if available

@@ -1,4 +1,5 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
 local PopupMode = {
   Tab = "tab",
@@ -13,7 +14,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
-  self.tabsPool = Baganator.ItemViewCommon.GetSideTabButtonPool(self)
+  self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
   self.currentTab = 1
   self.otherTabsCache = {}
   self.searchMonitors = {}
@@ -49,7 +50,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
@@ -58,27 +59,27 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if not self.lastGuild then
       return
     end
-    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsVisible() then
-        Baganator.Utilities.ApplyVisuals(self)
+        addonTable.Utilities.ApplyVisuals(self)
       end
-    elseif tIndexOf(Baganator.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+    elseif tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       if self:IsVisible() then
         self:UpdateForGuild(self.lastGuild, self.isLive)
       end
-    elseif settingName == Baganator.Config.Options.GUILD_BANK_SORT_METHOD then
+    elseif settingName == addonTable.Config.Options.GUILD_BANK_SORT_METHOD then
       self:UpdateForGuild(self.lastGuild, self.isLive)
     end
   end)
 
-  Baganator.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
+  addonTable.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self:ApplySearch(text)
   end)
 
@@ -93,9 +94,9 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     "PLAYER_REGEN_ENABLED",
   })
 
-  Baganator.Utilities.AddBagTransferManager(self) -- self.transferManager
+  addonTable.Utilities.AddBagTransferManager(self) -- self.transferManager
 
-  self.confirmTransferAllDialogName = "Baganator.ConfirmTransferAll_" .. self:GetName()
+  self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_GUILD_BANK,
     button1 = YES,
@@ -107,7 +108,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     hideOnEscape = 1,
   }
 
-  self.warningNotInGuildDialog = "Baganator.NotInGuild" .. self:GetName()
+  self.warningNotInGuildDialog = "addonTable.NotInGuild" .. self:GetName()
   StaticPopupDialogs[self.warningNotInGuildDialog] = {
     text = ERR_GUILD_PLAYER_NOT_IN_GUILD,
     button1 = OKAY,
@@ -119,12 +120,12 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   tAppendAll(self.AllButtons, self.AllFixedButtons)
   tAppendAll(self.AllButtons, self.LiveButtons)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self, {"guild"})
-  Baganator.Skins.AddFrame("Button", self.DepositButton)
-  Baganator.Skins.AddFrame("Button", self.WithdrawButton)
-  Baganator.Skins.AddFrame("IconButton", self.ToggleTabTextButton)
-  Baganator.Skins.AddFrame("IconButton", self.ToggleTabLogsButton)
-  Baganator.Skins.AddFrame("IconButton", self.ToggleGoldLogsButton)
+  addonTable.Skins.AddFrame("ButtonFrame", self, {"guild"})
+  addonTable.Skins.AddFrame("Button", self.DepositButton)
+  addonTable.Skins.AddFrame("Button", self.WithdrawButton)
+  addonTable.Skins.AddFrame("IconButton", self.ToggleTabTextButton)
+  addonTable.Skins.AddFrame("IconButton", self.ToggleTabLogsButton)
+  addonTable.Skins.AddFrame("IconButton", self.ToggleGoldLogsButton)
 end
 
 function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)
@@ -247,7 +248,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTransferButton()
 end
 
 function BaganatorSingleViewGuildViewMixin:OnDragStart()
-  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
@@ -257,7 +258,7 @@ function BaganatorSingleViewGuildViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_POSITION, {point, UIParent:GetName(), x, y})
+  addonTable.Config.Set(addonTable.Config.Options.GUILD_VIEW_POSITION, {point, UIParent:GetName(), x, y})
 end
 
 function BaganatorSingleViewGuildViewMixin:OpenTabEditor()
@@ -266,11 +267,11 @@ function BaganatorSingleViewGuildViewMixin:OpenTabEditor()
     UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_EDIT_GUILD_BANK_TAB_ERROR, 1.0, 0.1, 0.1, 1.0)
     return
   end
-  if Baganator.Constants.IsRetail then
+  if addonTable.Constants.IsRetail then
     GuildBankPopupFrame.mode = IconSelectorPopupFrameModes.Edit
   end
   GuildBankPopupFrame:Show()
-  if not Baganator.Constants.IsRetail then
+  if not addonTable.Constants.IsRetail then
     GuildBankPopupFrame:Update()
   end
   GuildBankPopupFrame:SetParent(self)
@@ -282,10 +283,10 @@ end
 
 function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   local tabScaleFactor = 37
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     tabScaleFactor = 40
   end
-  local tabScale = math.min(1, Baganator.Config.Get(Baganator.Config.Options.BAG_ICON_SIZE) / tabScaleFactor)
+  local tabScale = math.min(1, addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE) / tabScaleFactor)
   -- Prevent regenerating the tabs if the base info hasn't changed since last
   -- time. This avoids failed clicks on the tabs if done quickly.
   if
@@ -310,7 +311,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   self.lastTabData = {}
   for index, tabInfo in ipairs(guildData.bank) do
     local tabButton = self.tabsPool:Acquire()
-    Baganator.Skins.AddFrame("SideTabButton", tabButton)
+    addonTable.Skins.AddFrame("SideTabButton", tabButton)
     tabButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     tabButton.Icon:SetTexture(tabInfo.iconTexture)
     tabButton:SetScript("OnClick", function(_, button)
@@ -373,7 +374,7 @@ function BaganatorSingleViewGuildViewMixin:HighlightCurrentTab()
 end
 
 function BaganatorSingleViewGuildViewMixin:SetCurrentTab(index)
-  Baganator.CallbackRegistry:TriggerEvent("TransferCancel")
+  addonTable.CallbackRegistry:TriggerEvent("TransferCancel")
   self.currentTab = index
   self:HighlightCurrentTab()
 
@@ -406,9 +407,9 @@ end
 
 function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   guild = guild or ""
-  Baganator.Utilities.ApplyVisuals(self)
+  addonTable.Utilities.ApplyVisuals(self)
 
-  local guildWidth = Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_WIDTH)
+  local guildWidth = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_WIDTH)
 
   self.isLive = isLive
 
@@ -461,7 +462,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   end
 
   local sideSpacing = 13
-  if Baganator.Config.Get(Baganator.Config.Options.REDUCE_SPACING) then
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
   end
 
@@ -498,8 +499,8 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
       and #guildData.bank > 0
       -- Use 7*14 to cover that every item in a tab can be sorted
       and (remainingWithdrawals == -1 or remainingWithdrawals > #guildData.bank * 7*14)
-      and addonTable.ExternalGuildBankSorts[Baganator.Config.Get(Baganator.Config.Options.GUILD_BANK_SORT_METHOD)]
-      and Baganator.Config.Get(Baganator.Config.Options.SHOW_SORT_BUTTON)
+      and addonTable.API.ExternalGuildBankSorts[addonTable.Config.Get(addonTable.Config.Options.GUILD_BANK_SORT_METHOD)]
+      and addonTable.Config.Get(addonTable.Config.Options.SHOW_SORT_BUTTON)
     )
 
     self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
@@ -519,15 +520,15 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   self:UpdateTransferButton()
 
   active:ClearAllPoints()
-  active:SetPoint("TOPLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, -53)
+  active:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, -53)
 
   self.SearchWidget:SetShown(active:IsShown())
   self.NotVisitedText:SetShown(not active:IsShown() and (not guildData or not guildData.details.visited))
   self.NoTabsText:SetShown(not active:IsShown() and guildData and guildData.details.visited)
   self.Money:SetShown(active:IsShown() or guildData and guildData.details.visited)
 
-  self.WithdrawalsInfo:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 30)
-  self.Money:SetPoint("BOTTOMLEFT", sideSpacing + Baganator.Constants.ButtonFrameOffset, 10)
+  self.WithdrawalsInfo:SetPoint("BOTTOMLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 30)
+  self.Money:SetPoint("BOTTOMLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 10)
   self.DepositButton:SetPoint("BOTTOMRIGHT", self, -sideSpacing + 1, 6)
 
   local height = 6
@@ -536,21 +537,21 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     height = height + active:GetHeight()
   end
   self:SetSize(
-    active:GetWidth() + sideSpacing * 2 + Baganator.Constants.ButtonFrameOffset,
+    active:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset,
     height + 63 + detailsHeight
   )
 
   self.ButtonVisibility:Update()
 
-  Baganator.CallbackRegistry:TriggerEvent("ViewComplete")
+  addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 end
 
 function BaganatorSingleViewGuildViewMixin:RemoveSearchMatches(callback)
   local matches = self.GuildLive.SearchMonitor:GetMatches()
 
-  local emptyBagSlots = Baganator.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags, Syndicator.Constants.AllBagIndexes)
+  local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags, Syndicator.Constants.AllBagIndexes)
 
-  local status, modes = Baganator.Transfers.FromGuildToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
+  local status, modes = addonTable.Transfers.FromGuildToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
 
   self.transferManager:Apply(status, modes or {"GuildCacheUpdate"}, function()
     self:RemoveSearchMatches(callback)
@@ -568,8 +569,12 @@ function BaganatorSingleViewGuildViewMixin:Transfer(button)
 end
 
 function BaganatorSingleViewGuildViewMixin:CombineStacksAndSort()
-  local sortsDetails = addonTable.ExternalGuildBankSorts[Baganator.Config.Get(Baganator.Config.Options.GUILD_BANK_SORT_METHOD)]
+  local sortsDetails = addonTable.API.ExternalGuildBankSorts[addonTable.Config.Get(addonTable.Config.Options.GUILD_BANK_SORT_METHOD)]
   sortsDetails.callback()
+end
+
+function BaganatorSingleViewGuildViewMixin:GetGuildSortMethodName()
+  return addonTable.Utilities.GetGuildSortMethodName()
 end
 
 function BaganatorSingleViewGuildViewMixin:ToggleTabText()
@@ -627,31 +632,31 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
   self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self)
-  Baganator.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
+  addonTable.Skins.AddFrame("ButtonFrame", self)
+  addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsVisible() then
-        Baganator.Utilities.ApplyVisuals(self)
+        addonTable.Utilities.ApplyVisuals(self)
       end
     end
   end)
 end
 
 function BaganatorGuildLogsTemplateMixin:OnShow()
-  Baganator.Utilities.ApplyVisuals(self)
+  addonTable.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
-  local anchor = Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)
+  local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
     anchor[2] = self:GetParent():GetName()
   end
   self:SetPoint(unpack(anchor))
-  Baganator.Utilities.AutoSetGuildSortMethod()
+  addonTable.Utilities.AutoSetGuildSortMethod()
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStart()
-  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
@@ -661,7 +666,7 @@ function BaganatorGuildLogsTemplateMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), relativePoint, x, y})
+  addonTable.Config.Set(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), relativePoint, x, y})
 end
 
 function BaganatorGuildLogsTemplateMixin:ApplyTabTitle()
@@ -769,27 +774,27 @@ function BaganatorGuildTabTextTemplateMixin:OnLoad()
   self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
 
-  Baganator.Skins.AddFrame("ButtonFrame", self)
-  Baganator.Skins.AddFrame("Button", self.SaveButton)
+  addonTable.Skins.AddFrame("ButtonFrame", self)
+  addonTable.Skins.AddFrame("Button", self.SaveButton)
 
   self.TextContainer:GetEditBox():SetMaxLetters(500)
 
-  Baganator.Skins.AddFrame("EditBox", self.TextContainer:GetEditBox())
-  Baganator.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
+  addonTable.Skins.AddFrame("EditBox", self.TextContainer:GetEditBox())
+  addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
 
-  Baganator.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(Baganator.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
       if self:IsVisible() then
-        Baganator.Utilities.ApplyVisuals(self)
+        addonTable.Utilities.ApplyVisuals(self)
       end
     end
   end)
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnShow()
-  Baganator.Utilities.ApplyVisuals(self)
+  addonTable.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
-  local anchor = Baganator.Config.Get(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION)
+  local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
     anchor[2] = self:GetParent():GetName()
   end
@@ -822,7 +827,7 @@ function BaganatorGuildTabTextTemplateMixin:ApplyTabTitle()
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnDragStart()
-  if not Baganator.Config.Get(Baganator.Config.Options.LOCK_FRAMES) then
+  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
     self:SetUserPlaced(false)
   end
@@ -832,5 +837,5 @@ function BaganatorGuildTabTextTemplateMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
-  Baganator.Config.Set(Baganator.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), x, y})
+  addonTable.Config.Set(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION, {point, UIParent:GetName(), x, y})
 end

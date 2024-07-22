@@ -1,4 +1,5 @@
-function Baganator.Transfers.GetEmptyBagsSlots(bags, bagIDs)
+local _, addonTable = ...
+function addonTable.Transfers.GetEmptyBagsSlots(bags, bagIDs)
   local emptySlots = {}
   for index, contents in ipairs(bags) do
     local bagID = bagIDs[index]
@@ -15,7 +16,7 @@ function Baganator.Transfers.GetEmptyBagsSlots(bags, bagIDs)
   return emptySlots
 end
 
-function Baganator.Transfers.GetEmptyGuildSlots(tab, tabIndex)
+function addonTable.Transfers.GetEmptyGuildSlots(tab, tabIndex)
   local emptySlots = {}
   for slotID, item in ipairs(tab.slots) do
     if item.itemID == nil then
@@ -30,7 +31,7 @@ function Baganator.Transfers.GetEmptyGuildSlots(tab, tabIndex)
 end
 
 -- Prioritise items in special bags
-function Baganator.Transfers.SortChecksFirst(bagChecks, items)
+function addonTable.Transfers.SortChecksFirst(bagChecks, items)
   local indexes = {}
   for i = 1, #items do
     indexes[i] = i
@@ -53,7 +54,7 @@ function Baganator.Transfers.SortChecksFirst(bagChecks, items)
   return result
 end
 
-function Baganator.Transfers.IsContainerItemLocked(item)
+function addonTable.Transfers.IsContainerItemLocked(item)
   if item.itemID == nil then
     return false
   end
@@ -61,7 +62,7 @@ function Baganator.Transfers.IsContainerItemLocked(item)
   return C_Item.DoesItemExist(itemLocation) and C_Item.IsLocked(itemLocation)
 end
 
-function Baganator.Transfers.IsGuildItemLocked(item)
+function addonTable.Transfers.IsGuildItemLocked(item)
   local _, _, isLocked = GetGuildBankItemInfo(item.tabIndex, item.slotID)
   return isLocked
 end

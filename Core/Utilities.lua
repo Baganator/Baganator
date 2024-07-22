@@ -1,4 +1,5 @@
-function Baganator.Utilities.Message(text)
+local _, addonTable = ...
+function addonTable.Utilities.Message(text)
   print(LINK_FONT_COLOR:WrapTextInColorCode("Baganator") .. ": " .. text)
 end
 
@@ -18,7 +19,7 @@ do
   local AddOnLoaded = C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded
 
   -- Necessary because cannot nest EventUtil.ContinueOnAddOnLoaded
-  function Baganator.Utilities.OnAddonLoaded(addonName, callback)
+  function addonTable.Utilities.OnAddonLoaded(addonName, callback)
     if select(2, AddOnLoaded(addonName)) then
       xpcall(callback, CallErrorHandler)
     else
@@ -28,7 +29,7 @@ do
   end
 end
 
-function Baganator.Utilities.GetCharacterFullName()
+function addonTable.Utilities.GetCharacterFullName()
   local characterName, realm = UnitFullName("player")
   return characterName .. "-" .. realm
 end

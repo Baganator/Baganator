@@ -79,24 +79,13 @@
     </Scripts>
   </Frame>
 
-  <Frame name="BaganatorBagDividerTemplate" virtual="true">
+  <Frame name="BaganatorBagDividerTemplate" virtual="true" mixin="BaganatorBagDividerMixin">
     <Anchors>
       <Anchor point="TOPLEFT"/>
       <Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT"/>
     </Anchors>
     <Scripts>
-      <OnLoad>
-        if Baganator.Constants.IsRetail then
-          self.Divider:SetAtlas("activities-divider", true)
-        else
-          self.Divider:SetAtlas("battlefieldminimap-border-top")
-          self.Divider:SetHeight(15)
-          self.Divider:ClearAllPoints()
-          self.Divider:SetPoint("TOPLEFT", 0, 6)
-          self.Divider:SetPoint("TOPRIGHT", 0, 6)
-        end
-        Baganator.Skins.AddFrame("Divider", self.Divider)
-      </OnLoad>
+      <OnLoad method="OnLoad"/>
     </Scripts>
     <Layers>
       <Layer level="BACKGROUND">

@@ -1,8 +1,9 @@
+local _, addonTable = ...
 Baganator.API.RegisterJunkPlugin(NONE, "none", function(bagID, slotID, ...)
   return false
 end)
 
-Baganator.Utilities.OnAddonLoaded("Peddler", function()
+addonTable.Utilities.OnAddonLoaded("Peddler", function()
   if not PeddlerAPI then
     return
   end
@@ -14,7 +15,7 @@ Baganator.Utilities.OnAddonLoaded("Peddler", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("SellJunk", function()
+addonTable.Utilities.OnAddonLoaded("SellJunk", function()
   Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SELLJUNK, "selljunk", function(bagID, slotID, itemID, itemLink)
     return SellJunk:CheckItemIsJunk(itemLink, bagID, slotID)
   end)
@@ -26,7 +27,7 @@ Baganator.Utilities.OnAddonLoaded("SellJunk", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("Scrap", function()
+addonTable.Utilities.OnAddonLoaded("Scrap", function()
   Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SCRAP, "scrap", function(bagID, slotID, itemID, itemLink)
     return Scrap:IsJunk(itemID, bagID, slotID)
   end)
@@ -35,7 +36,7 @@ Baganator.Utilities.OnAddonLoaded("Scrap", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("Vendor", function()
+addonTable.Utilities.OnAddonLoaded("Vendor", function()
   Baganator.API.RegisterJunkPlugin(BAGANATOR_L_VENDOR, "vendor", function(bagID, slotID, itemID, itemLink)
     return Vendor.EvaluateItem(bagID, slotID) == 1
   end)
@@ -53,7 +54,7 @@ Baganator.Utilities.OnAddonLoaded("Vendor", function()
   end)
 end)
 
-Baganator.Utilities.OnAddonLoaded("Dejunk", function()
+addonTable.Utilities.OnAddonLoaded("Dejunk", function()
   if not DejunkApi or not DejunkApi.Events then
     return
   end

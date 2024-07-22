@@ -1,3 +1,4 @@
+local _, addonTable = ...
 -- Blizzard Equipment sets (Wrath onwards)
 do
   local BlizzardSetTracker = CreateFrame("Frame")
@@ -49,7 +50,7 @@ do
       for _, location in pairs(C_EquipmentSet.GetItemLocations(setID) or {}) do
         if location ~= -1 and location ~= 0 and location ~= 1 then
           local player, bank, bags, voidStorage, slot, bag
-          if Baganator.Constants.IsClassic then
+          if addonTable.Constants.IsClassic then
             player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(location)
           else
             player, bank, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(location)
@@ -76,7 +77,7 @@ do
         end
       end
     end
-    if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("equipment set tracking took", debugprofilestop() - start)
     end
     if not tCompare(oldSetInfo, cache, 15) then
@@ -87,8 +88,8 @@ do
 end
 
 -- ItemRack Classic
-if not Baganator.Constants.IsRetail then
-  Baganator.Utilities.OnAddonLoaded("ItemRack", function()
+if not addonTable.Constants.IsRetail then
+  addonTable.Utilities.OnAddonLoaded("ItemRack", function()
     local equipmentSetInfo = {}
     local equipmentSetNames = {}
     local function ItemRackUpdated()

@@ -1,19 +1,20 @@
+local _, addonTable = ...
 local function MigrateFormat()
-  if Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MIGRATION) == 0 then
-    local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
-    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
+  if addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MIGRATION) == 0 then
+    local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     for key, categoryDetails in pairs(customCategories) do
       categoryMods[key] = { addedItems = categoryDetails.addedItems }
       categoryDetails.addedItems = nil
     end
-    Baganator.Config.Set(Baganator.Config.Options.CATEGORY_MIGRATION, 1)
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MIGRATION, 1)
   end
 end
 
 local function SetupCategories()
-  local alreadyAdded = Baganator.Config.Get(Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED)
-  local displayOrder = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER)
-  for index, category in ipairs(Baganator.CategoryViews.Constants.DefaultCategories) do
+  local alreadyAdded = addonTable.Config.Get(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED)
+  local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
+  for index, category in ipairs(addonTable.CategoryViews.Constants.DefaultCategories) do
     if not alreadyAdded[category.source] and not category.doNotAdd then
       if index > #displayOrder then
         table.insert(displayOrder, category.source)
@@ -24,25 +25,25 @@ local function SetupCategories()
     end
   end
 
-  local customCategories = Baganator.Config.Get(Baganator.Config.Options.CUSTOM_CATEGORIES)
+  local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
   if #displayOrder > 0 then
     for i = #displayOrder, 1, -1 do
       local source = displayOrder[i]
-      local category = Baganator.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
-      if not category and source ~= Baganator.CategoryViews.Constants.DividerName and not source:match("^_") then
+      local category = addonTable.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
+      if not category and source ~= addonTable.CategoryViews.Constants.DividerName and not source:match("^_") then
         table.remove(displayOrder, i)
       end
     end
   end
-  for _, source in ipairs(Baganator.CategoryViews.Constants.ProtectedCategories) do
+  for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
     if tIndexOf(displayOrder, source) == nil then
       table.insert(displayOrder, source)
     end
   end
 
   -- Trigger settings changed event
-  Baganator.Config.Set(Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED, CopyTable(alreadyAdded))
-  Baganator.Config.Set(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+  addonTable.Config.Set(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED, CopyTable(alreadyAdded))
+  addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
 end
 
 local function SetupAddRemoveItems()
@@ -50,15 +51,15 @@ local function SetupAddRemoveItems()
 
   local previousCategory
 
-  Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink)
+  addonTable.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink)
     activeItemID, activeItemLink = itemID, itemLink
     previousCategory = fromCategory
   end)
 
   -- Remove the item from its current category and add it to the new one
-  Baganator.CallbackRegistry:RegisterCallback("CategoryAddItemEnd", function(_, toCategory)
-    local categoryMods = Baganator.Config.Get(Baganator.Config.Options.CATEGORY_MODIFICATIONS)
-    local details = Baganator.CategoryViews.Utilities.GetAddedItemData(activeItemID, activeItemLink)
+  addonTable.CallbackRegistry:RegisterCallback("CategoryAddItemEnd", function(_, toCategory)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    local details = addonTable.CategoryViews.Utilities.GetAddedItemData(activeItemID, activeItemLink)
     if categoryMods[previousCategory] and categoryMods[previousCategory].addedItems then
       local oldIndex = FindInTableIf(categoryMods[previousCategory].addedItems, function(alt)
         return alt.itemID == details.itemID and alt.petID == details.petID
@@ -92,15 +93,15 @@ local function SetupAddRemoveItems()
   end)
 end
 
-function Baganator.CategoryViews.Initialize()
+function addonTable.CategoryViews.Initialize()
   MigrateFormat()
 
   SetupCategories()
 
-  Baganator.CallbackRegistry:RegisterCallback("ResetCategoryOrder", function()
+  addonTable.CallbackRegistry:RegisterCallback("ResetCategoryOrder", function()
     -- Avoid the settings changed event firing
-    table.wipe(Baganator.Config.Get(Baganator.Config.Options.AUTOMATIC_CATEGORIES_ADDED))
-    table.wipe(Baganator.Config.Get(Baganator.Config.Options.CATEGORY_DISPLAY_ORDER))
+    table.wipe(addonTable.Config.Get(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED))
+    table.wipe(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER))
 
     SetupCategories()
   end)

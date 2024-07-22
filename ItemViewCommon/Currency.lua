@@ -1,3 +1,4 @@
+local _, addonTable = ...
 BaganatorCurrencyWidgetMixin = {}
 
 function BaganatorCurrencyWidgetMixin:OnLoad()
@@ -15,7 +16,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   end)
 
   -- Needed to get currencies to load correctly on classic versions of WoW
-  Baganator.Utilities.OnAddonLoaded("Blizzard_TokenUI", function()
+  addonTable.Utilities.OnAddonLoaded("Blizzard_TokenUI", function()
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
     end
@@ -33,9 +34,9 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   local frame = CreateFrame("Frame", nil, self)
   local function UpdateMoneyDisplay()
     if IsShiftKeyDown() then
-      Baganator.ShowGoldSummaryAccount(self.Money, "ANCHOR_TOP")
+      addonTable.ShowGoldSummaryAccount(self.Money, "ANCHOR_TOP")
     else
-      Baganator.ShowGoldSummaryRealm(self.Money, "ANCHOR_TOP")
+      addonTable.ShowGoldSummaryRealm(self.Money, "ANCHOR_TOP")
     end
   end
   self.Money:SetScript("OnEnter", function()
@@ -57,7 +58,7 @@ function BaganatorCurrencyWidgetMixin:OnShow()
 end
 
 local function ShowCurrencies(self, character)
-  self.Money:SetText(Baganator.Utilities.GetMoneyString(Syndicator.API.GetCharacter(character).money, true))
+  self.Money:SetText(addonTable.Utilities.GetMoneyString(Syndicator.API.GetCharacter(character).money, true))
 
   local characterCurrencies = Syndicator.API.GetCharacter(character).currencies
 
@@ -72,7 +73,7 @@ local function ShowCurrencies(self, character)
     return
   end
 
-  for i = 1, Baganator.Constants.MaxPinnedCurrencies do
+  for i = 1, addonTable.Constants.MaxPinnedCurrencies do
     local currencyID, icon
     if C_CurrencyInfo and C_CurrencyInfo.GetBackpackCurrencyInfo then
       local currencyInfo = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
@@ -135,7 +136,7 @@ function BaganatorCurrencyWidgetMixin:UpdateCurrencies(character)
   else
     self.currencyUpdateNeeded = true
   end
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG_TIMERS) then
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("currency update", debugprofilestop() - start)
   end
 end

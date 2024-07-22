@@ -1,10 +1,11 @@
 local _, addonTable = ...
+local _, addonTable = ...
 
-function Baganator.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
+function addonTable.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
   local guid = C_Item.DoesItemExist(location) and C_Item.GetItemGUID(location) or nil
 
   local results = {}
-  for _, source in ipairs(addonTable.ItemSetSources) do
+  for _, source in ipairs(addonTable.API.ItemSetSources) do
     local new = source.getItemSetInfo(location, guid, itemLink)
     if new and #new > 0 then
       tAppendAll(results, new)
@@ -18,9 +19,9 @@ function Baganator.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
   end
 end
 
-function Baganator.ItemViewCommon.GetEquipmentSetNames()
+function addonTable.ItemViewCommon.GetEquipmentSetNames()
   local results = {}
-  for _, source in ipairs(addonTable.ItemSetSources) do
+  for _, source in ipairs(addonTable.API.ItemSetSources) do
     local names = source.getAllSetNames and source.getAllSetNames()
     if names and #names > 0 then
       tAppendAll(results, names)

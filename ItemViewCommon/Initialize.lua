@@ -1,12 +1,13 @@
-function Baganator.ItemViewCommon.Initialize()
-  Baganator.ItemButtonUtil.UpdateSettings()
+local _, addonTable = ...
+function addonTable.ItemViewCommon.Initialize()
+  addonTable.ItemButtonUtil.UpdateSettings()
 
   xpcall(function()
-    Baganator.InitializeOpenClose()
+    addonTable.InitializeOpenClose()
   end, CallErrorHandler)
 
-  Baganator.NewItems = CreateFrame("Frame")
-  Mixin(Baganator.NewItems, BaganatorItemViewCommonNewItemsTrackingMixin)
-  Baganator.NewItems:OnLoad()
-  Baganator.NewItems:SetScript("OnEvent", Baganator.NewItems.OnEvent)
+  addonTable.NewItems = CreateFrame("Frame")
+  Mixin(addonTable.NewItems, BaganatorItemViewCommonNewItemsTrackingMixin)
+  addonTable.NewItems:OnLoad()
+  addonTable.NewItems:SetScript("OnEvent", addonTable.NewItems.OnEvent)
 end

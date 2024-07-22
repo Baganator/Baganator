@@ -1,8 +1,6 @@
 local _, addonTable = ...
 
-addonTable.JunkPlugins = {}
-
-Baganator.ItemButtonUtil = {}
+addonTable.ItemButtonUtil = {}
 
 local equipmentSetBorder = CreateColor(198/255, 166/255, 0/255)
 
@@ -31,25 +29,25 @@ do
 end
 
 local registered = false
-function Baganator.ItemButtonUtil.UpdateSettings()
+function addonTable.ItemButtonUtil.UpdateSettings()
   if not registered  then
     registered = true
-    Baganator.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
-      Baganator.ItemButtonUtil.UpdateSettings()
+    addonTable.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
+      addonTable.ItemButtonUtil.UpdateSettings()
     end)
-    Baganator.CallbackRegistry:RegisterCallback("PluginsUpdated", function()
-      Baganator.ItemButtonUtil.UpdateSettings()
+    addonTable.CallbackRegistry:RegisterCallback("PluginsUpdated", function()
+      addonTable.ItemButtonUtil.UpdateSettings()
       Baganator.API.RequestItemButtonsRefresh()
     end)
   end
   itemCallbacks = {}
   iconSettings = {
-    markJunk = Baganator.Config.Get("icon_grey_junk"),
-    equipmentSetBorder = Baganator.Config.Get("icon_equipment_set_border"),
+    markJunk = addonTable.Config.Get("icon_grey_junk"),
+    equipmentSetBorder = addonTable.Config.Get("icon_equipment_set_border"),
   }
 
-  local junkPluginID = Baganator.Config.Get("junk_plugin")
-  local junkPlugin = addonTable.JunkPlugins[junkPluginID]
+  local junkPluginID = addonTable.Config.Get("junk_plugin")
+  local junkPlugin = addonTable.API.JunkPlugins[junkPluginID]
   if junkPlugin and junkPluginID ~= "poor_quality" then
     iconSettings.usingJunkPlugin = true
     table.insert(itemCallbacks, function(self)
@@ -71,12 +69,12 @@ function Baganator.ItemButtonUtil.UpdateSettings()
   }
 
   for _, key in ipairs(positions) do
-    local array = CopyTable(Baganator.Config.Get(key))
+    local array = CopyTable(addonTable.Config.Get(key))
     local callbacks = {}
     local plugins = {}
     for _, plugin in ipairs(array) do
-      if addonTable.IconCornerPlugins[plugin] then
-        table.insert(callbacks, addonTable.IconCornerPlugins[plugin].onUpdate)
+      if addonTable.API.IconCornerPlugins[plugin] then
+        table.insert(callbacks, addonTable.API.IconCornerPlugins[plugin].onUpdate)
         table.insert(plugins, plugin)
       end
     end
@@ -195,7 +193,7 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
 end
 
 -- Called to reset searched state, widgets, and tooltip data cache
-function Baganator.ItemButtonUtil.ResetCache(self, cacheData)
+function addonTable.ItemButtonUtil.ResetCache(self, cacheData)
   GetInfo(self, cacheData, self.BGR.earlyCallback, self.BGR.finalCallback)
 end
 
@@ -228,7 +226,7 @@ local function SetWidgetsAlpha(self, result)
 end
 
 local function ApplyItemDetailSettings(button)
-  local newSize = Baganator.Config.Get("icon_text_font_size")
+  local newSize = addonTable.Config.Get("icon_text_font_size")
 
   local positions = {
     ["icon_top_left_corner_array"] = {"TOPLEFT", 2, -2},
@@ -244,12 +242,12 @@ local function ApplyItemDetailSettings(button)
   end
 
   for key, anchor in pairs(positions) do
-    for _, plugin in ipairs(Baganator.Config.Get(key)) do
-      local setup = addonTable.IconCornerPlugins[plugin]
+    for _, plugin in ipairs(addonTable.Config.Get(key)) do
+      local setup = addonTable.API.IconCornerPlugins[plugin]
       if setup and not button.cornerPlugins[plugin] then
         button.cornerPlugins[plugin] = setup.onInit(button)
         if button.cornerPlugins[plugin] then
-          Baganator.Skins.AddFrame("CornerWidget", button.cornerPlugins[plugin], {plugin})
+          addonTable.Skins.AddFrame("CornerWidget", button.cornerPlugins[plugin], {plugin})
           button.cornerPlugins[plugin]:Hide()
         end
       end
@@ -281,14 +279,14 @@ local function AdjustRetailButton(button)
     button.SlotBackground:SetAtlas("bags-item-slot64")
   end
 
-  button.SlotBackground:SetShown(not Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND))
+  button.SlotBackground:SetShown(not addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND))
 
   ApplyItemDetailSettings(button)
 end
 
 -- Scale button and set visuals as appropriate
 local function AdjustClassicButton(button)
-  if Baganator.Config.Get(Baganator.Config.Options.EMPTY_SLOT_BACKGROUND) then
+  if addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND) then
     if not button.BGR or button.BGR.itemLink == nil then
       button.icon:SetTexture(nil)
       button.icon:Hide()
@@ -358,7 +356,7 @@ end
 
 local function ApplyNewItemAnimation(self, quality)
   -- Modified code from Blizzard for classic
-  local isNewItem = Baganator.NewItems:IsNewItem(self:GetParent():GetID(), self:GetID());
+  local isNewItem = addonTable.NewItems:IsNewItem(self:GetParent():GetID(), self:GetID());
 
   local newItemTexture = self.NewItemTexture;
   local battlepayItemTexture = self.BattlepayItemTexture;
@@ -438,7 +436,7 @@ function BaganatorRetailCachedItemButtonMixin:OnClick(button)
   elseif IsModifiedClick("DRESSUP") then
     DressUpLink(self.BGR.itemLink)
   elseif IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
+    addonTable.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
   end
 end
 
@@ -488,7 +486,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
     end
 
     if IsAltKeyDown() then
-      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
+      addonTable.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     end
   end)
   -- Automatically use the reagent bank when at the bank transferring crafting
@@ -575,7 +573,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
-    self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
 
     self.BGR.hasNoValue = noValue
     self:BGRUpdateQuests()
@@ -626,7 +624,7 @@ end
 
 function BaganatorRetailLiveContainerItemButtonMixin:ClearNewItem()
   local bagID, slotID = self:GetParent():GetID(), self:GetID()
-  Baganator.NewItems:ClearNewItem(bagID, slotID)
+  addonTable.NewItems:ClearNewItem(bagID, slotID)
   -- Copied code from Blizzard Container Frame
   self.BattlepayItemTexture:Hide();
   self.NewItemTexture:Hide();
@@ -649,7 +647,7 @@ end
 
 function BaganatorRetailLiveGuildItemButtonMixin:OnClick(button)
   if self.BGR and self.BGR.itemLink and IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
+    addonTable.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     ClearCursor()
     return
   end
@@ -778,7 +776,7 @@ function BaganatorRetailLiveWarbandItemButtonMixin:MyOnLoad()
     end
 
     if IsAltKeyDown() then
-      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
+      addonTable.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     end
   end)
 
@@ -951,7 +949,7 @@ function BaganatorClassicCachedItemButtonMixin:OnClick(button)
   elseif IsModifiedClick("DRESSUP") then
    return DressUpItemLink(self.BGR.itemLink) or DressUpBattlePetLink(self.BGR.itemLink) or DressUpMountLink(self.BGR.itemLink)
   elseif IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
+    addonTable.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
   end
 end
 
@@ -983,7 +981,7 @@ function BaganatorClassicCachedItemButtonMixin:OnLeave()
 end
 
 local UpdateQuestItemClassic
-if Baganator.Constants.IsVanilla then
+if addonTable.Constants.IsVanilla then
   UpdateQuestItemClassic = function(self)
     local questTexture = _G[self:GetName().."IconQuestTexture"]
     if questTexture then
@@ -1020,7 +1018,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:MyOnLoad()
     end
 
     if IsAltKeyDown() then
-      Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
+      addonTable.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     end
   end)
 
@@ -1126,7 +1124,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
         end
       end)
     end
-    self.BGR.setInfo = Baganator.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
 
     if C_Engraving and C_Engraving.IsEngravingEnabled() then
       self.BGR.isEngravable = false
@@ -1159,7 +1157,7 @@ end
 
 function BaganatorClassicLiveContainerItemButtonMixin:ClearNewItem()
   local bagID, slotID = self:GetParent():GetID(), self:GetID()
-  Baganator.NewItems:ClearNewItem(bagID, slotID)
+  addonTable.NewItems:ClearNewItem(bagID, slotID)
   self.NewItemTexture:Hide();
   if (self.flashAnim:IsPlaying() or self.newitemglowAnim:IsPlaying()) then
     self.flashAnim:Stop();
@@ -1192,7 +1190,7 @@ end
 
 function BaganatorClassicLiveGuildItemButtonMixin:OnClick(button)
   if self.BGR and self.BGR.itemLink and IsAltKeyDown() then
-    Baganator.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
+    addonTable.CallbackRegistry:TriggerEvent("HighlightSimilarItems", self.BGR.itemLink)
     ClearCursor()
     return
   end
