@@ -14,7 +14,7 @@ function Baganator.CustomiseDialog.SingleCategoryExport(name)
   })
   local mods = Baganator.Config.Get("category_modifications")[name]
   local items, pets = {}, {}
-  if mods.addedItems then
+  if mods and mods.addedItems then
     for _, item in ipairs(mods.addedItems) do
       if item.itemID then
         table.insert(items, item.itemID)
