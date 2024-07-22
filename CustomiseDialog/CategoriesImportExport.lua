@@ -29,7 +29,7 @@ function Baganator.CustomiseDialog.SingleCategoryExport(name)
     source = name,
     items = #items > 0 and items or nil,
     pets = #pets > 0 and pets or nil,
-    group = mods.group,
+    group = mods and mods.group,
   })
 
   return addonTable.json.encode(export)
