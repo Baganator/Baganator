@@ -51,7 +51,6 @@ Baganator.Config.Options = {
   SHOW_BUTTONS_ON_ALT = "show_buttons_on_alt",
   CHARACTER_SELECT_POSITION = "character_select_position",
 
-  DEBUG = "debug",
   DEBUG_TIMERS = "debug_timers",
   DEBUG_KEYWORDS = "debug_keywords",
 
@@ -119,7 +118,6 @@ Baganator.Config.Defaults = {
   [Baganator.Config.Options.JUNK_PLUGIN] = "poor_quality",
   [Baganator.Config.Options.JUNK_PLUGINS_IGNORED] = {},
 
-  [Baganator.Config.Options.DEBUG] = false,
   [Baganator.Config.Options.DEBUG_TIMERS] = false,
   [Baganator.Config.Options.DEBUG_KEYWORDS] = false,
 

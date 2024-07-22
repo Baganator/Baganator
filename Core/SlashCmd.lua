@@ -48,13 +48,9 @@ function Baganator.SlashCmd.Config(optionName, value1, ...)
   Baganator.Utilities.Message("Now set " .. optionName .. ": " .. tostring(Baganator.Config.Get(optionName)))
 end
 
-function Baganator.SlashCmd.Debug(...)
-  Baganator.Config.Set(Baganator.Config.Options.DEBUG, not Baganator.Config.Get(Baganator.Config.Options.DEBUG))
-  if Baganator.Config.Get(Baganator.Config.Options.DEBUG) then
-    Baganator.Utilities.Message("Debug mode on")
-  else
-    Baganator.Utilities.Message("Debug mode off")
-  end
+function Baganator.SlashCmd.Reset()
+  BAGANATOR_CONFIG = nil
+  ReloadUI()
 end
 
 function Baganator.SlashCmd.CustomiseUI()
@@ -65,7 +61,7 @@ local COMMANDS = {
   ["c"] = Baganator.SlashCmd.Config,
   ["config"] = Baganator.SlashCmd.Config,
   ["d"] = Baganator.SlashCmd.Debug,
-  ["debug"] = Baganator.SlashCmd.Debug,
+  ["reset"] = Baganator.SlashCmd.Reset,
   [""] = Baganator.SlashCmd.CustomiseUI,
 }
 function Baganator.SlashCmd.Handler(input)
