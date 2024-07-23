@@ -53,6 +53,12 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local oldHidden = hidden[self.currentCategory]
     if isNew or not isDefault then
       local newName = self.CategoryName:GetText():gsub("_", " ")
+      local existingIndex = tIndexOf(displayOrder, newName)
+      -- Check for an existing entry to an existing category with the same name
+      if existingIndex ~= nil and existingIndex ~= oldIndex then
+        table.remove(displayOrder, existingIndex)
+      end
+
       local isNewName = newName ~= self.currentCategory
 
       customCategories[newName] = {
