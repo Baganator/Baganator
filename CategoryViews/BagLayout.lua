@@ -129,7 +129,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
       else
         entries = details
       end
-      if self.isLive and self.addToCategoryMode and not autoSearches[searchTerm] then
+      if self.isLive and self.addToCategoryMode and addonTable.Config.Get(addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS) and not autoSearches[searchTerm] then
         if self.addToCategoryMode ~= categoryKeys[searchTerm] then
           table.insert(entries, {isDummy = true, label = BAGANATOR_L_ADD_TO_CATEGORY, dummyType = "add"})
         else

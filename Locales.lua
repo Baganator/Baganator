@@ -273,6 +273,8 @@ L["TYPE"] = "Type"
 L["QUALITY"] = "Quality"
 L["NONE"] = "None"
 L["GROUP_BY"] = "Group by"
+L["SHOW_ADD_BUTTONS"] = "Show add buttons"
+L["BRACKETS_WHILE_DRAGGING"] = "(while dragging)"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"

@@ -867,15 +867,26 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local allFrames = {}
 
-  local editorHeader = unpack(GenerateFrames({{
+  local showAddButtons, editorHeader = unpack(GenerateFrames({{
+    type = "checkbox",
+    text = BAGANATOR_L_SHOW_ADD_BUTTONS,
+    option = "add_to_category_buttons",
+    rightText = BAGANATOR_L_BRACKETS_WHILE_DRAGGING,
+  }, {
     type = "header",
     text = BAGANATOR_L_EDIT,
     level = 2,
   }}, frame))
-  editorHeader:SetPoint("TOP")
+  table.insert(allFrames, showAddButtons)
+  editorHeader:SetPoint("TOP", showAddButtons, "BOTTOM")
   editorHeader:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset, 0)
   editorHeader:SetPoint("RIGHT", frame, -28, 0)
   table.insert(allFrames, editorHeader)
+
+  showAddButtons:SetPoint("RIGHT", frame, -28, 0)
+  showAddButtons:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset + 40, 0)
+  showAddButtons.CheckBox.HoverBackground:SetPoint("TOPLEFT", showAddButtons, "TOPLEFT", -60, 0)
+  showAddButtons.CheckBox.HoverBackground:SetPoint("BOTTOMRIGHT", showAddButtons, "BOTTOMRIGHT", 10, 0)
 
   local categoriesEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesEditorTemplate")
   categoriesEditor:SetPoint("TOP", editorHeader, "BOTTOM")
