@@ -11,6 +11,19 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
 
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
 
+    if self.currentSection ~= newValue then
+      local existingIndex = tIndexOf(displayOrder, newValue)
+      if existingIndex then
+        table.remove(displayOrder, existingIndex)
+        for i = 1, #displayOrder do
+          if displayOrder[i] == addonTable.CategoryViews.Constants.SectionEnd then
+            table.remove(displayOrder, i)
+            break
+          end
+        end
+      end
+    end
+
     local oldIndex = tIndexOf(displayOrder, self.currentSection)
     if oldIndex then
       self.currentSection = newValue
