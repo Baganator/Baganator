@@ -1,5 +1,4 @@
 local _, addonTable = ...
-local _, addonTable = ...
 
 BaganatorItemViewCommonBankViewCharacterViewMixin = {}
 
@@ -148,7 +147,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:SetupBlizzardFramesFo
 end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateView()
-  self:UpdateForCharacter(self.lastCharacter, self:GetParent().liveBankActive and self.lastCharacter == self.liveCharacter)
+  self:UpdateForCharacter(self.lastCharacter, self:GetParent().liveBankActive and self.lastCharacter == self.liveCharacter and (not Syndicator.Constants.WarbandBankActive or not C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.AccountBanker)))
 end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)

@@ -119,7 +119,7 @@ function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
     self:Show()
     self.liveBankActive = true
     if self.hasCharacter then
-      self.currentTab:ResetToLive()
+      self.Character:ResetToLive()
       self:UpdateView()
     end
   elseif eventName == "BANKFRAME_CLOSED" then
@@ -129,6 +129,16 @@ function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
 end
 
 function BaganatorItemViewCommonBankViewMixin:OnShow()
+  if Syndicator.Constants.WarbandBankActive then
+    if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.AccountBanker) then
+      self.currentTab = self.Warband
+      self.Warband:Show()
+      self.Character:Hide()
+      self.Tabs[1]:Hide()
+    else
+      self.Tabs[1]:Show()
+    end
+  end
   if self.Tabs[1] then
     if self.currentTab == self.Character then
       PanelTemplates_SelectTab(self.Tabs[1])
@@ -168,6 +178,10 @@ end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateView()
   self.start = debugprofilestop()
+
+  if Syndicator.Constants.WarbandBankActive and not C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.AccountBanker) then
+    self.Tabs[1]:Show()
+  end
 
   addonTable.Utilities.ApplyVisuals(self)
 
