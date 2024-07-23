@@ -18,8 +18,8 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
   local endOfLineLabels = {}
 
   local function NewLine()
-    prevLabel:SetWidth(targetPixelWidth - offsetX + prevLayout:GetWidth())
-    table.insert(endOfLineLabels, {label = prevLabel, layout = prevLayout, offsetX = offsetX})
+    local labelOffsetX = offsetX - categorySpacing - iconPadding - prevLayout:GetWidth()
+    table.insert(endOfLineLabels, {label = prevLabel, offsetX = labelOffsetX})
     offsetX = 0
     offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding * 3 / 2
   end
@@ -71,14 +71,17 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     end
   end
 
+  if prevLayout and prevLayout.type == "category" then
+    NewLine()
+  end
+
   for _, details in ipairs(endOfLineLabels) do
-    details.label:SetWidth(math.max(pixelMinWidth, maxWidth) - details.offsetX + details.layout:GetWidth())
+    details.label:SetWidth(math.max(pixelMinWidth, maxWidth) - details.offsetX)
   end
 
   if prevLayout then
     if prevLayout.type == "category" then
-      prevLabel:SetWidth(math.max(pixelMinWidth, maxWidth) - offsetX + prevLayout:GetWidth())
-      offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding / 2
+      offsetY = offsetY + headerPadding / 2
     elseif prevLayout.type == "divider" then
       prevLayout:Hide()
       offsetY = offsetY + prevLayout:GetHeight() + headerPadding
