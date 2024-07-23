@@ -120,28 +120,43 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   
 
   local warbandData = Syndicator.API.GetWarband(1)
-  addonTable.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "bank", {0}, {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  if warbandData.bank[tabIndex] then
+    addonTable.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "bank", {0}, {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+      -- Ensure bank missing hint has enough space to display
+      local minWidth = 0
+      if self.BankMissingHint:IsShown() then
+        minWidth = self.BankMissingHint:GetWidth() + 40
+        maxHeight = maxHeight + 30
+      end
+
+      self:SetSize(
+        math.max(minWidth, addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
+        maxHeight + 75 + topSpacing / 2 + buttonPadding
+      )
+
+      local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
+      if self.searchToApply then
+        self:ApplySearch(searchText)
+      end
+
+      addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
+
+      self:GetParent():OnTabFinished()
+    end)
+  else
     -- Ensure bank missing hint has enough space to display
-    local minWidth = 0
-    if self.BankMissingHint:IsShown() then
-      minWidth = self.BankMissingHint:GetWidth() + 40
-      maxHeight = maxHeight + 30
-    end
+    local minWidth = self.BankMissingHint:GetWidth() + 40
+    local maxHeight = maxHeight + 30
 
     self:SetSize(
       math.max(minWidth, addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2 + buttonPadding
     )
 
-    local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
-    if self.searchToApply then
-      self:ApplySearch(searchText)
-    end
-
     addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
     self:GetParent():OnTabFinished()
-  end)
+  end
 
   self:GetParent():OnTabFinished()
 end
