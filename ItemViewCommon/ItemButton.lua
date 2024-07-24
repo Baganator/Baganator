@@ -547,6 +547,8 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   self:SetHasItem(texture);
   self:SetItemButtonTexture(texture);
 
+  self:SetItemButtonQuality(quality, nil, true, isBound);
+
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
 
@@ -822,6 +824,7 @@ function BaganatorRetailLiveWarbandItemButtonMixin:SetItemDetails(cacheData)
   self.icon:SetShown(texture ~= 0);
   self:SetItemButtonTexture(texture);
 
+  self:SetItemButtonQuality(quality, nil, true, isBound);
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
 
