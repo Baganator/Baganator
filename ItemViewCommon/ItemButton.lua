@@ -547,9 +547,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   self:SetHasItem(texture);
   self:SetItemButtonTexture(texture);
 
-  local doNotSuppressOverlays = false;
-  self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
-
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
 
@@ -581,6 +578,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   end, function()
     self:BGRUpdateQuests()
     self:UpdateItemContextMatching();
+    local doNotSuppressOverlays = C_Soulbinds.IsItemConduitByItemInfo(itemLink) or C_Item.IsCurioItem(itemLink);
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
   end)
 
@@ -824,9 +822,6 @@ function BaganatorRetailLiveWarbandItemButtonMixin:SetItemDetails(cacheData)
   self.icon:SetShown(texture ~= 0);
   self:SetItemButtonTexture(texture);
 
-  local doNotSuppressOverlays = false;
-  self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
-
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
 
@@ -854,6 +849,7 @@ function BaganatorRetailLiveWarbandItemButtonMixin:SetItemDetails(cacheData)
   end, function()
     self:BGRUpdateQuests()
     self:UpdateItemContextMatching();
+    local doNotSuppressOverlays = C_Soulbinds.IsItemConduitByItemInfo(itemLink) or C_Item.IsCurioItem(itemLink);
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
   end)
 end
