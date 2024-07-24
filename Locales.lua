@@ -296,8 +296,8 @@ L["CHOOSE"] = "Choose"
 L["SINGLE_BAG_DESCRIPTION"] = "The most common option. Keeps your items in one large container."
 L["CATEGORY_GROUPS_DESCRIPTION"] = "Group items by type, with features to add new custom categories."
 
-L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use addonTable."
-L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use addonTable."
+L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
+L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
