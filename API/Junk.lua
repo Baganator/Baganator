@@ -36,7 +36,7 @@ addonTable.Utilities.OnAddonLoaded("Scrap", function()
   end)
 end)
 
-addonTable.Utilities.OnAddonLoaded("Vendor", function()
+--[[addonTable.Utilities.OnAddonLoaded("Vendor", function()
   Baganator.API.RegisterJunkPlugin(BAGANATOR_L_VENDOR, "vendor", function(bagID, slotID, itemID, itemLink)
     return Vendor.EvaluateItem(bagID, slotID) == 1
   end)
@@ -52,7 +52,7 @@ addonTable.Utilities.OnAddonLoaded("Vendor", function()
   C_Timer.After(0, function()
     Vendor.RegisterExtension(extension)
   end)
-end)
+end)]]
 
 addonTable.Utilities.OnAddonLoaded("Dejunk", function()
   if not DejunkApi or not DejunkApi.Events then
