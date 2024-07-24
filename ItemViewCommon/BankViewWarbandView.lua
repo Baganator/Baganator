@@ -90,6 +90,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacks(callback)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacksAndSort(isReverse)
+  if not Syndicator.API.GetWarband(1).bank[self.currentTab] then
+    return
+  end
+
   local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
 
   if not addonTable.Sorting.IsModeAvailable(sortMethod) then
@@ -271,8 +275,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   self:GetParent().SearchWidget:SetShown(isWarbandData)
 
   if self.BankMissingHint:IsShown() then
-    if self.isLive then
+    if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) then
       self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_NOT_PURCHASED_HINT)
+    elseif self.isLive then
+      self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_TEMPORARILY_DISABLED_HINT)
     else
       self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_DATA_MISSING_HINT)
     end
