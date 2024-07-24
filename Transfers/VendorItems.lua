@@ -15,7 +15,7 @@ function addonTable.Transfers.VendorItems(toSell)
       sold = sold + 1
       -- Limit sold to the most that can be bought back from the merchant if
       -- clicked by mistaked
-      if sold >= 12 then
+      if sold >= 6 then
         break
       end
     end
