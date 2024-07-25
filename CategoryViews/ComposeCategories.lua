@@ -178,11 +178,11 @@ local function GetAuto(category, everything)
     local names = addonTable.ItemViewCommon.GetEquipmentSetNames()
     if #names == 0 then
       table.insert(searchLabels, BAGANATOR_L_CATEGORY_EQUIPMENT_SET)
-      table.insert(searches, SYNDICATOR_L_KEYWORD_EQUIPMENT_SET)
+      table.insert(searches, "#" .. SYNDICATOR_L_KEYWORD_EQUIPMENT_SET)
     else
       for _, name in ipairs(names) do
         table.insert(searchLabels, name)
-        table.insert(searches, SYNDICATOR_L_KEYWORD_EQUIPMENT_SET .. "&" .. name:lower())
+        table.insert(searches, "#" .. SYNDICATOR_L_KEYWORD_EQUIPMENT_SET .. "&" .. name:lower())
       end
     end
   elseif category.auto == "inventory_slots" then
@@ -190,7 +190,7 @@ local function GetAuto(category, everything)
       local name = _G[slot]
       if name then
         table.insert(searchLabels, name)
-        table.insert(searches, SYNDICATOR_L_KEYWORD_GEAR .. "&" .. name:lower())
+        table.insert(searches, "#" .. SYNDICATOR_L_KEYWORD_GEAR .. "&#" .. name:lower())
       end
     end
   elseif category.auto == "recents" then
