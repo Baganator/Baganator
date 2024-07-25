@@ -579,7 +579,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   end, function()
     self:BGRUpdateQuests()
     self:UpdateItemContextMatching();
-    local doNotSuppressOverlays = C_Soulbinds.IsItemConduitByItemInfo(itemID) or C_Item.IsCurioItem(itemID);
+    local doNotSuppressOverlays = false
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
   end)
 
@@ -851,7 +851,7 @@ function BaganatorRetailLiveWarbandItemButtonMixin:SetItemDetails(cacheData)
   end, function()
     self:BGRUpdateQuests()
     self:UpdateItemContextMatching();
-    local doNotSuppressOverlays = C_Soulbinds.IsItemConduitByItemInfo(itemID) or C_Item.IsCurioItem(itemID);
+    local doNotSuppressOverlays = false
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
   end)
 end
