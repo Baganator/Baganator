@@ -30,6 +30,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
+      self.searchToApply = true
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end

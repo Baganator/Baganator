@@ -39,6 +39,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
       return
     end
     if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
+      self.searchToApply = true
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
