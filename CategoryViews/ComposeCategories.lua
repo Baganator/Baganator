@@ -1,4 +1,9 @@
 local _, addonTable = ...
+
+if not Syndicator then
+  return
+end
+
 local inventorySlots = {
   "INVTYPE_2HWEAPON",
   "INVTYPE_WEAPON",
