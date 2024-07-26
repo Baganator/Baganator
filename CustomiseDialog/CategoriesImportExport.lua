@@ -140,7 +140,7 @@ local function ImportCategories(import)
         addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
         return
       end
-      newMods.group = group
+      newMods.group = c.group
     end
     categoryMods[c.source or c.name] = newMods
   end
