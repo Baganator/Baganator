@@ -77,6 +77,7 @@ function addonTable.ItemViewCommon.GetAnchorSetter(parent, setting)
       ApplySetting()
     elseif settingName == addonTable.Config.Options.SETTING_ANCHORS then
       holder:SetShown(addonTable.Config.Get(addonTable.Config.Options.SETTING_ANCHORS))
+      holder:Raise()
     end
   end)
 
