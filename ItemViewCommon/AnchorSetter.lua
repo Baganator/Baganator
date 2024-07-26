@@ -70,14 +70,16 @@ function addonTable.ItemViewCommon.GetAnchorSetter(parent, setting)
     end
   end
 
-  holder:SetScript("OnShow", ApplySetting)
+  holder:SetScript("OnShow", function()
+    holder:Raise()
+    ApplySetting()
+  end)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if settingName == setting and holder:IsVisible() then
       ApplySetting()
     elseif settingName == addonTable.Config.Options.SETTING_ANCHORS then
       holder:SetShown(addonTable.Config.Get(addonTable.Config.Options.SETTING_ANCHORS))
-      holder:Raise()
     end
   end)
 
