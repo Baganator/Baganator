@@ -28,6 +28,8 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
 
   self.liveItemButtonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
 
+  self.Anchor = addonTable.ItemViewCommon.GetAnchorSetter(self, addonTable.Config.Options.MAIN_VIEW_POSITION)
+
   -- DO NOT REMOVE
   -- Preallocating is necessary to avoid taint issues if a
   -- player logs in or first opens their bags when in combat
@@ -154,8 +156,10 @@ end
 function BaganatorItemViewCommonBackpackViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
-  local point, _, relativePoint, x, y = self:GetPoint(1)
-  addonTable.Config.Set(addonTable.Config.Options.MAIN_VIEW_POSITION, {point, x, y})
+  local oldCorner = addonTable.Config.Get(addonTable.Config.Options.MAIN_VIEW_POSITION)[1]
+  addonTable.Config.Set(addonTable.Config.Options.MAIN_VIEW_POSITION, {addonTable.Utilities.ConvertAnchorToCorner(oldCorner, self)})
+  self:ClearAllPoints()
+  self:SetPoint(unpack(addonTable.Config.Get(addonTable.Config.Options.MAIN_VIEW_POSITION)))
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:ToggleBank()

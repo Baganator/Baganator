@@ -266,6 +266,12 @@ local function SetupGuildView()
   addonTable.CallbackRegistry:RegisterCallback("GuildHide",  function(_, ...)
     guildView:Hide()
   end)
+
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == addonTable.Config.Options.GUILD_VIEW_POSITION then
+      SetPositions()
+    end
+  end)
 end
 
 local hidden = CreateFrame("Frame")

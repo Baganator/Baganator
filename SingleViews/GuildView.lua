@@ -14,6 +14,8 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
+  self.Anchor = addonTable.ItemViewCommon.GetAnchorSetter(self, addonTable.Config.Options.GUILD_VIEW_POSITION)
+
   self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
   self.currentTab = 1
   self.otherTabsCache = {}
@@ -257,8 +259,8 @@ end
 function BaganatorSingleViewGuildViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
-  local point, _, relativePoint, x, y = self:GetPoint(1)
-  addonTable.Config.Set(addonTable.Config.Options.GUILD_VIEW_POSITION, {point, UIParent:GetName(), x, y})
+  local oldCorner = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_POSITION)[1]
+  addonTable.Config.Set(addonTable.Config.Options.GUILD_VIEW_POSITION, {addonTable.Utilities.ConvertAnchorToCorner(oldCorner, self)})
 end
 
 function BaganatorSingleViewGuildViewMixin:OpenTabEditor()

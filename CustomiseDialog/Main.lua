@@ -126,6 +126,11 @@ local LAYOUT_OPTIONS = {
     text = BAGANATOR_L_LOCK_WINDOWS,
     option = "lock_frames",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_CHANGE_WINDOW_ANCHORS,
+    option = "setting_anchors",
+  },
 }
 
 local THEME_OPTIONS = {

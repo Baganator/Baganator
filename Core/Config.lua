@@ -51,6 +51,7 @@ addonTable.Config.Options = {
   GUILD_VIEW_DIALOG_POSITION = "guild_view_dialog_position",
   SHOW_BUTTONS_ON_ALT = "show_buttons_on_alt",
   CHARACTER_SELECT_POSITION = "character_select_position",
+  SETTING_ANCHORS = "setting_anchors",
 
   DEBUG_TIMERS = "debug_timers",
   DEBUG_KEYWORDS = "debug_keywords",
@@ -119,6 +120,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.AUTO_SORT_ON_OPEN] = false,
   [addonTable.Config.Options.JUNK_PLUGIN] = "poor_quality",
   [addonTable.Config.Options.JUNK_PLUGINS_IGNORED] = {},
+  [addonTable.Config.Options.SETTING_ANCHORS] = false,
 
   [addonTable.Config.Options.DEBUG_TIMERS] = false,
   [addonTable.Config.Options.DEBUG_KEYWORDS] = false,

@@ -11,6 +11,8 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
   self:SetClampedToScreen(true)
   self:SetUserPlaced(false)
 
+  self.Anchor = addonTable.ItemViewCommon.GetAnchorSetter(self, addonTable.Config.Options.BANK_ONLY_VIEW_POSITION)
+
   self.tabPool = addonTable.ItemViewCommon.GetTabButtonPool(self)
 
   self.Tabs = {}
@@ -110,8 +112,8 @@ end
 function BaganatorItemViewCommonBankViewMixin:OnDragStop()
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
-  local point, _, relativePoint, x, y = self:GetPoint(1)
-  addonTable.Config.Set(addonTable.Config.Options.BANK_ONLY_VIEW_POSITION, {point, x, y})
+  local oldCorner = addonTable.Config.Get(addonTable.Config.Options.BANK_ONLY_VIEW_POSITION)[1]
+  addonTable.Config.Set(addonTable.Config.Options.BANK_ONLY_VIEW_POSITION, {addonTable.Utilities.ConvertAnchorToCorner(oldCorner, self)})
 end
 
 function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
