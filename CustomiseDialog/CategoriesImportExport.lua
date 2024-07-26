@@ -145,7 +145,7 @@ local function ImportCategories(import)
     categoryMods[c.source or c.name] = newMods
   end
 
-  return customCategories, categoryMods
+  return customCategories, categoryMods, seenItems
 end
 
 function addonTable.CustomiseDialog.CategoriesImport(input)
@@ -158,7 +158,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
     return
   end
-  local customCategories, categoryMods = ImportCategories(import)
+  local customCategories, categoryMods, seenItems = ImportCategories(import)
   if import.order then
     if type(import.order) ~= "table" then
       addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
@@ -221,6 +221,18 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     end
     local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     local currentCategoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    for source, details in pairs(currentCategoryMods) do
+      if categoryMods[source] == nil and details.addedItems and #details.addedItems > 0 then
+        for i = #details.addedItems, 1 do
+          local item = details.addedItems[i]
+          if item.itemID and seenItems["i:" .. item.itemID] then
+            table.remove(details.addedItems, i)
+          elseif item.petID and seenItems["p:" .. item.petID] then
+            table.remove(details.addedItems, i)
+          end
+        end
+      end
+    end
     Mixin(currentCustomCategories, customCategories)
     Mixin(currentCategoryMods, categoryMods)
     addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
