@@ -160,8 +160,14 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
           end
         end
       end
+      for search, r in pairs(oldResults) do
+        if r.oldLength and r.oldLength > #results[search].all then
+          anyNew = false
+        end
+      end
       if not anyNew then
         for search, r in pairs(oldResults) do
+          results[search].oldLength = #results[search].all
           if #r.all > #results[search].all then
             for index, info in ipairs(r.all) do
               if not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then

@@ -143,7 +143,7 @@ function BaganatorCategoryViewBackpackViewMixin:TransferCategory(associatedSearc
     return
   end
 
-  self:Transfer(true, function() return self.results[associatedSearch].all end)
+  self:Transfer(true, function() return tFilter(self.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)
