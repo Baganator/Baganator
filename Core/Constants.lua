@@ -52,12 +52,15 @@ addonTable.Constants.Events = {
   "CategoryAddItemStart",
   "CategoryAddItemEnd",
 
+  "ForceClearedNewItems",
+
   "BackpackFrameChanged",
 
   "ShowCustomise",
   "ResetFramePositions",
   "EditCategory",
   "EditCategorySection",
+  "EditCategoryRecent",
 
   "HighlightSimilarItems",
   "HighlightIdenticalItems",

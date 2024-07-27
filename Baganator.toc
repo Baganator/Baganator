@@ -112,6 +112,7 @@ CustomiseDialog\CategoriesEditor.lua
 CustomiseDialog\CategoriesEditor.xml
 CustomiseDialog\CategoriesSectionEditor.lua
 CustomiseDialog\CategoriesSectionEditor.xml
+CustomiseDialog\CategoriesRecentEditor.lua
 CustomiseDialog\CategoriesImportExport.lua
 CustomiseDialog\Main.lua
 CustomiseDialog\Main.xml

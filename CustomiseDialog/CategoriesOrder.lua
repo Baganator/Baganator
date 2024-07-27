@@ -106,6 +106,8 @@ local function GetCategoryContainer(parent, pickupCallback)
       frame:SetScript("OnClick", function(self, button)
         if self.value:match("^_") then
           addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", self.value)
+        elseif self.value == "default_auto_recents" then
+          addonTable.CallbackRegistry:TriggerEvent("EditCategoryRecent")
         else
           addonTable.CallbackRegistry:TriggerEvent("EditCategory", self.value)
         end
@@ -143,7 +145,7 @@ local function GetCategoryContainer(parent, pickupCallback)
     local default = addonTable.CategoryViews.Constants.SourceToCategory[frame.value]
     local divider = frame.value == addonTable.CategoryViews.Constants.DividerName
     local categoryEnd = frame.value == addonTable.CategoryViews.Constants.SectionEnd
-    frame:SetEnabled(not categoryEnd and not divider and (not default or not default.auto))
+    frame:SetEnabled(not categoryEnd and not divider and (not default or not default.auto or default.auto ~= "recent"))
     frame.repositionButton:SetShown(not categoryEnd)
   end)
   container.ScrollBar = CreateFrame("EventFrame", nil, container, "WowTrimScrollBar")

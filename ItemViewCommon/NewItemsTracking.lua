@@ -6,7 +6,13 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
   self:RegisterEvent("BANKFRAME_CLOSED")
 
   self.firstStart = true
-  self.timeout = 15
+  self.timeout = addonTable.Config.Get(addonTable.Config.Options.RECENT_TIMEOUT)
+
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == addonTable.Config.Options.RECENT_TIMEOUT then
+      self.timeout = addonTable.Config.Get(addonTable.Config.Options.RECENT_TIMEOUT)
+    end
+  end)
 
   self.recentByContainer = {}
 
@@ -118,14 +124,33 @@ end
 
 -- Update any recents on a timeout
 function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItemsForTimeout()
-  local time = GetTime()
-  for guid, details in pairs(self.recentTimeout) do
-    if not self.seen[guid] then
-      self.recentTimeout[guid] = nil
-    elseif time - details.time >= self.timeout then
-      self.recentTimeout[guid] = nil
-      self.recentByContainerTimeout[details.bagID][details.slotID] = nil
+  if self.timeout < 0 then
+    for guid, details in pairs(self.recentTimeout) do
+      if not self.seen[guid] then
+        self.recentTimeout[guid] = nil
+      end
     end
+  else
+    local time = GetTime()
+    for guid, details in pairs(self.recentTimeout) do
+      if not self.seen[guid] then
+        self.recentTimeout[guid] = nil
+      elseif time - details.time >= self.timeout then
+        self.recentTimeout[guid] = nil
+        self.recentByContainerTimeout[details.bagID][details.slotID] = nil
+      end
+    end
+  end
+end
+
+function BaganatorItemViewCommonNewItemsTrackingMixin:ForceClearNewItemsForTimeout()
+  local any = next(self.recentTimeout) ~= nil
+  for guid, details in pairs(self.recentTimeout) do
+    self.recentTimeout[guid] = nil
+    self.recentByContainerTimeout[details.bagID][details.slotID] = nil
+  end
+  if any then
+    addonTable.CallbackRegistry:TriggerEvent("ForceClearedNewItems")
   end
 end
 

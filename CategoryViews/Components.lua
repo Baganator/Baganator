@@ -16,6 +16,8 @@ end
 function BaganatorCategoryViewsCategoryButtonMixin:OnClick(button)
   if button == "RightButton" and self.categorySearch then
     self:GetParent():TransferCategory(self.categorySearch)
+  elseif button == "LeftButton" then
+    addonTable.NewItems:ForceClearNewItemsForTimeout()
   end
 end
 

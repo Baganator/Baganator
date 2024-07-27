@@ -405,20 +405,13 @@ function addonTable.CustomiseDialog.GetMouseOverInContainer(c)
   end
 end
 
-local VALUE_TO_PRIORITY_TEXT = {
-  [-1] = BAGANATOR_L_LOW,
-  [0] = BAGANATOR_L_NORMAL,
-  [1] = BAGANATOR_L_HIGH,
-  [2] = BAGANATOR_L_HIGHER,
-  [3] = BAGANATOR_L_HIGHEST,
-}
-BaganatorPrioritySliderMixin = {}
+BaganatorCustomSliderMixin = {}
 
-function BaganatorPrioritySliderMixin:Init(details)
+function BaganatorCustomSliderMixin:Init(details)
   Mixin(self, details)
   self.callback = self.callback or function() end
 
-  self.Slider:SetMinMaxValues(-1, 3)
+  self.Slider:SetMinMaxValues(self.min, self.max)
   self.Label:SetText(self.text)
 
   self.Slider:SetValueStep(1)
@@ -427,30 +420,30 @@ function BaganatorPrioritySliderMixin:Init(details)
   self.Slider:SetScript("OnValueChanged", function()
     local value = self.Slider:GetValue()
     self.callback(value)
-    self.ValueText:SetText(VALUE_TO_PRIORITY_TEXT[value])
+    self.ValueText:SetText(self.valueToText[value])
   end)
   addonTable.Skins.AddFrame("Slider", self.Slider)
 end
 
-function BaganatorPrioritySliderMixin:SetValue(value)
+function BaganatorCustomSliderMixin:SetValue(value)
   self.Slider:SetValue(value)
 end
 
-function BaganatorPrioritySliderMixin:GetValue()
+function BaganatorCustomSliderMixin:GetValue()
   return self.Slider:GetValue()
 end
 
-function BaganatorPrioritySliderMixin:OnMouseWheel(delta)
+function BaganatorCustomSliderMixin:OnMouseWheel(delta)
   if self.Slider:IsEnabled() then
     self.Slider:SetValue(self.Slider:GetValue() + delta)
   end
 end
 
-function BaganatorPrioritySliderMixin:Disable()
+function BaganatorCustomSliderMixin:Disable()
   self.Slider:Disable()
 end
 
-function BaganatorPrioritySliderMixin:Enable()
+function BaganatorCustomSliderMixin:Enable()
   self.Slider:Enable()
 end
 

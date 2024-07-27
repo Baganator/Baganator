@@ -35,6 +35,12 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
   end)
 
+  addonTable.CallbackRegistry:RegisterCallback("ForceClearedNewItems",  function()
+    if self:IsVisible() and self.lastCharacter ~= nil and self.isLive then
+      self:UpdateForCharacter(self.lastCharacter, self.isLive)
+    end
+  end)
+
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if not self.lastCharacter then
       return

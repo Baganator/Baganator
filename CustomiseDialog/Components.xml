@@ -145,7 +145,7 @@
     </Scripts>
   </EventButton>
 
-  <Frame name="BaganatorPrioritySliderTemplate" virtual="true" mixin="BaganatorPrioritySliderMixin">
+  <Frame name="BaganatorCustomSliderTemplate" virtual="true" mixin="BaganatorCustomSliderMixin">
     <Size y="40"/>
     <Layers>
       <Layer level="OVERLAY">
