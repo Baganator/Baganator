@@ -193,6 +193,11 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
       for _, layout in ipairs(self.LiveLayouts) do
         layout:Hide()
       end
+      if #self.CachedLayouts > #searches + activeLayoutOffset then
+        for index = #searches + activeLayoutOffset + 1, #self.CachedLayouts do
+          self.CachedLayouts[index]:Hide()
+        end
+      end
       activeLayouts = self.CachedLayouts
     end
 
