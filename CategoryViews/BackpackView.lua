@@ -26,6 +26,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
+    self.results = nil
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
@@ -40,10 +41,12 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
     if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
       self.searchToApply = true
+      self.results = nil
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.SORT_METHOD then
+      self.results = nil
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -51,6 +54,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
+      self.results = nil
       self.MultiSearch:ResetCaches()
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
@@ -102,6 +106,7 @@ end
 function BaganatorCategoryViewBackpackViewMixin:OnShow()
   BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
   addonTable.NewItems:ClearNewItemsForTimeout()
+  self.results = nil
 end
 
 -- Clear new item status on items that are hidden as part of a stack
@@ -155,7 +160,7 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     topSpacing = 7
   end
 
-  self.isGrouping = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING) and not self.splitStacksDueToTransfer
+  self.isGrouping = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING) and (not self.splitStacksDueToTransfer or not self.isLive)
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = false

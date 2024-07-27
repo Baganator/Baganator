@@ -95,6 +95,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     self.labelsPool:ReleaseAll()
     self.dividerPool:ReleaseAll()
     self.sectionButtonPool:ReleaseAll()
+    local oldResults = self.results
     self.results = results
 
     local start2 = debugprofilestop()
@@ -146,6 +147,33 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
         end
         results[searchTerm].all = {}
       end
+    end
+
+    if self.splitStacksDueToTransfer and oldResults then
+      local newNew = addonTable.NewItems:GetNew()
+      local anyNew = self.oldNew == nil and next(newNew) ~= nil
+      if not anyNew then
+        for guid in pairs(newNew) do
+          if not self.oldNew[guid] then
+            anyNew = true
+            break
+          end
+        end
+      end
+      if not anyNew then
+        for search, r in pairs(oldResults) do
+          if #r.all > #results[search].all then
+            for index, info in ipairs(r.all) do
+              if not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
+                table.insert(results[search].all, index, {bagID = info.bagID, slotID = info.slotID, key = ""})
+              end
+            end
+          end
+        end
+      end
+      self.oldNew = newNew
+    else
+      self.oldNew = nil
     end
 
     local activeLayouts
