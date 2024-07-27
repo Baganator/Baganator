@@ -20,6 +20,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.MultiSearch:ResetCaches()
+    self.results = nil
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
@@ -31,6 +32,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
       self.searchToApply = true
+      self.results = nil
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
@@ -38,11 +40,13 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
+      self.results = nil
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
       self.MultiSearch:ResetCaches()
+      self.results = nil
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
