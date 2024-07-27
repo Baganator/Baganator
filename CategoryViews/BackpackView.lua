@@ -22,7 +22,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.sectionButtonPool = addonTable.CategoryViews.GetSectionButtonPool(self)
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
-  self.recentItems = {}
+  self.updatedBags = {}
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.CategoryFilter:ResetCaches()
@@ -98,6 +98,11 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
 end
 
 function BaganatorCategoryViewBackpackViewMixin:NotifyBagUpdate(updatedBags)
+  for bagID, state in pairs(updatedBags) do
+    if state then
+      self.updatedBags[bagID] = true
+    end
+  end
 end
 
 function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)

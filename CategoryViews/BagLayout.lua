@@ -4,7 +4,7 @@ local addonName, addonTable = ...
 local linkMap = {}
 local activeLayoutOffset = 1
 
-local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
+local function Prearrange(isLive, bagID, bag, bagType)
   local junkPluginID = addonTable.Config.Get("junk_plugin")
   local junkPlugin = addonTable.API.JunkPlugins[junkPluginID] and addonTable.API.JunkPlugins[junkPluginID].callback
   if junkPluginID == "poor_quality" then
@@ -14,51 +14,63 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
   local emptySlotCount = {}
   local emptySlotsOrder = {}
   local everything = {}
-  for bagIndex, bag in ipairs(allBags) do
-    local bagID = bagIndexes[bagIndex]
-    if not bagID then -- Avoid errors from bags removed from the possible indexes
-      break
-    end
-    for slotIndex, slot in ipairs(bag) do
-      local info = Syndicator.Search.GetBaseInfo(slot)
-      if self.isLive then
-        if addonTable.Constants.IsClassic then
-          info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(bagID, slotIndex) end) end
-        else
-          info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
-        end
-        info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
-        if info.itemID ~= nil then
-          local location = {bagID = bagID, slotIndex = slotIndex}
-          info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
-          if info.setInfo then
-            info.guid = C_Item.GetItemGUID(location)
-          end
-        end
-      end
-      if info.itemID then
-        info.guid = info.guid or ""
-        info.iconTexture = slot.iconTexture
-        info.keyLink = linkMap[info.itemLink]
-        if not info.keyLink then
-          info.keyLink = info.itemLink:gsub("(item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:)%d+:", "%1:")
-          linkMap[info.itemLink] = info.keyLink
-        end
-        info.bagID = bagID
-        info.slotID = slotIndex
-        info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
-        table.insert(everything, info)
+  local bagID = bagIndexes[bagIndex]
+  if not bagID then -- Avoid errors from bags removed from the possible indexes
+    break
+  end
+  for slotIndex, slot in ipairs(bag) do
+    local info = Syndicator.Search.GetBaseInfo(slot)
+    if isLive then
+      if addonTable.Constants.IsClassic then
+        info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(bagID, slotIndex) end) end
       else
-        if not emptySlotCount[bagTypes[bagIndex]] then
-          emptySlotCount[bagTypes[bagIndex]] =  0
-          table.insert(emptySlotsOrder, {bagID = bagID, slotID = slotIndex, key = bagTypes[bagIndex]})
-        end
-        emptySlotCount[bagTypes[bagIndex]] = emptySlotCount[bagTypes[bagIndex]] + 1
+        info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
       end
+      info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
+      if info.itemID ~= nil then
+        local location = {bagID = bagID, slotIndex = slotIndex}
+        info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
+        if info.setInfo then
+          info.guid = C_Item.GetItemGUID(location)
+        end
+      end
+    end
+    if info.itemID then
+      info.guid = info.guid or ""
+      info.iconTexture = slot.iconTexture
+      info.keyLink = linkMap[info.itemLink]
+      if not info.keyLink then
+        info.keyLink = info.itemLink:gsub("(item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:)%d+:", "%1:")
+        linkMap[info.itemLink] = info.keyLink
+      end
+      info.bagID = bagID
+      info.slotID = slotIndex
+      info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
+      table.insert(everything, info)
+    else
+      if not emptySlotCount[bagType] then
+        emptySlotCount[bagType] =  0
+        table.insert(emptySlotsOrder, {bagID = bagID, slotID = slotIndex, key = bagType})
+      end
+      emptySlotCount[bagType] = emptySlotCount[bagType] + 1
     end
   end
 
-  return emptySlotCount, emptySlotsOrder, everything
+  return {emptySlotCount = emptySlotCount, emptySlotsOrder = emptySlotsOrder, everything = everything}
+end
+
+local function GetKeySummary(byBagData)
+  local summary = {}
+  for _, data in pairs(byBagData) do
+    for _, item in ipairs(data) do
+      summary[item.key] = summary[item.key] or { itemCount = 0, location = {}, items = {}}
+      summary[item.key].itemCount = summary[item.key].itemCount + item.itemCount
+      summary[item.key].location[item.bagID .. " " .. item.slotID] = true
+      table.insert(summary[item.key].items,  itemr)
+    end
+  end
+
+  return summary
 end
 
 local function DisplayResults(self, containerType, results, composed, emptySlotCount, emptySlotsOrder, sideSpacing, topSpacing)
@@ -286,7 +298,32 @@ end
 function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
 
-  local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
+  self.byBagData = self.byBagData or {}
+  self.oldSummary = self.oldSummary or {}
+
+  for index, bagID in ipairs(bagIndexes) do
+    if self.updatedBags[bagID] then
+      self.byBagData[bagID] = Prearrange(self.isLive, bagID, allBags[index], bagTypes[index])
+    end
+  end
+
+  local summary = GetKeySummary(byBagData)
+  for search, results in pairs(self.results) do
+    for i = #results, 1, -1 do
+      local item = results[i]
+      if not summary[item.key] then
+        table.remove(results, i)
+      elseif not summary[item.key].location[item.bagID .. " " .. item.slotID] then
+        table.remove(results, i)
+      end
+    end
+  end
+  for key, details in pairs(self.oldSummary) do
+    if not summary[key] then
+    end
+  end
+
+  local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self.isLive, toProcess)
 
   local composed = addonTable.CategoryViews.ComposeCategories(everything)
 
