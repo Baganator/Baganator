@@ -76,9 +76,25 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", functio
   return false
 end, textInit)
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_EQUIP, "boe", function(BindingText, details)
+local function IsBindOnEquip(details)
   local classID = select(6, C_Item.GetItemInfoInstant(details.itemLink))
   if (IsEquipment(details.itemLink) or classID == Enum.ItemClass.Container) and not details.isBound and (iconSettings.boe_on_common or details.quality > 1) then
+    if not details.tooltipInfo then
+      details.tooltipInfo = details.tooltipGetter()
+    end
+    if details.tooltipInfo then
+      for _, row in ipairs(details.tooltipInfo.lines) do
+        if row.leftText == ITEM_BIND_ON_EQUIP then
+          return true
+        end
+      end
+    end
+  end
+  return false
+end
+
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_EQUIP, "boe", function(BindingText, details)
+  if IsBindOnEquip(details) then
     BindingText:SetText(BAGANATOR_L_BOE)
     if iconSettings.useQualityColors then
       local color = qualityColors[details.quality]
@@ -92,9 +108,6 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_EQUIP, "boe", function(Bi
 end, textInit)
 
 local function IsBindOnAccount(details)
-  if not details.isBound then
-    return false
-  end
   if not details.tooltipInfo then
     details.tooltipInfo = details.tooltipGetter()
   end
