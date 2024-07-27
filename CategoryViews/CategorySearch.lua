@@ -1,6 +1,24 @@
 local _, addonTable = ...
 local addonName, addonTable = ...
 
+local errorDialog = "Baganator_Categories_Search_Error"
+StaticPopupDialogs[errorDialog] = {
+  text = "",
+  button1 = OKAY,
+  timeout = 0,
+  hideOnEscape = 1,
+  hasEditBox = 1,
+  OnShow = function(self)
+    self.editBox:SetText("https://discord.gg/TtSN6DxSky")
+    self.editBox:HighlightText()
+  end,
+  EditBoxOnEnterPressed = function(self)
+    self:GetParent():Hide()
+  end,
+  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+  editBoxWidth = 230,
+}
+
 BaganatorCategoryViewsCategorySearchMixin = {}
 
 function BaganatorCategoryViewsCategorySearchMixin:OnLoad()
@@ -13,6 +31,11 @@ end
 
 function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attachedItems, everything, callback)
   self.start = debugprofilestop()
+
+  if self.timer then
+    self.timer:Cancel()
+    self.timer = nil
+  end
 
   self.searches = searches
   self.attachedItems = attachedItems
@@ -55,6 +78,14 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
       self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
     end
 
+    self.warningTimer = C_Timer.NewTimer(5, function()
+      local items = ""
+      for key in pairs(self.searchPending) do
+        items = items .. "\n" .. key .. " item ID: " .. self.seenData[key].itemID
+      end
+      StaticPopupDialogs[errorDialog].text = BAGANATOR_L_CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
+      StaticPopup_Show(errorDialog)
+    end)
     self:DoSearch()
   end
 
@@ -131,6 +162,11 @@ function BaganatorCategoryViewsCategorySearchMixin:DoSearch()
     self.searchIndex = self.searchIndex + 1
 
     if self.searchIndex > #self.searches then
+      if self.timer then
+        self.timer:Cancel()
+        self.timer = nil
+      end
+
       self:SortResults()
       return
     end
