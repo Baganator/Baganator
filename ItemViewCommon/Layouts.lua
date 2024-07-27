@@ -843,7 +843,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
       newButton:Show()
       table.insert(toSet, {newButton, cacheData})
     end
-    if cacheData.isDummy  then
+    if cacheData.isDummy then
       self:ApplyDummyButtonSettings(newButton, cacheData)
     elseif not self.indexFrames[cacheData.bagID] then
       local indexFrame = self.indexFramesPool:Acquire()

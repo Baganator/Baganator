@@ -52,7 +52,6 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.SORT_METHOD then
-      self.results = nil
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -117,7 +116,7 @@ end
 function BaganatorCategoryViewBackpackViewMixin:OnShow()
   BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
   addonTable.NewItems:ClearNewItemsForTimeout()
-  self.results = nil
+  self.oldResults = nil
 end
 
 -- Clear new item status on items that are hidden as part of a stack

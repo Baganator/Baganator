@@ -59,7 +59,6 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attac
   self.pending = {}
 
   local function DoComplete()
-    local attachedItems = self.attachedItems[search]
     for search, items in pairs(self.attachedItems) do
       local results = self.results[search]
 
@@ -102,7 +101,7 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attac
     local key = item.key
     -- Needs to be set here as the later code will ensure fields are shared,
     -- when invertedItemCount shouldn't be
-    item.invertedItemCount = -item.itemCount
+    rawset(item,"invertedItemCount",-item.itemCount)
     local seen = self.seenData[key]
     if not self.pending[key] then
       self.pending[key] = {}
@@ -127,8 +126,10 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attac
         self.seenData[key] = item
         addonTable.Sorting.AddSortKeys({item})
       else
-        seen.setInfo = item.setInfo
-        setmetatable(item, {__index = self.seenData[key], __newindex = seen})
+        rawset(seen,"setInfo",item.setInfo)
+        if self.seenData[key] ~= item then
+          setmetatable(item, {__index = self.seenData[key], __newindex = seen})
+        end
       end
     else
       setmetatable(item, {__index = self.seenData[key], __newindex = seen})
