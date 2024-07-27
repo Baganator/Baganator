@@ -91,7 +91,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     print("prearrange", debugprofilestop() - s1)
   end
 
-  self.MultiSearch:ApplySearches(prioritisedSearches, attachedItems, everything, function(results)
+  self.CategoryFilter:ApplySearches(prioritisedSearches, attachedItems, everything, function(results)
     self.labelsPool:ReleaseAll()
     self.dividerPool:ReleaseAll()
     self.sectionButtonPool:ReleaseAll()

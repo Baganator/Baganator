@@ -4,12 +4,13 @@
       <OnEvent method="OnEvent"/>
     </Scripts>
     <Frames>
-      <Frame parentKey="MultiSearch" mixin="BaganatorCategoryViewsCategorySearchMixin">
+      <Frame parentKey="CategoryFilter" mixin="BaganatorCategoryViewsCategoryFilterMixin">
         <Scripts>
           <OnLoad method="OnLoad"/>
           <OnHide method="OnHide"/>
         </Scripts>
       </Frame>
+      <Frame parentKey="CategorySort" mixin="BaganatorCategoryViewsCategorySortMixin"/>
     </Frames>
   </Frame>
 </Ui>

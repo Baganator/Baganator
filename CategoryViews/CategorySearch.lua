@@ -1,5 +1,4 @@
 local _, addonTable = ...
-local addonName, addonTable = ...
 
 local errorDialog = "Baganator_Categories_Search_Error"
 StaticPopupDialogs[errorDialog] = {
@@ -19,24 +18,24 @@ StaticPopupDialogs[errorDialog] = {
   editBoxWidth = 230,
 }
 
-BaganatorCategoryViewsCategorySearchMixin = {}
+BaganatorCategoryViewsCategoryFilterMixin = {}
 
-function BaganatorCategoryViewsCategorySearchMixin:OnLoad()
+function BaganatorCategoryViewsCategoryFilterMixin:OnLoad()
   self:ResetCaches()
 end
 
-function BaganatorCategoryViewsCategorySearchMixin:OnHide()
+function BaganatorCategoryViewsCategoryFilterMixin:OnHide()
   if self.timer then
     self.timer:Cancel()
     self.timer = nil
   end
 end
 
-function BaganatorCategoryViewsCategorySearchMixin:ResetCaches()
+function BaganatorCategoryViewsCategoryFilterMixin:ResetCaches()
   self.seenData = {}
 end
 
-function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attachedItems, everything, callback)
+function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attachedItems, everything, callback)
   self.start = debugprofilestop()
 
   if self.timer then
@@ -150,27 +149,7 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
   end
 end
 
-function BaganatorCategoryViewsCategorySearchMixin:SortResults()
-  local incomplete
-  for search in pairs(self.sortPending) do
-    self.results[search], incomplete = addonTable.Sorting.OrderOneListOffline(self.results[search], self.sortMethod)
-    if not incomplete then
-      self.sortPending[search] = nil
-    end
-  end
-
-  if next(self.sortPending) == nil then
-    self:SetScript("OnUpdate", nil)
-    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("search and sort took", debugprofilestop() - self.start)
-    end
-    self.callback(self.results)
-  else
-    self:SetScript("OnUpdate", self.SortResults)
-  end
-end
-
-function BaganatorCategoryViewsCategorySearchMixin:DoSearch()
+function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
   if not self.searchPending then
     self.searchIndex = self.searchIndex + 1
 

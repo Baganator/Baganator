@@ -19,7 +19,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    self.MultiSearch:ResetCaches()
+    self.CategoryFilter:ResetCaches()
     self.results = nil
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
@@ -48,7 +48,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
-      self.MultiSearch:ResetCaches()
+      self.CategoryFilter:ResetCaches()
       self.results = nil
       if self:IsVisible() then
         self:GetParent():UpdateView()

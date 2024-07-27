@@ -25,7 +25,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.recentItems = {}
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    self.MultiSearch:ResetCaches()
+    self.CategoryFilter:ResetCaches()
     self.results = nil
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
@@ -60,8 +60,8 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
+      self.CategoryFilter:ResetCaches()
       self.results = nil
-      self.MultiSearch:ResetCaches()
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
