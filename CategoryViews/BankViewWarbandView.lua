@@ -109,6 +109,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   end
 
   self.isGrouping = not self.isLive and addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING)
+  self.splitStacksDueToTransfer = self.isLive
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = false
