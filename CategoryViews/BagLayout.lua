@@ -61,11 +61,11 @@ end
 local function GetKeySummary(byBagData)
   local summary = {}
   for _, data in pairs(byBagData) do
-    for _, item in ipairs(data) do
+    for _, item in ipairs(data.everything) do
       summary[item.key] = summary[item.key] or { itemCount = 0, location = {}, items = {}}
       summary[item.key].itemCount = summary[item.key].itemCount + item.itemCount
       summary[item.key].location[item.bagID .. " " .. item.slotID] = true
-      table.insert(summary[item.key].items,  itemr)
+      table.insert(summary[item.key].items,  item)
     end
   end
 
@@ -78,7 +78,6 @@ local function DisplayResults(self, containerType, results, composed, emptySlotC
   self.sectionButtonPool:ReleaseAll()
   local oldResults = self.oldResults
   self.oldResults = CopyTable(results, 2)
-  print(self.results)
 
   local start2 = debugprofilestop()
   local bagWidth
@@ -321,20 +320,20 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     for search, results in pairs(self.results) do
       local attachments = composed.attachedItems[search]
       local oldAttachments = self.oldComposed.attachedItems[search]
-      for i = #results, 1, -1 do
-        local item = results[i]
-        local match = attachments["i:" .. tostring(details.itemID)] or attachments["p:" .. tostring(details.petID)] or attachments[key]
-        local oldMatch = oldAttachments["i:" .. tostring(details.itemID)] or oldAttachments["p:" .. tostring(details.petID)] or oldAttachments[key]
-        if not summary[item.key] or summary[item.key].itemCount ~= self.oldSummary[item.key.itemCount] or not summary[item.key].location[item.bagID .. " " .. item.slotID] or (oldMatch and not match) or item.isDummy then
+      for i = #results.all, 1, -1 do
+        local item = results.all[i]
+        local match = attachments and (attachments["i:" .. tostring(item.itemID)] or attachments["p:" .. tostring(item.petID)] or attachments[key])
+        local oldMatch = oldAttachments and (oldAttachments["i:" .. tostring(item.itemID)] or oldAttachments["p:" .. tostring(item.petID)] or oldAttachments[key])
+        if not summary[item.key] or summary[item.key].itemCount ~= self.oldSummary[item.key].itemCount or not summary[item.key].location[item.bagID .. " " .. item.slotID] or (oldMatch and not match) or item.isDummy then
           reshowSearches[search] = true
           self.oldSummary[item.key] = nil
-          table.remove(results, i)
+          table.remove(results.all, i)
         end
       end
     end
 
     for key, details in pairs(summary) do
-      if not self.oldSummary[key] then
+      if not self.oldSummary[key] or self.oldSummary[key].itemCount ~= summary[key].itemCount then
         tAppendAll(toProcess, details.items)
       end
     end
@@ -380,6 +379,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     end
     self.CategorySort:ApplySorts(altered, function(results)
       for search, r in pairs(results) do
+        print(#results[search], #r)
         self.results[search] = r
       end
       local emptySlotCount, emptySlotsOrder = {}, {}
