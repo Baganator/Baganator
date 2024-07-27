@@ -150,22 +150,13 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     end
 
     if self.splitStacksDueToTransfer and oldResults then
-      local newNew = addonTable.NewItems:GetNew()
-      local anyNew = self.oldNew == nil and next(newNew) ~= nil
-      if not anyNew then
-        for guid in pairs(newNew) do
-          if not self.oldNew[guid] then
-            anyNew = true
-            break
-          end
-        end
-      end
+      local anyNew = false
       for search, r in pairs(oldResults) do
         if r.oldLength and r.oldLength < #results[search].all then
           anyNew = true
         end
       end
-      if not anyNew then
+      if not anyNew and not self.addToCategoryMode then
         for search, r in pairs(oldResults) do
           results[search].oldLength = #results[search].all
           if #r.all > #results[search].all then
@@ -177,9 +168,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
           end
         end
       end
-      self.oldNew = newNew
-    else
-      self.oldNew = nil
     end
 
     local activeLayouts

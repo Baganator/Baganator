@@ -129,16 +129,6 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItemsForTimeout()
   end
 end
 
-function BaganatorItemViewCommonNewItemsTrackingMixin:GetNew()
-  local result = {}
-  for bagID in pairs(self.recentByContainer) do
-    for slotID in pairs(self.recentByContainer[bagID]) do
-      table.insert(result, self.recentByContainer[bagID][slotID])
-    end
-  end
-  return result
-end
-
 function BaganatorItemViewCommonNewItemsTrackingMixin:IsNewItem(bagID, slotID)
   return self.recentByContainer[bagID] ~= nil and self.recentByContainer[bagID][slotID] ~= nil
 end
