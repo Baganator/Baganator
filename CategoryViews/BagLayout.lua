@@ -161,7 +161,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
         end
       end
       for search, r in pairs(oldResults) do
-        if r.oldLength and r.oldLength > #results[search].all then
+        if r.oldLength and r.oldLength < #results[search].all then
           anyNew = true
         end
       end
