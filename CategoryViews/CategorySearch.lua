@@ -25,6 +25,13 @@ function BaganatorCategoryViewsCategorySearchMixin:OnLoad()
   self:ResetCaches()
 end
 
+function BaganatorCategoryViewsCategorySearchMixin:OnHide()
+  if self.timer then
+    self.timer:Cancel()
+    self.timer = nil
+  end
+end
+
 function BaganatorCategoryViewsCategorySearchMixin:ResetCaches()
   self.seenData = {}
 end
@@ -78,10 +85,14 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
       self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
     end
 
-    self.warningTimer = C_Timer.NewTimer(5, function()
+    self.timer = C_Timer.NewTimer(5, function()
       local items = ""
-      for key in pairs(self.searchPending) do
-        items = items .. "\n" .. key .. " item ID: " .. self.seenData[key].itemID
+      if self.searchPending then
+        for key in pairs(self.searchPending) do
+          items = items .. "\n" .. key .. " item ID: " .. self.seenData[key].itemID
+        end
+      else
+        items = "sorting failure"
       end
       StaticPopupDialogs[errorDialog].text = BAGANATOR_L_CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
       StaticPopup_Show(errorDialog)
