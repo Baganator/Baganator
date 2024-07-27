@@ -6,11 +6,20 @@ function BaganatorCategoryViewsCategorySortMixin:OnLoad()
 end
 
 function BaganatorCategoryViewsCategorySortMixin:ApplySorts(results, callback)
+  self.start = debugprofilestop()
   self.callback = callback
+  self.results = results
   self.sortPending = {}
   self.searchPending = nil
   for search in pairs(results) do
     self.sortPending[search] = true
+  end
+
+  self.sortMethod = addonTable.Config.Get("sort_method")
+  if self.sortMethod == "combine_stacks_only" or addonTable.API.ExternalContainerSorts[self.sortMethod] then
+    addonTable.Utilities.Message(BAGANATOR_L_SORT_METHOD_RESET_FOR_CATEGORIES)
+    addonTable.Config.ResetOne(addonTable.Config.Options.SORT_METHOD)
+    self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
   end
 
   self:SetScript("OnUpdate", self.SortResults)
@@ -28,7 +37,7 @@ function BaganatorCategoryViewsCategorySortMixin:SortResults()
   if next(self.sortPending) == nil then
     self:SetScript("OnUpdate", nil)
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("search and sort took", debugprofilestop() - self.start)
+      print("sort took", debugprofilestop() - self.start)
     end
     self.callback(self.results)
   else

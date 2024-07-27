@@ -91,6 +91,7 @@ CategoryViews\ComposeCategories.lua
 CategoryViews\Packing.lua
 CategoryViews\BagLayout.lua
 CategoryViews\CategorySearch.lua
+CategoryViews\CategorySort.lua
 CategoryViews\Components.lua
 CategoryViews\Components.xml
 CategoryViews\BankViewCharacterView.lua

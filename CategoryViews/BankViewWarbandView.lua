@@ -21,6 +21,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.CategoryFilter:ResetCaches()
     self.results = nil
+    for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
     if self:IsVisible() and self.lastCharacter ~= nil then

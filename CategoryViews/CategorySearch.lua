@@ -77,13 +77,6 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attac
       end
     end
 
-    self.sortMethod = addonTable.Config.Get("sort_method")
-    if self.sortMethod == "combine_stacks_only" or addonTable.API.ExternalContainerSorts[self.sortMethod] then
-      addonTable.Utilities.Message(BAGANATOR_L_SORT_METHOD_RESET_FOR_CATEGORIES)
-      addonTable.Config.ResetOne(addonTable.Config.Options.SORT_METHOD)
-      self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
-    end
-
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH) then
       self.timer = C_Timer.NewTimer(5, function()
         local items = ""
@@ -159,7 +152,11 @@ function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
         self.timer = nil
       end
 
-      self:SortResults()
+      self:SetScript("OnUpdate", nil)
+      if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+        print("search took", debugprofilestop() - self.start)
+      end
+      self.callback(self.results)
       return
     end
 
