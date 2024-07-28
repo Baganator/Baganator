@@ -6,7 +6,26 @@ local function AddWarband(tooltip)
   end
 end
 
-function addonTable.ShowGoldSummaryRealm(anchor, point)
+local function AddGoldEarned(tooltip, startingGold)
+  local currentCharacterGold = GetMoney()
+  local goldEarned = currentCharacterGold - startingGold;
+  local isLoss = false
+
+  if goldEarned < 0 then
+    goldEarned = goldEarned * -1
+    isLoss = true
+  end
+
+  GameTooltip:AddLine(" ")
+  if isLoss then
+    GameTooltip:AddDoubleLine(BAGANATOR_L_GOLD_EARNED:format(""), RED_FONT_COLOR:WrapTextInColorCode("-" .. addonTable.Utilities.GetMoneyString(goldEarned, true)))
+  else
+    GameTooltip:AddDoubleLine(BAGANATOR_L_GOLD_EARNED:format(""), GREEN_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(goldEarned, true)))
+  end
+  GameTooltip:AddLine(" ")
+end
+
+function addonTable.ShowGoldSummaryRealm(anchor, point, startingGold)
   GameTooltip:SetOwner(anchor, point)
 
   local connectedRealms = Syndicator.Utilities.GetConnectedRealms()
@@ -41,12 +60,14 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
 
+  AddGoldEarned(GameTooltip, startingGold)
+
   GameTooltip_AddBlankLineToTooltip(GameTooltip)
   GameTooltip:AddLine(BAGANATOR_L_HOLD_SHIFT_TO_SHOW_ACCOUNT_TOTAL, 0, 1, 0)
   GameTooltip:Show()
 end
 
-function addonTable.ShowGoldSummaryAccount(anchor, point)
+function addonTable.ShowGoldSummaryAccount(anchor, point, startingGold)
   GameTooltip:SetOwner(anchor, point)
 
   local lines = {}
@@ -82,6 +103,8 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
+
+  AddGoldEarned(GameTooltip, startingGold)
 
   GameTooltip:Show()
 end

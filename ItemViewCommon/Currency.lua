@@ -2,6 +2,8 @@ local _, addonTable = ...
 BaganatorCurrencyWidgetMixin = {}
 
 function BaganatorCurrencyWidgetMixin:OnLoad()
+  local startingGold = GetMoney()
+
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
@@ -34,9 +36,9 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   local frame = CreateFrame("Frame", nil, self)
   local function UpdateMoneyDisplay()
     if IsShiftKeyDown() then
-      addonTable.ShowGoldSummaryAccount(self.Money, "ANCHOR_TOP")
+      addonTable.ShowGoldSummaryAccount(self.Money, "ANCHOR_TOP", startingGold)
     else
-      addonTable.ShowGoldSummaryRealm(self.Money, "ANCHOR_TOP")
+      addonTable.ShowGoldSummaryRealm(self.Money, "ANCHOR_TOP", startingGold)
     end
   end
   self.Money:SetScript("OnEnter", function()
