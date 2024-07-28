@@ -145,8 +145,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:SetValue(-1)
     else
       for index, value in ipairs(PRIORITY_LIST) do
-        if category.searchPriority < value then
-          self.PrioritySlider:SetValue(index - 1 + priorityOffset)
+        if category.searchPriority <= value then
+          self.PrioritySlider:SetValue(index + priorityOffset)
           break
         end
       end
