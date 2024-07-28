@@ -85,18 +85,20 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
       self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
     end
 
-    self.timer = C_Timer.NewTimer(5, function()
-      local items = ""
-      if self.searchPending then
-        for key in pairs(self.searchPending) do
-          items = items .. "\n" .. key .. " item ID: " .. self.seenData[key].itemID
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH) then
+      self.timer = C_Timer.NewTimer(5, function()
+        local items = ""
+        if self.searchPending then
+          for key in pairs(self.searchPending) do
+            items = items .. "\n" .. key .. " item ID: " .. self.seenData[key].itemID
+          end
+        else
+          items = "sorting failure"
         end
-      else
-        items = "sorting failure"
-      end
-      StaticPopupDialogs[errorDialog].text = BAGANATOR_L_CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
-      StaticPopup_Show(errorDialog)
-    end)
+        StaticPopupDialogs[errorDialog].text = BAGANATOR_L_CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
+        StaticPopup_Show(errorDialog)
+      end)
+    end
     self:DoSearch()
   end
 

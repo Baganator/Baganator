@@ -55,6 +55,7 @@ addonTable.Config.Options = {
 
   DEBUG_TIMERS = "debug_timers",
   DEBUG_KEYWORDS = "debug_keywords",
+  DEBUG_CATEGORIES_SEARCH = "debug_categories_search",
 
   AUTO_OPEN = "auto_open",
 
@@ -125,6 +126,7 @@ addonTable.Config.Defaults = {
 
   [addonTable.Config.Options.DEBUG_TIMERS] = false,
   [addonTable.Config.Options.DEBUG_KEYWORDS] = false,
+  [addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH] = false,
 
   [addonTable.Config.Options.GUILD_BANK_SORT_METHOD] = "unset",
 
