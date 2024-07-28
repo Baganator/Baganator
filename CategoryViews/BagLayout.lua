@@ -162,7 +162,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
           if #r.all > #results[search].all then
             for index, info in ipairs(r.all) do
               if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
-                table.insert(results[search].all, index, {bagID = info.bagID, slotID = info.slotID, key = ""})
+                table.insert(results[search].all, index, {bagID = info.bagID, slotID = info.slotID, itemCount = 0})
               end
             end
           end
