@@ -97,7 +97,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
 end
 
 function BaganatorCategoryViewBackpackViewMixin:NotifyBagUpdate(updatedBags)
-  for bagID, state in pairs(updatedBags) do
+  for bagID, state in pairs(updatedBags.bags) do
     if state then
       self.updatedBags[bagID] = true
     end
@@ -153,7 +153,7 @@ function BaganatorCategoryViewBackpackViewMixin:TransferCategory(associatedSearc
     return
   end
 
-  self:Transfer(true, function() return tFilter(self.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
+  self:Transfer(true, function() return tFilter(self.results[associatedSearch], function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)

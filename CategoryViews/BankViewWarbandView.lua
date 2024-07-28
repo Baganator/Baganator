@@ -8,6 +8,8 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
   self.LiveLayouts = {}
   self.CachedLayouts = {}
 
+  self.updatedBags = {}
+
   self:RegisterEvent("CURSOR_CHANGED")
 
   for _, layout in ipairs(self.LiveLayouts) do
@@ -79,12 +81,12 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(associatedSearch)
+function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(associatedSearch)
   if not self.isLive or not associatedSearch then
     return
   end
 
-  self:RemoveSearchMatches(function() return self.results[associatedSearch].all end)
+  self:RemoveSearchMatches(function() return tFilter(self.results[associatedSearch], function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)
@@ -100,6 +102,11 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:NotifyBagUpdate(updatedBags)
+  for bagID, state in pairs(updatedBags.bags) do
+    if state then
+      self.updatedBags[bagID] = true
+    end
+  end
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)

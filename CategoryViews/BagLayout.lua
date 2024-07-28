@@ -11,11 +11,11 @@ local function Prearrange(isLive, bagID, bag, bagType)
     junkPlugin = nil
   end
 
-  local emptySlotCount = {}
+  local emptySlotCount = 0
   local emptySlotsOrder
   local everything = {}
   if not bagID then -- Avoid errors from bags removed from the possible indexes
-    return {emptySlotCount = 0, emptySlotsOrder = nil, everything = {}}
+    return {emptySlotCount = 0, emptySlotsOrder = nil, everything = {}, bagType = bagType}
   end
   for slotIndex, slot in ipairs(bag) do
     local info = Syndicator.Search.GetBaseInfo(slot)
@@ -47,11 +47,10 @@ local function Prearrange(isLive, bagID, bag, bagType)
       info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
       table.insert(everything, info)
     else
-      if not emptySlotCount[bagType] then
-        emptySlotCount[bagType] =  0
+      if not emptySlotsOrder then
         emptySlotsOrder = {bagID = bagID, slotID = slotIndex, bagType = bagType}
       end
-      emptySlotCount[bagType] = emptySlotCount[bagType] + 1
+      emptySlotCount = emptySlotCount + 1
     end
   end
 
@@ -72,12 +71,13 @@ local function GetKeySummary(byBagData)
   return summary
 end
 
-local function DisplayResults(self, containerType, results, composed, emptySlotCount, emptySlotsOrder, sideSpacing, topSpacing)
+local function DisplayResults(self, toRefresh, containerType, composed, emptySlotCount, emptySlotsOrder, sideSpacing, topSpacing)
   self.labelsPool:ReleaseAll()
   self.dividerPool:ReleaseAll()
   self.sectionButtonPool:ReleaseAll()
-  local oldResults = self.oldResults
-  self.oldResults = CopyTable(results, 2)
+  local oldRenderResults = self.oldRenderResults
+  local results = {}
+  self.oldRenderResults = results
 
   local start2 = debugprofilestop()
   local bagWidth
@@ -93,7 +93,8 @@ local function DisplayResults(self, containerType, results, composed, emptySlotC
   local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
 
   self.notShown = {}
-  for searchTerm, details in pairs(results) do
+  for searchTerm in pairs(toRefresh) do
+    local details = CopyTable(self.results[searchTerm], 2)
     local entries = {}
     if self.isGrouping then
       local entriesByKey = {}
@@ -104,7 +105,7 @@ local function DisplayResults(self, containerType, results, composed, emptySlotC
           -- Used to clear new item status on items that are hidden in a stack
           table.insert(self.notShown, {bagID = item.bagID, slotID = item.slotID})
         else
-          entriesByKey[groupingKey] = item
+          entriesByKey[groupingKey] = Syndicator.Search.GetBaseInfo(item)
           table.insert(entries, item)
         end
       end
@@ -128,22 +129,38 @@ local function DisplayResults(self, containerType, results, composed, emptySlotC
       end
       results[searchTerm].all = {}
     end
+    results[searchTerm].oldLength = #results[searchTerm].all
   end
 
-  if self.splitStacksDueToTransfer and oldResults then
+  for search, details in pairs(oldRenderResults or {}) do
+    if not results[search] then
+      results[search] = details
+    end
+  end
+
+  if self.splitStacksDueToTransfer and oldRenderResults then
     local anyNew = false
-    for search, r in pairs(oldResults) do
+    for search, r in pairs(oldRenderResults) do
       if r.oldLength and r.oldLength < #results[search].all then
         anyNew = true
       end
     end
     if not anyNew and not self.addToCategoryMode then
-      for search, r in pairs(oldResults) do
-        results[search].oldLength = #results[search].all
+      for search, r in pairs(oldRenderResults) do
         if #r.all > #results[search].all then
           for index, info in ipairs(r.all) do
             if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
               table.insert(results[search].all, index, {bagID = info.bagID, slotID = info.slotID, key = ""})
+            end
+          end
+        end
+      end
+    elseif anyNew then
+      for search, r in pairs(results) do
+        if #r.all > 0 then
+          for i = #r.all, 1, -1 do
+            if r.all[i].itemLink == nil then
+              table.remove(r.all, i)
             end
           end
         end
@@ -242,7 +259,7 @@ local function DisplayResults(self, containerType, results, composed, emptySlotC
       activeLayouts[1].section = details.section
       activeLayouts[1].type = "category"
       for index, button in ipairs(activeLayouts[1].buttons) do
-        local bagType = emptySlotsOrder[index].key
+        local bagType = emptySlotsOrder[index].bagType
         button.isBag = true -- Ensure even counts of 1 are shown
         SetItemButtonCount(button, emptySlotCount[bagType])
         button.Count:SetShown(bagType ~= "keyring") -- Keyrings have unlimited size
@@ -271,6 +288,7 @@ local function DisplayResults(self, containerType, results, composed, emptySlotC
           end
           button.tooltipHeader = details.tooltipHeader
         else
+          print("missing")
           button.bagTypeIcon:SetTexture(nil)
           button.tooltipHeader = nil
         end
@@ -296,7 +314,6 @@ end
 
 function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
-  print(self.results)
 
   self.byBagData = self.byBagData or {}
 
@@ -305,10 +322,16 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
       self.byBagData[bagID] = Prearrange(self.isLive, bagID, allBags[index], bagTypes[index])
     end
   end
+  self.updatedBags = {}
 
   local everything = {}
   for _, data in pairs(self.byBagData) do
     tAppendAll(everything, data.everything)
+  end
+
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+    print("prearrange", debugprofilestop() - s1)
+    s1 = debugprofilestop()
   end
 
   local composed = addonTable.CategoryViews.ComposeCategories(everything)
@@ -320,14 +343,14 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     for search, results in pairs(self.results) do
       local attachments = composed.attachedItems[search]
       local oldAttachments = self.oldComposed.attachedItems[search]
-      for i = #results.all, 1, -1 do
-        local item = results.all[i]
+      for i = #results, 1, -1 do
+        local item = results[i]
         local match = attachments and (attachments["i:" .. tostring(item.itemID)] or attachments["p:" .. tostring(item.petID)] or attachments[key])
         local oldMatch = oldAttachments and (oldAttachments["i:" .. tostring(item.itemID)] or oldAttachments["p:" .. tostring(item.petID)] or oldAttachments[key])
-        if not summary[item.key] or summary[item.key].itemCount ~= self.oldSummary[item.key].itemCount or not summary[item.key].location[item.bagID .. " " .. item.slotID] or (oldMatch and not match) or item.isDummy then
+        if not summary[item.key] or not self.oldSummary[item.key] or summary[item.key].itemCount ~= self.oldSummary[item.key].itemCount or not summary[item.key].location[item.bagID .. " " .. item.slotID] or (oldMatch and not match) or item.isDummy then
           reshowSearches[search] = true
           self.oldSummary[item.key] = nil
-          table.remove(results.all, i)
+          table.remove(results, i)
         end
       end
     end
@@ -345,6 +368,11 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
   self.oldComposed = composed
   self.oldSummary = summary
 
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+    print("shuffle", debugprofilestop() - s1)
+    s1 = debugprofilestop()
+  end
+
   while #self.LiveLayouts < #composed.searches + activeLayoutOffset do -- +1 for the extra category added when removing a category item
     table.insert(self.LiveLayouts, CreateFrame("Frame", nil, self, "BaganatorLiveCategoryLayoutTemplate"))
     if self.liveItemButtonPool then
@@ -361,10 +389,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     end
   end
 
-  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("prearrange", debugprofilestop() - s1)
-  end
-
   self.CategoryFilter:ApplySearches(composed.prioritisedSearches, composed.attachedItems, toProcess, function(results)
     local altered = {}
     for search, r in pairs(results) do
@@ -379,18 +403,29 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     end
     self.CategorySort:ApplySorts(altered, function(results)
       for search, r in pairs(results) do
-        print(#results[search], #r)
         self.results[search] = r
       end
       local emptySlotCount, emptySlotsOrder = {}, {}
+      local seenTypes = {}
       for _, bagID in ipairs(bagIndexes) do
         local data = self.byBagData[bagID]
         if data.emptySlotsOrder then
-          tAppendAll(emptySlotsOrder, data.emptySlotsOrder)
-          emptySlotCount[data.emptySlotsOrder.bagType] = (emptySlotCount[data.emptySlotsOrder.bagType] or 0) + data.emptySlotCount[data.emptySlotsOrder.bagType]
+          if not seenTypes[data.emptySlotsOrder.bagType] then
+            table.insert(emptySlotsOrder, data.emptySlotsOrder)
+            seenTypes[data.emptySlotsOrder.bagType] = true
+          end
+          emptySlotCount[data.emptySlotsOrder.bagType] = (emptySlotCount[data.emptySlotsOrder.bagType] or 0) + data.emptySlotCount
         end
       end
-      local maxWidth, maxHeight = DisplayResults(self, containerType, self.results, composed, emptySlotCount, emptySlotsOrder, sideSpacing, topSpacing)
+      local toRefresh = {}
+      for search in pairs(results) do
+        toRefresh[search] = true
+      end
+      if not self.oldRenderResults then
+        toRefresh = self.results
+      end
+      Mixin(toRefresh, reshowSearches)
+      local maxWidth, maxHeight = DisplayResults(self, toRefresh, containerType, composed, emptySlotCount, emptySlotsOrder, sideSpacing, topSpacing)
 
       callback(maxWidth, maxHeight)
 

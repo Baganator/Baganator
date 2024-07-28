@@ -11,8 +11,9 @@ function BaganatorCategoryViewsCategorySortMixin:ApplySorts(results, callback)
   self.results = results
   self.sortPending = {}
   self.searchPending = nil
-  for search in pairs(results) do
+  for search, items in pairs(results) do
     self.sortPending[search] = true
+    addonTable.Sorting.AddSortKeys(items)
   end
 
   self.sortMethod = addonTable.Config.Get("sort_method")
@@ -22,14 +23,18 @@ function BaganatorCategoryViewsCategorySortMixin:ApplySorts(results, callback)
     self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
   end
 
-  self:SetScript("OnUpdate", self.SortResults)
+  self:SortResults()
 end
 
 function BaganatorCategoryViewsCategorySortMixin:SortResults()
   local incomplete
   for search in pairs(self.sortPending) do
+    local start = debugprofilestop()
     self.results[search], incomplete = addonTable.Sorting.OrderOneListOffline(self.results[search], self.sortMethod)
     if not incomplete then
+      for _, item in ipairs(self.results[search]) do
+        setmetatable(item, nil)
+      end
       self.sortPending[search] = nil
     end
   end

@@ -18,6 +18,8 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   self.sectionButtonPool = addonTable.CategoryViews.GetSectionButtonPool(self)
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
+  self.updatedBags = {}
+
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.CategoryFilter:ResetCaches()
     self.results = nil
@@ -79,7 +81,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(associ
     return
   end
 
-  self:RemoveSearchMatches(function() return self.results[associatedSearch].all end)
+  self:RemoveSearchMatches(function() return tFilter(self.results[associatedSearch], function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()
@@ -102,7 +104,16 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:ApplySearch(text)
   end
 end
 
+function BaganatorCategoryViewBankViewCharacterViewMixin:OnShow()
+  self.oldResults = nil
+end
+
 function BaganatorCategoryViewBankViewCharacterViewMixin:NotifyBagUpdate(updatedBags)
+  for bagID, state in pairs(updatedBags.bank) do
+    if state then
+      self.updatedBags[bagID] = true
+    end
+  end
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
