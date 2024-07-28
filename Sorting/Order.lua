@@ -31,15 +31,6 @@ local allSortKeys = {
     "invertedItemCount",
     "itemLink",
   },
-  ["quality-legacy"] = { -- no longer used
-    "priority",
-    "quality",
-    "classID",
-    "subClassID",
-    "itemID",
-    "itemLink",
-    "itemCount",
-  },
   ["type"] = {
     "priority",
     "sortedClassID",
@@ -54,14 +45,20 @@ local allSortKeys = {
     "invertedItemCount",
     "itemLink",
   },
-  ["type-legacy"] = { -- no longer used
+  ["item-level"] = {
     "priority",
-    "classID",
-    "subClassID",
-    "itemID",
-    "quality",
+    "invertedItemLevelEquipment",
+    "sortedClassID",
+    "sortedInvSlotID",
+    "sortedSubClassID",
+    "invertedExpansion", -- table.remove removes this on classic
+    "invertedQuality",
+    "invertedItemLevelRaw",
+    "itemName",
+    "invertedCraftingQuality",
+    "invertedItemID",
+    "invertedItemCount",
     "itemLink",
-    "itemCount",
   },
   ["expansion"] = {
     "invertedExpansion",
@@ -83,6 +80,7 @@ local allSortKeys = {
 if addonTable.Constants.IsClassic then
   table.remove(allSortKeys["quality"], tIndexOf(allSortKeys["quality"], "invertedExpansion"))
   table.remove(allSortKeys["type"], tIndexOf(allSortKeys["type"], "invertedExpansion"))
+  table.remove(allSortKeys["item-level"], tIndexOf(allSortKeys["item-level"], "invertedExpansion"))
 end
 
 local PriorityItems = {

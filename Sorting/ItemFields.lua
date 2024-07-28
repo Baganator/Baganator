@@ -182,6 +182,14 @@ keysMapping["invertedItemLevelRaw"] = function(self)
   return self.itemLevelRaw and -self.itemLevelRaw
 end
 
+keysMapping["invertedItemLevelEquipment"] = function(self)
+  if Syndicator.Utilities.IsEquipment(self.itemLink) then
+    return self.itemLevelRaw and -self.itemLevelRaw
+  else
+    return 0
+  end
+end
+
 -- Dragonflight crafting reagent quality
 if C_TradeSkillUI and C_TradeSkillUI.GetItemReagentQualityByItemInfo then
   keysMapping["craftingQuality"] = function(self)
