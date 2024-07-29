@@ -4,6 +4,10 @@ do
   local BlizzardSetTracker = CreateFrame("Frame")
 
   function BlizzardSetTracker:OnLoad()
+    if addonTable.Constants.IsRetail and IsMacClient() then
+      return
+    end
+
     FrameUtil.RegisterFrameForEvents(self, {
       "BANKFRAME_OPENED",
       "EQUIPMENT_SETS_CHANGED",
