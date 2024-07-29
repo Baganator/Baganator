@@ -60,7 +60,7 @@ local function textInit(itemButton)
 end
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
-  if HasItemLevel(details) and not (IsCosmeticItem and IsCosmeticItem(details.itemLink)) then
+  if HasItemLevel(details) and not (C_Item.IsCosmeticItem and C_Item.IsCosmeticItem(details.itemLink)) then
     if not details.itemLevel then
       details.itemLevel = C_Item.GetDetailedItemLevelInfo(details.itemLink)
     end
@@ -229,7 +229,7 @@ local function RegisterExpansionWidget()
 end
 if addonTable.Constants.IsRetail then
   RegisterExpansionWidget()
-elseif Syndicator.Search.GetExpansion then
+elseif Syndicator and Syndicator.Search.GetExpansion then
   addonTable.Utilities.OnAddonLoaded("ItemVersion", RegisterExpansionWidget)
 end
 
@@ -252,6 +252,9 @@ addonTable.Utilities.OnAddonLoaded("Pawn", function()
     return Arrow
   end, {corner = "top_left", priority = 1})
 
+  if not Syndicator then
+    return
+  end
   -- Equip/unequip
   Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
     if Baganator.API.IsCornerWidgetActive("pawn") then
@@ -282,7 +285,7 @@ end)
 
 addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
   local function IsPet(itemID)
-    local classID, subClassID = select(6, GetItemInfoInstant(itemID))
+    local classID, subClassID = select(6, C_Item.GetItemInfoInstant(itemID))
     return classID == Enum.ItemClass.Battlepet or classID == Enum.ItemClass.Miscellaneous and subClassID == Enum.ItemMiscellaneousSubclass.CompanionPet
   end
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_CAN_I_MOG_IT, "can_i_mog_it", function(CIMIOverlay, details)

@@ -10,7 +10,7 @@ StaticPopupDialogs[syndicatorEnableDialog] = {
   button1 = ENABLE,
   button2 = CANCEL,
   OnAccept = function()
-    (C_AddOns and C_AddOns.EnableAddOn or EnableAddOn)("Syndicator")
+    C_AddOns.EnableAddOn("Syndicator")
     C_UI.Reload()
   end,
   timeout = 0,
@@ -25,18 +25,9 @@ StaticPopupDialogs[syndicatorInstallDialog] = {
   hideOnEscape = 1,
 }
 
-local function DoesAddOnExist(addon)
-  for i = 1, GetNumAddOns() do
-    if GetAddOnInfo(i) == addon then
-      return true
-    end
-  end
-  return false
-end
-
 addonTable.Utilities.OnAddonLoaded("Baganator", function()
-  if not (C_AddOns and C_AddOns.IsAddOnLoaded or IsAddOnLoaded)("Syndicator") then
-    if (C_AddOns and C_AddOns.DoesAddOnExist or DoesAddOnExist)("Syndicator") then
+  if not C_AddOns.IsAddOnLoaded("Syndicator") then
+    if C_AddOns.DoesAddOnExist("Syndicator") then
       addonTable.Utilities.Message(BAGANATOR_L_SYNDICATOR_ENABLE_MESSAGE)
       StaticPopup_Show(syndicatorEnableDialog)
       error(BAGANATOR_L_SYNDICATOR_ENABLE_MESSAGE)
