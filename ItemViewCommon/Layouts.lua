@@ -1153,7 +1153,7 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
     table.insert(self.buttons, b)
   end
 
-  FlowButtonsRows(self, rowWidth)
+  FlowButtonsColumns(self, rowWidth)
 
   self.initialized = true
 end
@@ -1181,7 +1181,7 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     self.waitingUpdate = true
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
-    FlowButtonsRows(self, rowWidth)
+    FlowButtonsColumns(self, rowWidth)
   end
 
   if self.updateTextures then
@@ -1271,7 +1271,7 @@ function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
     table.insert(self.buttons, b)
   end
 
-  FlowButtonsRows(self, rowWidth)
+  FlowButtonsColumns(self, rowWidth)
 
   self.initialized = true
 end
@@ -1295,7 +1295,7 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     self.waitingUpdate = true
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
-    FlowButtonsRows(self, rowWidth)
+    FlowButtonsColumns(self, rowWidth)
   end
 
   if self.updateTextures then
