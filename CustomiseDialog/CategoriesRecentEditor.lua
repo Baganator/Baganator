@@ -21,7 +21,6 @@ function addonTable.CustomiseDialog.GetCategoriesRecentEditor(parent)
   slider:SetPoint("LEFT")
   slider:SetPoint("RIGHT")
   slider:SetPoint("TOP", 0, -10)
-  slider:SetValue(2)
 
   local text = holder:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
   text:SetText(BAGANATOR_L_RECENT_HEADER_CLICK_MESSAGE)
