@@ -317,8 +317,10 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
 
   self.byBagData = self.byBagData or {}
 
+  local anyUpdated = false
   for index, bagID in ipairs(bagIndexes) do
     if self.updatedBags[bagID] or not self.byBagData[bagID] then
+      anyUpdated = true
       self.byBagData[bagID] = Prearrange(self.isLive, bagID, allBags[index], bagTypes[index])
     end
   end
@@ -339,14 +341,14 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
   local summary = GetKeySummary(self.byBagData)
   local toProcess = {}
   local reshowSearches = {}
-  if self.results then
+  if self.results and (anyUpdated or not tCompare(composed, self.oldComposed)) then
     for search, results in pairs(self.results) do
-      local attachments = composed.attachedItems[search]
-      local oldAttachments = self.oldComposed.attachedItems[search]
+      local attachments = composed.attachedItems[search] or nil
+      local oldAttachments = self.oldComposed.attachedItems[search] or nil
       for i = #results, 1, -1 do
         local item = results[i]
         local match = attachments and (attachments["i:" .. tostring(item.itemID)] or attachments["p:" .. tostring(item.petID)] or attachments[key])
-        local oldMatch = oldAttachments and (oldAttachments["i:" .. tostring(item.itemID)] or oldAttachments["p:" .. tostring(item.petID)] or oldAttachments[key])
+        local oldMatch =  oldAttachments and (oldAttachments["i:" .. tostring(item.itemID)] or oldAttachments["p:" .. tostring(item.petID)] or oldAttachments[key])
         if not summary[item.key] or not self.oldSummary[item.key] or summary[item.key].itemCount ~= self.oldSummary[item.key].itemCount or not summary[item.key].location[item.bagID .. " " .. item.slotID] or (oldMatch and not match) or item.isDummy then
           reshowSearches[search] = true
           self.oldSummary[item.key] = nil
@@ -360,7 +362,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
         tAppendAll(toProcess, details.items)
       end
     end
-  else
+  elseif not self.results then
     self.results = {}
     toProcess = everything
   end
