@@ -188,6 +188,12 @@ local function DisplayResults(self, toRefresh, containerType, composed, emptySlo
     end
     activeLayouts = self.LiveLayouts
   else
+    if #self.CachedLayouts > #composed.searches + activeLayoutOffset then
+      for index = #composed.searches + activeLayoutOffset + 1, #self.CachedLayouts do
+        self.CachedLayouts[index]:DeallocateUnusedButtons({})
+        self.CachedLayouts[index]:Hide()
+      end
+    end
     for _, layout in ipairs(self.LiveLayouts) do
       layout:Hide()
     end
@@ -240,7 +246,9 @@ local function DisplayResults(self, toRefresh, containerType, composed, emptySlo
     elseif details.type == "category" then
       local searchResults = results[details.search]
       local layout = activeLayouts[searchResults.index + activeLayoutOffset]
-      layout:ShowGroup(searchResults.all, math.min(bagWidth, #searchResults.all), details.source)
+      if toRefresh[details.search] then
+        layout:ShowGroup(searchResults.all, math.min(bagWidth, #searchResults.all), details.source)
+      end
       table.insert(layoutsShown, layout)
       layout.section = details.section
       local label = self.labelsPool:Acquire()
