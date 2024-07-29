@@ -240,6 +240,7 @@ L["CATEGORY_INVENTORY_SLOTS_AUTO"] = "Inventory Slots (Auto)"
 L["CATEGORY_RECENT"] = "Recent"
 L["CATEGORY_RECENT_AUTO"] = "Recent (Auto)"
 L["CATEGORY_DIVIDER"] = "———Divider———"
+L["CATEGORY_TRADESKILLMASTER_AUTO"] = "TradeSkillMaster (Auto)"
 
 L["CATEGORY_SPACING"] = "Category spacing"
 L["EDIT"] = "Edit"

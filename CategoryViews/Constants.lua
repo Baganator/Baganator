@@ -348,6 +348,18 @@ table.insert(addonTable.CategoryViews.Constants.DefaultCategories, {
   doNotAdd = true,
 })
 
+addonTable.Utilities.OnAddonLoaded("TradeSkillMaster", function()
+  local spec = {
+    source = "default_auto_tradeskillmaster",
+    name = BAGANATOR_L_CATEGORY_TRADESKILLMASTER_AUTO,
+    auto = "tradeskillmaster",
+    searchPriority = 190,
+    doNotAdd = true,
+  }
+  table.insert(addonTable.CategoryViews.Constants.DefaultCategories, spec)
+  addonTable.CategoryViews.Constants.SourceToCategory[spec.source] = spec
+end)
+
 addonTable.CategoryViews.Constants.SourceToCategory = {}
 for index, category in ipairs(addonTable.CategoryViews.Constants.DefaultCategories) do
   category.source = "default_" .. category.key

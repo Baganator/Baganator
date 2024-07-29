@@ -208,6 +208,30 @@ local function GetAuto(category, everything)
       end
     end
     attachedItems[1] = newItems
+  elseif category.auto == "tradeskillmaster" then
+    local groups = {}
+    for _, item in ipairs(everything) do
+      local itemString = TSM_API.ToItemString(item.itemLink)
+      if itemString then
+        local groupPath = TSM_API.GetGroupPathByItem(itemString)
+        if groupPath then
+          if groupPath:find("`") then
+            groupPath = groupPath:match("^.-`")
+          end
+          if not groups[groupPath] then
+            groups[groupPath] = {}
+          end
+          groups[groupPath][item.key] = true
+        end
+      end
+    end
+    for _, path in ipairs(TSM_API.GetGroupPaths({})) do
+      if groups[path] then
+        table.insert(searches, "")
+        table.insert(searchLabels, path)
+        table.insert(attachedItems, groups[path])
+      end
+    end
   else
     error("automatic category type not supported")
   end
