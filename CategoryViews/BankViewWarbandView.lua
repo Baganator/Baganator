@@ -79,7 +79,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(associatedSearch)
+function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(associatedSearch)
   if not self.isLive or not associatedSearch then
     return
   end
