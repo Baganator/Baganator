@@ -327,6 +327,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
 
   local bagSlotsCount
   local GetBagSlotButton
+  local bagIndexes
   if self.mode == "bags" then
     GetBagSlotButton = function()
       if addonTable.Constants.IsRetail then
@@ -337,6 +338,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     end
     bagSlotsCount = Syndicator.Constants.BagSlotsCount
     self.config = addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS
+    bagIndexes = Syndicator.Constants.AllBagIndexes
   elseif self.mode == "bank" then
     GetBagSlotButton = function()
       if addonTable.Constants.IsRetail then
@@ -347,6 +349,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     end
     bagSlotsCount = Syndicator.Constants.BankBagSlotsCount
     self.config = addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS
+    bagIndexes = Syndicator.Constants.AllBankIndexes
   end
 
   self.liveBagSlots = {}
@@ -380,7 +383,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     bb:UpdateTextures()
     bb.isBag = true
     table.insert(self.cachedBagSlots, bb)
-    bb:SetID(index)
+    bb:SetID(bagIndexes[index + 1])
     bb:HookScript("OnEnter", function(self)
       addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
     end)
