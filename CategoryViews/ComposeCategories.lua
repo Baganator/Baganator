@@ -216,7 +216,7 @@ local function GetAuto(category, everything)
         local groupPath = TSM_API.GetGroupPathByItem(itemString)
         if groupPath then
           if groupPath:find("`") then
-            groupPath = groupPath:match("^.-`")
+            groupPath = groupPath:match("`([^`]*)$")
           end
           if not groups[groupPath] then
             groups[groupPath] = {}
@@ -225,11 +225,14 @@ local function GetAuto(category, everything)
         end
       end
     end
-    for _, path in ipairs(TSM_API.GetGroupPaths({})) do
-      if groups[path] then
+    for _, groupPath in ipairs(TSM_API.GetGroupPaths({})) do
+      if groupPath:find("`") then
+        groupPath = groupPath:match("`([^`]*)$")
+      end
+      if groups[groupPath] then
         table.insert(searches, "")
-        table.insert(searchLabels, path)
-        table.insert(attachedItems, groups[path])
+        table.insert(searchLabels, groupPath)
+        table.insert(attachedItems, groups[groupPath])
       end
     end
   else
