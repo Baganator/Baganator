@@ -417,9 +417,11 @@ function BaganatorCustomSliderMixin:Init(details)
   self.Slider:SetValueStep(1)
   self.Slider:SetObeyStepOnDrag(true)
 
-  self.Slider:SetScript("OnValueChanged", function()
+  self.Slider:SetScript("OnValueChanged", function(_, _, userInput)
     local value = self.Slider:GetValue()
-    self.callback(value)
+    if userInput then
+      self.callback(value)
+    end
     self.ValueText:SetText(self.valueToText[value])
   end)
   addonTable.Skins.AddFrame("Slider", self.Slider)
@@ -436,6 +438,7 @@ end
 function BaganatorCustomSliderMixin:OnMouseWheel(delta)
   if self.Slider:IsEnabled() then
     self.Slider:SetValue(self.Slider:GetValue() + delta)
+    self.callback(self.Slider:GetValue())
   end
 end
 
