@@ -263,6 +263,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
 
     local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
 
     local oldIndex = tIndexOf(displayOrder, self.currentCategory)
@@ -272,6 +273,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
 
     customCategories[self.currentCategory] = nil
+    categoryMods[self.currentCategory] = nil
     addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
 
     self:OnHide()
