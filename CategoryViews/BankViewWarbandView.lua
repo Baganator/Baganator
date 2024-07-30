@@ -127,7 +127,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   local warbandData = Syndicator.API.GetWarband(1)
   if warbandData.bank[tabIndex] then
-    addonTable.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "bank", {0}, {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+    addonTable.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "warband", {0}, {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
       -- Ensure bank missing hint has enough space to display
       local minWidth = 0
       if self.BankMissingHint:IsShown() then
