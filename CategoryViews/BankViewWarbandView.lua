@@ -42,7 +42,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
       end
       self.results = nil
       if self:IsVisible() then
-        self:UpdateForCharacter(self.lastCharacter, self.isLive)
+        self:GetParent():UpdateView()
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
       self.MultiSearch:ResetCaches()
