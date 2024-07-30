@@ -26,9 +26,19 @@ addonTable.CategoryViews.Constants = {
     addonTable.Config.Options.CUSTOM_CATEGORIES,
     addonTable.Config.Options.CATEGORY_MODIFICATIONS,
   },
+
+  OldPriorities = {
+    [220] = -1,
+    [250] = 0,
+    [300] = 1,
+    [350] = 2,
+    [400] = 3,
+  }
 }
 
-local notJunk = "&~" .. SYNDICATOR_L_KEYWORD_JUNK
+-- The "priorityOffset" field is used to ensure the categories assign the right
+-- items to the right default category when at the same relative priority in the
+-- settings (as configured by a user).
 --addonTable.Constants.DefaultCategories
 if addonTable.Constants.IsEra then
   addonTable.CategoryViews.Constants.DefaultCategories = {
@@ -36,7 +46,7 @@ if addonTable.Constants.IsEra then
       key = "hearthstone",
       name = BAGANATOR_L_CATEGORY_HEARTHSTONE,
       search = BAGANATOR_L_CATEGORY_HEARTHSTONE:lower(),
-      searchPriority = 200,
+      priorityOffset = -10,
     },
     {
       key = "consumable",
@@ -47,13 +57,13 @@ if addonTable.Constants.IsEra then
       key = "reagent",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
       search = "#" .. SYNDICATOR_L_KEYWORD_REAGENT,
-      searchPriority = 100,
+      priorityOffset = -50,
     },
     {
       key = "auto_equipment_sets",
       name = BAGANATOR_L_CATEGORY_EQUIPMENT_SETS_AUTO,
       auto = "equipment_sets",
-      searchPriority = 200,
+      priorityOffset = -10,
     },
     {
       key = "weapon",
@@ -94,7 +104,7 @@ if addonTable.Constants.IsEra then
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
       search = "#" .. (SYNDICATOR_L_KEYWORD_KEY or SYNDICATOR_L_KEYWORD_KEYRING),
-      searchPriority = 165,
+      priorityOffset = -35,
     },
     {
       key = "miscellaneous",
@@ -105,13 +115,13 @@ if addonTable.Constants.IsEra then
       key = "other",
       name = BAGANATOR_L_CATEGORY_OTHER,
       search = "",
-      searchPriority = 0,
+      priorityOffset = -90,
     },
     {
       key = "junk",
       name = BAGANATOR_L_CATEGORY_JUNK,
       search = "#" .. SYNDICATOR_L_KEYWORD_JUNK,
-      searchPriority = 180,
+      priorityOffset = -15,
     },
   }
 
@@ -121,7 +131,7 @@ elseif addonTable.Constants.IsClassic then -- Cata
       key = "hearthstone",
       name = BAGANATOR_L_CATEGORY_HEARTHSTONE,
       search = BAGANATOR_L_CATEGORY_HEARTHSTONE:lower(),
-      searchPriority = 200,
+      priorityOffset = -10,
     },
     {
       key = "consumable",
@@ -132,13 +142,13 @@ elseif addonTable.Constants.IsClassic then -- Cata
       key = "reagent",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
       search = "#" .. SYNDICATOR_L_KEYWORD_REAGENT,
-      searchPriority = 100,
+      priorityOffset = -50,
     },
     {
       key = "auto_equipment_sets",
       name = BAGANATOR_L_CATEGORY_EQUIPMENT_SETS_AUTO,
       auto = "equipment_sets",
-      searchPriority = 200,
+      priorityOffset = -10,
     },
     {
       key = "weapon",
@@ -179,7 +189,7 @@ elseif addonTable.Constants.IsClassic then -- Cata
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
       search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
-      searchPriority = 165,
+      priorityOffset = 165,
     },
     {
       key = "miscellaneous",
@@ -190,19 +200,19 @@ elseif addonTable.Constants.IsClassic then -- Cata
       key = "battlepet",
       name = TOOLTIP_BATTLE_PET,
       search = "#" .. SYNDICATOR_L_KEYWORD_BATTLE_PET,
-      searchPriority = 140,
+      priorityOffset = -60,
     },
     {
       key = "other",
       name = BAGANATOR_L_CATEGORY_OTHER,
       search = "",
-      searchPriority = 0,
+      priorityOffset = -90,
     },
     {
       key = "junk",
       name = BAGANATOR_L_CATEGORY_JUNK,
       search = "#" .. SYNDICATOR_L_KEYWORD_JUNK,
-      searchPriority = 180,
+      priorityOffset = -15,
     },
   }
 else -- retail
@@ -211,19 +221,19 @@ else -- retail
       key = "hearthstone",
       name = BAGANATOR_L_CATEGORY_HEARTHSTONE,
       search = BAGANATOR_L_CATEGORY_HEARTHSTONE:lower(),
-      searchPriority = 200,
+      priorityOffset = -10,
     },
     {
       key = "potion",
       name = BAGANATOR_L_CATEGORY_POTION,
       search = "#" .. SYNDICATOR_L_KEYWORD_POTION,
-      searchPriority = 160,
+      priorityOffset = -40,
     },
     {
       key = "food",
       name = BAGANATOR_L_CATEGORY_FOOD,
       search = "#" .. SYNDICATOR_L_KEYWORD_FOOD,
-      searchPriority = 160,
+      priorityOffset = -40,
     },
     {
       key = "consumable",
@@ -234,13 +244,13 @@ else -- retail
       key = "reagent",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
       search = "#" .. SYNDICATOR_L_KEYWORD_REAGENT,
-      searchPriority = 100,
+      priorityOffset = -50,
     },
     {
       key = "auto_equipment_sets",
       name = BAGANATOR_L_CATEGORY_EQUIPMENT_SETS_AUTO,
       auto = "equipment_sets",
-      searchPriority = 200,
+      priorityOffset = -10,
     },
     {
       key = "weapon",
@@ -291,7 +301,7 @@ else -- retail
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
       search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Key):lower(),
-      searchPriority = 165,
+      priorityOffset = 165,
     },
     {
       key = "miscellaneous",
@@ -302,25 +312,25 @@ else -- retail
       key = "battlepet",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Battlepet),
       search = "#" .. SYNDICATOR_L_KEYWORD_BATTLE_PET,
-      searchPriority = 140,
+      priorityOffset = -60,
     },
     {
       key = "toy",
       name = TOY,
       search = "#" .. TOY:lower(),
-      searchPriority = 170,
+      priorityOffset = -20,
     },
     {
       key = "other",
       name = BAGANATOR_L_CATEGORY_OTHER,
       search = "",
-      searchPriority = 0,
+      priorityOffset = -90,
     },
     {
       key = "junk",
       name = BAGANATOR_L_CATEGORY_JUNK,
       search = "#" .. SYNDICATOR_L_KEYWORD_JUNK,
-      searchPriority = 180,
+      priorityOffset = -15,
     },
   }
 end
@@ -329,7 +339,7 @@ table.insert(addonTable.CategoryViews.Constants.DefaultCategories, {
   key = "auto_inventory_slots",
   name = BAGANATOR_L_CATEGORY_INVENTORY_SLOTS_AUTO,
   auto = "inventory_slots",
-  searchPriority = 150,
+  priorityOffset = -40,
   doNotAdd = true,
 })
 
@@ -337,7 +347,7 @@ table.insert(addonTable.CategoryViews.Constants.DefaultCategories, {
   key = "auto_recents",
   name = BAGANATOR_L_CATEGORY_RECENT_AUTO,
   auto = "recents",
-  searchPriority = 600,
+  priorityOffset = 600,
   doNotAdd = true,
 })
 
@@ -353,7 +363,7 @@ addonTable.Utilities.OnAddonLoaded("TradeSkillMaster", function()
     source = "default_auto_tradeskillmaster",
     name = BAGANATOR_L_CATEGORY_TRADESKILLMASTER_AUTO,
     auto = "tradeskillmaster",
-    searchPriority = 190,
+    priorityOffset = -15,
     doNotAdd = true,
   }
   table.insert(addonTable.CategoryViews.Constants.DefaultCategories, spec)
@@ -363,6 +373,6 @@ end)
 addonTable.CategoryViews.Constants.SourceToCategory = {}
 for index, category in ipairs(addonTable.CategoryViews.Constants.DefaultCategories) do
   category.source = "default_" .. category.key
-  category.searchPriority = category.searchPriority or 50
+  category.priorityOffset = category.priorityOffset or -70 
   addonTable.CategoryViews.Constants.SourceToCategory[category.source] = category
 end

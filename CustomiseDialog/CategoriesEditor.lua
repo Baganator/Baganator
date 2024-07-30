@@ -1,27 +1,12 @@
 local _, addonTable = ...
 BaganatorCustomiseDialogCategoriesEditorMixin = {}
 
-local PRIORITY_LIST = {
-  220,
-  250,
-  300,
-  350,
-  400,
-}
-
 local groupingToLabel = {
   ["expansion"] = BAGANATOR_L_EXPANSION,
   ["slot"] = BAGANATOR_L_SLOT,
   ["type"] = BAGANATOR_L_TYPE,
   ["quality"] = BAGANATOR_L_QUALITY,
 }
-
-local PRIORITY_MAP = {}
-
-local priorityOffset = -2
-for index, value in ipairs(PRIORITY_LIST) do
-  PRIORITY_MAP[index + priorityOffset] = value
-end
 
 local disabledAlpha = 0.5
 
@@ -48,6 +33,10 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       oldMods = categoryMods[self.currentCategory]
       categoryMods[self.currentCategory] = nil
     end
+    if not oldMods then
+      oldMods = {}
+    end
+    oldMods.priority = self.PrioritySlider:GetValue()
 
     local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
     local oldHidden = hidden[self.currentCategory]
@@ -67,7 +56,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       customCategories[newName] = {
         name = newName,
         search = self.CategorySearch:GetText(),
-        searchPriority = PRIORITY_MAP[self.PrioritySlider:GetValue()],
       }
       categoryMods[newName] = oldMods
 
@@ -86,6 +74,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       end
     else
       hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
+      categoryMods[self.currentCategory] = oldMods
     end
 
     if hidden[self.currentCategory] ~= oldHidden then
@@ -122,7 +111,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local category
     if customCategories[value] then
       category = customCategories[value]
-      self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.DeleteButton:Enable()
       self.ExportButton:Enable()
@@ -131,30 +119,20 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategoryName:SetAlpha(disabledAlpha)
       self.CategorySearch:SetAlpha(disabledAlpha)
       self.HelpButton:SetAlpha(disabledAlpha)
-      self.PrioritySlider:SetAlpha(disabledAlpha)
-      self.PrioritySlider:Disable()
       self.Blocker:Show()
       self.DeleteButton:Disable()
       self.ExportButton:Disable()
     end
     self.HiddenCheckBox:SetChecked(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)[value])
 
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+
     self.CategoryName:SetText(category.name)
     self.CategorySearch:SetText(category.search or "")
-    if category.searchPriority < PRIORITY_LIST[1] then
-      self.PrioritySlider:SetValue(-1)
-    else
-      for index, value in ipairs(PRIORITY_LIST) do
-        if category.searchPriority <= value then
-          self.PrioritySlider:SetValue(index + priorityOffset)
-          break
-        end
-      end
-    end
+    self.PrioritySlider:SetValue(categoryMods[value] and categoryMods[value].priority or -1)
 
     if value ~= addonTable.CategoryViews.Constants.EmptySlotsCategory then
       self.GroupDropDown:Enable()
-      local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
       if categoryMods[value] and categoryMods[value].group then
         self.GroupDropDown:SetText(groupingToLabel[categoryMods[value].group])
       else

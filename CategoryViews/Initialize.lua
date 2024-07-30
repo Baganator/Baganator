@@ -9,6 +9,18 @@ local function MigrateFormat()
     end
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MIGRATION, 1)
   end
+  if addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MIGRATION) == 1 then
+    local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    for key, categoryDetails in pairs(customCategories) do
+      if not categoryMods[key] then
+        categoryMods[key] = {}
+      end
+      categoryMods[key].priority = addonTable.CategoryViews.Constants.OldPriorities[categoryDetails.searchPriority] or 0
+      categoryDetails.searchPriority = nil
+    end
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MIGRATION, 2)
+  end
 end
 
 local function SetupCategories()

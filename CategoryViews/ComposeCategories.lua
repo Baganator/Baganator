@@ -274,6 +274,8 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       currentSection = section
     end
 
+    local priority = categoryMods[source] and categoryMods[source].priority and (categoryMods[source].priority + 1) * 200 or 0
+
     local category = addonTable.CategoryViews.Constants.SourceToCategory[source]
     if category then
       if category.auto then
@@ -288,7 +290,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
             source = source,
             search = search,
             label = autoDetails.searchLabels[index],
-            priority = category.searchPriority,
+            priority = category.priorityOffset + priority,
             index = #allDetails + 1,
             attachedItems = autoDetails.attachedItems[index],
             auto = true,
@@ -307,7 +309,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
           source = source,
           search = category.search,
           label = category.name,
-          priority = category.searchPriority,
+          priority = category.priorityOffset + priority,
           index = #allDetails + 1,
           attachedItems = nil,
           section = currentSection,
@@ -326,7 +328,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         source = source,
         search = search,
         label = category.name,
-        priority = category.searchPriority,
+        priority = priority,
         index = #allDetails + 1,
         attachedItems = nil,
         section = currentSection,
