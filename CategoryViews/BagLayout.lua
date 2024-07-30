@@ -174,7 +174,9 @@ local function DisplayResults(self, toRefresh, containerType, composed, emptySlo
     -- Ensure we don't overflow the preallocated buttons by returning all
     -- buttons no longer needed by a particular group
     for searchTerm, details in pairs(results) do
-      self.LiveLayouts[details.index + activeLayoutOffset]:DeallocateUnusedButtons(details.all)
+      if toRefresh[searchTerm] then
+        self.LiveLayouts[details.index + activeLayoutOffset]:DeallocateUnusedButtons(details.all)
+      end
     end
     if #self.LiveLayouts > #composed.searches + activeLayoutOffset then
       for index = #composed.searches + activeLayoutOffset + 1, #self.LiveLayouts do
