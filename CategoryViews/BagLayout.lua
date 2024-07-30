@@ -296,7 +296,6 @@ local function DisplayResults(self, toRefresh, containerType, composed, emptySlo
           end
           button.tooltipHeader = details.tooltipHeader
         else
-          print("missing")
           button.bagTypeIcon:SetTexture(nil)
           button.tooltipHeader = nil
         end
@@ -404,11 +403,12 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     for search, r in pairs(results) do
       if not self.results[search] then
         self.results[search] = r
+        altered[search] = self.results[search]
       else
         tAppendAll(self.results[search], r)
-      end
-      if #r > 0 then
-        altered[search] = self.results[search]
+        if #r > 0 then
+          altered[search] = self.results[search]
+        end
       end
     end
     self.CategorySort:ApplySorts(altered, function(results)
