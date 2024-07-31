@@ -1261,7 +1261,7 @@ function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
 
   for slotIndex = 1, tabSize do
     local b = self.buttonPool:Acquire()
-    addonTable.Skins.AddFrame("ItemButton", button)
+    addonTable.Skins.AddFrame("ItemButton", b)
     if not b.texturesSetup then
       b.texturesSetup = true
       MasqueRegistration(b)

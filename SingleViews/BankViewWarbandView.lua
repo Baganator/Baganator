@@ -12,6 +12,9 @@ end
 function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
 
+  self.BankLive:SetShown(self.isLive)
+  self.BankCached:SetShown(not self.isLive)
+
   local activeBank
 
   if self.BankLive:IsShown() then
