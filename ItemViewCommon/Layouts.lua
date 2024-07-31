@@ -602,7 +602,7 @@ local function InitializeCategoryEmptySlot(button, details)
     button.bagTypeIcon:SetSize(20, 20)
     button.bagTypeIcon:SetPoint("CENTER")
     button.bagTypeIcon:SetDesaturated(true)
-    button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
+    button.oldUpdateTooltip = button.UpdateTooltip
     button:SetScript("OnEnter", function()
       if button.tooltipHeader then
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
@@ -613,6 +613,7 @@ local function InitializeCategoryEmptySlot(button, details)
       GameTooltip:Hide()
     end)
   end
+  button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
   local details = addonTable.Constants.ContainerKeyToInfo[bagType]
   if details then
     if details.type == "atlas" then
@@ -625,6 +626,12 @@ local function InitializeCategoryEmptySlot(button, details)
     button.bagTypeIcon:SetTexture(nil)
     button.tooltipHeader = nil
   end
+end
+
+local function RestoreCategoryButtonFromEmptySlot(button)
+  button.tooltipHeader = nil
+  button.UpdateTooltip = button.oldUpdateTooltip
+  button.bagTypeIcon:SetTexture(nil)
 end
 
 BaganatorLiveCategoryLayoutMixin = {}
@@ -903,8 +910,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
       if details[2].itemLink == nil then
         InitializeCategoryEmptySlot(details[1], details[2])
       elseif details[1].bagTypeIcon then
-        details[1].tooltipHeader = nil
-        details[1].bagTypeIcon:SetTexture(nil)
+        RestoreCategoryButtonFromEmptySlot(details[1])
       end
     end
   end
@@ -992,8 +998,7 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
     if cacheList[index].itemLink == nil then
       InitializeCategoryEmptySlot(button, cacheList[index])
     elseif button.bagTypeIcon then
-      button.tooltipHeader = nil
-      button.bagTypeIcon:SetTexture(nil)
+      RestoreCategoryButtonFromEmptySlot(button)
     end
   end
 end
