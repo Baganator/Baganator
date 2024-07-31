@@ -87,8 +87,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     self.labelsPool:ReleaseAll()
     self.dividerPool:ReleaseAll()
     self.sectionButtonPool:ReleaseAll()
-    local oldResults = self.results
-    self.results = results
 
     local emptyDetails = FindValueInTableIf(composed.details, function(a) return a.emptySlots end)
     local splitEmpty, emptySearch = nil, nil
@@ -165,6 +163,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
       end
     end
 
+    local oldResults = self.results
     if self.splitStacksDueToTransfer and oldResults then
       local anyNew = false
       for search, r in pairs(oldResults) do
@@ -191,6 +190,11 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
           end
         end
       end
+      self.results = results
+    elseif self.splitStacksDueToTransfer then
+      self.results = results
+    else
+      self.results = nil
     end
 
     local activeLayouts
