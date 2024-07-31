@@ -594,6 +594,39 @@ function BaganatorLiveBagLayoutMixin:ApplySearch(text)
   self.SearchMonitor:StartSearch(text)
 end
 
+local function InitializeCategoryEmptySlot(button, details)
+  local count, bagType = details.itemCount, details.bagType
+  SetItemButtonCount(button, bagType ~= "keyring" and count or 1)
+  if not button.bagTypeIcon then
+    button.bagTypeIcon = button:CreateTexture(nil, "OVERLAY")
+    button.bagTypeIcon:SetSize(20, 20)
+    button.bagTypeIcon:SetPoint("CENTER")
+    button.bagTypeIcon:SetDesaturated(true)
+    button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
+    button:SetScript("OnEnter", function()
+      if button.tooltipHeader then
+        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+        GameTooltip:SetText(button.tooltipHeader)
+      end
+    end)
+    button:SetScript("OnLeave", function()
+      GameTooltip:Hide()
+    end)
+  end
+  local details = addonTable.Constants.ContainerKeyToInfo[bagType]
+  if details then
+    if details.type == "atlas" then
+      button.bagTypeIcon:SetAtlas(details.value)
+    else
+      button.bagTypeIcon:SetTexture(details.value)
+    end
+    button.tooltipHeader = details.tooltipHeader
+  else
+    button.bagTypeIcon:SetTexture(nil)
+    button.tooltipHeader = nil
+  end
+end
+
 BaganatorLiveCategoryLayoutMixin = {}
 
 function BaganatorLiveCategoryLayoutMixin:OnLoad()
@@ -867,6 +900,12 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     for _, details in ipairs(toSet) do
       details[1]:SetItemDetails(details[2])
       details[1].addedDirectly = details[2].addedDirectly
+      if details[2].itemLink == nil then
+        InitializeCategoryEmptySlot(details[1], details[2])
+      elseif details[1].bagTypeIcon then
+        details[1].tooltipHeader = nil
+        details[1].bagTypeIcon:SetTexture(nil)
+      end
     end
   end
 
@@ -950,6 +989,12 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
   for index, button in ipairs(self.buttons) do
     button:Show()
     button:SetItemDetails(cacheList[index])
+    if cacheList[index].itemLink == nil then
+      InitializeCategoryEmptySlot(button, cacheList[index])
+    elseif button.bagTypeIcon then
+      button.tooltipHeader = nil
+      button.bagTypeIcon:SetTexture(nil)
+    end
   end
 end
 

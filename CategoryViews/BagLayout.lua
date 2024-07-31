@@ -2,7 +2,7 @@ local _, addonTable = ...
 local addonName, addonTable = ...
 
 local linkMap = {}
-local activeLayoutOffset = 1
+local activeLayoutOffset = 0
 
 local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
   local junkPluginID = addonTable.Config.Get("junk_plugin")
@@ -11,14 +11,14 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
     junkPlugin = nil
   end
 
-  local emptySlotCount = {}
-  local emptySlotsOrder = {}
+  local emptySlotsByType, emptySlotsOrder = {}, {}
   local everything = {}
   for bagIndex, bag in ipairs(allBags) do
     local bagID = bagIndexes[bagIndex]
     if not bagID then -- Avoid errors from bags removed from the possible indexes
       break
     end
+    local bagType = bagTypes[bagIndex]
     for slotIndex, slot in ipairs(bag) do
       local info = Syndicator.Search.GetBaseInfo(slot)
       if self.isLive then
@@ -49,22 +49,22 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
         info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
         table.insert(everything, info)
       else
-        if not emptySlotCount[bagTypes[bagIndex]] then
-          emptySlotCount[bagTypes[bagIndex]] =  0
-          table.insert(emptySlotsOrder, {bagID = bagID, slotID = slotIndex, key = bagTypes[bagIndex]})
+        if not emptySlotsByType[bagType] then
+          emptySlotsByType[bagType] = {}
+          table.insert(emptySlotsOrder, bagType)
         end
-        emptySlotCount[bagTypes[bagIndex]] = emptySlotCount[bagTypes[bagIndex]] + 1
+        table.insert(emptySlotsByType[bagType], {bagID = bagID, itemCount = 1, slotID = slotIndex, key = bagType, bagType = bagType, keyLink = bagType})
       end
     end
   end
 
-  return emptySlotCount, emptySlotsOrder, everything
+  return emptySlotsByType, emptySlotsOrder, everything
 end
 
 function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
 
-  local emptySlotCount, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
+  local emptySlotsByType, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
 
   local composed = addonTable.CategoryViews.ComposeCategories(everything)
 
@@ -79,14 +79,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     table.insert(self.CachedLayouts, CreateFrame("Frame", nil, self, "BaganatorCachedCategoryLayoutTemplate"))
   end
 
-  if not self.setupEmptyLayouts then
-    self.setupEmptyLayouts = true
-
-    if self.liveEmptySlotsPool then
-      self.LiveLayouts[1]:SetPool(self.liveEmptySlotsPool)
-    end
-  end
-
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     print("prearrange", debugprofilestop() - s1)
   end
@@ -97,6 +89,30 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     self.sectionButtonPool:ReleaseAll()
     local oldResults = self.results
     self.results = results
+
+    local emptyDetails = FindValueInTableIf(composed.details, function(a) return a.emptySlots end)
+    local splitEmpty, emptySearch = nil, nil
+    if emptyDetails then
+      emptySearch = emptyDetails.search
+      local slots = {}
+      if not addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING) then
+        splitEmpty = slots
+        for _, bagType in ipairs(emptySlotsOrder) do
+          if bagType ~= "keyring" then
+            tAppendAll(slots, emptySlotsByType[bagType])
+          else
+            table.insert(slots, emptySlotsByType[bagType][1])
+          end
+        end
+      else
+        for _, bagType in ipairs(emptySlotsOrder) do
+          local entry = CopyTable(emptySlotsByType[bagType][1])
+          entry.itemCount = #emptySlotsByType[bagType]
+          table.insert(slots, entry)
+        end
+      end
+      results[emptyDetails.search] = slots
+    end
 
     local start2 = debugprofilestop()
     local bagWidth
@@ -152,17 +168,24 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     if self.splitStacksDueToTransfer and oldResults then
       local anyNew = false
       for search, r in pairs(oldResults) do
-        if r.oldLength and r.oldLength < #results[search].all then
+        if search ~= emptySearch and r.oldLength and r.oldLength < #results[search].all then
           anyNew = true
         end
       end
       if not anyNew and not self.addToCategoryMode then
+        local typeMap = {}
+        for index, bagType in ipairs(bagTypes) do
+          typeMap[bagIndexes[index]] = bagType
+        end
         for search, r in pairs(oldResults) do
           results[search].oldLength = #results[search].all
           if #r.all > #results[search].all then
             for index, info in ipairs(r.all) do
               if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
-                table.insert(results[search].all, index, {bagID = info.bagID, slotID = info.slotID, itemCount = 0})
+                table.insert(results[search].all, index, {bagID = info.bagID, slotID = info.slotID, itemCount = 0, keyLink = typeMap[info.bagID], bagType = typeMap[info.bagID]})
+                if splitEmpty then
+                  table.remove(splitEmpty, (FindInTableIf(splitEmpty, function(a) return a.bagID == info.bagID and a.slotID == info.slotID end)))
+                end
               end
             end
           end
@@ -184,7 +207,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
           self.LiveLayouts[index]:Hide()
         end
       end
-      self.LiveLayouts[1]:DeallocateUnusedButtons(emptySlotsOrder)
       for _, layout in ipairs(self.CachedLayouts) do
         layout:Hide()
       end
@@ -219,7 +241,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
             local d = composed.details[i]
             if d.section ~= details.label then
               break
-            elseif (d.type == "category" and results[d.search].any) or (d.type == "empty slots category" and #emptySlotsOrder > 0) then
+            elseif (d.type == "category" and results[d.search].any) then
               any = true
               break
             end
@@ -256,55 +278,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
         label.categorySearch = details.search
         activeLabels[details.index] = label
         layout.type = details.type
-      elseif details.type == "empty slots category" then
-        table.insert(layoutsShown, activeLayouts[1])
-        if #emptySlotsOrder == 0 or hidden[addonTable.CategoryViews.Constants.EmptySlotsCategory] or sectionToggled[details.section] then
-          activeLayouts[1]:ShowGroup({}, 1)
-        else
-          activeLayouts[1]:ShowGroup(emptySlotsOrder, math.min(#emptySlotsOrder, bagWidth))
-        end
-        activeLayouts[1].section = details.section
-        activeLayouts[1].type = "category"
-        for index, button in ipairs(activeLayouts[1].buttons) do
-          local bagType = emptySlotsOrder[index].key
-          button.isBag = true -- Ensure even counts of 1 are shown
-          SetItemButtonCount(button, emptySlotCount[bagType])
-          button.Count:SetShown(bagType ~= "keyring") -- Keyrings have unlimited size
-          if not button.bagTypeIcon then
-            button.bagTypeIcon = button:CreateTexture(nil, "OVERLAY")
-            button.bagTypeIcon:SetSize(20, 20)
-            button.bagTypeIcon:SetPoint("CENTER")
-            button.bagTypeIcon:SetDesaturated(true)
-            button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
-            button:SetScript("OnEnter", function()
-              if button.tooltipHeader then
-                GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-                GameTooltip:SetText(button.tooltipHeader)
-              end
-            end)
-            button:SetScript("OnLeave", function()
-              GameTooltip:Hide()
-            end)
-          end
-          local details = addonTable.Constants.ContainerKeyToInfo[bagType]
-          if details then
-            if details.type == "atlas" then
-              button.bagTypeIcon:SetAtlas(details.value)
-            else
-              button.bagTypeIcon:SetTexture(details.value)
-            end
-            button.tooltipHeader = details.tooltipHeader
-          else
-            button.bagTypeIcon:SetTexture(nil)
-            button.tooltipHeader = nil
-          end
-        end
-        local label = self.labelsPool:Acquire()
-        addonTable.Skins.AddFrame("CategoryLabel", label)
-        label.categorySearch = nil
-        label:SetText(BAGANATOR_L_EMPTY)
-        activeLabels[details.index] = label
-        activeLayouts[1]:Show()
       else
         error("unrecognised layout type")
       end

@@ -177,3 +177,4 @@ addonTable.Constants.ContainerKeyToInfo = {
   [9] = {type = "atlas", value="worldquest-icon-fishing", tooltipHeader=BAGANATOR_L_FISHING, size=50}, -- fishing
   [10] = {type = "atlas", value="worldquest-icon-cooking", tooltipHeader=BAGANATOR_L_COOKING, size=60}, -- cooking
 }
+addonTable.Constants.ContainerTypes = 13

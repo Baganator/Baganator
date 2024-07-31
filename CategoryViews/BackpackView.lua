@@ -10,12 +10,6 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.LiveLayouts = {}
   self.CachedLayouts = {}
 
-  self.liveEmptySlotsPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
-  for i = 1, #Syndicator.Constants.AllBagIndexes do
-    self.liveEmptySlotsPool:Acquire()
-  end
-  self.liveEmptySlotsPool:ReleaseAll()
-
   self:RegisterEvent("CURSOR_CHANGED")
 
   self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")

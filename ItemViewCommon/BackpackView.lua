@@ -34,7 +34,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   -- Preallocating is necessary to avoid taint issues if a
   -- player logs in or first opens their bags when in combat
   -- 6 is bags + reagent bag (retail) or bags + keyring (wrath)
-  PreallocateItemButtons(self.liveItemButtonPool, Syndicator.Constants.MaxBagSize * 6)
+  PreallocateItemButtons(self.liveItemButtonPool, Syndicator.Constants.MaxBagSize * 6 + addonTable.Constants.ContainerTypes)
 
   addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
   addonTable.Utilities.AddBagTransferManager(self) -- self.transferManager
