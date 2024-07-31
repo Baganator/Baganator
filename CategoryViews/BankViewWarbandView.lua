@@ -84,7 +84,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(associat
     return
   end
 
-  self:RemoveSearchMatches(function() return self.results[associatedSearch].all end)
+  self:RemoveSearchMatches(function() return tFilter(self.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)
