@@ -603,6 +603,8 @@ local function InitializeCategoryEmptySlot(button, details)
     button.bagTypeIcon:SetPoint("CENTER")
     button.bagTypeIcon:SetDesaturated(true)
     button.oldUpdateTooltip = button.UpdateTooltip
+    button.oldOnEnter = button:GetScript("OnEnter")
+    button.oldOnLeave = button:GetScript("OnLeave")
     button:SetScript("OnEnter", function()
       if button.tooltipHeader then
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
@@ -631,6 +633,8 @@ end
 local function RestoreCategoryButtonFromEmptySlot(button)
   button.tooltipHeader = nil
   button.UpdateTooltip = button.oldUpdateTooltip
+  button:SetScript("OnEnter", button.oldOnEnter)
+  button:SetScript("OnLeave", button.oldOnLeave)
   button.bagTypeIcon:SetTexture(nil)
 end
 
