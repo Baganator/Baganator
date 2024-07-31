@@ -270,13 +270,15 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   local warbandBank = Syndicator.API.GetWarband(1).bank[self.currentTab]
 
-  local isWarbandData = warbandBank and #warbandBank.slots ~= 0
+  local isWarbandData = warbandBank and #warbandBank.slots ~= 0 and (not self.isLive or C_PlayerInfo.HasAccountInventoryLock())
   self.BankMissingHint:SetShown(not isWarbandData)
   self:GetParent().SearchWidget:SetShown(isWarbandData)
 
   if self.BankMissingHint:IsShown() then
     if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) then
       self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_NOT_PURCHASED_HINT)
+    elseif self.isLive and not C_PlayerInfo.HasAccountInventoryLock() then
+      self.BankMissingHint:SetText(ACCOUNT_BANK_LOCKED_PROMPT)
     elseif self.isLive then
       self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_TEMPORARILY_DISABLED_HINT)
     else
@@ -315,6 +317,25 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   self:UpdateTabs()
   self:SetupBlizzardFramesForTab()
   self:HighlightCurrentTab()
+
+  if self.BankMissingHint:IsShown() then
+    -- Ensure bank missing hint has enough space to display
+    local minWidth = self.BankMissingHint:GetWidth() + 40
+    local maxHeight = 30
+
+    for _, layout in ipairs(self.Layouts) do
+      layout:Hide()
+    end
+
+    self:SetSize(
+      math.max(minWidth, addonTable.CategoryViews.Constants.MinWidth),
+      maxHeight + 75 + topSpacing / 2
+    )
+
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
+
+    self:GetParent():OnTabFinished()
+  end
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DepositMoney()

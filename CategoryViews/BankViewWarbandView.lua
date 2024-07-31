@@ -105,7 +105,10 @@ end
 function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
 
-  -- Copied from WarbandViews/BagView.lua
+  if self.BankMissingHint:IsShown() then
+    return
+  end
+
   local sideSpacing, topSpacing = 13, 14
   if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     sideSpacing = 8
@@ -126,17 +129,10 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   
 
   local warbandData = Syndicator.API.GetWarband(1)
-  if warbandData.bank[tabIndex] then
+  if warbandData.bank[tabIndex] and not self.BankMissingHint:IsShown() then
     addonTable.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "warband", {0}, {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
-      -- Ensure bank missing hint has enough space to display
-      local minWidth = 0
-      if self.BankMissingHint:IsShown() then
-        minWidth = self.BankMissingHint:GetWidth() + 40
-        maxHeight = maxHeight + 30
-      end
-
       self:SetSize(
-        math.max(minWidth, addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
+        math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
         maxHeight + 75 + topSpacing / 2 + buttonPadding
       )
 
@@ -149,20 +145,5 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
       self:GetParent():OnTabFinished()
     end)
-  else
-    -- Ensure bank missing hint has enough space to display
-    local minWidth = self.BankMissingHint:GetWidth() + 40
-    local maxHeight = 30
-
-    self:SetSize(
-      math.max(minWidth, addonTable.CategoryViews.Constants.MinWidth),
-      maxHeight + 75 + topSpacing / 2 + buttonPadding
-    )
-
-    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
-
-    self:GetParent():OnTabFinished()
   end
-
-  self:GetParent():OnTabFinished()
 end

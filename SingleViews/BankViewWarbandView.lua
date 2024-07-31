@@ -12,6 +12,10 @@ end
 function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
 
+  if self.BankMissingHint:IsShown() then
+    return
+  end
+
   self.BankLive:SetShown(self.isLive)
   self.BankCached:SetShown(not self.isLive)
 
@@ -50,15 +54,8 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
-  -- Ensure bank missing hint has enough space to display
-  local minWidth = 0
-  if self.BankMissingHint:IsShown() then
-    minWidth = self.BankMissingHint:GetWidth() + 40
-    bankHeight = bankHeight + 30
-  end
-
   self:SetSize(
-    math.max(minWidth, activeBank:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
+    math.max(activeBank:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
     bankHeight + 55
   )
 
