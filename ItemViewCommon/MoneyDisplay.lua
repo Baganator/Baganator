@@ -1,10 +1,4 @@
 local _, addonTable = ...
-local function AddWarband(tooltip)
-  local warband = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1).money or 0
-  if warband > 0 then
-    GameTooltip:AddDoubleLine(PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), addonTable.Utilities.GetMoneyString(warband, true), nil, nil, nil, 1, 1, 1)
-  end
-end
 
 function addonTable.ShowGoldSummaryRealm(anchor, point)
   GameTooltip:SetOwner(anchor, point)
@@ -53,7 +47,18 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
   local function AddRealm(realmName, realmCount, realmTotal)
     table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = addonTable.Utilities.GetMoneyString(realmTotal, true)})
   end
+  local function AddWarband(warband)
+    if warband > 0 then
+      table.insert(lines, {left = PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), right = addonTable.Utilities.GetMoneyString(warband, true)})
+    end
+  end
+
   local total = 0
+
+  local warband = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1).money or 0
+  AddWarband(warband)
+  total = total + warband
+
   local realmTotal = 0
   local realmCount = 0
   local currentRealm
@@ -78,7 +83,6 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
   GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
 
-  AddWarband(GameTooltip)
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
