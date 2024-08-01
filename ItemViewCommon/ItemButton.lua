@@ -571,7 +571,9 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
-    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+    local itemLocation = ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID())
+    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
+    self.BGR.itemLocation = itemLocation
 
     self.BGR.hasNoValue = noValue
     self:BGRUpdateQuests()
@@ -1122,7 +1124,9 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
         end
       end)
     end
-    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID()), self.BGR.itemLink)
+    local itemLocation = ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID())
+    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
+    self.BGR.itemLocation = itemLocation
 
     if C_Engraving and C_Engraving.IsEngravingEnabled() then
       self.BGR.isEngravable = false

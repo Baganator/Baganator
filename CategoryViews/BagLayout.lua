@@ -30,6 +30,7 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
         info.isJunkGetter = function() return junkPlugin and junkPlugin(bagID, slotIndex, info.itemID, info.itemLink) == true end
         if info.itemID ~= nil then
           local location = {bagID = bagID, slotIndex = slotIndex}
+          info.itemLocation = location
           info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
           if info.setInfo then
             info.guid = C_Item.GetItemGUID(location)

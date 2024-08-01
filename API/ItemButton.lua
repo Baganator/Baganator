@@ -62,7 +62,11 @@ end
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
   if HasItemLevel(details) and not (C_Item.IsCosmeticItem and C_Item.IsCosmeticItem(details.itemLink)) then
     if not details.itemLevel then
-      details.itemLevel = C_Item.GetDetailedItemLevelInfo(details.itemLink)
+      if details.itemLocation then
+        details.itemLevel = C_Item.GetCurrentItemLevel(details.itemLocation)
+      else
+        details.itemLevel = C_Item.GetDetailedItemLevelInfo(details.itemLink)
+      end
     end
     ItemLevel:SetText(details.itemLevel)
     if iconSettings.useQualityColors then
