@@ -926,6 +926,9 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
 
   for _, details in ipairs(toResetCache) do
     addonTable.ItemButtonUtil.ResetCache(details[1], details[2])
+    if details.itemLink == nil then
+      InitializeCategoryEmptySlot(details[1], details[2])
+    end
   end
 
   self.refreshContent = false
