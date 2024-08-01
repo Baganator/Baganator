@@ -108,6 +108,8 @@ local function GetCategoryContainer(parent, pickupCallback)
           addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", self.value)
         elseif self.value == "default_auto_recents" then
           addonTable.CallbackRegistry:TriggerEvent("EditCategoryRecent")
+        elseif self.value ==  addonTable.CategoryViews.Constants.EmptySlotsCategory then
+          addonTable.CallbackRegistry:TriggerEvent("EditCategoryEmpty")
         else
           addonTable.CallbackRegistry:TriggerEvent("EditCategory", self.value)
         end

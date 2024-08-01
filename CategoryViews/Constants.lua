@@ -25,6 +25,7 @@ addonTable.CategoryViews.Constants = {
     addonTable.Config.Options.CATEGORY_SECTION_TOGGLED,
     addonTable.Config.Options.CUSTOM_CATEGORIES,
     addonTable.Config.Options.CATEGORY_MODIFICATIONS,
+    addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS,
   },
 
   OldPriorities = {

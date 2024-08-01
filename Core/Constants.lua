@@ -61,6 +61,7 @@ addonTable.Constants.Events = {
   "EditCategory",
   "EditCategorySection",
   "EditCategoryRecent",
+  "EditCategoryEmpty",
 
   "HighlightSimilarItems",
   "HighlightIdenticalItems",

@@ -70,6 +70,7 @@ addonTable.Config.Options = {
   CATEGORY_SECTION_TOGGLED = "category_section_toggled",
   CATEGORY_HORIZONTAL_SPACING = "category_horizontal_spacing",
   CATEGORY_ITEM_GROUPING = "category_item_grouping",
+  CATEGORY_GROUP_EMPTY_SLOTS = "category_group_empty_slots",
   RECENT_TIMEOUT = "recent_timeout",
   ADD_TO_CATEGORY_BUTTONS = "add_to_category_buttons",
 }
@@ -158,6 +159,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.CATEGORY_SECTION_TOGGLED] = {},
   [addonTable.Config.Options.CATEGORY_HORIZONTAL_SPACING] = 0.15,
   [addonTable.Config.Options.CATEGORY_ITEM_GROUPING] = true,
+  [addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS] = true,
   [addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS] = true,
   [addonTable.Config.Options.RECENT_TIMEOUT] = 15,
 }

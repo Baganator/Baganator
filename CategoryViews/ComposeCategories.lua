@@ -303,6 +303,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       elseif category.emptySlots then
         allDetails[#allDetails + 1] = {
           type = "category",
+          source = source,
           index = #allDetails + 1,
           section = currentSection,
           search = "________" .. (#allDetails + 1),

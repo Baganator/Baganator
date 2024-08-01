@@ -94,7 +94,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     if emptyDetails then
       emptySearch = emptyDetails.search
       local slots = {}
-      if not addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING) then
+      if not addonTable.Config.Get(addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS) then
         splitEmpty = slots
         for _, bagType in ipairs(emptySlotsOrder) do
           if bagType ~= "keyring" then
@@ -129,7 +129,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     self.notShown = {}
     for searchTerm, details in pairs(results) do
       local entries = {}
-      if self.isGrouping then
+      if self.isGrouping and searchTerm ~= emptySearch then
         local entriesByKey = {}
         for _, item in ipairs(details) do
           local groupingKey = item.key
@@ -179,7 +179,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
         end
         for search, r in pairs(oldResults) do
           results[search].oldLength = #results[search].all
-          if #r.all > #results[search].all then
+          if #r.all > #results[search].all and search ~= emptySearch then
             for index, info in ipairs(r.all) do
               if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
                 table.insert(results[search].all, index, {bagID = info.bagID, slotID = info.slotID, itemCount = 0, keyLink = typeMap[info.bagID], bagType = typeMap[info.bagID]})

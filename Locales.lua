@@ -283,6 +283,7 @@ L["RECENT_TIMER"] = "Recent timer"
 L["IMMEDIATE"] = "Immediate"
 L["FOREVER"] = "Forever"
 L["RECENT_HEADER_CLICK_MESSAGE"] = "Click heading to clear immediately."
+L["GROUP_EMPTY_SLOTS"] = "Group empty slots"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"
