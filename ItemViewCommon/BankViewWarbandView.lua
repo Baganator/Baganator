@@ -259,6 +259,11 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:HighlightCurrentTab()
   end
 end
 
+-- Used to ensure translated button text doesn't cause buttons to overlap
+function BaganatorItemViewCommonBankViewWarbandViewMixin:GetButtonsWidth(sideSpacing)
+  return self.DepositItemsButton:GetWidth() + addonTable.Constants.ButtonFrameOffset + sideSpacing - 2 + self.WithdrawMoneyButton:GetWidth() + self.DepositMoneyButton:GetWidth() + sideSpacing + 15
+end
+
 function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateView()
   self:ShowTab(self.currentTab, self:GetParent().liveBankActive)
 end

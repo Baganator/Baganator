@@ -132,7 +132,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   if warbandData.bank[tabIndex] and not self.BankMissingHint:IsShown() then
     addonTable.CategoryViews.LayoutContainers(self, {warbandData.bank[tabIndex].slots}, "warband", {0}, {Syndicator.Constants.AllWarbandIndexes[tabIndex]}, sideSpacing, topSpacing, function(maxWidth, maxHeight)
       self:SetSize(
-        math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
+        math.max(addonTable.CategoryViews.Constants.MinWidth, self:GetButtonsWidth(sideSpacing), maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
         maxHeight + 75 + topSpacing / 2 + buttonPadding
       )
 

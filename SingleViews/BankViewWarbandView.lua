@@ -56,6 +56,7 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   self:SetSize(
     math.max(activeBank:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
+    self:GetButtonsWidth(sideSpacing),
     bankHeight + 55
   )
 
