@@ -2,11 +2,16 @@ local _, addonTable = ...
 BaganatorSingleViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
 
 function BaganatorSingleViewBankViewWarbandViewMixin:GetSearchMatches()
-  return self.BankLive.SearchMonitor:GetMatches()
+  if self.BankTabLive:IsShown() then
+    return self.BankTabLive.SearchMonitor:GetMatches()
+  else
+    return self.BankUnifiedLive.SearchMonitor:GetMatches()
+  end
 end
 
 function BaganatorSingleViewBankViewWarbandViewMixin:NotifyBagUpdate(updatedBags)
-  self.BankLive:MarkTabsPending(updatedBags)
+  self.BankTabLive:MarkTabsPending(updatedBags)
+  self.BankUnifiedLive:MarkBagsPending("bags", updatedBags)
 end
 
 function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
@@ -16,20 +21,39 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     return
   end
 
-  self.BankLive:SetShown(self.isLive)
-  self.BankCached:SetShown(not self.isLive)
+  self.BankTabLive:SetShown(self.isLive and self.currentTab > 0)
+  self.BankTabCached:SetShown(not self.isLive and self.currentTab > 0)
 
-  local activeBank
-
-  if self.BankLive:IsShown() then
-    activeBank = self.BankLive
-  else
-    activeBank = self.BankCached
-  end
+  self.BankUnifiedLive:SetShown(self.isLive and self.currentTab == 0)
+  self.BankUnifiedCached:SetShown(not self.isLive and self.currentTab == 0)
 
   local bankWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
 
-  activeBank:ShowTab(self.currentTab, Syndicator.Constants.AllWarbandIndexes, bankWidth)
+  local activeBank
+
+  if self.currentTab > 0 then
+    if self.BankTabLive:IsShown() then
+      activeBank = self.BankTabLive
+    else
+      activeBank = self.BankTabCached
+    end
+
+    activeBank:ShowTab(self.currentTab, Syndicator.Constants.AllWarbandIndexes, bankWidth)
+  else
+    if self.BankUnifiedLive:IsShown() then
+      activeBank = self.BankUnifiedLive
+    else
+      activeBank = self.BankUnifiedCached
+    end
+
+    local warbandData = Syndicator.API.GetWarband(1)
+    local bagData = {}
+    for _, tab in ipairs(warbandData.bank) do
+      table.insert(bagData, tab.slots)
+    end
+
+    activeBank:ShowBags(bagData, "warband", Syndicator.Constants.AllWarbandIndexes, nil, bankWidth * 2)
+  end
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
   self:ApplySearch(searchText)
@@ -63,9 +87,9 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 end
 
 function BaganatorSingleViewBankViewWarbandViewMixin:ApplySearch(text)
-  if self.isLive then
-    self.BankLive:ApplySearch(text)
-  else
-    self.BankCached:ApplySearch(text)
+  for _, layout in ipairs(self.Layouts) do
+    if layout:IsShown() then
+      layout:ApplySearch(text)
+    end
   end
 end

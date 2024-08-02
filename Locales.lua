@@ -201,6 +201,7 @@ L["GUILD_NO_TABS_PURCHASED"] = "No guild bank tabs purchased"
 L["BUY_WARBAND_BANK_TAB"] = "Buy Warband Bank Tab?"
 L["DEPOSIT_WARBOUND"] = "Deposit Warbound Items"
 L["INCLUDE_REAGENTS"] = "Include Reagents"
+L["EVERYTHING"] = "Everything"
 
 L["SEARCH_EVERYWHERE"] = "Search Everywhere"
 L["SEARCH_EVERYWHERE_TOOLTIP_TEXT_2"] = "Will print the search results to your chat."

@@ -62,7 +62,7 @@ local function PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
   return emptySlotsByType, emptySlotsOrder, everything
 end
 
-function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
+function addonTable.CategoryViews.LayoutContainers(self, allBags, bagWidth, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local s1 = debugprofilestop()
 
   local emptySlotsByType, emptySlotsOrder, everything = PrearrangeEverything(self, allBags, bagIndexes, bagTypes)
@@ -114,14 +114,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, containerType,
     end
 
     local start2 = debugprofilestop()
-    local bagWidth
-    if containerType == "bags" then
-      bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
-    elseif containerType == "bank" then
-      bagWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
-    elseif containerType == "warband" then
-      bagWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
-    end
 
     local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
     local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)

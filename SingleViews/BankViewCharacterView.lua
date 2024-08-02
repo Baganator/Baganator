@@ -114,10 +114,13 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   local bankWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
 
-  activeBank:ShowCharacter(character, "bank", Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
+  local characterData = Syndicator.API.GetCharacter(character) 
+  local bagData = characterData and characterData.bank
+
+  activeBank:ShowBags(bagData, "bank", Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
 
   for index, layout in ipairs(activeBankBagCollapsibles) do
-    layout:ShowCharacter(character, "bank", Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
+    layout:ShowBags(bagData, "bank", Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
   end
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()

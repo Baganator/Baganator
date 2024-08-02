@@ -168,7 +168,8 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
 
   local characterData = Syndicator.API.GetCharacter(character)
   local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bags", Syndicator.Constants.AllBagIndexes)
-  addonTable.CategoryViews.LayoutContainers(self, characterData.bags, "bags", bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+  local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
+  addonTable.CategoryViews.LayoutContainers(self, characterData.bags, bagWidth, bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
       math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2

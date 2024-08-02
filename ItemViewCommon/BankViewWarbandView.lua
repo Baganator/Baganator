@@ -5,7 +5,7 @@ BaganatorItemViewCommonBankViewWarbandViewMixin = {}
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
-  self.currentTab = 1
+  self.currentTab = addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
   self.updateTabs = true
 
   addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
@@ -57,28 +57,59 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   addonTable.Skins.AddFrame("Button", self.DepositMoneyButton)
 end
 
-function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
-  local bagID = Syndicator.Constants.AllWarbandIndexes[self.currentTab]
-  local function DoSortInternal()
-    local status = addonTable.Sorting.ApplyBagOrdering(
-      { Syndicator.API.GetWarband(1).bank[self.currentTab].slots },
-      { bagID },
-      { [1] = true },
-      { checks = {}, sortOrder = { [bagID] = 250 }, },
-      isReverse,
-      false,
-      0
-    )
-    self.sortManager:Apply(status, DoSortInternal, function() end)
+local function GetUnifiedSortData()
+  local bagData = {}
+  for _, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
+    table.insert(bagData, tab.slots)
+  end
+  local indexesToUse, sortOrder = {}, {}
+  for index, bagID in ipairs(Syndicator.Constants.AllWarbandIndexes) do
+    indexesToUse[index] = true
+    sortOrder[bagID] = 250
   end
 
-  DoSortInternal()
+  return bagData, indexesToUse, sortOrder
+end
+
+function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
+  if self.currentTab > 0 then
+    local bagID = Syndicator.Constants.AllWarbandIndexes[self.currentTab]
+    local function DoSortInternal()
+      local status = addonTable.Sorting.ApplyBagOrdering(
+        { Syndicator.API.GetWarband(1).bank[self.currentTab].slots },
+        { bagID },
+        { [1] = true },
+        { checks = {}, sortOrder = { [bagID] = 250 }, },
+        isReverse,
+        false,
+        0
+      )
+      self.sortManager:Apply(status, DoSortInternal, function() end)
+    end
+    DoSortInternal()
+  else
+    local function DoSortInternal()
+      local bagData, indexesToUse, sortOrder = GetUnifiedSortData()
+      local status = addonTable.Sorting.ApplyBagOrdering(
+        bagData,
+        Syndicator.Constants.AllWarbandIndexes,
+        indexesToUse,
+        { checks = {}, sortOrder = sortOrder, },
+        isReverse,
+        false,
+        0
+      )
+      self.sortManager:Apply(status, DoSortInternal, function() end)
+    end
+    DoSortInternal()
+  end
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacks(callback)
+  local bagData, indexesToUse = GetUnifiedSortData()
   addonTable.Sorting.CombineStacks(
-    { Syndicator.API.GetWarband(1).bank[self.currentTab].slots },
-    { Syndicator.Constants.AllWarbandIndexes[self.currentTab] },
+    bagData,
+    Syndicator.Constants.AllWarbandIndexes,
     function(status)
       self.sortManager:Apply(status, function()
         self:CombineStacks(callback)
@@ -90,7 +121,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacks(callback)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacksAndSort(isReverse)
-  if not Syndicator.API.GetWarband(1).bank[self.currentTab] then
+  if not Syndicator.API.GetWarband(1).bank[self.currentTab] and self.currentTab ~= 0 then
     return
   end
 
@@ -193,23 +224,34 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
   local lastTab = nil
   local tabs = {}
 
+  local tabButton = self.tabsPool:Acquire()
+  tabButton:RegisterForClicks("LeftButtonUp")
+  tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\logo")
+  tabButton:SetScript("OnClick", function(_, button)
+    self:SetCurrentTab(0)
+    self:GetParent():UpdateView()
+  end)
+  tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
+  tabButton.SelectedTexture:Hide()
+  tabButton:SetScale(tabScale)
+  tabButton:Show()
+  tabButton.tabName = BAGANATOR_L_EVERYTHING
+  lastTab = tabButton
+  table.insert(tabs, tabButton)
+
   for index, tabInfo in ipairs(warbandData.bank) do
     local tabButton = self.tabsPool:Acquire()
     tabButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     tabButton.Icon:SetTexture(tabInfo.iconTexture)
     tabButton:SetScript("OnClick", function(_, button)
       self:SetCurrentTab(index)
-      self:UpdateView()
+      self:GetParent():UpdateView()
 
       if self.isLive and button == "RightButton" then
         self.TabSettingsMenu:OnOpenTabSettingsRequested(Syndicator.Constants.AllWarbandIndexes[index])
       end
     end)
-    if not lastTab then
-      tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
-    else
-      tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
-    end
+    tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     tabButton.SelectedTexture:Hide()
     tabButton:SetScale(tabScale)
     tabButton:Show()
@@ -248,6 +290,7 @@ end
 function BaganatorItemViewCommonBankViewWarbandViewMixin:SetCurrentTab(index)
   addonTable.CallbackRegistry:TriggerEvent("TransferCancel")
   self.currentTab = index
+  addonTable.Config.Set(addonTable.Config.Options.WARBAND_CURRENT_TAB, self.currentTab)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:HighlightCurrentTab()
@@ -255,7 +298,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:HighlightCurrentTab()
     return
   end
   for tabIndex, tab in ipairs(self.Tabs) do
-    tab.SelectedTexture:SetShown(tabIndex == self.currentTab)
+    tab.SelectedTexture:SetShown(tabIndex == self.currentTab + 1)
   end
 end
 
@@ -273,7 +316,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   self:GetParent():SetTitle(ACCOUNT_BANK_PANEL_TITLE)
 
-  local warbandBank = Syndicator.API.GetWarband(1).bank[self.currentTab]
+  local warbandBank = Syndicator.API.GetWarband(1).bank[self.currentTab ~= 0 and self.currentTab or 1]
 
   local isWarbandData = warbandBank and #warbandBank.slots ~= 0 and (not self.isLive or C_PlayerInfo.HasAccountInventoryLock())
   self.BankMissingHint:SetShown(not isWarbandData)

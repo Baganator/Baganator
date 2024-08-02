@@ -26,6 +26,8 @@ addonTable.Config.Options = {
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
   REDUCE_SPACING = "reduce_spacing",
 
+  WARBAND_CURRENT_TAB = "warband_current_tab",
+
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
   HIDE_BOE_ON_COMMON = "hide_boe_on_common",
@@ -124,6 +126,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.JUNK_PLUGIN] = "poor_quality",
   [addonTable.Config.Options.JUNK_PLUGINS_IGNORED] = {},
   [addonTable.Config.Options.SETTING_ANCHORS] = false,
+  [addonTable.Config.Options.WARBAND_CURRENT_TAB] = 1,
 
   [addonTable.Config.Options.DEBUG_TIMERS] = false,
   [addonTable.Config.Options.DEBUG_KEYWORDS] = false,
