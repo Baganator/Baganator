@@ -2,9 +2,10 @@ local _, addonTable = ...
 -- Blizzard Equipment sets (Wrath onwards)
 do
   local BlizzardSetTracker = CreateFrame("Frame")
+  local EquipmentManager_UnpackLocation = EquipmentManager_UnpackLocation
 
   function BlizzardSetTracker:OnLoad()
-    if addonTable.Constants.IsRetail and IsMacClient() then
+    if (not EquipmentManager_UnpackLocation) or (addonTable.Constants.IsRetail and IsMacClient()) then
       return
     end
 
