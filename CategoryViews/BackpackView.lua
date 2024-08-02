@@ -173,6 +173,7 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
       math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2
     )
+    self.CurrencyWidget:UpdateCurrencyTextVisibility(sideSpacing + addonTable.Constants.ButtonFrameOffset)
 
     local searchText = self.SearchWidget.SearchBox:GetText()
     if self.searchToApply then

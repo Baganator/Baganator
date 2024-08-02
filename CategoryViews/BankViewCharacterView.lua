@@ -150,6 +150,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
       math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
       80 + topSpacing / 2 + buttonPadding
     )
+    self.CurrencyWidget:UpdateCurrencyTextVisibility()
     for _, l in ipairs(self.Layouts) do
       l:Hide()
     end
@@ -166,6 +167,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
       math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2 + buttonPadding
     )
+    self.CurrencyWidget:UpdateCurrencyTextVisibility(sideSpacing + addonTable.Constants.ButtonFrameOffset)
 
     local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
     if self.searchToApply then

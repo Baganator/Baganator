@@ -77,6 +77,8 @@ local function ShowCurrencies(self, character)
 
   self.currencyPool:ReleaseAll()
 
+  self.activeCurrencyTexts = {}
+
   local prev = self.Money
   for i = 1, addonTable.Constants.MaxPinnedCurrencies do
     local currencyID, icon
@@ -128,13 +130,19 @@ local function ShowCurrencies(self, character)
       end)
       fontString:SetText(currencyText)
       fontString:SetPoint("RIGHT", prev, "LEFT", -15, 0)
-      if fontString:GetLeft() ~= nil and self:GetParent():GetLeft() ~= nil and fontString:GetLeft() < self:GetParent():GetLeft() then
-        break
-      else
-        fontString:Show()
-        prev = fontString
-      end
+      table.insert(self.activeCurrencyTexts, fontString)
+      prev = fontString
     end
+  end
+end
+
+function BaganatorCurrencyWidgetMixin:UpdateCurrencyTextVisibility(offsetLeft)
+  if self:GetParent():GetLeft() == nil then
+    return
+  end
+
+  for _, fs in ipairs(self.activeCurrencyTexts) do
+    fs:SetShown(fs:GetLeft() > self:GetParent():GetLeft() + offsetLeft)
   end
 end
 
