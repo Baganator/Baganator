@@ -73,14 +73,11 @@ local function ShowCurrencies(self, character)
     return
   end
 
+  self.currencyPool:ReleaseAll()
+
   if not characterCurrencies then
-    for _, c in ipairs(self.Currencies) do
-      c:SetText("")
-    end
     return
   end
-
-  self.currencyPool:ReleaseAll()
 
   self.activeCurrencyTexts = {}
 
