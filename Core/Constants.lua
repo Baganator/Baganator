@@ -8,7 +8,7 @@ addonTable.Constants = {
   MaxRecentsTabs = 5,
   BattlePetCageID = 82800,
 
-  MaxPinnedCurrencies = 3,
+  MaxPinnedCurrencies = 100,
 }
 
 Baganator.Constants = {
