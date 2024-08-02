@@ -7,6 +7,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
+      self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
     end
   end)
 
@@ -14,6 +15,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   EventRegistry:RegisterCallback("TokenFrame.OnTokenWatchChanged", function()
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
+      self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
     end
   end)
 
@@ -21,6 +23,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   addonTable.Utilities.OnAddonLoaded("Blizzard_TokenUI", function()
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
+      self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
     end
 
     -- Wrath Classic
@@ -28,6 +31,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
       hooksecurefunc("ManageBackpackTokenFrame", function()
         if self.lastCharacter then
           self:UpdateCurrencies(self.lastCharacter)
+          self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
         end
       end)
     end
@@ -56,6 +60,7 @@ end
 function BaganatorCurrencyWidgetMixin:OnShow()
   if self.currencyUpdateNeeded and self.lastCharacter then
     self:UpdateCurrencies(self.lastCharacter)
+    self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
   end
 end
 
@@ -137,6 +142,12 @@ local function ShowCurrencies(self, character)
 end
 
 function BaganatorCurrencyWidgetMixin:UpdateCurrencyTextVisibility(offsetLeft)
+  if not offsetLeft then
+    return
+  end
+
+  self.lastOffsetLeft = offsetLeft
+
   if self:GetParent():GetLeft() == nil then
     return
   end
