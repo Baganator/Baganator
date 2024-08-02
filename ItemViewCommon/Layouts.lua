@@ -123,7 +123,6 @@ local function FlowButtonsColumns(self, rowWidth)
   for _, button in ipairs(self.buttons) do
     button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
     button:SetScale(iconSize / 37)
-    MasqueRegistration(button)
     rows = rows + 1
     if rows >= columnHeight then
       rows = 0
