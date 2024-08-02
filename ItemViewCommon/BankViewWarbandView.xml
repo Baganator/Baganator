@@ -33,8 +33,6 @@
         </Anchors>
       </CheckButton>
 
-      <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
-
       <Button parentKey="DepositMoneyButton" inherits="UIPanelDynamicResizeButtonTemplate" text="DEPOSIT" parentArray="LiveButtons">
         <Scripts>
           <OnClick>
