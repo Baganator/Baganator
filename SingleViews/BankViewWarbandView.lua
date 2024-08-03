@@ -52,7 +52,7 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
       table.insert(bagData, tab.slots)
     end
 
-    activeBank:ShowBags(bagData, "warband", Syndicator.Constants.AllWarbandIndexes, nil, bankWidth * 2)
+    activeBank:ShowBags(bagData, 1, Syndicator.Constants.AllWarbandIndexes, nil, bankWidth * 2)
   end
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()

@@ -117,10 +117,10 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   local characterData = Syndicator.API.GetCharacter(character) 
   local bagData = characterData and characterData.bank
 
-  activeBank:ShowBags(bagData, "bank", Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
+  activeBank:ShowBags(bagData, character, Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
 
   for index, layout in ipairs(activeBankBagCollapsibles) do
-    layout:ShowBags(bagData, "bank", Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
+    layout:ShowBags(bagData, character, Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
   end
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()

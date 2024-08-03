@@ -255,7 +255,7 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
   FlowButtonsRows(self, rowWidth)
 end
 
-function BaganatorCachedBagLayoutMixin:ShowBags(bagData, section, indexes, indexesToUse, rowWidth)
+function BaganatorCachedBagLayoutMixin:ShowBags(bagData, source, indexes, indexesToUse, rowWidth)
   if indexesToUse == nil then
     indexesToUse = {}
     for index in ipairs(indexes) do
@@ -271,7 +271,7 @@ function BaganatorCachedBagLayoutMixin:ShowBags(bagData, section, indexes, index
 
   local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
-  if self.prevState.character ~= character or self.prevState.section ~= section or
+  if self.prevState.source ~= source or self.prevState.section ~= section or
       self:CompareButtonIndexes(indexes, indexesToUse, bagData) then
     self:RebuildLayout(bagData, indexes, indexesToUse, rowWidth)
     self.waitingUpdate = {}
@@ -320,7 +320,7 @@ function BaganatorCachedBagLayoutMixin:ShowBags(bagData, section, indexes, index
 
   self.waitingUpdate = {}
   self.prevState = {
-    character = character,
+    source = source,
     section = section,
   }
 end
@@ -514,7 +514,7 @@ function BaganatorLiveBagLayoutMixin:MarkBagsPending(section, updatedWaiting)
   end
 end
 
-function BaganatorLiveBagLayoutMixin:ShowBags(bagData, section, indexes, indexesToUse, rowWidth)
+function BaganatorLiveBagLayoutMixin:ShowBags(bagData, source, indexes, indexesToUse, rowWidth)
   if indexesToUse == nil then
     indexesToUse = {}
     for index in ipairs(indexes) do
@@ -526,7 +526,7 @@ function BaganatorLiveBagLayoutMixin:ShowBags(bagData, section, indexes, indexes
 
   local iconSize = addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE)
 
-  if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.character ~= character or self.prevState.section ~= section then
+  if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.source ~= source or self.prevState.section ~= section then
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       print("rebuild")
     end
@@ -575,7 +575,7 @@ function BaganatorLiveBagLayoutMixin:ShowBags(bagData, section, indexes, indexes
   end
 
   self.prevState = {
-    character = character,
+    source = source,
     section = section,
   }
   self.waitingUpdate = {}
