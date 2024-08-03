@@ -54,7 +54,11 @@ Syndicator.API.RegisterShowItemLocation(function(mode, entity, container, itemLi
   elseif mode == "warband" then
     addonTable.CallbackRegistry:TriggerEvent("GuildHide")
     addonTable.CallbackRegistry:TriggerEvent("BagHide")
-    addonTable.CallbackRegistry:TriggerEvent("BankShow", tonumber(entity), tonumber(container))
+    if addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB) == 0 then
+      addonTable.CallbackRegistry:TriggerEvent("BankShow", tonumber(entity), 0)
+    else
+      addonTable.CallbackRegistry:TriggerEvent("BankShow", tonumber(entity), tonumber(container))
+    end
     addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
   else
     addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", self)
