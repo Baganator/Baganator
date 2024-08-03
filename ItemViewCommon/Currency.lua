@@ -4,6 +4,8 @@ BaganatorCurrencyWidgetMixin = {}
 function BaganatorCurrencyWidgetMixin:OnLoad()
   self.currencyPool = CreateFontStringPool(self, "BACKGROUND", 0, "GameFontHighlight")
 
+  self.activeCurrencyTexts = {}
+
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
@@ -73,13 +75,12 @@ local function ShowCurrencies(self, character)
     return
   end
 
+  self.activeCurrencyTexts = {}
   self.currencyPool:ReleaseAll()
 
   if not characterCurrencies then
     return
   end
-
-  self.activeCurrencyTexts = {}
 
   local prev = self.Money
   for i = 1, addonTable.Constants.MaxPinnedCurrencies do
