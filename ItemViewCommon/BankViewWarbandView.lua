@@ -225,6 +225,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
   local tabs = {}
 
   local tabButton = self.tabsPool:Acquire()
+  addonTable.Skins.AddFrame("SideTabButton", tabButton)
   tabButton:RegisterForClicks("LeftButtonUp")
   tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\logo")
   tabButton:SetScript("OnClick", function(_, button)
@@ -241,6 +242,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
 
   for index, tabInfo in ipairs(warbandData.bank) do
     local tabButton = self.tabsPool:Acquire()
+    addonTable.Skins.AddFrame("SideTabButton", tabButton)
     tabButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     tabButton.Icon:SetTexture(tabInfo.iconTexture)
     tabButton:SetScript("OnClick", function(_, button)
@@ -262,6 +264,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
 
   if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) and not C_Bank.HasMaxBankTabs(Enum.BankType.Account) then
     local tabButton = self.tabsPool:Acquire()
+    addonTable.Skins.AddFrame("SideTabButton", tabButton)
     tabButton.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab")
     tabButton:SetScript("OnClick", function()
       PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);

@@ -341,6 +341,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
 
   if self.isLive and GetNumGuildBankTabs() < MAX_BUY_GUILDBANK_TABS and IsGuildLeader() then
     local tabButton = self.tabsPool:Acquire()
+    addonTable.Skins.AddFrame("SideTabButton", tabButton)
     tabButton.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab")
     tabButton:SetScript("OnClick", function()
       PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
