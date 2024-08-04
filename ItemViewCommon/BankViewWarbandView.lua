@@ -73,10 +73,11 @@ end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
   if self.currentTab > 0 then
+    local tab = self.currentTab
     local bagID = Syndicator.Constants.AllWarbandIndexes[self.currentTab]
     local function DoSortInternal()
       local status = addonTable.Sorting.ApplyBagOrdering(
-        { Syndicator.API.GetWarband(1).bank[self.currentTab].slots },
+        { Syndicator.API.GetWarband(1).bank[tab].slots },
         { bagID },
         { [1] = true },
         { checks = {}, sortOrder = { [bagID] = 250 }, },
@@ -106,7 +107,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacks(callback)
-  local bagData, indexesToUse = GetUnifiedSortData()
+  local bagData = GetUnifiedSortData()
   addonTable.Sorting.CombineStacks(
     bagData,
     Syndicator.Constants.AllWarbandIndexes,
