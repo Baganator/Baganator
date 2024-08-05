@@ -79,7 +79,11 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(associ
     return
   end
 
-  self:RemoveSearchMatches(function() return tFilter(self.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
+  self:RemoveSearchMatches(function() return self.results and tFilter(self.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
+end
+
+function BaganatorCategoryViewBankViewCharacterViewMixin:OnShow()
+  self.results = nil
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()

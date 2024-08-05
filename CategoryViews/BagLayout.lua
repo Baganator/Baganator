@@ -157,6 +157,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, bagWidth, bagT
     end
 
     local oldResults = self.results
+    self.results = results
     if self.splitStacksDueToTransfer and oldResults then
       local anyNew = false
       for search, r in pairs(oldResults) do
@@ -183,11 +184,6 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, bagWidth, bagT
           end
         end
       end
-      self.results = results
-    elseif self.splitStacksDueToTransfer then
-      self.results = results
-    else
-      self.results = nil
     end
 
     local activeLayouts

@@ -2,6 +2,7 @@
   <Frame name="BaganatorCategoryViewBankViewWarbandViewTemplate" virtual="true" mixin="BaganatorCategoryViewBankViewWarbandViewMixin" inherits="BaganatorItemViewCommonBankViewWarbandViewTemplate">
     <Scripts>
       <OnEvent method="OnEvent"/>
+      <OnShow method="OnShow"/>
     </Scripts>
     <Frames>
       <Frame parentKey="MultiSearch" mixin="BaganatorCategoryViewsCategorySearchMixin">
