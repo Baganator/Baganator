@@ -158,7 +158,7 @@ function addonTable.CategoryViews.LayoutContainers(self, allBags, bagWidth, bagT
 
     local oldResults = self.results
     self.results = results
-    if self.splitStacksDueToTransfer and oldResults then
+    if oldResults then
       local anyNew = false
       for search, r in pairs(oldResults) do
         if search ~= emptySearch and r.oldLength and r.oldLength < #results[search].all then
