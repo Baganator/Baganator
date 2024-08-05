@@ -25,12 +25,12 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
-    local oldMods, oldIndex
+    local oldMods = categoryMods[self.currentCategory]
+    local oldIndex
     local isNew, isDefault = self.currentCategory == "", customCategories[self.currentCategory] == nil
     if not isNew and not isDefault then
       oldIndex = tIndexOf(displayOrder, self.currentCategory)
       customCategories[self.currentCategory] = nil
-      oldMods = categoryMods[self.currentCategory]
       categoryMods[self.currentCategory] = nil
     end
     if not oldMods then
