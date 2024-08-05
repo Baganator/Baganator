@@ -6,6 +6,8 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
 
   self.activeCurrencyTexts = {}
 
+  self.cacheBackpackCurrenciesNeeded = true
+
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
@@ -15,6 +17,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
 
   -- Update currencies when they are watched/unwatched in Blizz UI
   EventRegistry:RegisterCallback("TokenFrame.OnTokenWatchChanged", function()
+    self.cacheBackpackCurrenciesNeeded = true
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
       self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
@@ -59,6 +62,34 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   end)
 end
 
+function BaganatorCurrencyWidgetMixin:CacheBackpackCurrencies()
+  if not self.cacheBackpackCurrenciesNeeded then
+    return
+  end
+
+  self.backpackCurrencies = {}
+
+  for i = 1, addonTable.Constants.MaxPinnedCurrencies do
+    local currencyID, icon
+    if C_CurrencyInfo and C_CurrencyInfo.GetBackpackCurrencyInfo then
+      local currencyInfo = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
+      if currencyInfo then
+        currencyID = currencyInfo.currencyTypesID
+        icon = currencyInfo.iconFileID
+      end
+    elseif GetBackpackCurrencyInfo then
+      icon, currencyID = select(3, GetBackpackCurrencyInfo(i))
+    end
+    if currencyID then
+      table.insert(self.backpackCurrencies, {icon = icon, currencyID = currencyID})
+    else
+      break
+    end
+  end
+
+  self.cacheBackpackCurrenciesNeeded = false
+end
+
 function BaganatorCurrencyWidgetMixin:OnShow()
   if self.currencyUpdateNeeded and self.lastCharacter then
     self:UpdateCurrencies(self.lastCharacter)
@@ -83,59 +114,47 @@ local function ShowCurrencies(self, character)
   end
 
   local prev = self.Money
-  for i = 1, addonTable.Constants.MaxPinnedCurrencies do
-    local currencyID, icon
-    if C_CurrencyInfo and C_CurrencyInfo.GetBackpackCurrencyInfo then
-      local currencyInfo = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
-      if currencyInfo then
-        currencyID = currencyInfo.currencyTypesID
-        icon = currencyInfo.iconFileID
-      end
-    elseif GetBackpackCurrencyInfo then
-      icon, currencyID = select(3, GetBackpackCurrencyInfo(i))
+
+  self:CacheBackpackCurrencies()
+
+  for _, details in ipairs(self.backpackCurrencies) do
+    local fontString = self.currencyPool:Acquire()
+    local count = 0
+    if characterCurrencies[details.currencyID] ~= nil then
+      count = characterCurrencies[details.currencyID]
     end
 
-    local currencyText = ""
-
-    if currencyID ~= nil then
-      local fontString = self.currencyPool:Acquire()
-      local count = 0
-      if characterCurrencies[currencyID] ~= nil then
-        count = characterCurrencies[currencyID]
-      end
-
-      currencyText = BreakUpLargeNumbers(count)
-      if strlenutf8(currencyText) > 5 then
-        currencyText = AbbreviateNumbers(count)
-      end
-      currencyText = currencyText .. " " .. CreateSimpleTextureMarkup(icon, 12, 12)
-      if GameTooltip.SetCurrencyByID then
-        -- Show retail currency tooltip
-        fontString:SetScript("OnEnter", function(self)
-          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-          GameTooltip:SetCurrencyByID(currencyID)
-        end)
-        fontString:SetScript("OnMouseDown", function(self)
-          if IsModifiedClick("CHATLINK") then
-            ChatEdit_InsertLink(C_CurrencyInfo.GetCurrencyLink(currencyID, count))
-          end
-        end)
-      else
-        -- SetCurrencyByID doesn't exist on classic, but we want to show the
-        -- other characters info via the tooltip anyway
-        fontString:SetScript("OnEnter", function(self)
-          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-          Syndicator.Tooltips.AddCurrencyLines(GameTooltip, currencyID)
-        end)
-      end
-      fontString:SetScript("OnLeave", function(self)
-        GameTooltip:Hide()
+    local currencyText = BreakUpLargeNumbers(count)
+    if strlenutf8(currencyText) > 5 then
+      currencyText = AbbreviateNumbers(count)
+    end
+    currencyText = currencyText .. " " .. CreateSimpleTextureMarkup(details.icon, 12, 12)
+    if GameTooltip.SetCurrencyByID then
+      -- Show retail currency tooltip
+      fontString:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetCurrencyByID(details.currencyID)
       end)
-      fontString:SetText(currencyText)
-      fontString:SetPoint("RIGHT", prev, "LEFT", -15, 0)
-      table.insert(self.activeCurrencyTexts, fontString)
-      prev = fontString
+      fontString:SetScript("OnMouseDown", function(self)
+        if IsModifiedClick("CHATLINK") then
+          ChatEdit_InsertLink(C_CurrencyInfo.GetCurrencyLink(details.currencyID, count))
+        end
+      end)
+    else
+      -- SetCurrencyByID doesn't exist on classic, but we want to show the
+      -- other characters info via the tooltip anyway
+      fontString:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        Syndicator.Tooltips.AddCurrencyLines(GameTooltip, details.currencyID)
+      end)
     end
+    fontString:SetScript("OnLeave", function(self)
+      GameTooltip:Hide()
+    end)
+    fontString:SetText(currencyText)
+    fontString:SetPoint("RIGHT", prev, "LEFT", -15, 0)
+    table.insert(self.activeCurrencyTexts, fontString)
+    prev = fontString
   end
 end
 
