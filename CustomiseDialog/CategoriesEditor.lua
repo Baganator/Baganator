@@ -334,7 +334,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
 
   addButton:SetScript("OnClick", function()
     local text = addItemsEditBox:GetText()
-    text = text:gsub("%s", "")
+    text = text:gsub("[^%d]+", ",")
     if not text:match("%d+[%d,]*") then
       return
     end
@@ -367,6 +367,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
         itemID = itemID
       })
     end
+    addItemsEditBox:SetText("")
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
   end)
 
