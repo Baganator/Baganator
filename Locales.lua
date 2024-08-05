@@ -287,6 +287,7 @@ L["RECENT_HEADER_CLICK_MESSAGE"] = "Click heading to clear immediately."
 L["GROUP_EMPTY_SLOTS"] = "Group empty slots"
 L["ITEMS"] = "Items"
 L["ADD"] = "Add"
+L["ADD_ITEM_IDS_MESSAGE"] = "Add a list of items by item ID"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"

@@ -331,11 +331,17 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
       addButton:Click()
     end
   end)
+  addItemsEditBox:SetScript("OnEnter", function()
+    GameTooltip:SetOwner(addItemsEditBox, "ANCHOR_TOP")
+    GameTooltip:SetText(BAGANATOR_L_ADD_ITEM_IDS_MESSAGE)
+  end)
+  addItemsEditBox:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
 
   addButton:SetScript("OnClick", function()
     local text = addItemsEditBox:GetText()
-    text = text:gsub("[^%d]+", ",")
-    if not text:match("%d+[%d,]*") then
+    if not text:match("%d+") then
       return
     end
     local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
@@ -345,8 +351,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
     if not categoryMods[self.currentCategory].addedItems then
       categoryMods[self.currentCategory].addedItems = {}
     end
-    local items = {strsplit(",", text)}
-    for _, itemIDString in ipairs(items) do
+    for itemIDString in text:gmatch("%d+") do
       local itemID = tonumber(itemIDString)
       for source, mods in pairs(categoryMods) do
         -- Remove the item from any categories its already in
