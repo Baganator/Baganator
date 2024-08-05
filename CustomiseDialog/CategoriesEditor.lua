@@ -153,7 +153,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   checkBoxWrapper:SetHeight(40)
   checkBoxWrapper:SetPoint("LEFT")
   checkBoxWrapper:SetPoint("RIGHT")
-  checkBoxWrapper:SetPoint("BOTTOM", 0, 30)
+  checkBoxWrapper:SetPoint("TOP", 0, -200)
   checkBoxWrapper:SetScript("OnEnter", function() self.HiddenCheckBox:OnEnter() end)
   checkBoxWrapper:SetScript("OnLeave", function() self.HiddenCheckBox:OnLeave() end)
   checkBoxWrapper:SetScript("OnMouseUp", function() self.HiddenCheckBox:Click() end)
@@ -249,6 +249,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
   end)
 
+  self.ItemsEditor = self:MakeItemsEditor()
+  self.ItemsEditor:SetPoint("TOP", 0, -250)
+
   self.ExportButton:SetScript("OnClick", function()
     if self.currentCategory == "" then
       return
@@ -304,4 +307,69 @@ end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnHide()
   self:Disable()
+end
+
+function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
+  local container = CreateFrame("Frame", nil, self)
+  table.insert(self.ChangeAlpha, container)
+  container:SetSize(250, 200)
+  local itemText = container:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
+  itemText:SetText(BAGANATOR_L_ITEMS)
+  itemText:SetPoint("TOPLEFT", 5, -5)
+
+  local addButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+  addButton:SetPoint("TOPRIGHT")
+  addButton:SetText(BAGANATOR_L_ADD)
+  DynamicResizeButton_Resize(addButton)
+  local addItemsEditBox = CreateFrame("EditBox", nil, container, "InputBoxTemplate")
+  addItemsEditBox:SetSize(60, 22)
+  addItemsEditBox:SetPoint("RIGHT", addButton, "LEFT", -5, 0)
+  addItemsEditBox:SetAutoFocus(false)
+
+  addItemsEditBox:SetScript("OnKeyDown", function(_, key)
+    if key == "ENTER" then
+      addButton:Click()
+    end
+  end)
+
+  addButton:SetScript("OnClick", function()
+    local text = addItemsEditBox:GetText()
+    text = text:gsub("%s", "")
+    if not text:match("%d+[%d,]*") then
+      return
+    end
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    if not categoryMods[self.currentCategory] then
+      categoryMods[self.currentCategory] = {}
+    end
+    if not categoryMods[self.currentCategory].addedItems then
+      categoryMods[self.currentCategory].addedItems = {}
+    end
+    local items = {strsplit(",", text)}
+    for _, itemIDString in ipairs(items) do
+      local itemID = tonumber(itemIDString)
+      for source, mods in pairs(categoryMods) do
+        -- Remove the item from any categories its already in
+        if mods.addedItems then
+          local oldIndex = FindInTableIf(mods.addedItems, function(alt)
+            return alt.itemID == itemID
+          end)
+          if oldIndex then
+            table.remove(mods.addedItems, oldIndex)
+            if #mods.addedItems == 0 and source ~= self.currentCategory then
+              mods.addedItems = nil
+            end
+          end
+        end
+      end
+
+      table.insert(categoryMods[self.currentCategory].addedItems, {
+        itemID = itemID
+      })
+    end
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+  end)
+
+
+  return container
 end
