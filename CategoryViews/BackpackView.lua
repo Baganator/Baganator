@@ -147,6 +147,10 @@ function BaganatorCategoryViewBackpackViewMixin:TransferCategory(associatedSearc
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)
+  if character ~= self.lastCharacter then
+    self.results = nil
+  end
+
   local start = debugprofilestop()
   BaganatorItemViewCommonBackpackViewMixin.UpdateForCharacter(self, character, isLive)
 

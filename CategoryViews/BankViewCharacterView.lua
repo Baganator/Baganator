@@ -110,6 +110,10 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:NotifyBagUpdate(updated
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
+  if character ~= self.lastCharacter then
+    self.results = nil
+  end
+
   BaganatorItemViewCommonBankViewCharacterViewMixin.UpdateForCharacter(self, character, isLive)
 
   self:GetParent().AllButtons = {}
