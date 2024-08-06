@@ -83,6 +83,13 @@ local function SetupBackpackView()
     UpdateButtons()
   end)
 
+  addonTable.CallbackRegistry:RegisterCallback("QuickSearch",  function(_)
+    if not backpackView:IsShown() then
+      addonTable.CallbackRegistry:TriggerEvent("BagShow")
+    end
+    backpackView.SearchWidget.SearchBox:SetFocus()
+  end)
+
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.VIEW_TYPE then
       local isShown = backpackView:IsShown()
@@ -189,7 +196,7 @@ local function SetupBankView()
       bankView:Show()
       bankView:UpdateViewToCharacter(characterName)
     elseif type(entity) == "number" then -- Warband bank
-      subView = subView or 1
+      subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
       bankView:Show()
       bankView:UpdateViewToWarband(entity, subView)
     end

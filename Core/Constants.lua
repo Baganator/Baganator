@@ -31,6 +31,7 @@ addonTable.Constants.Events = {
   "SearchTextChanged",
   "BagShow",
   "BagHide",
+  "QuickSearch",
   "CharacterSelectToggle",
   "CharacterSelect",
   "BankToggle",

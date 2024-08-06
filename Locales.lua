@@ -310,6 +310,11 @@ L["CATEGORY_GROUPS_DESCRIPTION"] = "Group items by type, with features to add ne
 
 L["CATEGORIES_FAILED_WARNING"] = "Something went wrong when displaying the categories.\n\nFailed search was \"%s\". The following items failed:\n%s\n\nScreenshot this and visit the discord:"
 
+L["BINDING_OPEN_BANK"] = "Open Bank"
+L["BINDING_OPEN_WARBAND_BANK"] = "Open Warband Bank"
+L["BINDING_OPEN_GUILD_BANK"] = "Open Guild Bank"
+L["BINDING_QUICK_SEARCH"] = "Quick Search"
+
 L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
 L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
 

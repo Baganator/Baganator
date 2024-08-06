@@ -5,4 +5,8 @@ for key, translation in pairs(BAGANATOR_LOCALES[GetLocale()]) do
 end
 for key, translation in pairs(addonTable.Locales) do
   _G["BAGANATOR_L_" .. key] = translation
+
+  if key:match("^BINDING") then
+    _G["BINDING_NAME_BAGANATOR_" .. key:match("BINDING_(.*)")] = translation
+  end
 end

@@ -1,0 +1,11 @@
+<Bindings>
+  <Binding name="BAGANATOR_OPEN_BANK" category="Baganator">
+    Baganator.CallbackRegistry:TriggerEvent("BankShow")
+  </Binding>
+  <Binding name="BAGANATOR_OPEN_GUILD_BANK" category="Baganator">
+    Baganator.CallbackRegistry:TriggerEvent("GuildShow")
+  </Binding>
+  <Binding name="BAGANATOR_QUICK_SEARCH" category="Baganator">
+    Baganator.CallbackRegistry:TriggerEvent("QuickSearch")
+  </Binding>
+</Bindings>

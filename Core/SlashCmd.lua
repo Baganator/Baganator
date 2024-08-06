@@ -64,6 +64,22 @@ local COMMANDS = {
   ["d"] = addonTable.SlashCmd.Debug,
   ["reset"] = addonTable.SlashCmd.Reset,
   [""] = addonTable.SlashCmd.CustomiseUI,
+  ["bank"] = function()
+    addonTable.CallbackRegistry:TriggerEvent("BankShow")
+  end,
+  ["warband"] = function()
+    addonTable.CallbackRegistry:TriggerEvent("BankShow", 1)
+  end,
+  ["guild"] = function()
+    addonTable.CallbackRegistry:TriggerEvent("GuildShow", 1)
+  end,
+  ["search"] = function(text)
+    addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", text)
+    addonTable.CallbackRegistry:TriggerEvent("BagShow")
+  end,
+  ["keywords"] = function()
+    addonTable.Help.ShowSearchDialog()
+  end,
 }
 function addonTable.SlashCmd.Handler(input)
   local split = {strsplit("\a", (input:gsub("%s+","\a")))}
