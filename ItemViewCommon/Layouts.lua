@@ -984,9 +984,13 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
       button.texturesSetup = true
       MasqueRegistration(button)
       button:UpdateTextures()
+    elseif self.updateTextures then
+      button:UpdateTextures()
     end
     table.insert(self.buttons, button)
   end
+
+  self.updateTextures = false
 
   FlowButtonsRows(self, rowWidth)
 
