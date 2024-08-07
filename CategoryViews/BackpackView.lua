@@ -10,17 +10,14 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.LiveLayouts = {}
   self.CachedLayouts = {}
 
+  self.LayoutManager = CreateFrame("Frame", nil, self)
+  Mixin(self.LayoutManager, addonTable.CategoryViews.BagLayoutMixin)
+  self.LayoutManager:OnLoad()
+
   self:RegisterEvent("CURSOR_CHANGED")
 
-  self.labelsPool = CreateFramePool("Button", self, "BaganatorCategoryViewsCategoryButtonTemplate")
-  self.sectionButtonPool = addonTable.CategoryViews.GetSectionButtonPool(self)
-  self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
-
-  self.recentItems = {}
-
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    self.MultiSearch:ResetCaches()
-    self.results = nil
+    self.LayoutManager:FullRefresh()
     for _, layout in ipairs(self.Layouts) do
       layout:RequestContentRefresh()
     end
@@ -41,12 +38,12 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
     if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
       self.searchToApply = true
-      self.results = nil
+      self.LayoutManager:SettingChanged(settingName)
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.SORT_METHOD then
-      self.results = nil
+      self.LayoutManager:SettingChanged(settingName)
       for _, layout in ipairs(self.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -54,8 +51,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
-      self.results = nil
-      self.MultiSearch:ResetCaches()
+      self.LayoutManager:SettingChanged(settingName)
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
@@ -87,11 +83,10 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
-
-  self.notShown = {}
 end
 
 function BaganatorCategoryViewBackpackViewMixin:NotifyBagUpdate(updatedBags)
+  self.LayoutManager:NotifyBagUpdate(updatedBags.bags)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
@@ -106,15 +101,11 @@ end
 function BaganatorCategoryViewBackpackViewMixin:OnShow()
   BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
   addonTable.NewItems:ClearNewItemsForTimeout()
-  self.results = nil
 end
 
 -- Clear new item status on items that are hidden as part of a stack
 function BaganatorCategoryViewBackpackViewMixin:OnHide()
   BaganatorItemViewCommonBackpackViewMixin.OnHide(self)
-  for _, item in ipairs(self.notShown) do
-    addonTable.NewItems:ClearNewItem(item.bagID, item.slotID)
-  end
 end
 
 function BaganatorCategoryViewBackpackViewMixin:ApplySearch(text)
@@ -143,12 +134,12 @@ function BaganatorCategoryViewBackpackViewMixin:TransferCategory(associatedSearc
     return
   end
 
-  self:Transfer(true, function() return self.results and tFilter(self.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
+  self:Transfer(true, function() return self.LayoutManager.results and tFilter(self.LayoutManager.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)
-  if character ~= self.lastCharacter then
-    self.results = nil
+  if self.lastCharacter ~= character then
+    self.LayoutManager:NewCharacter()
   end
 
   local start = debugprofilestop()
@@ -173,7 +164,8 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
   local characterData = Syndicator.API.GetCharacter(character)
   local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bags", Syndicator.Constants.AllBagIndexes)
   local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
-  addonTable.CategoryViews.LayoutContainers(self, characterData.bags, bagWidth, bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
+
+  self.LayoutManager:Layout(characterData.bags, bagWidth, bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self:SetSize(
       math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2),
       maxHeight + 75 + topSpacing / 2
@@ -188,7 +180,7 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     self:HideExtraTabs()
 
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("-- updateforcharacter backpack", debugprofilestop() - start)
+      addonTable.Utilities.DebugOutput("-- updateforcharacter backpack", debugprofilestop() - start)
     end
 
     self:UpdateAllButtons()

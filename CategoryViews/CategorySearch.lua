@@ -1,5 +1,4 @@
 local _, addonTable = ...
-local addonName, addonTable = ...
 
 local errorDialog = "Baganator_Categories_Search_Error"
 StaticPopupDialogs[errorDialog] = {
@@ -19,24 +18,24 @@ StaticPopupDialogs[errorDialog] = {
   editBoxWidth = 230,
 }
 
-BaganatorCategoryViewsCategorySearchMixin = {}
+BaganatorCategoryViewsCategoryFilterMixin = {}
 
-function BaganatorCategoryViewsCategorySearchMixin:OnLoad()
+function BaganatorCategoryViewsCategoryFilterMixin:OnLoad()
   self:ResetCaches()
 end
 
-function BaganatorCategoryViewsCategorySearchMixin:OnHide()
+function BaganatorCategoryViewsCategoryFilterMixin:ResetCaches()
+  self.searchCache = {}
+end
+
+function BaganatorCategoryViewsCategoryFilterMixin:OnHide()
   if self.timer then
     self.timer:Cancel()
     self.timer = nil
   end
 end
 
-function BaganatorCategoryViewsCategorySearchMixin:ResetCaches()
-  self.seenData = {}
-end
-
-function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attachedItems, everything, callback)
+function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attachedItems, everything, callback)
   self.start = debugprofilestop()
 
   if self.timer then
@@ -59,118 +58,57 @@ function BaganatorCategoryViewsCategorySearchMixin:ApplySearches(searches, attac
 
   self.pending = {}
 
-  local function DoComplete()
-    local attachedItems = self.attachedItems[search]
-    for search, items in pairs(self.attachedItems) do
-      local results = self.results[search]
-
-      for key in pairs(self.pending) do
-        local seenData = self.seenData[key]
-        local details = addonTable.CategoryViews.Utilities.GetAddedItemData(seenData.itemID, seenData.itemLink)
-        local match = items["i:" .. tostring(details.itemID)] or items["p:" .. tostring(details.petID)] or items[key]
-        if match then
-          for _, i in ipairs(self.pending[key]) do
-            i.addedDirectly = true
-            table.insert(results, i)
-          end
-          self.pending[key] = nil
-        end
-      end
-    end
-
-    self.sortMethod = addonTable.Config.Get("sort_method")
-    if self.sortMethod == "combine_stacks_only" or addonTable.API.ExternalContainerSorts[self.sortMethod] then
-      addonTable.Utilities.Message(BAGANATOR_L_SORT_METHOD_RESET_FOR_CATEGORIES)
-      addonTable.Config.ResetOne(addonTable.Config.Options.SORT_METHOD)
-      self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
-    end
-
-    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH) then
-      self.timer = C_Timer.NewTimer(5, function()
-        local items = ""
-        if self.searchPending then
-          for key in pairs(self.searchPending) do
-            items = items .. "\n" .. key .. " item ID: " .. self.seenData[key].itemID
-          end
-        else
-          items = "sorting failure"
-        end
-        StaticPopupDialogs[errorDialog].text = BAGANATOR_L_CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
-        StaticPopup_Show(errorDialog)
-      end)
-    end
-    self:DoSearch()
-  end
-
-  -- Ensure junk plugins calculate correctly
-  local waiting = 0
-  local loopComplete = false
+  self.cacheReject = {}
 
   for _, item in ipairs(everything) do
-    local key = item.key
-    -- Needs to be set here as the later code will ensure fields are shared,
-    -- when invertedItemCount shouldn't be
-    item.invertedItemCount = -item.itemCount
-    local seen = self.seenData[key]
-    if not self.pending[key] then
-      self.pending[key] = {}
-      if not seen then
-        if item.isJunkGetter then
-          if not C_Item.IsItemDataCachedByID(item.itemID) then
-            local i = Item:CreateFromItemID(item.itemID)
-            if not i:IsItemEmpty() then
-              waiting = waiting + 1
-              i:ContinueOnItemLoad(function()
-                waiting = waiting - 1
-                item.isJunk = item.isJunkGetter()
-                if waiting == 0 and loopComplete then
-                  DoComplete()
-                end
-              end)
-            end
-          else
-            item.isJunk = item.isJunkGetter()
-          end
+    if not self.pending[item.key] then
+      self.pending[item.key] = {}
+    end
+    table.insert(self.pending[item.key], item)
+  end
+
+  for search, items in pairs(self.attachedItems) do
+    local results = self.results[search]
+
+    for key, pendingForKey in pairs(self.pending) do
+      local details = addonTable.CategoryViews.Utilities.GetAddedItemData(pendingForKey[1].itemID, pendingForKey[1].itemLink)
+      local match = items["i:" .. tostring(details.itemID)] or items["p:" .. tostring(details.petID)] or items[key]
+      if match then
+        for _, i in ipairs(self.pending[key]) do
+          rawset(i, "addedDirectly", true)
+          table.insert(results, i)
         end
-        self.seenData[key] = item
-        addonTable.Sorting.AddSortKeys({item})
-      else
-        seen.setInfo = item.setInfo
-        setmetatable(item, {__index = self.seenData[key], __newindex = seen})
+        self.pending[key] = nil
       end
-    else
-      setmetatable(item, {__index = self.seenData[key], __newindex = seen})
     end
-    table.insert(self.pending[key], item)
   end
 
-  loopComplete = true
-  if waiting == 0 then
-    DoComplete()
+  for key, items in pairs(self.pending) do
+    local search = self.searchCache[key]
+    if search then
+      tAppendAll(self.results[search], items)
+      self.pending[key] = nil
+    end
   end
+
+  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH) then
+    self.timer = C_Timer.NewTimer(5, function()
+      local items = ""
+      if next(self.searchPending) then
+        for key in pairs(self.searchPending) do
+          items = items .. "\n" .. key .. " item ID: " .. self.pending[key][1].itemID
+        end
+      else
+        items = "unknown failure"
+      end
+      StaticPopupDialogs[errorDialog].text = BAGANATOR_L_CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
+      StaticPopup_Show(errorDialog)
+    end)
+  end
+  self:DoSearch()
 end
 
-function BaganatorCategoryViewsCategorySearchMixin:SortResults()
-  local incomplete
-  for search in pairs(self.sortPending) do
-    self.results[search], incomplete = addonTable.Sorting.OrderOneListOffline(self.results[search], self.sortMethod)
-    if not incomplete then
-      self.sortPending[search] = nil
-    end
-  end
-
-  if next(self.sortPending) == nil then
-    self:SetScript("OnUpdate", nil)
-    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("search and sort took", debugprofilestop() - self.start)
-    end
-    self.callback(self.results)
-  else
-    self:SetScript("OnUpdate", self.SortResults)
-  end
-end
-
-function BaganatorCategoryViewsCategorySearchMixin:DoSearch()
+function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
   if not self.searchPending then
     self.searchIndex = self.searchIndex + 1
 
@@ -180,7 +118,11 @@ function BaganatorCategoryViewsCategorySearchMixin:DoSearch()
         self.timer = nil
       end
 
-      self:SortResults()
+      self:SetScript("OnUpdate", nil)
+      if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+        addonTable.Utilities.DebugOutput("search took", debugprofilestop() - self.start)
+      end
+      self.callback(self.results)
       return
     end
 
@@ -194,11 +136,18 @@ function BaganatorCategoryViewsCategorySearchMixin:DoSearch()
 
   local results = self.results[search]
 
+  local checkItem = Syndicator.Search.CheckItem
   for key in pairs(self.searchPending) do
-    local match = Syndicator.Search.CheckItem(self.seenData[key], search)
+    local match = checkItem(self.pending[key][1], search)
     if match ~= nil then
       self.searchPending[key] = nil
+      if self.pending[key][1].fullMatchInfo[search] == nil then
+        self.cacheReject[key] = true
+      end
       if match then
+        if not self.cacheReject[key] then
+          self.searchCache[key] = search
+        end
         for _, i in ipairs(self.pending[key]) do
           table.insert(results, i)
         end

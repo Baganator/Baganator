@@ -4,13 +4,5 @@
       <OnEvent method="OnEvent"/>
       <OnHide method="OnHide"/>
     </Scripts>
-    <Frames>
-      <Frame parentKey="MultiSearch" mixin="BaganatorCategoryViewsCategorySearchMixin">
-        <Scripts>
-          <OnLoad method="OnLoad"/>
-          <OnHide method="OnHide"/>
-        </Scripts>
-      </Frame>
-    </Frames>
   </Frame>
 </Ui>

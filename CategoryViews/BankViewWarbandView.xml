@@ -2,15 +2,6 @@
   <Frame name="BaganatorCategoryViewBankViewWarbandViewTemplate" virtual="true" mixin="BaganatorCategoryViewBankViewWarbandViewMixin" inherits="BaganatorItemViewCommonBankViewWarbandViewTemplate">
     <Scripts>
       <OnEvent method="OnEvent"/>
-      <OnShow method="OnShow"/>
     </Scripts>
-    <Frames>
-      <Frame parentKey="MultiSearch" mixin="BaganatorCategoryViewsCategorySearchMixin">
-        <Scripts>
-          <OnLoad method="OnLoad"/>
-          <OnHide method="OnHide"/>
-        </Scripts>
-      </Frame>
-    </Frames>
   </Frame>
 </Ui>

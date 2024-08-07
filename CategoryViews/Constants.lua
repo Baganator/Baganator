@@ -28,6 +28,14 @@ addonTable.CategoryViews.Constants = {
     addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS,
   },
 
+  ClearCachesSettings = {
+    addonTable.Config.Options.CATEGORY_DISPLAY_ORDER,
+    addonTable.Config.Options.CUSTOM_CATEGORIES,
+    addonTable.Config.Options.CATEGORY_ITEM_GROUPING,
+    addonTable.Config.Options.CATEGORY_MODIFICATIONS,
+    addonTable.Config.Options.JUNK_PLUGIN,
+  },
+
   OldPriorities = {
     [220] = -1,
     [250] = 0,

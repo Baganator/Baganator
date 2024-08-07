@@ -33,3 +33,15 @@ function addonTable.Utilities.GetCharacterFullName()
   local characterName, realm = UnitFullName("player")
   return characterName .. "-" .. realm
 end
+
+local queue = {}
+local reporter = CreateFrame("Frame")
+reporter:SetScript("OnUpdate", function()
+  for _, entry in ipairs(queue) do
+    print(entry[1], entry[2])
+  end
+  queue = {}
+end)
+function addonTable.Utilities.DebugOutput(label, value)
+  table.insert(queue, {label, value})
+end
