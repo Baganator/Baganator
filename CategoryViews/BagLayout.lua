@@ -102,6 +102,7 @@ function addonTable.CategoryViews.BagLayoutMixin:SettingChanged(settingName)
 end
 
 function addonTable.CategoryViews.BagLayoutMixin:FullRefresh()
+  self.CategoryFilter:ResetCaches()
   self.ItemsPreparation:ResetCaches()
   self.results = nil
 end
