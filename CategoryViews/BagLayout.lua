@@ -63,6 +63,7 @@ function addonTable.CategoryViews.BagLayoutMixin:OnLoad()
 
   self.notShown = {}
 
+  self:SetScript("OnShow", self.OnShow)
   self:SetScript("OnHide", self.OnHide)
 
   self.ItemsPreparation = CreateFrame("Frame", nil, self)
