@@ -250,6 +250,9 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         container.CachedLayouts[index]:Hide()
       end
     end
+    for _, layout in ipairs(container.LiveLayouts) do
+      layout:Hide()
+    end
     activeLayouts = container.CachedLayouts
   end
 
