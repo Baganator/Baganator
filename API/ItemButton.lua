@@ -62,7 +62,7 @@ end
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
   if HasItemLevel(details) and not (C_Item.IsCosmeticItem and C_Item.IsCosmeticItem(details.itemLink)) then
     if not details.itemLevel then
-      if details.itemLocation then
+      if details.itemLocation and C_Item.DoesItemExist(details.itemLocation) then
         details.itemLevel = C_Item.GetCurrentItemLevel(details.itemLocation)
       else
         details.itemLevel = C_Item.GetDetailedItemLevelInfo(details.itemLink)
