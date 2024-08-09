@@ -1,15 +1,6 @@
 -- Copy-and-pasted from -- Interface/AddOns/Blizzard_UIPanels_Game/Mainline/ContainerFrame.lua
 local _, addonTable = ...
 
-local bagNames =
-{
-  [0] = BAG_NAME_BACKPACK,
-  [1] = BAG_NAME_BAG_1,
-  [2] = BAG_NAME_BAG_2,
-  [3] = BAG_NAME_BAG_3,
-  [4] = BAG_NAME_BAG_4,
-};
-
 local function ContainerFrame_IsMainBank(id)
   return id == Enum.BagIndex.Bank;
 end
@@ -118,7 +109,7 @@ function addonTable.ItemViewCommon.AddBlizzardBagContextMenu(originBagID)
         if index == 1 then
           name = rootName
         else
-          name = bagNames[1]:gsub("1", tostring(index - 1))
+          name = BAG_NAME_BAG_1:gsub("1", tostring(index - 1))
         end
         local submenu = rootDescription:CreateButton(name);
         if addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD) == "blizzard" then
