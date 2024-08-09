@@ -89,10 +89,12 @@ function addonTable.ItemViewCommon.AddBlizzardBagContextMenu(originBagID)
   end
 
   local rootName
+  local showReagents = false
   local bagIndexes
   if tIndexOf(Syndicator.Constants.AllBagIndexes, originBagID) ~= nil then
     rootName = BAG_NAME_BACKPACK
     bagIndexes = Syndicator.Constants.AllBagIndexes
+    showReagents = true
   else
     rootName = BAGANATOR_L_BANK
     bagIndexes = Syndicator.Constants.AllBankIndexes
@@ -117,6 +119,10 @@ function addonTable.ItemViewCommon.AddBlizzardBagContextMenu(originBagID)
         end
         AddButtons_BagCleanup(submenu, bagID);
       end
+    end
+    if showReagents and addonTable.Utilities.GetBagType(bagIndexes[#bagIndexes]) == "reagentBag" then
+        local submenu = rootDescription:CreateButton(BAGANATOR_L_REAGENTS);
+        AddButtons_BagCleanup(submenu, bagIndexes[#bagIndexes]);
     end
   end)
 end
