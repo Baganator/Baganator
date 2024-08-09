@@ -84,10 +84,6 @@ local function AddButtons_BagCleanup(description, bagID)
 end
 
 function addonTable.ItemViewCommon.AddBlizzardBagContextMenu(originBagID)
-  if addonTable.Utilities.GetBagType(originBagID) == "reagentBag" then
-    return
-  end
-
   local rootName
   local showReagents = false
   local bagIndexes
