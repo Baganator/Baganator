@@ -6,9 +6,11 @@ local function GetBagInventorySlot(button)
   return C_Container.ContainerIDToInventoryID(button:GetID())
 end
 
-local function OnBagSlotClick(self)
+local function OnBagSlotClick(self, button)
   if IsModifiedClick("PICKUPITEM") then
     PickupBagFromSlot(GetBagInventorySlot(self))
+  elseif button == "RightButton" then
+    addonTable.ItemViewCommon.AddBlizzardBagContextMenu(self:GetID())
   else
     PutItemInBag(GetBagInventorySlot(self))
   end
@@ -52,8 +54,8 @@ function BaganatorRetailBagSlotButtonMixin:Init()
   self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(self:GetID()))
 end
 
-function BaganatorRetailBagSlotButtonMixin:OnClick()
-  OnBagSlotClick(self)
+function BaganatorRetailBagSlotButtonMixin:OnClick(button)
+  OnBagSlotClick(self, button)
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnDragStart()
@@ -155,8 +157,10 @@ StaticPopupDialogs["addonTable.ConfirmBuyBankSlot"] = {
   hideOnEscape = 1,
 }
 
-local function OnBankSlotClick(self)
-  if not self.needPurchase then
+local function OnBankSlotClick(self, button)
+  if button == "RightButton" then
+    addonTable.ItemViewCommon.AddBlizzardBagContextMenu(Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
+  elseif not self.needPurchase then
     if IsModifiedClick("PICKUPITEM") then
       PickupBagFromSlot(GetBankInventorySlot(self))
     else
@@ -222,8 +226,8 @@ function BaganatorRetailBankButtonMixin:Init()
   end)
 end
 
-function BaganatorRetailBankButtonMixin:OnClick()
-  OnBankSlotClick(self)
+function BaganatorRetailBankButtonMixin:OnClick(button)
+  OnBankSlotClick(self, button)
 end
 
 function BaganatorRetailBankButtonMixin:OnDragStart()

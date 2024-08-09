@@ -71,6 +71,7 @@ ItemViewCommon\BankView.xml
 ItemViewCommon\BagTransfers.lua
 ItemViewCommon\NewItemsTracking.lua
 ItemViewCommon\AnchorSetter.lua
+ItemViewCommon\ShowBlizzardBagPreferences.lua
 ItemViewCommon\Initialize.lua
 
 SingleViews\Pools.lua
