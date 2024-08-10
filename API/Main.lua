@@ -133,7 +133,9 @@ do
   -- label: User facing text string describing this corner option.
   -- id: unique value to be used internally for the settings
   -- onUpdate: Function to update the frame placed in the corner. Return true to
-  --  cause this corner's visual to show.
+  --  cause this corner's visual to show.  Return false to indicate no
+  --  visual will be shown. Return nil to indicate the item information
+  --  needed to make the display determination isn't available yet
   --  function(cornerFrame, itemDetails) -> boolean.
   -- onInit: Called once for each item icon to create the frame to show in the
   --  icon corner. Return the frame to be positioned in the corner. This frame
