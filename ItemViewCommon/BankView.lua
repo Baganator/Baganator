@@ -136,17 +136,25 @@ function BaganatorItemViewCommonBankViewMixin:OnShow()
       self.currentTab = self.Warband
       self.Warband:Show()
       self.Character:Hide()
-      self.Tabs[1]:Hide()
+      for _, tab in ipairs(self.Tabs) do
+        tab:Hide()
+      end
     else
-      self.Tabs[1]:Show()
+      for _, tab in ipairs(self.Tabs) do
+        tab:Show()
+      end
     end
   end
   if self.Tabs[1] then
-    if self.currentTab == self.Character then
-      PanelTemplates_SelectTab(self.Tabs[1])
-    elseif self.currentTab == self.Warband then
-      PanelTemplates_SelectTab(self.Tabs[2])
+    local function Select()
+      if self.currentTab == self.Character then
+        PanelTemplates_SelectTab(self.Tabs[1])
+      elseif self.currentTab == self.Warband then
+        PanelTemplates_SelectTab(self.Tabs[2])
+      end
     end
+    Select()
+    C_Timer.After(0, Select) -- Necessary because if the tabs were only shown this frame they won't select properly
   end
 end
 
