@@ -245,7 +245,6 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     activeLayouts = container.LiveLayouts
   else
     if #container.CachedLayouts > #composed.searches then
-      layout:Hide()
       for index = #composed.searches + 1, #container.CachedLayouts do
         container.CachedLayouts[index]:Hide()
       end
