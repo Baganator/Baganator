@@ -171,3 +171,66 @@ if not addonTable.Constants.IsRetail then
     end)
   end)
 end
+
+addonTable.Utilities.OnAddonLoaded("Outfitter", function()
+  local equipmentSetNames = {}
+  local equipmentSetItemIDs = {}
+  local function Update()
+    equipmentSetNames = {}
+    equipmentSetItemIDs = {}
+
+    local categories = Outfitter_GetCategoryOrder()
+    for _, c in ipairs(categories) do
+      local outfits = Outfitter_GetOutfitsByCategoryID(c)
+      for _, o in ipairs(outfits) do
+        table.insert(equipmentSetNames, o:GetName())
+        for _, item in pairs(o:GetItems()) do
+          equipmentSetItemIDs[item.Code] = equipmentSetItemIDs[item.Code] or {}
+          table.insert(equipmentSetItemIDs[item.Code], o:GetName())
+        end
+      end
+    end
+
+    Baganator.API.RequestItemButtonsRefresh()
+  end
+
+  if Outfitter_IsInitialized() then
+    Update()
+  else
+    Outfitter_RegisterOutfitEvent("OUTFITTER_INIT", Update)
+  end
+  Outfitter_RegisterOutfitEvent("ADD_OUTFIT", Update)
+  Outfitter_RegisterOutfitEvent("DELETE_OUTFIT", Update)
+  Outfitter_RegisterOutfitEvent("EDIT_OUTFIT", Update)
+  Outfitter_RegisterOutfitEvent("DID_RENAME_OUTFIT", Update)
+
+  Baganator.API.RegisterItemSetSource("Outfitter", "outfitter", function(itemLocation, guid, itemLink)
+    if not guid or not itemLink then
+      return
+    end
+    local itemID = C_Item.GetItemInfoInstant(itemLink)
+    if not itemID then
+      return
+    end
+    local setNames = equipmentSetItemIDs[itemID]
+    if not setNames then
+      return
+    end
+
+    local itemInfo = Outfitter_GetItemInfoFromLink(itemLink)
+
+    local result = {}
+    for _, name in ipairs(setNames) do
+      local outfit = Outfitter_FindOutfitByName(name)
+      if outfit:OutfitUsesItem(itemInfo) then
+        table.insert(result, {
+          name = name,
+          iconTexture = outfit:GetIcon(),
+        })
+      end
+    end
+    return result
+  end, function()
+    return equipmentSetNames
+  end)
+end)
