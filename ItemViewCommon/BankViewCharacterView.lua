@@ -183,7 +183,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   self.BuyReagentBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and not IsReagentBankUnlocked())
 
   if self.CurrencyWidget.lastCharacter ~= self.lastCharacter then
-    self.CurrencyWidget:UpdateCurrencies(character)
+    --self.CurrencyWidget:UpdateCurrencies(character)
   end
 
   self:SetupBlizzardFramesForTab()
