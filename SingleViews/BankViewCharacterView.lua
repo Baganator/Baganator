@@ -129,7 +129,11 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   -- Copied from SingleViews/BagView.lua
   local sideSpacing, topSpacing = 13, 14
   if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 8
+    if (IsAddOnLoaded or C_AddOns.IsAddOnLoaded)("Baganator-ElvUI") then
+      sideSpacing = 3.5
+    else
+      sideSpacing = 8
+    end
     topSpacing = 7
   end
 
