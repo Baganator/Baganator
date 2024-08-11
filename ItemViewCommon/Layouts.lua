@@ -89,6 +89,12 @@ end
 
 local function FlowButtonsRows(self, rowWidth)
   local iconPadding, iconSize = addonTable.ItemButtonUtil.GetPaddingAndSize()
+  local iconPaddingScaled = iconPadding * 37 / iconSize
+
+  if rowWidth == 14 then
+    iconSize = 32
+	  iconPaddingScaled = 1
+  end
 
   local rows, cols = 0, 0
   if addonTable.Config.Get(addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP) then
@@ -97,10 +103,16 @@ local function FlowButtonsRows(self, rowWidth)
       cols = 0
     end
   end
-  local iconPaddingScaled = iconPadding * 37 / iconSize
+  
   for _, button in ipairs(self.buttons) do
-    button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
-    button:SetScale(iconSize / 37)
+    if rowWidth == 14 then
+      button:SetPoint("TOPLEFT", self, cols * (32 + iconPaddingScaled), - rows * (32 + iconPaddingScaled))
+      button:SetScale(1)
+      button:SetSize(32, 32)
+    else
+      button:SetPoint("TOPLEFT", self, cols * (37 + iconPaddingScaled), - rows * (37 + iconPaddingScaled))
+      button:SetScale(iconSize / 37)
+    end
     cols = cols + 1
     if cols >= rowWidth then
       cols = 0
