@@ -187,12 +187,13 @@ function addonTable.Utilities.AddBagTransferManager(parent)
   end)
 end
 
--- Prevent coin icons getting offset on varying screen resolutions by removing
--- the coin icon offset
 function addonTable.Utilities.GetMoneyString(amount, splitThousands)
-  local result = GetMoneyString(amount, splitThousands)
-  result = result:gsub("0:0:2:0", "12"):gsub("|T", " |T")
-  return result
+  local Gold = math.floor(amount / 10000)
+  local Silver = math.floor((amount / 10000 - Gold) * 100)
+  local Copper = tonumber(string.sub(amount, -2))
+  local gsc = Gold .. "|cffffd700g|r " .. Silver .. "|cffc7c7cfs|r " .. Copper .. "|cffeda55fc|r"
+  local left, num, right = string.match(gsc, "^([^%d]*%d)(%d*)(.-)$")
+  return left .. (num:reverse():gsub("(%d%d%d)", "%1,"):reverse()) .. right
 end
 
 function addonTable.Utilities.GetExternalSortMethodName()
