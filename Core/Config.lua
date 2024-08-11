@@ -151,7 +151,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.CATEGORY_MODIFICATIONS] = {
     --[[
     ["default_gem"] = {
-      addedItems = {{itemID = 154128}, {petID = 2959}}, --stored by item id or pet id
+      addedItems = {["i:154128] = true, ["p:2959] = true}, --stored by item id or pet id
     },
     ]]
   },

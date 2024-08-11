@@ -353,24 +353,15 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
     end
     for itemIDString in text:gmatch("%d+") do
       local itemID = tonumber(itemIDString)
+      local details = "i:" .. itemID
       for source, mods in pairs(categoryMods) do
         -- Remove the item from any categories its already in
         if mods.addedItems then
-          local oldIndex = FindInTableIf(mods.addedItems, function(alt)
-            return alt.itemID == itemID
-          end)
-          if oldIndex then
-            table.remove(mods.addedItems, oldIndex)
-            if #mods.addedItems == 0 and source ~= self.currentCategory then
-              mods.addedItems = nil
-            end
-          end
+          mods.addedItems[details] = nil
         end
       end
 
-      table.insert(categoryMods[self.currentCategory].addedItems, {
-        itemID = itemID
-      })
+      categoryMods[self.currentCategory].addedItems[details] = true
     end
     addItemsEditBox:SetText("")
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))

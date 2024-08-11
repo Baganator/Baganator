@@ -72,7 +72,7 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attac
 
     for key, pendingForKey in pairs(self.pending) do
       local details = addonTable.CategoryViews.Utilities.GetAddedItemData(pendingForKey[1].itemID, pendingForKey[1].itemLink)
-      local match = items["i:" .. tostring(details.itemID)] or items["p:" .. tostring(details.petID)] or items[key]
+      local match = items[details] or items[key]
       if match then
         for _, i in ipairs(self.pending[key]) do
           rawset(i, "addedDirectly", true)

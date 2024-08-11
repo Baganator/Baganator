@@ -347,15 +347,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
     local mods = categoryMods[source]
     if mods then
       if mods.addedItems and next(mods.addedItems) then
-        local attachedItems = {}
-        for _, details in ipairs(mods.addedItems) do
-          if details.itemID then
-            attachedItems["i:" .. details.itemID] = true
-          elseif details.petID then
-            attachedItems["p:" .. details.petID] = true
-          end
-        end
-        allDetails[#allDetails].attachedItems = attachedItems
+        allDetails[#allDetails].attachedItems = mods.addedItems
       end
       local searchDetails = groupings[mods.group]
       if searchDetails then

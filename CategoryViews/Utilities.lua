@@ -7,9 +7,9 @@ function addonTable.CategoryViews.Utilities.GetAddedItemData(itemID, itemLink)
   local petID = tonumber((itemLink:match("battlepet:(%d+)")))
 
   if petID then
-    return { petID = petID }
+    return "p:" .. petID
   else
-    return { itemID = itemID }
+    return "i:" .. itemID
   end
 end
 

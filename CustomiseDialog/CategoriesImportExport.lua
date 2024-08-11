@@ -15,11 +15,12 @@ function addonTable.CustomiseDialog.SingleCategoryExport(name)
   local mods = addonTable.Config.Get("category_modifications")[name]
   local items, pets = {}, {}
   if mods and mods.addedItems then
-    for _, item in ipairs(mods.addedItems) do
-      if item.itemID then
-        table.insert(items, item.itemID)
-      elseif item.petID then
-        table.insert(pets, item.petID)
+    for details in pairs(mods.addedItems) do
+      local t, id = details:match("^(.):(.*)$")
+      if t == "i" then
+        table.insert(items, tonumber(id))
+      elseif t == "p" then
+        table.insert(pets, tonumber(id))
       else
         assert(false, "missing item type")
       end
@@ -53,11 +54,12 @@ function addonTable.CustomiseDialog.CategoriesExport()
   for key, mods in pairs(addonTable.Config.Get("category_modifications")) do
     local items, pets = {}, {}
     if mods.addedItems then
-      for _, item in ipairs(mods.addedItems) do
-        if item.itemID then
-          table.insert(items, item.itemID)
-        elseif item.petID then
-          table.insert(pets, item.petID)
+      for details in pairs(mods.addedItems) do
+        local t, id = details:match("^(.):(.*)$")
+        if t == "i" then
+          table.insert(items, tonumber(id))
+        elseif t == "p" then
+          table.insert(pets, tonumber(id))
         else
           assert(false, "missing item type")
         end
@@ -126,7 +128,7 @@ local function ImportCategories(import)
         local key = "i:" .. itemID
         if not seenItems[key] then
           seenItems[key] = true
-          table.insert(newMods.addedItems, {itemID = itemID})
+          newMods.addedItems[key] = true
         end
       end
     end
@@ -141,7 +143,7 @@ local function ImportCategories(import)
         local key = "p:" .. itemID
         if not seenItems[key] then
           seenItems[key] = true
-          table.insert(newMods.addedItems, {petID = petID})
+          newMods.addedItems[key] = true
         end
       end
     end
@@ -212,14 +214,9 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     local currentCategoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     -- Prevent duplicate items in multiple category modifications caused by an import
     for source, details in pairs(currentCategoryMods) do
-      if categoryMods[source] == nil and details.addedItems and #details.addedItems > 0 then
-        for i = #details.addedItems, 1 do
-          local item = details.addedItems[i]
-          if item.itemID and seenItems["i:" .. item.itemID] then
-            table.remove(details.addedItems, i)
-          elseif item.petID and seenItems["p:" .. item.petID] then
-            table.remove(details.addedItems, i)
-          end
+      if categoryMods[source] == nil and details.addedItems then
+        for key in pairs(seenItems) do
+          details.addedItems[key] = nil
         end
       end
     end
@@ -240,14 +237,9 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     local currentCategoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     for source, details in pairs(currentCategoryMods) do
-      if categoryMods[source] == nil and details.addedItems and #details.addedItems > 0 then
-        for i = #details.addedItems, 1 do
-          local item = details.addedItems[i]
-          if item.itemID and seenItems["i:" .. item.itemID] then
-            table.remove(details.addedItems, i)
-          elseif item.petID and seenItems["p:" .. item.petID] then
-            table.remove(details.addedItems, i)
-          end
+      if categoryMods[source] == nil and details.addedItems then
+        for key in pairs(seenItems) do
+          details.addedItems[key] = nil
         end
       end
     end

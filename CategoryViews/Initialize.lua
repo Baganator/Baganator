@@ -21,6 +21,23 @@ local function MigrateFormat()
     end
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MIGRATION, 2)
   end
+  if addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MIGRATION) == 2 then
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    for key, mods in pairs(categoryMods) do
+      local oldAddedItems = mods.addedItems
+      if oldAddedItems ~= nil then
+        mods.addedItems = {}
+        for _, item in ipairs(oldAddedItems) do
+          if item.petID then
+            mods.addedItems["p:" .. item.petID] = true
+          elseif item.itemID then
+            mods.addedItems["i:" .. item.itemID] = true
+          end
+        end
+      end
+    end
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MIGRATION, 3)
+  end
 end
 
 local function SetupCategories()
@@ -63,14 +80,9 @@ local function SetupAddRemoveItems()
     local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     local details = addonTable.CategoryViews.Utilities.GetAddedItemData(activeItemID, activeItemLink)
     if categoryMods[previousCategory] and categoryMods[previousCategory].addedItems then
-      local oldIndex = FindInTableIf(categoryMods[previousCategory].addedItems, function(alt)
-        return alt.itemID == details.itemID and alt.petID == details.petID
-      end)
-      if oldIndex then
-        table.remove(categoryMods[previousCategory].addedItems, oldIndex)
-        if #categoryMods[previousCategory].addedItems == 0 then
-          categoryMods[previousCategory].addedItems = nil
-        end
+      categoryMods[previousCategory].addedItems[details] = nil
+      if next(categoryMods[previousCategory].addedItems) == nil then
+        categoryMods[previousCategory].addedItems = nil
       end
     end
 
@@ -85,13 +97,7 @@ local function SetupAddRemoveItems()
 
     categoryMods[toCategory].addedItems = categoryMods[toCategory].addedItems or {}
 
-    local existingIndex = FindInTableIf(categoryMods[toCategory].addedItems, function(alt)
-      return alt.itemID == details.itemID and alt.petID == details.petID
-    end)
-    if existingIndex then
-      return
-    end
-    table.insert(categoryMods[toCategory].addedItems, details)
+    categoryMods[toCategory].addedItems[details] = true
   end)
 end
 
