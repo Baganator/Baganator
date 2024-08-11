@@ -93,7 +93,7 @@ local function FlowButtonsRows(self, rowWidth)
 
   if rowWidth == 14 then
     iconSize = 32
-	  iconPaddingScaled = 1
+    iconPaddingScaled = 1
   end
 
   local rows, cols = 0, 0
