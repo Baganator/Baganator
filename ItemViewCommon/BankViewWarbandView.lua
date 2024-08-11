@@ -4,7 +4,6 @@ local _, addonTable = ...
 BaganatorItemViewCommonBankViewWarbandViewMixin = {}
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
-  self.Tabs = {}
   self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
   self.currentTab = addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
   self.updateTabs = true
@@ -337,15 +336,6 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
     else
       self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_DATA_MISSING_HINT)
     end
-    -- Hide tabs when there is no data to view
-    for _, tab in ipairs(self.Tabs) do
-      tab:Hide()
-    end
-  else
-    for _, tab in ipairs(self.Tabs) do
-      tab:Show()
-    end
-    self:UpdateTabs()
   end
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
@@ -376,6 +366,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
     self.DepositMoneyButton:SetPoint("RIGHT", self, "RIGHT", -sideSpacing, 0)
   end
 
+  self:UpdateTabs()
   self:SetupBlizzardFramesForTab()
   self:HighlightCurrentTab()
 
