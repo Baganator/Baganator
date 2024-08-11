@@ -81,7 +81,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
     end)
     addonTable.Skins.AddFrame("TabButton", warbandTab)
 
-    self.Tabs[1]:SetPoint("BOTTOM", 0, -30)
+    self.Tabs[1]:SetPoint("BOTTOM", 0, 3)
     PanelTemplates_SetNumTabs(self, #self.Tabs)
   end
 end
@@ -202,7 +202,11 @@ function BaganatorItemViewCommonBankViewMixin:UpdateView()
   end
 
   if self.Tabs[1] then
-    self.Tabs[1]:SetPoint("LEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 0)
+    self.Tabs[1]:SetPoint("LEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset + 160, 0)
+    self.Tabs[1]:SetHeight(26)
+    if self.Tabs[2] then
+      self.Tabs[2]:SetHeight(26)
+    end
   end
 
   self.SearchWidget:SetSpacing(sideSpacing)
