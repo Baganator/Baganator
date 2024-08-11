@@ -229,10 +229,10 @@ local function ApplyItemDetailSettings(button)
   local newSize = addonTable.Config.Get("icon_text_font_size")
 
   local positions = {
-    ["icon_top_left_corner_array"] = {"TOPLEFT", 2, -2},
-    ["icon_top_right_corner_array"] = {"TOPRIGHT", -2, -2},
-    ["icon_bottom_left_corner_array"] = {"BOTTOMLEFT", 2, 2},
-    ["icon_bottom_right_corner_array"] = {"BOTTOMRIGHT", -2, 2},
+    ["icon_top_left_corner_array"] = {"TOPLEFT", 2, -2}, --{"TOPLEFT", 2, -2}
+    ["icon_top_right_corner_array"] = {"TOPRIGHT", 0, -1}, --{"TOPRIGHT", -2, -2}
+    ["icon_bottom_left_corner_array"] = {"BOTTOMLEFT", 2, 2}, --{"BOTTOMLEFT", 2, 2}
+    ["icon_bottom_right_corner_array"] = {"BOTTOMRIGHT", 0, 2}, --{"BOTTOMRIGHT", -2, 2}
   }
 
   if not button.widgetContainer then
