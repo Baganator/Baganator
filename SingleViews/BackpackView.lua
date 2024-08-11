@@ -123,7 +123,11 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
 
   local sideSpacing, topSpacing = 13, 14
   if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 8
+    if (IsAddOnLoaded or C_AddOns.IsAddOnLoaded)("Baganator-ElvUI") then
+      sideSpacing = 6.5
+    else
+      sideSpacing = 8
+    end
     topSpacing = 7
   end
 
