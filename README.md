@@ -1,4 +1,4 @@
-[![Discord](https://shields.io/badge/discord-comment-lightblue?logo=discord&style=for-the-badge)](https://discord.gg/TtSN6DxSky)
+## Fork of the original [Baganator](https://github.com/Baganator/Baganator) on Github. Credit to [plusmouse](https://github.com/plusmouse) and anyone else who worked on the original. This is personal edit for my personal needs.
 
 Baganator is a straightforward and robust bag and inventory addon for World of Warcraft. Available from [Curseforge](https://www.curseforge.com/wow/addons/baganator) and [Wago](https://addons.wago.io/addons/baganator/)
 
