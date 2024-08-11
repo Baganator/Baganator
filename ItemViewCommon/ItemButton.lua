@@ -254,17 +254,17 @@ local function ApplyItemDetailSettings(button)
       local corner = button.cornerPlugins[plugin]
       if corner then
         corner:SetParent(button.widgetContainer)
-        local extraScale = 1
+        --[[local extraScale = 1
         if corner.sizeFont then
           extraScale = newSize / 14 -- 14 is default font size
           corner:SetScale(extraScale)
-        end
+        end--]]
         local padding = 1
         if corner.padding then
           padding = corner.padding
         end
         corner:ClearAllPoints()
-        corner:SetPoint(anchor[1], button, anchor[2]*padding/extraScale, anchor[3]*padding/extraScale)
+        corner:SetPoint(anchor[1], button, anchor[2]*padding, anchor[3]*padding) --corner:SetPoint(anchor[1], button, anchor[2]*padding/extraScale, anchor[3]*padding/extraScale)
       end
     end
   end
