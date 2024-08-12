@@ -184,6 +184,9 @@ end
 
 function BaganatorSingleViewGuildViewMixin:OnHide()
   self:HideInfoDialogs()
+  if GuildBankPopupFrame:IsShown() then
+    GuildBankPopupFrame:Hide()
+  end
   CloseGuildBankFrame()
 end
 
@@ -276,9 +279,14 @@ function BaganatorSingleViewGuildViewMixin:OpenTabEditor()
   if not addonTable.Constants.IsRetail then
     GuildBankPopupFrame:Update()
   end
-  GuildBankPopupFrame:SetParent(self)
+  GuildBankPopupFrame:SetParent(UIParent)
   GuildBankPopupFrame:ClearAllPoints()
   GuildBankPopupFrame:SetClampedToScreen(true)
+
+  if TSM_API then
+    GuildBankPopupFrame:SetFrameStrata("HIGH")
+  end
+
   GuildBankPopupFrame:SetFrameLevel(999)
   GuildBankPopupFrame:SetPoint("LEFT", self, "RIGHT", self.Tabs[1]:GetWidth(), 0)
 end
