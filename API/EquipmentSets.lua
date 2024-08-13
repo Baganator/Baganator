@@ -1,6 +1,6 @@
 local _, addonTable = ...
 -- Blizzard Equipment sets (Wrath onwards)
-if not addonTable.Constants.IsEra and (not addonTable.Constants.IsRetail or not IsMacClient()) then
+if not addonTable.Constants.IsEra then
   local BlizzardSetTracker = CreateFrame("Frame")
 
   function BlizzardSetTracker:OnLoad()
