@@ -107,8 +107,26 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
   BaganatorItemViewCommonBankViewCharacterViewMixin.UpdateForCharacter(self, character, isLive)
 
+  -- Copied from SingleViews/BagView.lua
+  local sideSpacing, topSpacing = 13, 14
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
+    sideSpacing = 8
+    topSpacing = 7
+  end
+
   if self.BankMissingHint:IsShown() then
+    self:SetSize(
+      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
+      80 + topSpacing / 2
+    )
+    self.CurrencyWidget:UpdateCurrencyTextVisibility()
+    for _, l in ipairs(self.Layouts) do
+      l:Hide()
+    end
     self.LayoutManager:ClearVisuals()
+
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
+    self:GetParent():OnTabFinished()
     return
   end
 
@@ -116,13 +134,6 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
   tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
   tAppendAll(self:GetParent().AllButtons, self.TopButtons)
-
-  -- Copied from SingleViews/BagView.lua
-  local sideSpacing, topSpacing = 13, 14
-  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 8
-    topSpacing = 7
-  end
 
   local buttonPadding = 0
 
@@ -146,22 +157,6 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = false
-  end
-
-  if self.BankMissingHint:IsShown() then
-    self:SetSize(
-      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
-      80 + topSpacing / 2 + buttonPadding
-    )
-    self.CurrencyWidget:UpdateCurrencyTextVisibility()
-    for _, l in ipairs(self.Layouts) do
-      l:Hide()
-    end
-    self.LayoutManager:ClearVisuals()
-
-    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
-    self:GetParent():OnTabFinished()
-    return
   end
 
   local characterData = Syndicator.API.GetCharacter(character)
