@@ -15,7 +15,7 @@ addonTable.Utilities.OnAddonLoaded("Peddler", function()
   end)
 end)
 
-addonTable.Utilities.OnAddonLoaded("SellJunk", function()
+--[[addonTable.Utilities.OnAddonLoaded("SellJunk", function()
   Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SELLJUNK, "selljunk", function(bagID, slotID, itemID, itemLink)
     return SellJunk:CheckItemIsJunk(itemLink, bagID, slotID)
   end)
@@ -25,16 +25,16 @@ addonTable.Utilities.OnAddonLoaded("SellJunk", function()
   hooksecurefunc(SellJunk, "Rem", function()
     Baganator.API.RequestItemButtonsRefresh()
   end)
-end)
+end)]]
 
-addonTable.Utilities.OnAddonLoaded("Scrap", function()
+--[[addonTable.Utilities.OnAddonLoaded("Scrap", function()
   Baganator.API.RegisterJunkPlugin(BAGANATOR_L_SCRAP, "scrap", function(bagID, slotID, itemID, itemLink)
     return Scrap:IsJunk(itemID, bagID, slotID)
   end)
   hooksecurefunc(Scrap, "ToggleJunk", function()
     Baganator.API.RequestItemButtonsRefresh()
   end)
-end)
+end)]]
 
 if addonTable.Constants.IsRetail then
   addonTable.Utilities.OnAddonLoaded("Vendor", function()
