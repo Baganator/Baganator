@@ -118,6 +118,10 @@ function addonTable.CategoryViews.Initialize()
 end
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGIN", function()
+  if not Syndicator then
+    return
+  end
+
   local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
   local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
   if #displayOrder > 0 then
