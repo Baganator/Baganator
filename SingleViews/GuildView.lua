@@ -184,7 +184,7 @@ end
 
 function BaganatorSingleViewGuildViewMixin:OnHide()
   self:HideInfoDialogs()
-  if GuildBankPopupFrame:IsShown() then
+  if GuildBankPopupFrame and GuildBankPopupFrame:IsShown() then
     GuildBankPopupFrame:Hide()
   end
   CloseGuildBankFrame()
