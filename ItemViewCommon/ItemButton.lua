@@ -52,7 +52,8 @@ function addonTable.ItemButtonUtil.UpdateSettings()
     iconSettings.usingJunkPlugin = true
     table.insert(itemCallbacks, function(self)
       if self.JunkIcon then
-        self.BGR.isJunk = junkPlugin.callback(self:GetParent():GetID(), self:GetID(), self.BGR.itemID, self.BGR.itemLink)
+        local _, junkStatus = pcall(junkPlugin.callback, self:GetParent():GetID(), self:GetID(), self.BGR.itemID, self.BGR.itemLink)
+        self.BGR.isJunk = junkStatus == true
         if iconSettings.markJunk and self.BGR.isJunk then
           self.BGR.persistIconGrey = true
           self.icon:SetDesaturated(true)

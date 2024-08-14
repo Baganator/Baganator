@@ -244,7 +244,7 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
   if junkPlugin then
     groupA, groupB = {}, {}
     for _, item in ipairs(sortedItems) do
-      if junkPlugin.callback(bagIDs[item.from.bagIndex], item.from.slot, item.itemID, item.itemLink) then
+      if select(2, pcall(junkPlugin.callback, bagIDs[item.from.bagIndex], item.from.slot, item.itemID, item.itemLink)) then
         table.insert(groupB, item)
       else
         table.insert(groupA, item)
