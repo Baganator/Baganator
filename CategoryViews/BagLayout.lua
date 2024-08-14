@@ -19,7 +19,12 @@ local function Prearrange(isLive, bagID, bag, bagType)
     local info = Syndicator.Search.GetBaseInfo(slot)
     if isLive then
       if addonTable.Constants.IsClassic then
-        info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(bagID, slotIndex) end) end
+        if bagID == Syndicator.Constants.AllBankIndexes[1] then
+          local inventorySlot = BankButtonIDToInvSlotID(slotIndex)
+          info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetInventoryItem("player", inventorySlot) end) end
+        else
+          info.tooltipGetter = function() return Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(bagID, slotIndex) end) end
+        end
       else
         info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
       end
