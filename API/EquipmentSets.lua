@@ -41,38 +41,42 @@ if not addonTable.Constants.IsEra then
 
     local cache = {}
     self.equipmentSetNames = {}
-    for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
-      local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
-      table.insert(self.equipmentSetNames, name)
-      local info = {name = name, iconTexture = iconTexture}
-      -- Uses or {} because a set might exist without any associated item
-      -- locations
-      for _, location in pairs(C_EquipmentSet.GetItemLocations(setID) or {}) do
-        if location ~= -1 and location ~= 0 and location ~= 1 then
-          local player, bank, bags, voidStorage, slot, bag
-          if addonTable.Constants.IsClassic then
-            player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(location)
-          else
-            player, bank, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(location)
-          end
-          local location, bagID, slotID
-          if (player or bank) and bags then
-            bagID = bag
-            slotID = slot
-            location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
-          elseif bank and not bags then
-            bagID = Syndicator.Constants.AllBankIndexes[1]
-            slotID = slot - BankButtonIDToInvSlotID(0)
-            location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
-          elseif player then
-            location = ItemLocation:CreateFromEquipmentSlot(slot)
-          end
-          if location then
-            local guid = C_Item.GetItemGUID(location)
-            if not cache[guid] then
-              cache[guid] = {}
+
+    -- Check for saved count as Mac OS X fix for crash.
+    if C_EquipmentSet.GetNumEquipmentSets() ~= 0 then
+      for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
+        local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
+        table.insert(self.equipmentSetNames, name)
+        local info = {name = name, iconTexture = iconTexture}
+        -- Uses or {} because a set might exist without any associated item
+        -- locations
+        for _, location in pairs(C_EquipmentSet.GetItemLocations(setID) or {}) do
+          if location ~= -1 and location ~= 0 and location ~= 1 then
+            local player, bank, bags, voidStorage, slot, bag
+            if addonTable.Constants.IsClassic then
+              player, bank, bags, slot, bag = EquipmentManager_UnpackLocation(location)
+            else
+              player, bank, bags, voidStorage, slot, bag = EquipmentManager_UnpackLocation(location)
             end
-            table.insert(cache[guid], info)
+            local location, bagID, slotID
+            if (player or bank) and bags then
+              bagID = bag
+              slotID = slot
+              location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
+            elseif bank and not bags then
+              bagID = Syndicator.Constants.AllBankIndexes[1]
+              slotID = slot - BankButtonIDToInvSlotID(0)
+              location = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
+            elseif player then
+              location = ItemLocation:CreateFromEquipmentSlot(slot)
+            end
+            if location then
+              local guid = C_Item.GetItemGUID(location)
+              if not cache[guid] then
+                cache[guid] = {}
+              end
+              table.insert(cache[guid], info)
+            end
           end
         end
       end
