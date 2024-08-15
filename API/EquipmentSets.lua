@@ -42,12 +42,21 @@ if not addonTable.Constants.IsEra then
     local cache = {}
     self.equipmentSetNames = {}
 
-    -- Check for saved count as Mac OS X fix for crash.
-    if C_EquipmentSet.GetNumEquipmentSets() ~= 0 then
-      for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
-        local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
-        table.insert(self.equipmentSetNames, name)
-        local info = {name = name, iconTexture = iconTexture}
+    for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
+      local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
+      table.insert(self.equipmentSetNames, name)
+      local info = {name = name, iconTexture = iconTexture}
+
+      -- Check for invalid items as attempting to get their locations will cause
+      -- a crash on Max OS X
+      local validItems = true
+      for _, itemID in pairs(C_EquipmentSet.GetItemIDs(setID)) do
+        if not C_Item.GetItemInfoInstant(itemID) then
+          validItems = false
+        end
+      end
+
+      if validItems then
         -- Uses or {} because a set might exist without any associated item
         -- locations
         for _, location in pairs(C_EquipmentSet.GetItemLocations(setID) or {}) do
