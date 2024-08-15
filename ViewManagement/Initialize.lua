@@ -71,19 +71,19 @@ local function SetupBackpackView()
     UpdateButtons()
   end
 
-  addonTable.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
+  addonTable.CallbackRegistry:RegisterCallback("BagShow", function(_, characterName)
     characterName = characterName or Syndicator.API.GetCurrentCharacter()
     backpackView:Show()
     backpackView:UpdateForCharacter(characterName, characterName == backpackView.liveCharacter)
     UpdateButtons()
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("BagHide",  function(_)
+  addonTable.CallbackRegistry:RegisterCallback("BagHide", function(_)
     backpackView:Hide()
     UpdateButtons()
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("QuickSearch",  function(_)
+  addonTable.CallbackRegistry:RegisterCallback("QuickSearch", function(_)
     if not backpackView:IsShown() then
       addonTable.CallbackRegistry:TriggerEvent("BagShow")
     end
@@ -142,7 +142,26 @@ local function SetupBackpackView()
     ToggleBackpackView()
   end)
 
-  ToggleAllBags = ToggleBackpackView
+  -- Alternative to hooking/overriding ToggleAllBags to avoid both taint and lag
+  local buttonName = "BaganatorToggleBagsButton"
+  local button = CreateFrame("Button", buttonName, UIParent)
+  button:SetScript("OnClick", ToggleBackpackView)
+  local owner = CreateFrame("Frame")
+
+  local function Apply()
+    ClearOverrideBindings(owner)
+
+    local keys = {GetBindingKey("OPENALLBAGS")}
+    tAppendAll(keys, {GetBindingKey("TOGGLEBACKPACK")})
+    for _, k in ipairs(keys) do
+      SetOverrideBindingClick(owner, false, k, buttonName)
+    end
+  end
+
+  Apply()
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("UPDATE_BINDINGS")
+  frame:SetScript("OnEvent", Apply)
 end
 
 local function SetupBankView()
