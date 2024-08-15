@@ -306,7 +306,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
     if option.value == "_" then
       addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", option.value)
     elseif option.value == addonTable.CategoryViews.Constants.DividerName then
-      Pickup(option.value, BAGANATOR_L_CATEGORY_DIVIDER, nil)
+      Pickup(option.value, addonTable.CategoryViews.Constants.DividerLabel, nil)
     elseif option.value ~= "" then
       Pickup(option.value, option.label, tIndexOf(categoryOrder.elements, option.value))
     else
