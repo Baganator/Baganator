@@ -161,7 +161,14 @@ local function SetupBackpackView()
   Apply()
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("UPDATE_BINDINGS")
-  frame:SetScript("OnEvent", Apply)
+  frame:SetScript("OnEvent", function()
+    if InCombatLockdown() then
+      frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+    else
+      frame:UnregisterEvent("PLAYER_REGEN_ENABLED")
+      Apply()
+    end
+  end)
 end
 
 local function SetupBankView()
