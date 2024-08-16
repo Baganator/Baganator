@@ -17,7 +17,7 @@
     </Scripts>
   </Button>
 
-  <CheckButton name="BaganatorRightSideTabButtonTemplate" virtual="true" scale="0.8">
+  <Button name="BaganatorRightSideTabButtonTemplate" virtual="true" scale="0.8">
     <Size>
       <AbsDimension x="32" y="32"/>
     </Size>
@@ -53,7 +53,10 @@
         GameTooltip:Hide()
       </OnLeave>
     </Scripts>
-  </CheckButton>
+  </Button>
+
+  <Button name="BaganatorSecureRightSideTabButtonTemplate" virtual="true" inherits="BaganatorRightSideTabButtonTemplate,InsecureActionButtonTemplate">
+  </Button>
 
   <Button name="BaganatorTooltipIconButtonTemplate" virtual="true" inherits="UIPanelButtonTemplate">
     <Size x="32" y="22"/>

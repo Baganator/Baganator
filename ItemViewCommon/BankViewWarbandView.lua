@@ -55,6 +55,14 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   addonTable.Skins.AddFrame("Button", self.DepositItemsButton)
   addonTable.Skins.AddFrame("Button", self.WithdrawMoneyButton)
   addonTable.Skins.AddFrame("Button", self.DepositMoneyButton)
+
+  self.purchaseButton = CreateFrame("Button", nil, self, "BaganatorSecureRightSideTabButtonTemplate")
+  self.purchaseButton:SetAttribute("type", "click")
+  self.purchaseButton:SetAttribute("clickbutton", AccountBankPanel.PurchasePrompt.TabCostFrame.PurchaseButton)
+  self.purchaseButton:HookScript("OnClick", function()
+    PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
+  end)
+  self.purchaseButton:RegisterForClicks("AnyUp", "AnyDown")
 end
 
 local function GetUnifiedSortData()
@@ -219,6 +227,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
   local tabScale = math.min(1, addonTable.Config.Get(addonTable.Config.Options.BAG_ICON_SIZE) / tabScaleFactor)
 
   self.tabsPool:ReleaseAll()
+  self.purchaseButton:Hide()
 
   local warbandData = Syndicator.API.GetWarband(1)
 
@@ -264,13 +273,9 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
   end
 
   if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) and not C_Bank.HasMaxBankTabs(Enum.BankType.Account) then
-    local tabButton = self.tabsPool:Acquire()
+    local tabButton = self.purchaseButton
     addonTable.Skins.AddFrame("SideTabButton", tabButton)
     tabButton.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab")
-    tabButton:SetScript("OnClick", function()
-      PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
-      StaticPopup_Show("CONFIRM_BUY_BANK_TAB", nil, nil, { bankType = Enum.BankType.Account })
-    end)
     if not lastTab then
       tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
     else
