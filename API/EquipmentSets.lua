@@ -50,9 +50,11 @@ if not addonTable.Constants.IsEra then
       -- Check for invalid items as attempting to get their locations will cause
       -- a crash on Max OS X
       local validItems = true
-      for _, itemID in pairs(C_EquipmentSet.GetItemIDs(setID)) do
-        if not C_Item.GetItemInfoInstant(itemID) then
-          validItems = false
+      if IsMacClient() then
+        for _, itemID in pairs(C_EquipmentSet.GetItemIDs(setID)) do
+          if not C_Item.GetItemInfoInstant(itemID) then
+            validItems = false
+          end
         end
       end
 
