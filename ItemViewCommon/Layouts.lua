@@ -593,20 +593,21 @@ local function InitializeCategoryEmptySlot(button, details)
     button.bagTypeIcon:SetSize(20, 20)
     button.bagTypeIcon:SetPoint("CENTER")
     button.bagTypeIcon:SetDesaturated(true)
-    button.oldUpdateTooltip = button.UpdateTooltip
-    button.oldOnEnter = button:GetScript("OnEnter")
-    button.oldOnLeave = button:GetScript("OnLeave")
-    button:SetScript("OnEnter", function()
+    button:HookScript("OnEnter", function()
       if button.tooltipHeader then
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
         GameTooltip:SetText(button.tooltipHeader)
+        GameTooltip:Show()
       end
     end)
-    button:SetScript("OnLeave", function()
-      GameTooltip:Hide()
+    hooksecurefunc(button, "UpdateTooltip", function()
+      if button.tooltipHeader then
+        GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+        GameTooltip:SetText(button.tooltipHeader)
+        GameTooltip:Show()
+      end
     end)
   end
-  button.UpdateTooltip = nil -- Prevents the tooltip hiding immediately
   local details = addonTable.Constants.ContainerKeyToInfo[bagType]
   if details then
     if details.type == "atlas" then
@@ -623,9 +624,6 @@ end
 
 local function RestoreCategoryButtonFromEmptySlot(button)
   button.tooltipHeader = nil
-  button.UpdateTooltip = button.oldUpdateTooltip
-  button:SetScript("OnEnter", button.oldOnEnter)
-  button:SetScript("OnLeave", button.oldOnLeave)
   button.bagTypeIcon:SetTexture(nil)
 end
 
