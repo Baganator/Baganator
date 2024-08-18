@@ -1,5 +1,38 @@
 local _, addonTable = ...
 
+local inventorySlots = {
+  "INVTYPE_2HWEAPON",
+  "INVTYPE_WEAPON",
+  "INVTYPE_WEAPONMAINHAND",
+  "INVTYPE_WEAPONOFFHAND",
+  "INVTYPE_SHIELD",
+  "INVTYPE_HOLDABLE",
+  "INVTYPE_RANGED",
+  "INVTYPE_RANGEDRIGHT",
+  "INVTYPE_THROWN",
+  "INVTYPE_AMMO",
+  "INVTYPE_QUIVER",
+  "INVTYPE_RELIC",
+  "INVTYPE_HEAD",
+  "INVTYPE_SHOULDER",
+  "INVTYPE_CLOAK",
+  "INVTYPE_CHEST",
+  "INVTYPE_ROBE",
+  "INVTYPE_WRIST",
+  "INVTYPE_HAND",
+  "INVTYPE_WAIST",
+  "INVTYPE_LEGS",
+  "INVTYPE_FEET",
+  "INVTYPE_NECK",
+  "INVTYPE_FINGER",
+  "INVTYPE_TRINKET",
+  "INVTYPE_BODY",
+  "INVTYPE_TABARD",
+  "INVTYPE_PROFESSION_TOOL",
+  "INVTYPE_PROFESSION_GEAR",
+  "INVTYPE_BAG",
+}
+
 -- Generate automatic categories
 local function GetAuto(category, everything)
   local searches, searchLabels, attachedItems = {}, {}, {}
