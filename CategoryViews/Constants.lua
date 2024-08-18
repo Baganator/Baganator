@@ -367,6 +367,13 @@ table.insert(addonTable.CategoryViews.Constants.DefaultCategories, {
   doNotAdd = true,
 })
 
+addonTable.CategoryViews.Constants.SourceToCategory = {}
+for index, category in ipairs(addonTable.CategoryViews.Constants.DefaultCategories) do
+  category.source = "default_" .. category.key
+  category.priorityOffset = category.priorityOffset or -70
+  addonTable.CategoryViews.Constants.SourceToCategory[category.source] = category
+end
+
 addonTable.Utilities.OnAddonLoaded("TradeSkillMaster", function()
   local spec = {
     source = "default_auto_tradeskillmaster",
@@ -378,10 +385,3 @@ addonTable.Utilities.OnAddonLoaded("TradeSkillMaster", function()
   table.insert(addonTable.CategoryViews.Constants.DefaultCategories, spec)
   addonTable.CategoryViews.Constants.SourceToCategory[spec.source] = spec
 end)
-
-addonTable.CategoryViews.Constants.SourceToCategory = {}
-for index, category in ipairs(addonTable.CategoryViews.Constants.DefaultCategories) do
-  category.source = "default_" .. category.key
-  category.priorityOffset = category.priorityOffset or -70 
-  addonTable.CategoryViews.Constants.SourceToCategory[category.source] = category
-end
