@@ -66,21 +66,27 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(composed, every
     table.insert(self.pending[item.key], item)
   end
 
-  for _, details in pairs(composed.details) do
+  local superAttachedItems = {}
+  for _, details in ipairs(composed.details) do
     local items = details.attachedItems
     local search = details.search
     if items then
-      for key, pendingForKey in pairs(self.pending) do
-        local attachmentKey = addonTable.CategoryViews.Utilities.GetAddedItemData(pendingForKey[1].itemID, pendingForKey[1].itemLink)
-        local match = items[attachmentKey] or items[key]
-        if match then
-          for _, i in ipairs(self.pending[key]) do
-            rawset(i, "addedDirectly", true)
-            table.insert(details.results, i)
-          end
-          self.pending[key] = nil
+      for key, hit in pairs(items) do
+        if hit and not superAttachedItems[key] then
+          superAttachedItems[key] = search
         end
       end
+    end
+  end
+  for key, pendingForKey in pairs(self.pending) do
+    local attachmentKey = addonTable.CategoryViews.Utilities.GetAddedItemData(pendingForKey[1].itemID, pendingForKey[1].itemLink)
+    local match = superAttachedItems[attachmentKey] or superAttachedItems[key]
+    if match then
+      for _, i in ipairs(self.pending[key]) do
+        rawset(i, "addedDirectly", true)
+        table.insert(self.results[match], i)
+      end
+      self.pending[key] = nil
     end
   end
 
