@@ -14,30 +14,14 @@ local function GetAuto(category, everything)
       for i = 1, #everything do
         local item = everything[i]
         if item.setInfo ~= nil then
-          local names = {}
-          for j = 1, #item.setInfo do
-            names[j] = item.setInfo[j].name
-          end
-          local key = table.concat(names, " ")
+          local key = item.setInfo[1].name
           if not groupedItems[key] then
             groupedItems[key] = {}
-            if #item.setInfo > 1 then
-              merged[#merged + 1] = key
-            end
           end
           groupedItems[key][item.key] = true
         end
       end
       for _, n in ipairs(names) do
-        if groupedItems[n] ~= nil then
-          local index = #searches + 1
-          searches[index] = ""
-          searchLabels[index] = n
-          attachedItems[index] = groupedItems[n]
-        end
-      end
-      table.sort(merged)
-      for _, n in ipairs(merged) do
         if groupedItems[n] ~= nil then
           local index = #searches + 1
           searches[index] = ""
