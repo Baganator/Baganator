@@ -226,8 +226,9 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     local anyNew = false
     for index, old in ipairs(oldComposed.details) do
       local current = composed.details[index]
-      if old.source ~= current.source or (current.source and old.source ~= emptySearch and old.oldLength and old.oldLength < #current.results) then
+      if current == nil or old.source ~= current.source or (current.source and old.source ~= emptySearch and old.oldLength and old.oldLength < #current.results) then
         anyNew = true
+        break
       end
     end
     if not anyNew and not container.addToCategoryMode then
