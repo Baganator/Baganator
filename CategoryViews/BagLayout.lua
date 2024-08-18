@@ -238,7 +238,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       for index, old in ipairs(oldComposed.details) do
         if old.results then
           local current = composed.details[index]
-          old.oldLength = #current.results
+          current.oldLength = #current.results
           if #old.results > #current.results and not old.emptySlots then
             for index, info in ipairs(old.results) do
               if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
