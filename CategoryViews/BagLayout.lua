@@ -154,9 +154,8 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
   self.sectionButtonPool:ReleaseAll()
 
   local emptyDetails = FindValueInTableIf(composed.details, function(a) return a.emptySlots end)
-  local splitEmpty, emptySearch = nil, nil
+  local splitEmpty = nil
   if emptyDetails then
-    emptySearch = emptyDetails.search
     local slots = {}
     if not addonTable.Config.Get(addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS) then
       splitEmpty = slots
@@ -184,7 +183,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
   for _, details in pairs(composed.details) do
     if details.results then
       local entries = {}
-      if container.isGrouping and searchTerm ~= emptySearch then
+      if container.isGrouping and not details.emptySlots then
         local entriesByKey = {}
         for _, item in ipairs(details.results) do
           local groupingKey = item.key
@@ -226,7 +225,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     local anyNew = false
     for index, old in ipairs(oldComposed.details) do
       local current = composed.details[index]
-      if current == nil or old.source ~= current.source or (current.source and old.source ~= emptySearch and old.oldLength and old.oldLength < #current.results) then
+      if current == nil or old.source ~= current.source or (current.source and not old.emptySlots and old.oldLength and old.oldLength < #current.results) then
         anyNew = true
         break
       end
@@ -240,7 +239,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         if old.results then
           local current = composed.details[index]
           old.oldLength = #current.results
-          if #old.results > #current.results and old.search ~= emptySearch then
+          if #old.results > #current.results and not old.emptySlots then
             for index, info in ipairs(old.results) do
               if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
                 if not info.key or not old.isGrouping or not FindInTableIf(current.results, function(a) return a.key == info.key end) then
