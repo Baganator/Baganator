@@ -35,7 +35,7 @@ function BaganatorCategoryViewsCategoryFilterMixin:OnHide()
   end
 end
 
-function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attachedItems, everything, callback)
+function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(composed, everything, callback)
   self.start = debugprofilestop()
 
   if self.timer then
@@ -43,17 +43,16 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attac
     self.timer = nil
   end
 
-  self.searches = searches
-  self.attachedItems = attachedItems
+  self.searches = composed.prioritisedSearches
   self.searchIndex = 0
   self.callback = callback
 
   self.results = {}
-  self.sortPending = {}
   self.searchPending = nil
-  for _, search in ipairs(searches) do
-    self.results[search] = {}
-    self.sortPending[search] = true
+  for _, entry in ipairs(composed.details) do
+    if entry.search then
+      self.results[entry.search] = entry.results
+    end
   end
 
   self.pending = {}
@@ -67,18 +66,20 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(searches, attac
     table.insert(self.pending[item.key], item)
   end
 
-  for search, items in pairs(self.attachedItems) do
-    local results = self.results[search]
-
-    for key, pendingForKey in pairs(self.pending) do
-      local details = addonTable.CategoryViews.Utilities.GetAddedItemData(pendingForKey[1].itemID, pendingForKey[1].itemLink)
-      local match = items[details] or items[key]
-      if match then
-        for _, i in ipairs(self.pending[key]) do
-          rawset(i, "addedDirectly", true)
-          table.insert(results, i)
+  for _, details in pairs(composed.details) do
+    local items = details.attachedItems
+    local search = details.search
+    if items then
+      for key, pendingForKey in pairs(self.pending) do
+        local attachmentKey = addonTable.CategoryViews.Utilities.GetAddedItemData(pendingForKey[1].itemID, pendingForKey[1].itemLink)
+        local match = items[attachmentKey] or items[key]
+        if match then
+          for _, i in ipairs(self.pending[key]) do
+            rawset(i, "addedDirectly", true)
+            table.insert(details.results, i)
+          end
+          self.pending[key] = nil
         end
-        self.pending[key] = nil
       end
     end
   end
@@ -122,7 +123,7 @@ function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
       if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
         addonTable.Utilities.DebugOutput("search took", debugprofilestop() - self.start)
       end
-      self.callback(self.results)
+      self.callback()
       return
     end
 

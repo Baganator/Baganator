@@ -2,14 +2,15 @@ local _, addonTable = ...
 
 BaganatorCategoryViewsCategorySortMixin = {}
 
-function BaganatorCategoryViewsCategorySortMixin:ApplySorts(results, callback)
+function BaganatorCategoryViewsCategorySortMixin:ApplySorts(composed, callback)
   self.start = debugprofilestop()
   self.callback = callback
-  self.results = results
+  self.composedDetails = composed.details
   self.sortPending = {}
-  self.searchPending = nil
-  for search, items in pairs(results) do
-    self.sortPending[search] = true
+  for index, details in ipairs(composed.details) do
+    if details.results then
+      self.sortPending[index] = true
+    end
   end
 
   self.sortMethod = addonTable.Config.Get("sort_method")
@@ -24,10 +25,10 @@ end
 
 function BaganatorCategoryViewsCategorySortMixin:SortResults()
   local incomplete
-  for search in pairs(self.sortPending) do
-    self.results[search], incomplete = addonTable.Sorting.OrderOneListOffline(self.results[search], self.sortMethod)
+  for index in pairs(self.sortPending) do
+    self.composedDetails[index].results, incomplete = addonTable.Sorting.OrderOneListOffline(self.composedDetails[index].results, self.sortMethod)
     if not incomplete then
-      self.sortPending[search] = nil
+      self.sortPending[index] = nil
     end
   end
 
@@ -36,7 +37,7 @@ function BaganatorCategoryViewsCategorySortMixin:SortResults()
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("sort took", debugprofilestop() - self.start)
     end
-    self.callback(self.results)
+    self.callback()
   else
     self:SetScript("OnUpdate", self.SortResults)
   end

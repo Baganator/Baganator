@@ -68,12 +68,12 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnEvent(eventName, ...)
   end
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(associatedSearch)
-  if not self.isLive or not associatedSearch then
+function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(index)
+  if not self.isLive or not index then
     return
   end
 
-  self:RemoveSearchMatches(function() return self.LayoutManager.results and tFilter(self.LayoutManager.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
+  self:RemoveSearchMatches(function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results or {}, function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()

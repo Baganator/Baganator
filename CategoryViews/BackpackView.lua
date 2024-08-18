@@ -129,12 +129,13 @@ function BaganatorCategoryViewBackpackViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBackpackViewMixin:TransferCategory(associatedSearch)
-  if not self.isLive or not associatedSearch then
+function BaganatorCategoryViewBackpackViewMixin:TransferCategory(index)
+  if not self.isLive or not index then
     return
   end
 
-  self:Transfer(true, function() return self.LayoutManager.results and tFilter(self.LayoutManager.results[associatedSearch].all, function(a) return a.itemLink ~= nil end, true) end)
+  print("transfer", index)
+  self:Transfer(true, function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results or {}, function(a) return a.itemLink ~= nil end, true) end)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)

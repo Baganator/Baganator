@@ -144,25 +144,7 @@ end
 local petCageID = addonTable.Constants.BattlePetCageID
 
 keysMapping["expansion"] = function(self)
-  -- Use ItemVersion addon's database if available
-  if ItemVersion and ItemVersion.API then
-    local expansionDetails = ItemVersion.API:getItemVersion(self.itemID, true)
-    if expansionDetails then
-      return expansionDetails.major - 1
-    end
-  end
-
-  -- Pet cages contain no expansion information
-  if self.itemID == petCageID then
-    return 0
-  end
-
-  if C_Item.IsItemDataCachedByID(self.itemID) then
-    local expansion = select(15, C_Item.GetItemInfo(self.itemID))
-    return expansion
-  else
-    return 0
-  end
+  return Syndicator.Search.GetExpansion(self) or nil
 end
 
 keysMapping["invertedExpansion"] = function(self)

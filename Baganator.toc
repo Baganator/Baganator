@@ -91,7 +91,8 @@ CategoryViews\Utilities.lua
 CategoryViews\ComposeCategories.lua
 CategoryViews\Packing.lua
 CategoryViews\BagLayout.lua
-CategoryViews\CategorySearch.lua
+CategoryViews\CategoryFilter.lua
+CategoryViews\CategoryGrouping.lua
 CategoryViews\CategorySort.lua
 CategoryViews\ItemsPreparation.lua
 CategoryViews\Components.lua
