@@ -152,6 +152,15 @@ function addonTable.CategoryViews.ComposeCategories(everything)
 
     local priority = categoryMods[source] and categoryMods[source].priority and (categoryMods[source].priority + 1) * 200 or 0
 
+    local mods = categoryMods[source]
+    local group, attachedItems
+    if mods then
+      if mods.addedItems and next(mods.addedItems) then
+        attachedItems = mods.addedItems
+      end
+      group = mods.group
+    end
+
     local category = addonTable.CategoryViews.Constants.SourceToCategory[source]
     if category then
       if category.auto then
@@ -169,6 +178,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
             priority = category.priorityOffset + priority,
             index = #allDetails + 1,
             attachedItems = autoDetails.attachedItems[index],
+            group = group,
             auto = true,
             section = currentSection,
           }
@@ -193,7 +203,8 @@ function addonTable.CategoryViews.ComposeCategories(everything)
           label = category.name,
           priority = category.priorityOffset + priority,
           index = #allDetails + 1,
-          attachedItems = nil,
+          attachedItems = attachedItems,
+          group = group,
           section = currentSection,
         }
       end
@@ -212,17 +223,10 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         label = category.name,
         priority = priority,
         index = #allDetails + 1,
-        attachedItems = nil,
+        attachedItems = attachedItems,
+        group = group,
         section = currentSection,
       }
-    end
-
-    local mods = categoryMods[source]
-    if mods then
-      if mods.addedItems and next(mods.addedItems) then
-        allDetails[#allDetails].attachedItems = mods.addedItems
-      end
-      allDetails[#allDetails].group = mods.group
     end
   end
 
