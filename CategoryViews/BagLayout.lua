@@ -111,10 +111,11 @@ function addonTable.CategoryViews.BagLayoutMixin:SettingChanged(settingName)
   self.composed = nil
 end
 
+-- Called in response to the ContentRefreshRequired event triggered when items
+-- need updated. NOT in reponse to categories being updated.
 function addonTable.CategoryViews.BagLayoutMixin:FullRefresh()
   self.CategoryFilter:ResetCaches()
   self.ItemsPreparation:ResetCaches()
-  self.composed = nil
 end
 
 function addonTable.CategoryViews.BagLayoutMixin:ClearVisuals()
