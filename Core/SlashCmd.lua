@@ -61,24 +61,17 @@ end
 local COMMANDS = {
   ["c"] = addonTable.SlashCmd.Config,
   ["config"] = addonTable.SlashCmd.Config,
-  ["d"] = addonTable.SlashCmd.Debug,
   ["reset"] = addonTable.SlashCmd.Reset,
   [""] = addonTable.SlashCmd.CustomiseUI,
-  ["bank"] = function()
-    addonTable.CallbackRegistry:TriggerEvent("BankShow")
-  end,
-  ["warband"] = function()
-    addonTable.CallbackRegistry:TriggerEvent("BankShow", 1)
-  end,
-  ["guild"] = function()
-    addonTable.CallbackRegistry:TriggerEvent("GuildShow", 1)
-  end,
   ["search"] = function(text)
     addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", text)
     addonTable.CallbackRegistry:TriggerEvent("BagShow")
   end,
   ["keywords"] = function()
-    addonTable.Help.ShowSearchDialog()
+    addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS))
+  end,
+  ["categories"] = function()
+    addonTable.Config.Set(addonTable.Config.Options.DEBUG_CATEGORIES, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES))
   end,
 }
 function addonTable.SlashCmd.Handler(input)

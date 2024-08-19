@@ -741,6 +741,60 @@ local function AddKeywords(self)
   GameTooltip:Show()
 end
 
+local function AddCategories(self)
+  if not addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES) then
+    return
+  end
+
+  if self.BGR == nil or self.BGR.itemLink == nil then
+    return
+  end
+
+  GameTooltip:AddLine(" ")
+  GameTooltip:AddLine(BAGANATOR_L_CATEGORIES)
+
+  local composed = addonTable.CategoryViews.ComposeCategories({self.BGR})
+
+  local itemKey = addonTable.CategoryViews.Utilities.GetAddedItemData(self.BGR.itemID, self.BGR.itemLink)
+  local searchToLabel = {}
+  for _, details in ipairs(composed.details) do
+    if details.attachedItems and (details.attachedItems[itemKey] or details.attachedItems[self.BGR.key]) then
+      GameTooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(
+        BAGANATOR_L_ATTACHED_DIRECTLY_TO_X:format(GREEN_FONT_COLOR:WrapTextInColorCode("**" .. details.label .. "**"))
+      ))
+      GameTooltip:Show()
+      return
+    end
+    if details.search then
+      searchToLabel[details.search] = details.label
+    end
+  end
+
+  local firstMatch = true
+  local entries = {}
+  for index, search in ipairs(composed.prioritisedSearches) do
+    local result = Syndicator.Search.CheckItem(self.BGR, search)
+    if result ~= nil then
+      local text = searchToLabel[search]
+      if firstMatch then
+        if result then
+          text = GREEN_FONT_COLOR:WrapTextInColorCode("**" .. text .. "**")
+          firstMatch = false
+        else
+          text = RED_FONT_COLOR:WrapTextInColorCode(text)
+        end
+      elseif result then
+        text = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode("-" .. text .. "-")
+      else
+        text = GRAY_FONT_COLOR:WrapTextInColorCode(text)
+      end
+      table.insert(entries, text)
+    end
+  end
+  GameTooltip:AddLine(table.concat(entries, ", "), nil, nil, nil, true)
+  GameTooltip:Show()
+end
+
 function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
   if button.hooked then
     return
@@ -756,7 +810,10 @@ function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
       addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
     end
   end)
-  hooksecurefunc(button, "UpdateTooltip", AddKeywords)
+  hooksecurefunc(button, "UpdateTooltip", function(...)
+    AddKeywords(...)
+    AddCategories(...)
+  end)
   button:HookScript("OnDragStart", function(_)
     if C_Cursor.GetCursorItem() ~= nil then
       addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
@@ -925,7 +982,9 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
   self.buttonsByKey = {}
   for index, button in ipairs(self.buttons) do
     button.BGR.category = category
-    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheList[index])
+    local cacheData = cacheList[index]
+    button.BGR.key = cacheData.key
+    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
     self.buttonsByKey[key] = self.buttonsByKey[key] or {}
     table.insert(self.buttonsByKey[key], button)
   end

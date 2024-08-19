@@ -76,7 +76,7 @@ local function GetAuto(category, everything)
     table.insert(searchLabels, BAGANATOR_L_CATEGORY_RECENT)
     local newItems = {}
     for _, item in ipairs(everything) do
-      if newItems[item.key] ~= false then
+      if newItems[item.key] ~= false and item.bagID ~= nil then
         newItems[item.key] = addonTable.NewItems:IsNewItemTimeout(item.bagID, item.slotID)
       end
     end

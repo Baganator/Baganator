@@ -36,6 +36,8 @@ local function Prearrange(isLive, bagID, bag, bagType)
           info.guid = C_Item.GetItemGUID(location)
         end
       end
+      info.bagID = bagID
+      info.slotID = slotIndex
     end
     if info.itemID then
       info.guid = info.guid or ""
@@ -45,8 +47,6 @@ local function Prearrange(isLive, bagID, bag, bagType)
         info.keyLink = info.itemLink:gsub("(item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:)%d+:", "%1:")
         linkMap[info.itemLink] = info.keyLink
       end
-      info.bagID = bagID
-      info.slotID = slotIndex
       info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
       table.insert(everything, info)
     else
@@ -89,7 +89,9 @@ end
 
 function addonTable.CategoryViews.BagLayoutMixin:OnHide()
   for _, item in ipairs(self.notShown) do
-    addonTable.NewItems:ClearNewItem(item.bagID, item.slotID)
+    if item.bagID ~= nil then
+      addonTable.NewItems:ClearNewItem(item.bagID, item.slotID)
+    end
   end
 end
 

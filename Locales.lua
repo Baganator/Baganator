@@ -304,6 +304,8 @@ L["HELP_SEARCH_KEYWORDS"] = "Keywords"
 L["HELP_SEARCH_KEYWORDS_LINE_1"] = "Your search will look for matches in two places: within a set of specified keywords and within the item name and tooltip descriptions. To search for an exact keyword only, use a hashtag (#) before the keyword."
 L["HELP_SEARCH_KEYWORDS_LINE_2"] = "Example: #gear&explorer"
 
+L["ATTACHED_DIRECTLY_TO_X"] = "Attached directly %s"
+
 L["WELCOME_TO_BAGANATOR"] = "Welcome to Baganator"
 L["WELCOME_DESCRIPTION"] = "Decide which kind of bags you want. This can be changed later."
 L["CHOOSE"] = "Choose"
