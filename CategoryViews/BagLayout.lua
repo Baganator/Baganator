@@ -243,6 +243,9 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
           current.oldLength = #current.results
           if #old.results > #current.results and not old.emptySlots then
             for index, info in ipairs(old.results) do
+              if #current.results >= #old.results then
+                break
+              end
               if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
                 if not info.key or not old.isGrouping or not FindInTableIf(current.results, function(a) return a.key == info.key end) then
                   table.insert(current.results, index, {bagID = info.bagID, slotID = info.slotID, itemCount = 0, keyLink = typeMap[info.bagID], bagType = typeMap[info.bagID]})
