@@ -134,7 +134,6 @@ function BaganatorCategoryViewBackpackViewMixin:TransferCategory(index)
     return
   end
 
-  print("transfer", index)
   self:Transfer(true, function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results or {}, function(a) return a.itemLink ~= nil end, true) end)
 end
 
