@@ -35,7 +35,6 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
       local location = {bagID = bagID, slotIndex = slotID}
       if bagData[slotID].itemID and C_Item.DoesItemExist(location) then
         local guid = C_Item.GetItemGUID(location)
-        local itemID = C_Item.GetItemID(location)
         containerGuids[slotID] = guid
       else
         containerGuids[slotID] = -1
@@ -54,6 +53,19 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
     for bagID in pairs(updatedBags.bags) do
       local bagIndex = tIndexOf(Syndicator.Constants.AllBagIndexes, bagID)
       ScanBagData(bagID, characterData.bags[bagIndex])
+    end
+    if self.firstStart then
+      self.firstStart = false
+      for bagID, containerGuids in pairs(self.guidsByContainer) do
+        for _, guid in ipairs(containerGuids) do
+          if guid ~= -1 then
+            self.seen[guid] = true
+          end
+        end
+      end
+      for guid in pairs(self.guidsEquipped) do
+        self.seen[guid] = true
+      end
     end
     addonTable.CallbackRegistry:TriggerEvent("BagCacheAfterNewItemsUpdate", character, updatedBags)
   end)
@@ -77,21 +89,6 @@ end
 -- Compare previous set of seen items to the current items to determine which
 -- are new
 function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems(timeout)
-  if self.firstStart then -- On first load nothing is new
-    self.firstStart = false
-    for bagID, containerGuids in pairs(self.guidsByContainer) do
-      for _, guid in ipairs(containerGuids) do
-        if guid ~= -1 then
-          self.seen[guid] = true
-        end
-      end
-    end
-    for guid in pairs(self.guidsEquipped) do
-      self.seen[guid] = true
-    end
-    return
-  end
-
   local newSeen = {}
   for bagID, containerGuids in pairs(self.guidsByContainer) do
     for slotID, guid in ipairs(containerGuids) do
