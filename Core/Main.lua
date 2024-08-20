@@ -58,4 +58,6 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
     addonTable.Config.Set(addonTable.Config.Options.SEEN_WELCOME, 1)
     addonTable.ShowWelcome()
   end
+
+  addonTable.FixActionBarTaint()
 end)
