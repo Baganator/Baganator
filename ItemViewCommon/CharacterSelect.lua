@@ -7,12 +7,14 @@ local function SetRaceIcon(frame)
   frame.RaceIcon = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
   frame.RaceIcon:SetSize(15, 15)
   frame.RaceIcon:SetPoint("TOPLEFT", 32, -2.5)
+  frame.RaceIcon:SetFont(frame.RaceIcon:GetFont(), 12, nil)
 end
 
 local function SetArrowIcon(frame)
   frame.ArrowIcon = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
   frame.ArrowIcon:SetSize(20, 15)
   frame.ArrowIcon:SetPoint("TOPLEFT", 8, -2.5)
+  frame.ArrowIcon:SetFont(frame.ArrowIcon:GetFont(), 12, nil)
 end
 
 function BaganatorCharacterSelectMixin:OnLoad()
