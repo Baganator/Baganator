@@ -20,7 +20,6 @@ Core\Config.lua
 Core\Utilities.lua
 Core\SlashCmd.lua
 Core\Welcome.lua
-Core\TaintProtection.lua
 Core\Main.lua
 
 Skins.lua
