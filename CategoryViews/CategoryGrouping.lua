@@ -62,7 +62,7 @@ do
     if item.expansion then
       return true
     end
-    item.expansion = item.expacID or Syndicator.API.GetExpansion(item) or nil
+    item.expansion = item.expacID or Syndicator.Search.GetExpansion(item) or nil
     return item.expansion ~= nil
   end
 
