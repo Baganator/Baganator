@@ -50,7 +50,6 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("EditCategorySection", function(_, value)
-    self:Show()
     if value == "_" then
       self.currentSection = "_" .. BAGANATOR_L_NEW_SECTION
       self.SectionName:SetText(BAGANATOR_L_NEW_SECTION)
@@ -69,7 +68,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
     if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER then
       local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
       if not tIndexOf(displayOrder, self.currentSection) then
-        self:Hide()
+        self:Return()
       end
     end
   end)

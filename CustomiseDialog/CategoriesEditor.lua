@@ -143,7 +143,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   end
 
   addonTable.CallbackRegistry:RegisterCallback("EditCategory", function(_, value)
-    self:Show()
     SetState(value)
   end)
 

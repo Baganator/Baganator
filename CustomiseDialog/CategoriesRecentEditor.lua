@@ -31,10 +31,6 @@ function addonTable.CustomiseDialog.GetCategoriesRecentEditor(parent)
     slider:SetValue(tIndexOf(valueMapping, addonTable.Config.Get("recent_timeout")) or 2)
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("EditCategoryRecent", function()
-    holder:Show()
-  end)
-
   return holder
 end
 

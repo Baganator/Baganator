@@ -894,85 +894,60 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   showAddButtons.CheckBox.HoverBackground:SetPoint("TOPLEFT", showAddButtons, "TOPLEFT", -60, 0)
   showAddButtons.CheckBox.HoverBackground:SetPoint("BOTTOMRIGHT", showAddButtons, "BOTTOMRIGHT", 10, 0)
 
+  local editors = {}
+
   local categoriesEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesEditorTemplate")
   categoriesEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
   categoriesEditor:SetHeight(320)
+  editors["EditCategory"] = categoriesEditor
   table.insert(allFrames, categoriesEditor)
 
   local categoriesSectionEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesSectionEditorTemplate")
   categoriesSectionEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesSectionEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesSectionEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
+  editors["EditCategorySection"] = categoriesSectionEditor
   table.insert(allFrames, categoriesSectionEditor)
-  categoriesSectionEditor:Hide()
 
   local categoriesRecentEditor = addonTable.CustomiseDialog.GetCategoriesRecentEditor(frame)
   categoriesRecentEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesRecentEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesRecentEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
   categoriesRecentEditor:SetHeight(210)
+  editors["EditCategoryRecent"] = categoriesRecentEditor
   table.insert(allFrames, categoriesRecentEditor)
-  categoriesRecentEditor:Hide()
 
   local categoriesEmptyEditor = addonTable.CustomiseDialog.GetCategoriesEmptyEditor(frame)
   categoriesEmptyEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEmptyEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesEmptyEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
   categoriesEmptyEditor:SetHeight(210)
+  editors["EditCategoryEmpty"] = categoriesEmptyEditor
   table.insert(allFrames, categoriesEmptyEditor)
-  categoriesEmptyEditor:Hide()
 
   local categoriesDividerEditor = CreateFrame("Frame", nil, frame, "BaganatorCustomiseDialogCategoriesDividerEditorTemplate")
   categoriesDividerEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesDividerEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesDividerEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
+  editors["EditCategoryDivider"] = categoriesDividerEditor
   table.insert(allFrames, categoriesDividerEditor)
-  categoriesDividerEditor:Hide()
 
-  categoriesEditor:HookScript("OnShow", function()
-    categoriesSectionEditor:Hide()
-    categoriesRecentEditor:Hide()
-    categoriesEmptyEditor:Hide()
-    categoriesDividerEditor:Hide()
-  end)
-  categoriesSectionEditor:HookScript("OnShow", function()
-    categoriesEditor:Hide()
-    categoriesRecentEditor:Hide()
-    categoriesEmptyEditor:Hide()
-    categoriesDividerEditor:Hide()
-  end)
-  categoriesSectionEditor:HookScript("OnHide", function()
-    categoriesEditor:Show()
-  end)
-  categoriesRecentEditor:HookScript("OnShow", function()
-    categoriesEditor:Hide()
-    categoriesSectionEditor:Hide()
-    categoriesEmptyEditor:Hide()
-    categoriesDividerEditor:Hide()
-  end)
-  categoriesRecentEditor:HookScript("OnHide", function()
-    categoriesEditor:Show()
-  end)
-  categoriesEmptyEditor:HookScript("OnShow", function()
-    categoriesEditor:Hide()
-    categoriesSectionEditor:Hide()
-    categoriesRecentEditor:Hide()
-    categoriesDividerEditor:Hide()
-  end)
-  categoriesEmptyEditor:HookScript("OnHide", function()
-    categoriesEditor:Show()
-  end)
-  categoriesDividerEditor:HookScript("OnShow", function()
-    categoriesEditor:Hide()
-    categoriesSectionEditor:Hide()
-    categoriesRecentEditor:Hide()
-    categoriesEmptyEditor:Hide()
-  end)
-  categoriesDividerEditor:HookScript("OnHide", function()
-    categoriesEditor:Show()
-  end)
+  local function ShowEditor(event)
+    for key, editor in pairs(editors) do
+      editor:SetShown(key == event)
+    end
+  end
+  for event, editor in pairs(editors) do
+    addonTable.CallbackRegistry:RegisterCallback(event, function()
+      ShowEditor(event)
+    end)
+    editor.Return = function()
+      categoriesEditor:Disable()
+      ShowEditor("EditCategory")
+    end
+  end
 
   local categoriesOrder = addonTable.CustomiseDialog.GetCategoriesOrganiser(frame)
   categoriesOrder:SetPoint("TOP")
@@ -986,7 +961,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
     end
-    categoriesSectionEditor:Hide()
+    ShowEditor("EditCategory")
   end)
 
   table.insert(self.lowestFrames, allFrames[#allFrames])

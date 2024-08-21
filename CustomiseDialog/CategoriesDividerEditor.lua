@@ -11,7 +11,6 @@ function BaganatorCustomiseDialogCategoriesDividerEditorMixin:OnLoad()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("EditCategoryDivider", function(_, index)
-    self:Show()
     self.index = index
   end)
 
@@ -20,7 +19,9 @@ function BaganatorCustomiseDialogCategoriesDividerEditorMixin:OnLoad()
       return
     end
 
-    self:Hide()
+    if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER then
+      self:Return()
+    end
   end)
 
   addonTable.Skins.AddFrame("Button", self.DeleteButton)
