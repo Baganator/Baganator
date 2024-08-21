@@ -905,7 +905,6 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesSectionEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesSectionEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesSectionEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
-  categoriesSectionEditor:SetHeight(210)
   table.insert(allFrames, categoriesSectionEditor)
   categoriesSectionEditor:Hide()
 

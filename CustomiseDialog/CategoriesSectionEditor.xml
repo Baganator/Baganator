@@ -1,6 +1,6 @@
 <Ui>
   <Frame name="BaganatorCustomiseDialogCategoriesSectionEditorTemplate" virtual="true" mixin="BaganatorCustomiseDialogCategoriesSectionEditorMixin">
-    <Size x="300" y="200"/>
+    <Size x="300" y="80"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnHide method="OnHide"/>
@@ -22,6 +22,12 @@
           <Anchor point="RIGHT" x="-10"/>
         </Anchors>
       </EditBox>
+
+      <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="ChangeAlpha">
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>
+        </Anchors>
+      </Button>
     </Frames>
   </Frame>
 </Ui>
