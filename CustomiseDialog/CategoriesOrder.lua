@@ -108,8 +108,10 @@ local function GetCategoryContainer(parent, pickupCallback)
           addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", self.value)
         elseif self.value == "default_auto_recents" then
           addonTable.CallbackRegistry:TriggerEvent("EditCategoryRecent")
-        elseif self.value ==  addonTable.CategoryViews.Constants.EmptySlotsCategory then
+        elseif self.value == addonTable.CategoryViews.Constants.EmptySlotsCategory then
           addonTable.CallbackRegistry:TriggerEvent("EditCategoryEmpty")
+        elseif self.value == addonTable.CategoryViews.Constants.DividerName then
+          addonTable.CallbackRegistry:TriggerEvent("EditCategoryDivider", frame.indexValue)
         else
           addonTable.CallbackRegistry:TriggerEvent("EditCategory", self.value)
         end
@@ -145,9 +147,8 @@ local function GetCategoryContainer(parent, pickupCallback)
     frame:GetFontString():SetPoint("LEFT", 40, 0)
     frame:GetFontString():SetJustifyH("LEFT")
     local default = addonTable.CategoryViews.Constants.SourceToCategory[frame.value]
-    local divider = frame.value == addonTable.CategoryViews.Constants.DividerName
     local categoryEnd = frame.value == addonTable.CategoryViews.Constants.SectionEnd
-    frame:SetEnabled(not categoryEnd and not divider and (not default or not default.auto or default.auto ~= "recent"))
+    frame:SetEnabled(not categoryEnd)
     frame.repositionButton:SetShown(not categoryEnd)
   end)
   container.ScrollBar = CreateFrame("EventFrame", nil, container, "WowTrimScrollBar")

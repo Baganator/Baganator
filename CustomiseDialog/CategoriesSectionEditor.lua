@@ -82,6 +82,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
   end)
 
   addonTable.Skins.AddFrame("EditBox", self.SectionName)
+  addonTable.Skins.AddFrame("Button", self.DeleteButton)
 end
 
 function BaganatorCustomiseDialogCategoriesSectionEditorMixin:Disable()

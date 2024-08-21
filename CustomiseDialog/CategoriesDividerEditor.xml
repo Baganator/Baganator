@@ -1,0 +1,15 @@
+<Ui>
+  <Frame name="BaganatorCustomiseDialogCategoriesDividerEditorTemplate" virtual="true" mixin="BaganatorCustomiseDialogCategoriesDividerEditorMixin">
+    <Size x="300" y="40"/>
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+    </Scripts>
+    <Frames>
+      <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="ChangeAlpha">
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>
+        </Anchors>
+      </Button>
+    </Frames>
+  </Frame>
+</Ui>

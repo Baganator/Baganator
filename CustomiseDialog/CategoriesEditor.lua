@@ -93,6 +93,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
     self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
     self.Blocker:SetPoint("BOTTOMRIGHT", self.CategorySearch)
+    self.DeleteButton:Enable()
 
     if value == "" then
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
@@ -102,7 +103,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.HiddenCheckBox:SetChecked(false)
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
-      self.DeleteButton:Enable()
       self.ExportButton:Enable()
       Save()
       return
@@ -112,7 +112,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     if customCategories[value] then
       category = customCategories[value]
       self.Blocker:Hide()
-      self.DeleteButton:Enable()
       self.ExportButton:Enable()
     else
       category = addonTable.CategoryViews.Constants.SourceToCategory[value]
@@ -120,7 +119,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategorySearch:SetAlpha(disabledAlpha)
       self.HelpButton:SetAlpha(disabledAlpha)
       self.Blocker:Show()
-      self.DeleteButton:Disable()
       self.ExportButton:Disable()
     end
     self.HiddenCheckBox:SetChecked(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)[value])
@@ -275,9 +273,11 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     end
 
-    customCategories[self.currentCategory] = nil
-    categoryMods[self.currentCategory] = nil
-    addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+    if customCategories[value] then
+      customCategories[self.currentCategory] = nil
+      categoryMods[self.currentCategory] = nil
+      addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+    end
 
     self:OnHide()
   end)
