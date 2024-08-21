@@ -281,6 +281,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     self:OnHide()
   end)
   addonTable.Skins.AddFrame("Button", self.DeleteButton)
+  addonTable.Skins.AddFrame("Button", self.ExportButton)
   addonTable.Skins.AddFrame("EditBox", self.CategoryName)
   addonTable.Skins.AddFrame("EditBox", self.CategorySearch)
 
@@ -317,6 +318,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
   itemText:SetPoint("TOPLEFT", 5, -5)
 
   local addButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+  addonTable.Skins.AddFrame("Button", addButton)
   addButton:SetPoint("TOPRIGHT")
   addButton:SetText(BAGANATOR_L_ADD)
   DynamicResizeButton_Resize(addButton)
@@ -324,6 +326,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
   addItemsEditBox:SetSize(60, 22)
   addItemsEditBox:SetPoint("RIGHT", addButton, "LEFT", -5, 0)
   addItemsEditBox:SetAutoFocus(false)
+  addonTable.Skins.AddFrame("EditBox", addItemsEditBox)
 
   addItemsEditBox:SetScript("OnKeyDown", function(_, key)
     if key == "ENTER" then
@@ -375,6 +378,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
       hideOnEscape = 1,
     }
     local addFromATTButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+    addonTable.Skins.AddFrame("Button", addFromATTButton)
     addFromATTButton:SetText(BAGANATOR_L_ADD_FROM_ATT)
     DynamicResizeButton_Resize(addFromATTButton)
     addFromATTButton:SetPoint("TOPRIGHT", addButton, "BOTTOMRIGHT")
