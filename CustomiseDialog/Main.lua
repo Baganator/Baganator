@@ -634,14 +634,14 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
     local tipsRows = {
       MakeTipsRow({
-        header = CreateAtlasMarkup("common-search-magnifyingglass", 13, 13) .. "  " .. SEARCH,
+        header = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\Search.png", 64, 64, 13, 13, 0, 1, 0, 1) .. "  " .. SEARCH,
         text = BAGANATOR_L_TIPS_SEARCH,
       }, {
         header = BAGANATOR_L_PLUGINS,
         text = BAGANATOR_L_TIPS_PLUGINS,
       }),
       MakeTipsRow({
-        header = CreateAtlasMarkup("orderhalltalents-choice-arrow-large", 17, 13) .. " " .. BAGANATOR_L_TRANSFER,
+        header = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\Transfer.png", 64, 64, 13, 13, 0, 1, 0, 1) .. " " .. BAGANATOR_L_TRANSFER,
         text = BAGANATOR_L_TIPS_TRANSFER,
       }, {
         header = BAGANATOR_L_SKINS,
