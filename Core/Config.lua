@@ -2,7 +2,9 @@ local _, addonTable = ...
 addonTable.Config = {}
 
 addonTable.Config.Options = {
-  VIEW_TYPE = "view_type",
+  GLOBAL_VIEW_TYPE = "view_type",
+  BAG_VIEW_TYPE = "bag_view_type",
+  BANK_VIEW_TYPE = "bank_view_type",
   SEEN_WELCOME = "seen_welcome",
   BAG_VIEW_WIDTH = "bag_view_width",
   BANK_VIEW_WIDTH = "bank_view_width",
@@ -79,7 +81,9 @@ addonTable.Config.Options = {
 }
 
 addonTable.Config.Defaults = {
-  [addonTable.Config.Options.VIEW_TYPE] = "single", -- "single" or "category"
+  [addonTable.Config.Options.GLOBAL_VIEW_TYPE] = "single", -- "single" or "category"
+  [addonTable.Config.Options.BAG_VIEW_TYPE] = "single",
+  [addonTable.Config.Options.BANK_VIEW_TYPE] = "single",
   [addonTable.Config.Options.SEEN_WELCOME] = 0,
 
   [addonTable.Config.Options.BAG_VIEW_WIDTH] = 12,

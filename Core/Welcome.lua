@@ -49,7 +49,7 @@ function addonTable.ShowWelcome()
     DynamicResizeButton_Resize(button)
     button:SetScript("OnClick", function()
       addonTable.CallbackRegistry:TriggerEvent("ResetFramePositions")
-      addonTable.Config.Set(addonTable.Config.Options.VIEW_TYPE, value)
+      addonTable.Config.Set(addonTable.Config.Options.GLOBAL_VIEW_TYPE, value)
       frame:Hide()
     end)
     return button
