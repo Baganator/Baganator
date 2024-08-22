@@ -237,9 +237,9 @@
     <Layers>
       <Layer>
         <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\Guild.png">
-          <Size x="15" y="15"/>
+          <Size x="15" y="14"/>
           <Anchors>
-            <Anchor point="CENTER"/>
+            <Anchor point="CENTER" y="-1"/>
           </Anchors>
         </Texture>
       </Layer>
