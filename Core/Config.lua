@@ -81,8 +81,8 @@ addonTable.Config.Options = {
 }
 
 addonTable.Config.Defaults = {
-  [addonTable.Config.Options.GLOBAL_VIEW_TYPE] = "single", -- "single" or "category"
-  [addonTable.Config.Options.BAG_VIEW_TYPE] = "single",
+  [addonTable.Config.Options.GLOBAL_VIEW_TYPE] = "unset",
+  [addonTable.Config.Options.BAG_VIEW_TYPE] = "single", -- "single" or "category"
   [addonTable.Config.Options.BANK_VIEW_TYPE] = "single",
   [addonTable.Config.Options.SEEN_WELCOME] = 0,
 

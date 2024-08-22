@@ -15,21 +15,6 @@ local GENERAL_OPTIONS = {
 local LAYOUT_OPTIONS = {
   {
     type = "dropdown",
-    text = BAGANATOR_L_VIEW_TYPE,
-    option = "view_type",
-    entries = {
-      BAGANATOR_L_SINGLE_BAG,
-      BAGANATOR_L_CATEGORY_GROUPS,
-      BAGANATOR_L_SET_PER_VIEW,
-    },
-    values = {
-      "single",
-      "category",
-      "unset",
-    }
-  },
-  {
-    type = "dropdown",
     text = BAGANATOR_L_BAG_VIEW_TYPE,
     option = "bag_view_type",
     entries = {
@@ -858,17 +843,6 @@ function BaganatorCustomiseDialogMixin:SetupLayout()
     for index, frame in ipairs(allFrames) do
       frame:SetValue(addonTable.Config.Get(frame.option))
     end
-
-    if addonTable.Config.Get("view_type") == "unset" then
-      allFrames[2]:Show()
-      allFrames[3]:Show()
-      allFrames[4]:SetPoint("TOP", allFrames[3], "BOTTOM", 0, -30)
-    else
-      allFrames[2]:Hide()
-      allFrames[3]:Hide()
-      allFrames[4]:SetPoint("TOP", allFrames[1], "BOTTOM", 0, -30)
-    end
-    self:RefreshOptions()
   end
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
@@ -876,13 +850,6 @@ function BaganatorCustomiseDialogMixin:SetupLayout()
       local value = addonTable.Config.Get(settingName)
       if value ~= addonTable.Config.Get("view_type") then
         addonTable.Config.Set("view_type", "unset")
-      end
-      UpdateValues()
-    elseif settingName == "view_type" then
-      local value = addonTable.Config.Get(settingName)
-      if value ~= "unset" then
-        addonTable.Config.Set("bag_view_type", value)
-        addonTable.Config.Set("bank_view_type", value)
       end
       UpdateValues()
     end

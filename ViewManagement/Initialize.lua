@@ -1,15 +1,11 @@
 local _, addonTable = ...
 
 local function GetViewType(view)
-  local global = addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE)
-  if global == "unset" then
-    if view == "bag" then
-      return addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE)
-    elseif view == "bank" then
-      return addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE)
-    end
+  if view == "bag" then
+    return addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE)
+  elseif view == "bank" then
+    return addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE)
   end
-  return global
 end
 
 local hidden = CreateFrame("Frame")
@@ -107,7 +103,7 @@ local function SetupBackpackView()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == addonTable.Config.Options.GLOBAL_VIEW_TYPE or settingName == addonTable.Config.Options.BAG_VIEW_TYPE then
+    if settingName == addonTable.Config.Options.BAG_VIEW_TYPE then
       local isShown = backpackView:IsShown()
       backpackView:Hide()
       backpackView = allBackpackViews[GetViewType("bag")] or backpackView
@@ -227,7 +223,7 @@ local function SetupBankView()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == addonTable.Config.Options.GLOBAL_VIEW_TYPE or settingName == addonTable.Config.Options.BANK_VIEW_TYPE then
+    if settingName == addonTable.Config.Options.BANK_VIEW_TYPE then
       bankView:Hide()
       FrameUtil.UnregisterFrameForEvents(bankView, {
         "BANKFRAME_OPENED",
