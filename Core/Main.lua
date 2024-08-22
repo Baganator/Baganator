@@ -60,8 +60,8 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE) ~= "unset" then
-    addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
-    addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
-    addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE, "unset")
+    addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
+    addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
+    addonTable.Config.Set(addonTable.Config.Options.GLOBAL_VIEW_TYPE, "unset")
   end
 end)
