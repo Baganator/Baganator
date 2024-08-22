@@ -727,15 +727,17 @@ local function AddKeywords(self)
   local groups = addonTable.Help.GetKeywordGroups()
 
   for _, key in ipairs(addonTable.Constants.KeywordGroupOrder) do
-    table.sort(groups[key])
-    local matching = {}
-    for _, keyword in ipairs(groups[key]) do
-      if Syndicator.Search.CheckItem(self.BGR, "#" .. keyword) then
-        table.insert(matching, keyword)
+    if groups[key] then
+      table.sort(groups[key])
+      local matching = {}
+      for _, keyword in ipairs(groups[key]) do
+        if Syndicator.Search.CheckItem(self.BGR, "#" .. keyword) then
+          table.insert(matching, keyword)
+        end
       end
-    end
-    if #matching > 0 then
-      GameTooltip:AddDoubleLine(key, table.concat(matching, ", "), BLUE_FONT_COLOR.r, BLUE_FONT_COLOR.g, BLUE_FONT_COLOR.b, 1, 1, 1)
+      if #matching > 0 then
+        GameTooltip:AddDoubleLine(key, table.concat(matching, ", "), BLUE_FONT_COLOR.r, BLUE_FONT_COLOR.g, BLUE_FONT_COLOR.b, 1, 1, 1)
+      end
     end
   end
   GameTooltip:Show()
