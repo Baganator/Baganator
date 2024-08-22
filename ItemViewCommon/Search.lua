@@ -83,10 +83,12 @@ function BaganatorSearchWidgetMixin:OnLoad()
   end)
 
   self.GlobalSearchButton:Disable()
+  self.GlobalSearchButton.Icon:SetDesaturated(true)
 
   addonTable.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self.SearchBox:SetText(text)
     self.GlobalSearchButton:SetEnabled(text ~= "")
+    self.GlobalSearchButton.Icon:SetDesaturated(not self.GlobalSearchButton:IsEnabled())
   end)
 
   self.HelpButton:SetScript("OnClick", function()

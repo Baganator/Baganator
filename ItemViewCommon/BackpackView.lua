@@ -377,6 +377,7 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateAllButtons()
   self.ButtonVisibility:Update()
   local guildName = Syndicator.API.GetCharacter(self.lastCharacter).details.guild
   self.ToggleGuildBankButton:SetEnabled(guildName ~= nil and Syndicator.API.GetGuild(guildName))
+  self.ToggleGuildBankButton.Icon:SetDesaturated(not self.ToggleGuildBankButton:IsEnabled())
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:RunAction(action, getItems)
