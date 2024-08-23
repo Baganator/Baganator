@@ -82,7 +82,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(index)
     return
   end
 
-  self:RemoveSearchMatches(function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results, function(a) return a.itemLink ~= nil end, true) end)
+  self:RemoveSearchMatches(function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results or {}, function(a) return a.itemLink ~= nil end, true) or {} end)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)

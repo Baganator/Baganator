@@ -133,7 +133,7 @@ function BaganatorCategoryViewBackpackViewMixin:TransferCategory(index)
     return
   end
 
-  self:Transfer(true, function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results or {}, function(a) return a.itemLink ~= nil end, true) end)
+  self:Transfer(true, function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results or {}, function(a) return a.itemLink ~= nil end, true) or {} end)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)
