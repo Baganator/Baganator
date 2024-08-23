@@ -68,12 +68,12 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnEvent(eventName, ...)
   end
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(index)
-  if not self.isLive or not index then
+function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(index, source, groupLabel)
+  if not self.isLive then
     return
   end
 
-  self:RemoveSearchMatches(function() return self.LayoutManager.composed and tFilter(self.LayoutManager.composed.details[index].results or {}, function(a) return a.itemLink ~= nil end, true) or {} end)
+  self:RemoveSearchMatches(function() return addonTable.CategoryViews.Utilities.GetItemsFromComposed(self.LayoutManager.composed, index, source, groupLabel) end)
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()

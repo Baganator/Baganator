@@ -259,6 +259,7 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
           label = details.details.label .. ": " .. label,
           section = details.details.section,
           source = details.details.source,
+          groupLabel = label,
           auto = true,
           results = {}
         })

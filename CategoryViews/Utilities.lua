@@ -32,3 +32,11 @@ function addonTable.CategoryViews.Utilities.GetBagTypes(characterData, section, 
   end
   return result
 end
+
+function addonTable.CategoryViews.Utilities.GetItemsFromComposed(composed, index, source, groupLabel)
+  if not composed or not composed.details[index] or composed.details[index].type ~= "category" or composed.details[index].source ~= source or composed.details[index].groupLabel ~= groupLabel then
+    return {}
+  else
+    return tFilter(composed.details[index].results, function(a) return a.itemLink ~= nil end, true)
+  end
+end
