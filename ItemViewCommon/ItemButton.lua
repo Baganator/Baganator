@@ -476,10 +476,6 @@ end
 
 BaganatorRetailLiveContainerItemButtonMixin = {}
 
-local function IsReagentBankActive()
-  return IsReagentBankUnlocked() and C_Container.GetContainerNumFreeSlots(Enum.BagIndex.Reagentbank) > 0 and (not BankFrame.GetActiveBankType or BankFrame:GetActiveBankType() ~= Enum.BankType.Account)
-end
-
 function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   self:HookScript("OnClick", function()
     if not self.BGR or not self.BGR.itemID then
@@ -491,18 +487,24 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
     end
   end)
   -- Automatically use the reagent bank when at the bank transferring crafting
-  -- reagents
-  self:HookScript("OnEnter", function()
-    self:ClearNewItem()
-    if BankFrame:IsShown() then
-      if self.BGR and self.BGR.itemLink and (select(17, C_Item.GetItemInfo(self.BGR.itemLink))) and IsReagentBankActive() then
-        BankFrame.selectedTab = 2
-      else
-        BankFrame.selectedTab = 1
+  -- reagents if there is space
+  self:HookScript("PreClick", function()
+    if BankFrame:IsShown() and self.BGR and self.BGR.itemID then
+      local _
+      self.BGR.stackLimit, _, _, _, _, _, _, _, _, self.BGR.isReagent = select(8, C_Item.GetItemInfo(self.BGR.itemID))
+      if self.BGR.isReagent then
+        local reagentBank = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bank[tIndexOf(Syndicator.Constants.AllBankIndexes, Enum.BagIndex.Reagentbank)]
+        for _, item in ipairs(reagentBank) do
+          if item.itemID == nil or (item.itemID == self.BGR.itemID and self.BGR.stackLimit - item.itemCount >= self.BGR.itemCount) then
+            BankFrame.selectedTab = 2
+            return
+          end
+        end
       end
+      BankFrame.selectedTab = 1
     end
   end)
-  self:HookScript("OnLeave", function()
+  self:HookScript("PostClick", function()
     if BankFrame:IsShown() and self.BGR then
       BankFrame.selectedTab = 1
     end
