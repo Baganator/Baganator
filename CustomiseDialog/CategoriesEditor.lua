@@ -272,7 +272,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     end
 
-    if customCategories[value] then
+    if customCategories[self.currentCategory] then
       customCategories[self.currentCategory] = nil
       categoryMods[self.currentCategory] = nil
       addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
@@ -425,7 +425,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
         if not entry then
           local searchResults = ATTC.SearchForField(label, tonumber(value))
           for _, result in ipairs(searchResults) do
-            if ATTC.GenerateSourceHash(result) == sourcePath then
+            if ATTC.GenerateSourceHash(result) == path then
               entry = result
             end
           end
@@ -437,7 +437,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
 
         if not entry then
           local tmp = {}
-          ATTC.BuildFlatSearchResponse(app:GetDataCache().g, label, tonumber(value), tmp)
+          ATTC.BuildFlatSearchResponse(ATTC:GetDataCache().g, label, tonumber(value), tmp)
           if #tmp == 1 then
             entry = tmp[1]
           end

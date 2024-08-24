@@ -199,7 +199,7 @@ function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetupOptions(entries, v
   end
 
   self.selections = container:GetData()
-  self.selectedIndex = selectedIndex;
+  self.selectedIndex = 1;
 
   if self.Popout:IsShown() then
     self:UpdatePopout();

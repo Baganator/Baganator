@@ -872,6 +872,7 @@ function BaganatorRetailLiveWarbandItemButtonMixin:BGRUpdateQuests()
   local isQuestItem = questInfo.isQuestItem;
   self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questID
   local questID = questInfo.questID;
+  local isActive = questInfo.isActive;
 
   if questID and not isActive then
     self.IconQuestTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG);
@@ -994,7 +995,7 @@ else
     local questInfo = C_Container.GetContainerItemQuestInfo(self:GetParent():GetID(), self:GetID());
     self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questId
 
-    questTexture = _G[self:GetName().."IconQuestTexture"];
+    local questTexture = _G[self:GetName().."IconQuestTexture"];
 
     if ( questInfo.questId and not questInfo.isActive ) then
       questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG);

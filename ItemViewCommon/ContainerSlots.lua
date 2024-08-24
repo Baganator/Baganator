@@ -142,7 +142,7 @@ local function GetBankInventorySlot(button)
   return BankButtonIDToInvSlotID(button:GetID(), 1)
 end
 
-StaticPopupDialogs["addonTable.ConfirmBuyBankSlot"] = {
+StaticPopupDialogs["Baganator.ConfirmBuyBankSlot"] = {
   text = CONFIRM_BUY_BANK_SLOT,
   button1 = YES,
   button2 = NO,
@@ -167,7 +167,7 @@ local function OnBankSlotClick(self, button)
       PutItemInBag(GetBankInventorySlot(self))
     end
   else
-    StaticPopup_Show("addonTable.ConfirmBuyBankSlot")
+    StaticPopup_Show("Baganator.ConfirmBuyBankSlot")
   end
 end
 

@@ -139,7 +139,7 @@ local function ImportCategories(import)
           addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
           return
         end
-        local key = "p:" .. itemID
+        local key = "p:" .. petID
         if not seenItems[key] then
           seenItems[key] = true
           newMods.addedItems[key] = true
