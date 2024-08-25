@@ -143,6 +143,7 @@ end
 function BaganatorItemViewCommonBankViewCharacterViewMixin:SetupBlizzardFramesForTab()
   if self.isLive and Syndicator.Constants.WarbandBankActive then
     BankFrame.activeTabIndex = addonTable.Constants.BlizzardBankTabConstants.Character
+    BankFrame.selectedTab = 1
   end
 end
 

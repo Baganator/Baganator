@@ -174,6 +174,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForT
   if self.isLive then
 
     BankFrame.activeTabIndex = addonTable.Constants.BlizzardBankTabConstants.Warband
+    BankFrame.selectedTab = 1
 
     local tabInfo = Syndicator.API.GetWarband(1).bank[self.currentTab]
     local bagID = Syndicator.Constants.AllWarbandIndexes[self.currentTab]

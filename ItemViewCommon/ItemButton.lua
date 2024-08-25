@@ -487,7 +487,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   -- Automatically use the reagent bank when at the bank transferring crafting
   -- reagents if there is space
   self:HookScript("PreClick", function()
-    if BankFrame:IsShown() and self.BGR and self.BGR.itemID then
+    if BankFrame:IsShown() and self.BGR and self.BGR.itemID and BankFrame.activeTabIndex ~= addonTable.Constants.BlizzardBankTabConstants.Warband then
       local _
       self.BGR.stackLimit, _, _, _, _, _, _, _, _, self.BGR.isReagent = select(8, C_Item.GetItemInfo(self.BGR.itemID))
       if self.BGR.isReagent then
@@ -503,7 +503,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
     end
   end)
   self:HookScript("PostClick", function()
-    if BankFrame:IsShown() and self.BGR then
+    if BankFrame:IsShown() and self.BGR and BankFrame.activeTabIndex ~= addonTable.Constants.BlizzardBankTabConstants.Warband then
       BankFrame.selectedTab = 1
     end
   end)
