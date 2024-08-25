@@ -51,7 +51,6 @@ end
 local pendingItems = {}
 local itemFrame = CreateFrame("Frame")
 itemFrame.elapsed = 0
-itemFrame:RegisterEvent("ITEM_DATA_LOAD_RESULT")
 itemFrame:SetScript("OnEvent", function(_, _, itemID)
   if pendingItems[itemID] ~= nil then
     for _, callback in ipairs(pendingItems[itemID]) do
@@ -70,13 +69,16 @@ itemFrame.OnUpdate = function(self, elapsed)
   end
 
   if next(pendingItems) == nil then
+    itemFrame.elapsed = 0
     self:SetScript("OnUpdate", nil)
+    self:UnregisterEvent("ITEM_DATA_LOAD_RESULT")
   end
 end
 
 function addonTable.Utilities.LoadItemData(itemID, callback)
   pendingItems[itemID] = pendingItems[itemID] or {}
   table.insert(pendingItems[itemID], callback)
-  C_Item.RequestLoadItemDataByID(itemID)
+  itemFrame:RegisterEvent("ITEM_DATA_LOAD_RESULT")
   itemFrame:SetScript("OnUpdate", itemFrame.OnUpdate)
+  C_Item.RequestLoadItemDataByID(itemID)
 end
