@@ -74,8 +74,7 @@ local function GetBagStacks(bags, bagIDs, callback)
         if itemIDToStackSize[item.itemID] == nil then
           waiting = waiting + 1
           itemIDToStackSize[item.itemID] = -1
-          local item = Item:CreateFromItemID(item.itemID)
-          item:ContinueOnItemLoad(function()
+          addonTable.Utilities.LoadItemData(item.itemID, function()
             itemIDToStackSize[item.itemID] = select(8, C_Item.GetItemInfo(item.itemID))
             waiting = waiting - 1
             if waiting == 0 and loopComplete then

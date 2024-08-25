@@ -47,3 +47,36 @@ end)
 function addonTable.Utilities.DebugOutput(label, value)
   table.insert(queue, {label, value})
 end
+
+local pendingItems = {}
+local itemFrame = CreateFrame("Frame")
+itemFrame.elapsed = 0
+itemFrame:RegisterEvent("ITEM_DATA_LOAD_RESULT")
+itemFrame:SetScript("OnEvent", function(_, _, itemID)
+  if pendingItems[itemID] ~= nil then
+    for _, callback in ipairs(pendingItems[itemID]) do
+      callback()
+    end
+    pendingItems[itemID] = nil
+  end
+end)
+itemFrame.OnUpdate = function(self, elapsed)
+  itemFrame.elapsed = itemFrame.elapsed + elapsed
+  if itemFrame.elapsed > 0.4 then
+    for itemID in pairs(pendingItems) do
+      C_Item.RequestLoadItemDataByID(itemID)
+    end
+    itemFrame.elapsed = 0
+  end
+
+  if next(pendingItems) == nil then
+    self:SetScript("OnUpdate", nil)
+  end
+end
+
+function addonTable.Utilities.LoadItemData(itemID, callback)
+  pendingItems[itemID] = pendingItems[itemID] or {}
+  table.insert(pendingItems[itemID], callback)
+  C_Item.RequestLoadItemDataByID(itemID)
+  itemFrame:SetScript("OnUpdate", itemFrame.OnUpdate)
+end

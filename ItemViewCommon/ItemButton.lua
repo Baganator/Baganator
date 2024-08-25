@@ -146,8 +146,7 @@ local function WidgetsOnly(self)
   if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
     OnCached()
   else
-    local item = Item:CreateFromItemID(self.BGR.itemID)
-    item:ContinueOnItemLoad(function()
+    addonTable.Utilities.LoadItemData(self.BGR.itemID, function()
       OnCached()
     end)
   end
@@ -186,8 +185,7 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
   if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
     OnCached()
   else
-    local item = Item:CreateFromItemID(self.BGR.itemID)
-    item:ContinueOnItemLoad(function()
+    addonTable.Utilities.LoadItemData(self.BGR.itemID, function()
       OnCached()
     end)
   end

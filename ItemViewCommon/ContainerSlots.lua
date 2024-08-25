@@ -46,7 +46,7 @@ function BaganatorRetailBagSlotButtonMixin:Init()
       -- it - as a bonus if Blizzard adds any widgets to bags this will add them
       self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot), itemID)
     else
-      Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+      addonTable.Utilities.LoadItemData(itemID, function()
         self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot), itemID)
       end)
     end
@@ -101,7 +101,7 @@ function BaganatorClassicBagSlotButtonMixin:Init()
   SetItemButtonTexture(self, texture)
   local itemID = GetInventoryItemID("player", inventorySlot)
   if itemID ~= nil then
-    Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+    addonTable.Utilities.LoadItemData(itemID, function()
       SetItemButtonQuality(self, GetInventoryItemQuality("player", inventorySlot))
     end)
   end
@@ -221,7 +221,7 @@ function BaganatorRetailBankButtonMixin:Init()
   end
   self:SetItemButtonTexture(texture)
   self:SetItemButtonQuality(quality, itemID)
-  Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+  addonTable.Utilities.LoadItemData(itemID, function()
     self:SetItemButtonQuality(C_Item.GetItemQualityByID(itemID), itemID)
   end)
 end
@@ -278,7 +278,7 @@ function BaganatorClassicBankButtonMixin:Init()
   end
   SetItemButtonTexture(self, info.iconFileID)
   SetItemButtonQuality(self, info.quality)
-  Item:CreateFromItemID(info.itemID):ContinueOnItemLoad(function()
+  addonTable.Utilities.LoadItemData(info.itemID, function()
     SetItemButtonQuality(self, C_Item.GetItemQualityByID(info.itemID))
   end)
 end

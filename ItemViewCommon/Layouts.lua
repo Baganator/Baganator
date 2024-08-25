@@ -156,10 +156,13 @@ end
 local function UpdateQuests(self)
   for _, button in ipairs(self.buttons) do
     if button.BGR and button.BGR.isQuestItem then
-      local item = Item:CreateFromItemID(button.BGR.itemID)
-      item:ContinueOnItemLoad(function()
+      if not C_Item.IsItemDataCachedByID(button.BGR.itemID) then
+        addonTable.Utilities.LoadItemData(button.BGR.itemID, function()
+          button:BGRUpdateQuests()
+        end)
+      else
         button:BGRUpdateQuests()
-      end)
+      end
     end
   end
 end

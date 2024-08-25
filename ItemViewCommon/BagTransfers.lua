@@ -104,7 +104,7 @@ local function AddToScrapper(matches, characterName, callback)
   for _, item in ipairs(matches) do
     local location = ItemLocation:CreateFromBagAndSlot(item.bagID, item.slotID)
     if C_Item.DoesItemExist(location) then
-      Item:CreateFromItemLocation(location):ContinueOnItemLoad(function()
+      addonTable.Utilities.LoadItemData(item.itemID, function()
         waiting = waiting - 1
         if C_Item.CanScrapItem(location) then
           C_Container.UseContainerItem(item.bagID, item.slotID)

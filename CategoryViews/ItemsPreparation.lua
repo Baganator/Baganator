@@ -26,10 +26,9 @@ function BaganatorCategoryViewsItemsPreparationMixin:PrepareItems(everything, ca
       if not seen then
         if item.isJunkGetter then
           if not C_Item.IsItemDataCachedByID(item.itemID) then
-            local i = Item:CreateFromItemID(item.itemID)
-            if not i:IsItemEmpty() then
+            if C_Item.GetItemInfoInstant(item.itemID) ~= nil then
               waiting = waiting + 1
-              i:ContinueOnItemLoad(function()
+              addonTable.Utilities.LoadItemData(item.itemID, function()
                 waiting = waiting - 1
                 item.isJunk = item.isJunkGetter()
                 if waiting == 0 and loopComplete then
