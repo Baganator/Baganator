@@ -13,6 +13,7 @@ StaticPopupDialogs[exportDialog] = {
   end,
   EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
   editBoxWidth = 230,
+  maxLetters = 0,
   timeout = 0,
   hideOnEscape = 1,
 }
@@ -35,6 +36,7 @@ StaticPopupDialogs[importDialog] = {
   end,
   EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
   editBoxWidth = 230,
+  maxLetters = 0,
   timeout = 0,
   hideOnEscape = 1,
 }
