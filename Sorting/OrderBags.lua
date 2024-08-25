@@ -209,7 +209,7 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
   local sortedItems, incomplete = addonTable.Sorting.OrderOneListOffline(oneList, addonTable.Config.Get("sort_method"))
 
   if showTimers then
-    print("sort initial", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("sort initial", debugprofilestop() - start)
     start = debugprofilestop()
   end
 
@@ -226,7 +226,7 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
   end
 
   if showTimers then
-    print("sort gens", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("sort gens", debugprofilestop() - start)
     start = debugprofilestop()
   end
 
@@ -267,7 +267,7 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
   end
 
   if showTimers then
-    print("reverse applied", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("reverse applied", debugprofilestop() - start)
     start = debugprofilestop()
   end
 
@@ -327,7 +327,7 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
   SweepForwards(tFilter(groupA, function(item) return not item.processed end, true))
 
   if showTimers then
-    print("sort queues ready", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("sort queues ready", debugprofilestop() - start)
     start = debugprofilestop()
   end
 
@@ -369,7 +369,7 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
   end
 
   if showTimers then
-    print("sort items moved", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("sort items moved", debugprofilestop() - start)
   end
 
   for _, sound in ipairs(pickupSoundIDs) do

@@ -10,7 +10,7 @@ if C_Engraving and C_Engraving.IsEngravingEnabled() then
     local start = debugprofilestop()
     C_Engraving.RefreshRunesList()
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("refreshruneslist", debugprofilestop() - start)
+      addonTable.Utilities.DebugOutput("refreshruneslist", debugprofilestop() - start)
     end
   end)
 end

@@ -314,11 +314,7 @@ function BaganatorCachedBagLayoutMixin:ShowBags(bagData, source, indexes, indexe
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    local c = 0
-    for _ in pairs(indexesToUse) do
-      c = c+ 1
-    end
-    print("cached bag layout took", c, source, debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("cached bag layout took", debugprofilestop() - start)
   end
 
   self.waitingUpdate = {}
@@ -396,7 +392,7 @@ function BaganatorLiveBagLayoutMixin:OnShow()
   local start = debugprofilestop()
   self:UpdateCooldowns()
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("update cooldowns show", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("update cooldowns show", debugprofilestop() - start)
   end
   self:UpdateQuests()
 
@@ -530,7 +526,7 @@ function BaganatorLiveBagLayoutMixin:ShowBags(bagData, source, indexes, indexesT
 
   if self:CompareButtonIndexes(indexes, indexesToUse) or self.prevState.source ~= source then
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("rebuild")
+      addonTable.Utilities.DebugOutput("rebuild")
     end
     self:RebuildLayout(indexes, indexesToUse, rowWidth)
     self.waitingUpdate = {}
@@ -573,7 +569,7 @@ function BaganatorLiveBagLayoutMixin:ShowBags(bagData, source, indexes, indexesT
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("live bag layout took", source, debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("live bag layout took", debugprofilestop() - start)
   end
 
   self.prevState = {
@@ -1166,7 +1162,7 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print(self.layoutType .. " guild layout took", tabIndex, debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput(self.layoutType .. " guild layout " .. tabIndex .. " took", debugprofilestop() - start)
   end
 
   self.prevState = {
@@ -1287,7 +1283,7 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
 
   if not self.initialized then
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("rebuild")
+      addonTable.Utilities.DebugOutput("rebuild")
     end
     self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
     self.waitingUpdate = true
@@ -1322,7 +1318,7 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("live warband layout took", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("live warband layout took", debugprofilestop() - start)
   end
 
   self.prevState = {
@@ -1401,7 +1397,7 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
 
   if not self.initialized then
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("rebuild")
+      addonTable.Utilities.DebugOutput("rebuild")
     end
     self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
     self.waitingUpdate = true
@@ -1427,7 +1423,7 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("cached warband layout took", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("cached warband layout took", debugprofilestop() - start)
   end
 end
 

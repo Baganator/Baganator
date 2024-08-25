@@ -172,7 +172,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("-- updateforcharacter backpack", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("-- updateforcharacter backpack", debugprofilestop() - start)
   end
 end
 

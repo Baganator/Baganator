@@ -220,7 +220,7 @@ function BaganatorItemViewCommonBankViewMixin:OnTabFinished()
   self:SetSize(self.currentTab:GetSize())
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("bank", debugprofilestop() - self.start)
+    addonTable.Utilities.DebugOutput("bank", debugprofilestop() - self.start)
   end
 end
 

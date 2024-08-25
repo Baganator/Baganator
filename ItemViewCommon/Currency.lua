@@ -184,6 +184,6 @@ function BaganatorCurrencyWidgetMixin:UpdateCurrencies(character)
     self.currencyUpdateNeeded = true
   end
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    print("currency update", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("currency update", debugprofilestop() - start)
   end
 end
