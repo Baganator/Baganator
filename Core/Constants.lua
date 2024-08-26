@@ -172,7 +172,7 @@ addonTable.Constants.ContainerKeyToInfo = {
   [1] = {type = "file", value="interface\\addons\\baganator\\assets\\bag_soul_shard", tooltipHeader=BAGANATOR_L_SOUL}, -- soulbag
   [2] = {type = "atlas", value="Mobile-Herbalism", tooltipHeader=BAGANATOR_L_HERBALISM, size=50}, --herb
   [3] = {type = "atlas", value="Mobile-Enchanting", tooltipHeader=BAGANATOR_L_ENCHANTING, size=50}, --enchant
-  [4] = {type = "atlas", value="Mobile-Engineering", tooltipHeader=BAGANATOR_L_ENGINEERING, size=50}, --engineering
+  [4] = {type = "atlas", value="Mobile-Enginnering", tooltipHeader=BAGANATOR_L_ENGINEERING, size=50}, --engineering (not not a typo for the atlas, its really misspelled)
   [5] = {type = "atlas", value="Mobile-Jewelcrafting", tooltipHeader=BAGANATOR_L_GEMS, size=50}, -- gem
   [6] = {type = "atlas", value="Mobile-Mining", tooltipHeader=BAGANATOR_L_MINING, size=50}, -- mining
   [7] = {type = "atlas", value="Mobile-Leatherworking", tooltipHeader=BAGANATOR_L_LEATHERWORKING, size=50}, -- leatherworking
