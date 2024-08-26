@@ -27,8 +27,10 @@ function addonTable.Help.ShowSearchDialog()
   local groups = addonTable.Help.GetKeywordGroups()
   local text = ""
   for _, key in ipairs(addonTable.Constants.KeywordGroupOrder) do
-    table.sort(groups[key])
-    text = text .. "==" .. key .. "\n" .. table.concat(groups[key], ", ") .. "\n"
+    if groups[key] then
+      table.sort(groups[key])
+      text = text .. "==" .. key .. "\n" .. table.concat(groups[key], ", ") .. "\n"
+    end
   end
 
   local frame = CreateFrame("Frame", "Baganator_SearchHelpFrame", UIParent, "ButtonFrameTemplate")
@@ -84,8 +86,10 @@ function addonTable.Help.ShowSearchDialog()
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS_LINE_2},
   }
   for _, key in ipairs(addonTable.Constants.KeywordGroupOrder) do
-    table.insert(lines, {type = "header_2", text = key})
-    table.insert(lines, {type = "content", text = table.concat(groups[key], ", ")})
+    if groups[key] then
+      table.insert(lines, {type = "header_2", text = key})
+      table.insert(lines, {type = "content", text = table.concat(groups[key], ", ")})
+    end
   end
 
   local lastRegion
