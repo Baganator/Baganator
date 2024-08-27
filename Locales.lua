@@ -290,6 +290,7 @@ L["ADD_ITEM_IDS_MESSAGE"] = "Add a list of items by item ID"
 L["ADD_FROM_ATT"] = "Add From ATT"
 L["ADD_FROM_ATT_MESSAGE"] = "Use items from All The Things popout mini-list windows to add into this category."
 L["ADD_FROM_ATT_POPUP_COMPLETE"] = "Added %s items (from %s popouts)"
+L["ENABLE_CATEGORY_MODE_WARNING"] = "You need to enable categories to use the settings you just updated"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"

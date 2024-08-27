@@ -979,6 +979,27 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesOrder:SetPoint("LEFT", frame, addonTable.Constants.ButtonFrameOffset + 20, 0)
   categoriesOrder:SetPoint("RIGHT", frame, "CENTER")
 
+  local enableDialog = "BaganatorCategoryEnableDialog"
+  StaticPopupDialogs[enableDialog] = {
+    text = BAGANATOR_L_ENABLE_CATEGORY_MODE_WARNING,
+    button1 = ENABLE,
+    button2 = CANCEL,
+    OnAccept = function()
+      addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "category")
+      addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, "category")
+    end,
+    timeout = 0,
+    hideOnEscape = 1,
+  }
+
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
+      if addonTable.Config.Get("bag_view_type") ~= "category" and addonTable.Config.Get("bank_view_type") ~= "category" then
+        StaticPopup_Show(enableDialog)
+      end
+    end
+  end)
+
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       if frame.SetValue then
