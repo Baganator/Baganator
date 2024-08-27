@@ -867,21 +867,27 @@ end
 
 function BaganatorLiveCategoryLayoutMixin:DeallocateUnusedButtons(cacheList)
   local used = {}
+  local matchingSlots = {}
   for _, cacheData in ipairs(cacheList) do
     local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
     used[key] = (used[key] or 0) + 1
+    matchingSlots[key] = matchingSlots[key] or {}
+    matchingSlots[key][cacheData.bagID .. "_" .. cacheData.slotID] = cacheData.itemCount
   end
   for key, list in pairs(self.buttonsByKey) do
     if not used[key] or used[key] < #list then
-      local max = used[key] and used[key] + 1 or 1
-      for index = #list, max, -1 do
+      for index = #list, 1, -1 do
         local button = list[index]
-        if not button.isDummy then
-          self.buttonPool:Release(button)
-        else
-          self.dummyButtonPool:Release(button)
+        -- We match by bag and slot to avoid redrawing (and breaking clicks) on
+        -- existing items
+        if matchingSlots[key] == nil or button.BGR.itemCount ~= matchingSlots[key][button:GetParent():GetID() .. "_" .. button:GetID()] then
+          if not button.isDummy then
+            self.buttonPool:Release(button)
+          else
+            self.dummyButtonPool:Release(button)
+          end
+          table.remove(list, index)
         end
-        table.remove(list)
       end
       if #list == 0 then
         self.buttonsByKey[key] = nil
