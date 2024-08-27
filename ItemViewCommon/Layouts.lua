@@ -872,7 +872,9 @@ function BaganatorLiveCategoryLayoutMixin:DeallocateUnusedButtons(cacheList)
     local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
     used[key] = (used[key] or 0) + 1
     matchingSlots[key] = matchingSlots[key] or {}
-    matchingSlots[key][cacheData.bagID .. "_" .. cacheData.slotID] = cacheData.itemCount
+    if cacheData.slotID then
+      matchingSlots[key][cacheData.bagID .. "_" .. cacheData.slotID] = cacheData.itemCount
+    end
   end
   for key, list in pairs(self.buttonsByKey) do
     if not used[key] or used[key] < #list then
