@@ -36,6 +36,17 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
       if bagData[slotID].itemID and C_Item.DoesItemExist(location) then
         local guid = C_Item.GetItemGUID(location)
         containerGuids[slotID] = guid
+        if self.recentTimeout[guid] then
+          -- Move bag item marker to reflect new item position
+          local timeout = self.recentTimeout[guid]
+          if timeout.bagID ~= bagID or timeout.slotID ~= slotID then
+            if self.recentByContainerTimeout[timeout.bagID][timeout.slotID] == guid then
+              self.recentByContainerTimeout[timeout.bagID][timeout.slotID] = nil
+            end
+            timeout.bagID, timeout.slotID = bagID, slotID
+            self.recentByContainerTimeout[bagID][slotID] = guid
+          end
+        end
       else
         containerGuids[slotID] = -1
       end
