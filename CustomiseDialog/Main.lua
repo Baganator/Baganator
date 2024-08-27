@@ -993,7 +993,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   }
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
+    if frame:IsVisible() and tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
       if addonTable.Config.Get("bag_view_type") ~= "category" and addonTable.Config.Get("bank_view_type") ~= "category" then
         StaticPopup_Show(enableDialog)
       end
