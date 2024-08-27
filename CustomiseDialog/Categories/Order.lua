@@ -159,7 +159,7 @@ local function GetCategoryContainer(parent, pickupCallback)
   ScrollUtil.InitScrollBoxListWithScrollBar(container.ScrollBox, container.ScrollBar, scrollView)
   addonTable.Skins.AddFrame("TrimScrollBar", container.ScrollBar)
 
-  container:SetSize(250, 500)
+  container:SetSize(250, 600)
 
   PopulateCategoryOrder(container)
 
@@ -208,7 +208,7 @@ end
 
 function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   local container = CreateFrame("Frame", nil, parent)
-  container:SetSize(300, 570)
+  container:SetSize(300, 670)
   container:SetPoint("CENTER")
 
   local previousOrder = CopyTable(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER))
