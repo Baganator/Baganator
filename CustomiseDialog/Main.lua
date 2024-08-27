@@ -924,7 +924,6 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
-  categoriesEditor:SetHeight(320)
   editors["EditCategory"] = categoriesEditor
   table.insert(allFrames, categoriesEditor)
 
@@ -939,7 +938,6 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesRecentEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesRecentEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesRecentEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
-  categoriesRecentEditor:SetHeight(210)
   editors["EditCategoryRecent"] = categoriesRecentEditor
   table.insert(allFrames, categoriesRecentEditor)
 
@@ -947,7 +945,6 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   categoriesEmptyEditor:SetPoint("TOP", editorHeader, "BOTTOM")
   categoriesEmptyEditor:SetPoint("RIGHT", frame, -28, 0)
   categoriesEmptyEditor:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
-  categoriesEmptyEditor:SetHeight(210)
   editors["EditCategoryEmpty"] = categoriesEmptyEditor
   table.insert(allFrames, categoriesEmptyEditor)
 
