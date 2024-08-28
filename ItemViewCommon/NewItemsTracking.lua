@@ -40,10 +40,8 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
         if self.recentTimeout[guid] then
           -- Move bag item marker to reflect new item position
           local timeout = self.recentTimeout[guid]
-          if timeout.bagID ~= bagID or timeout.slotID ~= slotID then
-            timeout.bagID, timeout.slotID = bagID, slotID
-            self.recentByContainerTimeout[bagID][slotID] = guid
-          end
+          timeout.bagID, timeout.slotID = bagID, slotID
+          self.recentByContainerTimeout[bagID][slotID] = guid
         end
       else
         containerGuids[slotID] = -1
