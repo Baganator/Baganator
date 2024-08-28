@@ -157,23 +157,12 @@ local function SetupBackpackView()
   ToggleAllBags = ToggleBackpackView
 
   -- Open the bags when a loot toast is clicked
-  local function ShowToastItem(itemRef, type)
-    local self = {}
+  local function ShowToastItem()
     addonTable.CallbackRegistry:TriggerEvent("BagShow")
-    addonTable.CallbackRegistry:RegisterCallback("ViewComplete", function()
-      addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", self)
-      addonTable.CallbackRegistry:TriggerEvent(type, itemLink)
-    end, self)
   end
-  hooksecurefunc("LegendaryItemAlertFrame_OnClick", function(self)
-    ShowToastItem(self.hyperlink, "HighlightIdenticalItems")
-  end)
-  hooksecurefunc("LootWonAlertFrame_OnClick", function(self)
-    ShowToastItem(self.hyperlink, "HighlightSimilarItems")
-  end)
-  hooksecurefunc("LootUpgradeFrame_OnClick", function(self)
-    ShowToastItem(self.hyperlink, "HighlightIdenticalItems")
-  end)
+  hooksecurefunc("LegendaryItemAlertFrame_OnClick", ShowToastItem)
+  hooksecurefunc("LootWonAlertFrame_OnClick", ShowToastItem)
+  hooksecurefunc("LootUpgradeFrame_OnClick", ShowToastItem)
 end
 
 local function SetupBankView()
