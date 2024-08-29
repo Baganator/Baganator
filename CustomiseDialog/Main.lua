@@ -597,6 +597,37 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     table.insert(GENERAL_OPTIONS, dropdown)
   end
 
+  do
+    local upgradePlugins = {
+      {label = BAGANATOR_L_NONE, id = "none"},
+    }
+    for id, pluginDetails in pairs(addonTable.API.UpgradePlugins) do
+      table.insert(upgradePlugins, {
+        label = pluginDetails.label,
+        id = id,
+      })
+    end
+    table.sort(upgradePlugins, function(a, b)
+      return a.label < b.label
+    end)
+    local dropdown = {
+      type = "dropdown",
+      text = BAGANATOR_L_UPGRADE_DETECTION,
+      option = "upgrade_plugin",
+      entries = {},
+      values = {},
+    }
+    for _, pluginInfo in ipairs(upgradePlugins) do
+      table.insert(dropdown.entries, pluginInfo.label)
+      table.insert(dropdown.values, pluginInfo.id)
+    end
+    if addonTable.API.UpgradePlugins[addonTable.Config.Get("upgrade_plugin")] == nil then
+      addonTable.Config.ResetOne("upgrade_plugin")
+    end
+
+    table.insert(GENERAL_OPTIONS, dropdown)
+  end
+
   local allFrames = {infoInset}
 
   do

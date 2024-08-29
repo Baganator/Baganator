@@ -46,6 +46,8 @@ addonTable.Config.Options = {
 
   JUNK_PLUGIN = "junk_plugin",
   JUNK_PLUGINS_IGNORED = "junk_plugin_ignored",
+  UPGRADE_PLUGIN = "upgrade_plugin",
+  UPGRADE_PLUGINS_IGNORED = "upgrade_plugin_ignored",
 
   MAIN_VIEW_POSITION = "main_view_position",
   MAIN_VIEW_SHOW_BAG_SLOTS = "main_view_show_bag_slots",
@@ -130,6 +132,8 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.AUTO_SORT_ON_OPEN] = false,
   [addonTable.Config.Options.JUNK_PLUGIN] = "poor_quality",
   [addonTable.Config.Options.JUNK_PLUGINS_IGNORED] = {},
+  [addonTable.Config.Options.UPGRADE_PLUGIN] = "none",
+  [addonTable.Config.Options.UPGRADE_PLUGINS_IGNORED] = {},
   [addonTable.Config.Options.SETTING_ANCHORS] = false,
   [addonTable.Config.Options.WARBAND_CURRENT_TAB] = 1,
 
@@ -198,6 +202,7 @@ addonTable.Config.ItemButtonsRelayoutSettings = {
   addonTable.Config.Options.ICON_GREY_JUNK,
   addonTable.Config.Options.REDUCE_SPACING,
   addonTable.Config.Options.JUNK_PLUGIN,
+  addonTable.Config.Options.UPGRADE_PLUGIN,
   addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
   addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
   addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,

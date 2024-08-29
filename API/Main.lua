@@ -86,6 +86,69 @@ do
   end)
 end
 
+addonTable.API.UpgradePlugins = {}
+
+do
+  local addonLoaded = false
+
+  local function AutoSet(id)
+    if id == "none" then
+      return
+    end
+    local currentOption = addonTable.Config.Get(addonTable.Config.Options.UPGRADE_PLUGIN)
+    local ignored = addonTable.Config.Get(addonTable.Config.Options.UPGRADE_PLUGINS_IGNORED)
+    if addonTable.API.UpgradePlugins[currentOption] == nil and not ignored[id] then
+      addonTable.Config.Set(addonTable.Config.Options.UPGRADE_PLUGIN, id)
+    end
+  end
+
+  addonTable.Utilities.OnAddonLoaded("Baganator", function()
+    addonLoaded = true
+
+    for id in pairs(addonTable.API.UpgradePlugins) do
+      AutoSet(id)
+    end
+
+    if next(addonTable.API.UpgradePlugins) then
+      ReportPluginAdded()
+    end
+  end)
+
+  -- callback - function(itemLink) returns nil/true/false
+  --  Returning true indicates this item is an upgrade
+  --  Returning false indicates that item isn't an upgrade.
+  function Baganator.API.RegisterUpgradePlugin(label, id, callback)
+    if type(label) ~= "string" or type(id) ~= "string" or type(callback) ~= "function" then
+      error("Bad upgrade provider plugin arguments")
+    end
+
+    addonTable.API.UpgradePlugins[id] = {
+      label = label,
+      callback = callback,
+    }
+
+    if addonLoaded then
+      AutoSet(id)
+    end
+
+    ReportPluginAdded()
+  end
+
+  function Baganator.API.IsUpgradePluginActive(id)
+    return addonTable.Config.Get(addonTable.Config.Options.UPGRADE_PLUGIN) == id
+  end
+
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == addonTable.Config.Options.UPGRADE_PLUGIN then
+      local ignored = addonTable.Config.Get(addonTable.Config.Options.UPGRADE_PLUGINS_IGNORED)
+      for id in pairs(addonTable.API.UpgradePlugins) do
+        ignored[id] = true
+      end
+      ignored[addonTable.Config.Get(addonTable.Config.Options.UPGRADE_PLUGIN)] = nil
+    end
+  end)
+end
+
 addonTable.API.IconCornerPlugins = {}
 
 do

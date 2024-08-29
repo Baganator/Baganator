@@ -34,6 +34,7 @@ addonTable.CategoryViews.Constants = {
     addonTable.Config.Options.CATEGORY_ITEM_GROUPING,
     addonTable.Config.Options.CATEGORY_MODIFICATIONS,
     addonTable.Config.Options.JUNK_PLUGIN,
+    addonTable.Config.Options.UPGRADE_PLUGIN,
   },
 
   OldPriorities = {

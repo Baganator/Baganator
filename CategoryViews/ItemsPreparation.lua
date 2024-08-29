@@ -24,20 +24,22 @@ function BaganatorCategoryViewsItemsPreparationMixin:PrepareItems(everything, ca
     local seen = self.seenData[key]
     if not processedKey[key] then
       if not seen then
-        if item.isJunkGetter then
+        if item.isJunkGetter or item.isUpgradeGetter then
           if not C_Item.IsItemDataCachedByID(item.itemID) then
             if C_Item.GetItemInfoInstant(item.itemID) ~= nil then
               waiting = waiting + 1
               addonTable.Utilities.LoadItemData(item.itemID, function()
                 waiting = waiting - 1
-                item.isJunk = item.isJunkGetter()
+                item.isJunk = item.isJunkGetter and item.isJunkGetter()
+                item.isUpgrade = item.isUpgradeGetter and item.isUpgradeGetter()
                 if waiting == 0 and loopComplete then
                   callback()
                 end
               end)
             end
           else
-            item.isJunk = item.isJunkGetter()
+            item.isJunk = item.isJunkGetter and item.isJunkGetter()
+            item.isUpgrade = item.isUpgradeGetter and item.isUpgradeGetter()
           end
         end
         seen = CopyTable(item)

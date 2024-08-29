@@ -62,6 +62,18 @@ function addonTable.ItemButtonUtil.UpdateSettings()
     end)
   end
 
+  local upgradePluginID = addonTable.Config.Get("upgrade_plugin")
+  local upgradePlugin = addonTable.API.UpgradePlugins[upgradePluginID]
+  if upgradePlugin and upgradePluginID ~= "poor_quality" then
+    iconSettings.usingUpgradePlugin = true
+    table.insert(itemCallbacks, function(self)
+      if self:GetID() ~= 0 then
+        local _, upgradeStatus = pcall(upgradePlugin.callback, self.BGR.itemLink)
+        self.BGR.isUpgrade = upgradeStatus == true
+      end
+    end)
+  end
+
   local positions = {
     "icon_top_left_corner_array",
     "icon_top_right_corner_array",

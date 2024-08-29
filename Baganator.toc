@@ -129,6 +129,7 @@ Help\Search.lua
 
 API\Main.lua
 API\Junk.lua
+API\Upgrades.lua
 API\ItemButton.lua
 API\EquipmentSets.lua
 API\Sorting.lua

@@ -42,7 +42,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == addonTable.Config.Options.JUNK_PLUGIN then
+    elseif settingName == addonTable.Config.Options.JUNK_PLUGIN or settingName == addonTable.Config.Options.UPGRADE_PLUGIN then
       self.LayoutManager:SettingChanged(settingName)
       if self:IsVisible() then
         self:GetParent():UpdateView()
