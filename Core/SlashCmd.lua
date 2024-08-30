@@ -66,6 +66,17 @@ function addonTable.SlashCmd.ResetCategories()
   ReloadUI()
 end
 
+function addonTable.SlashCmd.RemoveUnusedCategories()
+  local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+  local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
+  for name in pairs(customCategories) do
+    if tIndexOf(displayOrder, name) == nil then
+      customCategories[name] = nil
+    end
+  end
+  addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+end
+
 function addonTable.SlashCmd.CustomiseUI()
   addonTable.CallbackRegistry:TriggerEvent("ShowCustomise")
 end
@@ -75,6 +86,7 @@ local COMMANDS = {
   ["config"] = addonTable.SlashCmd.Config,
   ["reset"] = addonTable.SlashCmd.Reset,
   ["resetcategories"] = addonTable.SlashCmd.ResetCategories,
+  ["removeunusedcategories"] = addonTable.SlashCmd.RemoveUnusedCategories,
   [""] = addonTable.SlashCmd.CustomiseUI,
   ["search"] = function(text)
     addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", text)
