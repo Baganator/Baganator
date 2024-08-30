@@ -159,12 +159,10 @@ local function SetupBackpackView()
   -- Used to open the bags when a loot toast is clicked
   hooksecurefunc("OpenBag", function()
     local stack = debugstack()
-    -- Check to ensure we're not opening when OpenClose.lua will handle the
-    -- auto-open and auto-close
-    if stack:match("OpenAllBags") then
-      return
+    -- This hook is only for toasts
+    if stack:match("AlertFrameSystems.lua") then
+      addonTable.CallbackRegistry:TriggerEvent("BagShow")
     end
-    addonTable.CallbackRegistry:TriggerEvent("BagShow")
   end)
 end
 
