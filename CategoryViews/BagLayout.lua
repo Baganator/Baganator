@@ -372,6 +372,11 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
 end
 
 function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
+  if self.inProgress then
+    return
+  end
+  self.inProgress = true
+
   local container = self:GetParent()
   local s1 = debugprofilestop()
 
@@ -424,6 +429,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
           local s4 = debugprofilestop()
           local maxWidth, maxHeight = self:Display(bagWidth, bagIndexes, bagTypes, composed, emptySlotsOrder, emptySlotsByType, bagWidth, sideSpacing, topSpacing)
 
+          self.inProgress = false
           callback(maxWidth, maxHeight)
         end)
       end)

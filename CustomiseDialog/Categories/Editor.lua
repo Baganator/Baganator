@@ -39,7 +39,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     oldMods.priority = self.PrioritySlider:GetValue()
 
     local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
-    local oldHidden = hidden[self.currentCategory]
+    local oldHidden = hidden[self.currentCategory] == true
     if isNew or not isDefault then
       local newName = self.CategoryName:GetText():gsub("_", " ")
 
