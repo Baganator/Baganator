@@ -3,5 +3,8 @@
     <Scripts>
       <OnEvent method="OnEvent"/>
     </Scripts>
+    <Frames>
+      <Frame parentKey="Container"/>
+    </Frames>
   </Frame>
 </Ui>

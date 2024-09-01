@@ -4,5 +4,8 @@
       <OnEvent method="OnEvent"/>
       <OnHide method="OnHide"/>
     </Scripts>
+    <Frames>
+      <Frame parentKey="Container"/>
+    </Frames>
   </Frame>
 </Ui>

@@ -266,3 +266,13 @@ function addonTable.Utilities.ConvertAnchorToCorner(targetCorner, frame)
     error("Unknown anchor")
   end
 end
+
+function addonTable.Utilities.GetSpacing()
+  local sideSpacing, topSpacing = 13, 14
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
+    sideSpacing = 8
+    topSpacing = 7
+  end
+
+  return sideSpacing, topSpacing
+end

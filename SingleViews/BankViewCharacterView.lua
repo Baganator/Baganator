@@ -4,13 +4,13 @@ BaganatorSingleViewBankViewCharacterViewMixin = CreateFromMixins(BaganatorItemVi
 function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
   BaganatorItemViewCommonBankViewCharacterViewMixin.OnLoad(self)
 
-  self.unallocatedItemButtonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
-  self.CollapsingBagSectionsPool = addonTable.SingleViews.GetCollapsingBagSectionsPool(self)
+  self.unallocatedItemButtonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self.Container)
+  self.CollapsingBagSectionsPool = addonTable.SingleViews.GetCollapsingBagSectionsPool(self.Container)
   self.CollapsingBankBags = {}
   self.bagDetailsForComparison = {}
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Layouts) do
+    for _, layout in ipairs(self.Container.Layouts) do
       layout:RequestContentRefresh()
     end
     if self:IsVisible() and self.lastCharacter ~= nil then
@@ -30,13 +30,13 @@ function BaganatorSingleViewBankViewCharacterViewMixin:ApplySearch(text)
     return
   end
 
-  if self.BankLive:IsShown() then
-    self.BankLive:ApplySearch(text)
+  if self.Container.BankLive:IsShown() then
+    self.Container.BankLive:ApplySearch(text)
     for _, layouts in ipairs(self.CollapsingBankBags) do
       layouts.live:ApplySearch(text)
     end
-  elseif self.BankCached:IsShown() then
-    self.BankCached:ApplySearch(text)
+  elseif self.Container.BankCached:IsShown() then
+    self.Container.BankCached:ApplySearch(text)
     for _, layouts in ipairs(self.CollapsingBankBags) do
       layouts.cached:ApplySearch(text)
     end
@@ -59,7 +59,7 @@ end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:GetSearchMatches()
   local matches = {}
-  tAppendAll(matches, self.BankLive.SearchMonitor:GetMatches())
+  tAppendAll(matches, self.Container.BankLive.SearchMonitor:GetMatches())
   for _, layouts in ipairs(self.CollapsingBankBags) do
     tAppendAll(matches, layouts.live.SearchMonitor:GetMatches())
   end
@@ -67,7 +67,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:GetSearchMatches()
 end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:NotifyBagUpdate(updatedBags)
-  self.BankLive:MarkBagsPending("bank", updatedBags)
+  self.Container.BankLive:MarkBagsPending("bank", updatedBags)
 
   for _, bagGroup in ipairs(self.CollapsingBankBags) do
     bagGroup.live:MarkBagsPending("bank", updatedBags)
@@ -78,7 +78,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:NotifyBagUpdate(updatedBa
     for _, bagGroup in ipairs(self.CollapsingBankBags) do
       bagGroup.cached:MarkBagsPending("bank", updatedBags)
     end
-    self.BankCached:MarkBagsPending("bank", updatedBags)
+    self.Container.BankCached:MarkBagsPending("bank", updatedBags)
   end
 end
 
@@ -90,8 +90,8 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   self:AllocateBankBags(character)
 
-  self.BankLive:SetShown(self.isLive)
-  self.BankCached:SetShown(not self.isLive)
+  self.Container.BankLive:SetShown(self.isLive)
+  self.Container.BankCached:SetShown(not self.isLive)
 
   for _, layouts in ipairs(self.CollapsingBankBags) do
     layouts.live:SetShown(self.isLive)
@@ -100,13 +100,13 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   local activeBank, activeBankBagCollapsibles = nil, {}
 
-  if self.BankLive:IsShown() then
-    activeBank = self.BankLive
+  if self.Container.BankLive:IsShown() then
+    activeBank = self.Container.BankLive
     for _, layouts in ipairs(self.CollapsingBankBags) do
       table.insert(activeBankBagCollapsibles, layouts.live)
     end
   else
-    activeBank = self.BankCached
+    activeBank = self.Container.BankCached
     for _, layouts in ipairs(self.CollapsingBankBags) do
       table.insert(activeBankBagCollapsibles, layouts.cached)
     end
@@ -126,12 +126,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
   self:ApplySearch(searchText)
 
-  -- Copied from SingleViews/BagView.lua
-  local sideSpacing, topSpacing = 13, 14
-  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 8
-    topSpacing = 7
-  end
+  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   local bankHeight = activeBank:GetHeight() + topSpacing / 2
 
@@ -176,17 +171,15 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   end
 
   activeBank:ClearAllPoints()
-  activeBank:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2, - 50 - topSpacing / 4)
+  activeBank:SetPoint("TOPLEFT", 0, 0)
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
-  self:SetSize(
-    activeBank:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    bankHeight + 75
-  )
+  self.Container:SetSize(activeBank:GetWidth(), bankHeight)
+
+  self:OnFinished()
 
   self.CurrencyWidget:UpdateCurrencyTextVisibility(lastButton and lastButton:GetRight() - self:GetLeft() + 10 or sideSpacing + addonTable.Constants.ButtonFrameOffset)
-
 
   self:GetParent():OnTabFinished()
 end

@@ -1,8 +1,12 @@
 <Ui>
   <Frame name="BaganatorSingleViewBackpackViewTemplate" virtual="true" inherits="BaganatorItemViewCommonBackpackViewTemplate" mixin="BaganatorSingleViewBackpackViewMixin">
     <Frames>
-      <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
-      <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
+      <Frame parentKey="Container">
+        <Frames>
+          <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
+          <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
+        </Frames>
+      </Frame>
     </Frames>
   </Frame>
 </Ui>

@@ -1,15 +1,19 @@
 <Ui>
   <Frame name="BaganatorSingleViewBankViewCharacterViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewCharacterViewMixin" inherits="BaganatorItemViewCommonBankViewCharacterViewTemplate">
     <Frames>
-      <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT" x="13" y="-50"/>
-        </Anchors>
-      </Frame>
-      <Frame parentKey="BankCached" inherits="BaganatorCachedBagLayoutTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT" x="13" y="-50"/>
-        </Anchors>
+      <Frame parentKey="Container">
+        <Frames>
+          <Frame parentKey="BankLive" inherits="BaganatorLiveBagLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT" x="13" y="-50"/>
+            </Anchors>
+          </Frame>
+          <Frame parentKey="BankCached" inherits="BaganatorCachedBagLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT" x="13" y="-50"/>
+            </Anchors>
+          </Frame>
+        </Frames>
       </Frame>
     </Frames>
   </Frame>

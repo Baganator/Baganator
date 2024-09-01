@@ -471,10 +471,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     self.Tabs[1]:SetPoint("LEFT", active, "LEFT")
   end
 
-  local sideSpacing = 13
-  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 8
-  end
+  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   self.SearchWidget:SetSpacing(sideSpacing)
 

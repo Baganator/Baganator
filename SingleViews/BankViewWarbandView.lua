@@ -2,16 +2,16 @@ local _, addonTable = ...
 BaganatorSingleViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
 
 function BaganatorSingleViewBankViewWarbandViewMixin:GetSearchMatches()
-  if self.BankTabLive:IsShown() then
-    return self.BankTabLive.SearchMonitor:GetMatches()
+  if self.Container.BankTabLive:IsShown() then
+    return self.Container.BankTabLive.SearchMonitor:GetMatches()
   else
-    return self.BankUnifiedLive.SearchMonitor:GetMatches()
+    return self.Container.BankUnifiedLive.SearchMonitor:GetMatches()
   end
 end
 
 function BaganatorSingleViewBankViewWarbandViewMixin:NotifyBagUpdate(updatedBags)
-  self.BankTabLive:MarkTabsPending(updatedBags)
-  self.BankUnifiedLive:MarkBagsPending("bags", updatedBags)
+  self.Container.BankTabLive:MarkTabsPending(updatedBags)
+  self.Container.BankUnifiedLive:MarkBagsPending("bags", updatedBags)
 end
 
 function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
@@ -21,29 +21,29 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     return
   end
 
-  self.BankTabLive:SetShown(self.isLive and self.currentTab > 0)
-  self.BankTabCached:SetShown(not self.isLive and self.currentTab > 0)
+  self.Container.BankTabLive:SetShown(self.isLive and self.currentTab > 0)
+  self.Container.BankTabCached:SetShown(not self.isLive and self.currentTab > 0)
 
-  self.BankUnifiedLive:SetShown(self.isLive and self.currentTab == 0)
-  self.BankUnifiedCached:SetShown(not self.isLive and self.currentTab == 0)
+  self.Container.BankUnifiedLive:SetShown(self.isLive and self.currentTab == 0)
+  self.Container.BankUnifiedCached:SetShown(not self.isLive and self.currentTab == 0)
 
   local bankWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
 
   local activeBank
 
   if self.currentTab > 0 then
-    if self.BankTabLive:IsShown() then
-      activeBank = self.BankTabLive
+    if self.Container.BankTabLive:IsShown() then
+      activeBank = self.Container.BankTabLive
     else
-      activeBank = self.BankTabCached
+      activeBank = self.Container.BankTabCached
     end
 
     activeBank:ShowTab(self.currentTab, Syndicator.Constants.AllWarbandIndexes, bankWidth)
   else
-    if self.BankUnifiedLive:IsShown() then
-      activeBank = self.BankUnifiedLive
+    if self.Container.BankUnifiedLive:IsShown() then
+      activeBank = self.Container.BankUnifiedLive
     else
-      activeBank = self.BankUnifiedCached
+      activeBank = self.Container.BankUnifiedCached
     end
 
     local warbandData = Syndicator.API.GetWarband(1)
@@ -58,19 +58,12 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
   self:ApplySearch(searchText)
 
-  -- Copied from SingleViews/BagView.lua
-  local sideSpacing, topSpacing = 13, 14
-  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 8
-    topSpacing = 7
-  end
+  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   local bankHeight = activeBank:GetHeight() + topSpacing / 2
 
-  bankHeight = bankHeight + 20
-
   activeBank:ClearAllPoints()
-  activeBank:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2, - 50 - topSpacing / 4)
+  activeBank:SetPoint("TOPLEFT", 0, 0)
 
   if self.isLive then
     bankHeight = bankHeight + 25
@@ -78,16 +71,15 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
-  self:SetSize(
-    math.max(activeBank:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2, self:GetButtonsWidth(sideSpacing)),
-    bankHeight + 55
-  )
+  self.Container:SetSize(math.max(activeBank:GetWidth(), self:GetButtonsWidth(sideSpacing)), bankHeight)
+
+  self:OnFinished()
 
   self:GetParent():OnTabFinished()
 end
 
 function BaganatorSingleViewBankViewWarbandViewMixin:ApplySearch(text)
-  for _, layout in ipairs(self.Layouts) do
+  for _, layout in ipairs(self.Container.Layouts) do
     if layout:IsShown() then
       layout:ApplySearch(text)
     end

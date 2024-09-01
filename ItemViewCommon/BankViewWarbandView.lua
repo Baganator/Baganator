@@ -32,7 +32,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Layouts) do
+    for _, layout in ipairs(self.Container.Layouts) do
       layout:RequestContentRefresh()
     end
     if self:IsVisible() then
@@ -42,7 +42,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
-      for _, layout in ipairs(self.Layouts) do
+      for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       if self:IsVisible() then
@@ -357,12 +357,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
   tAppendAll(self:GetParent().AllButtons, self.LiveButtons)
 
-  -- Copied from ItemViewCommons/BagView.lua
-  local sideSpacing, topSpacing = 13, 14
-  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
-    sideSpacing = 8
-    topSpacing = 7
-  end
+  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   if self.isLive then
     self.IncludeReagentsCheckbox:SetPoint("LEFT", self, "LEFT", addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
@@ -380,7 +375,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
     local minWidth = self.BankMissingHint:GetWidth() + 40
     local maxHeight = 30
 
-    for _, layout in ipairs(self.Layouts) do
+    for _, layout in ipairs(self.Container.Layouts) do
       layout:Hide()
     end
 
@@ -393,6 +388,23 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
     self:GetParent():OnTabFinished()
   end
+end
+
+function BaganatorItemViewCommonBankViewWarbandViewMixin:OnFinished(character, isLive)
+  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+
+  local buttonPadding = 0
+  if self.isLive then
+    buttonPadding = buttonPadding + 25
+  end
+
+  self.Container:ClearAllPoints()
+  self.Container:SetPoint("TOPRIGHT", -sideSpacing, -50 - topSpacing / 4)
+
+  self:SetSize(
+    self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
+    self.Container:GetHeight() + 75 + topSpacing / 2 + buttonPadding
+  )
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DepositMoney()
