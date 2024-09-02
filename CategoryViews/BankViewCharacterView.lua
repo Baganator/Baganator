@@ -4,7 +4,7 @@ BaganatorCategoryViewBankViewCharacterViewMixin = CreateFromMixins(BaganatorItem
 function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   BaganatorItemViewCommonBankViewCharacterViewMixin.OnLoad(self)
 
-  self.Layouts = {}
+  self.Container.Layouts = {}
   self.LiveLayouts = {}
   self.CachedLayouts = {}
 
@@ -16,7 +16,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.LayoutManager:FullRefresh()
-    for _, layout in ipairs(self.Layouts) do
+    for _, layout in ipairs(self.Container.Layouts) do
       layout:RequestContentRefresh()
     end
     if self:IsVisible() and self.lastCharacter ~= nil then
@@ -35,7 +35,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
         self:GetParent():UpdateView()
       end
     elseif settingName == addonTable.Config.Options.SORT_METHOD then
-      for _, layout in ipairs(self.Layouts) do
+      for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       self.LayoutManager:SettingChanged(settingName)
@@ -89,7 +89,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:ApplySearch(text)
     return
   end
 
-  for _, layout in ipairs(self.Layouts) do
+  for _, layout in ipairs(self.Container.Layouts) do
     if layout:IsVisible() then
       layout:ApplySearch(text)
     end
@@ -115,7 +115,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
       80 + topSpacing / 2
     )
     self.CurrencyWidget:UpdateCurrencyTextVisibility()
-    for _, l in ipairs(self.Layouts) do
+    for _, l in ipairs(self.Container.Layouts) do
       l:Hide()
     end
     self.LayoutManager:ClearVisuals()
