@@ -247,21 +247,21 @@ end
 -- Anchor is relative to UIParent
 function addonTable.Utilities.ConvertAnchorToCorner(targetCorner, frame)
   if targetCorner == "TOPLEFT" then
-    return "TOPLEFT", frame:GetLeft(), frame:GetTop() - UIParent:GetTop()
+    return "TOPLEFT", frame:GetLeft(), frame:GetTop() - UIParent:GetTop()/frame:GetScale()
   elseif targetCorner == "TOPRIGHT" then
-    return "TOPRIGHT", frame:GetRight() - UIParent:GetRight(), frame:GetTop() - UIParent:GetTop()
+    return "TOPRIGHT", frame:GetRight() - UIParent:GetRight()/frame:GetScale(), frame:GetTop() - UIParent:GetTop()/frame:GetScale()
   elseif targetCorner == "BOTTOMLEFT" then
     return "BOTTOMLEFT", frame:GetLeft(), frame:GetBottom()
   elseif targetCorner == "BOTTOMRIGHT" then
-    return "BOTTOMRIGHT", frame:GetRight() - UIParent:GetRight(), frame:GetBottom()
+    return "BOTTOMRIGHT", frame:GetRight() - UIParent:GetRight()/frame:GetScale(), frame:GetBottom()
   elseif targetCorner == "RIGHT" then
-    return "RIGHT", frame:GetRight() - UIParent:GetRight(), select(2, frame:GetCenter()) - select(2, UIParent:GetCenter())
+    return "RIGHT", frame:GetRight() - UIParent:GetRight()/frame:GetScale(), select(2, frame:GetCenter()) - select(2, UIParent:GetCenter())/frame:GetScale()
   elseif targetCorner == "LEFT" then
-    return "LEFT", frame:GetLeft(), select(2, frame:GetCenter()) - select(2, UIParent:GetCenter())
+    return "LEFT", frame:GetLeft(), select(2, frame:GetCenter()) - select(2, UIParent:GetCenter())/frame:GetScale()
   elseif targetCorner == "TOP" then
-    return "TOP", select(1, frame:GetCenter()) - select(1, UIParent:GetCenter()), frame:GetTop() - UIParent:GetTop()
+    return "TOP", select(1, frame:GetCenter() - select(1, UIParent:GetCenter())/frame:GetScale()), (frame:GetTop() - UIParent:GetTop()/frame:GetScale())
   elseif targetCorner == "BOTTOM" then
-    return "BOTTOM", select(1, frame:GetCenter()) - select(1, UIParent:GetCenter()), frame:GetBottom()
+    return "BOTTOM", select(1, frame:GetCenter()) - select(1, UIParent:GetCenter())/frame:GetScale(), frame:GetBottom()
   else
     error("Unknown anchor")
   end
