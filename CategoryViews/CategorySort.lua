@@ -8,7 +8,7 @@ function BaganatorCategoryViewsCategorySortMixin:ApplySorts(composed, callback)
   self.composedDetails = composed.details
   self.sortPending = {}
   for index, details in ipairs(composed.details) do
-    if details.results then
+    if details.results and #details.results > 0 then
       self.sortPending[index] = true
     end
   end
