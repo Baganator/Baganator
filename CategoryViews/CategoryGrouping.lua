@@ -69,15 +69,50 @@ do
   groupings["type"] = {}
 
   local subTypes = {
-    -- Weapon
+    -- Consumables (0)
+    0, 0, -- Explosives and Devices
+    0, 1, -- Potions
+    0, 2, -- Elxirs
+    0, 3, -- Flasks & Phials
+    0, 4, -- Scrolls (Obsolete)
+    0, 5, -- Food & Drink
+    0, 6, -- Item Enhancements (Obsolete)
+    0, 7, -- Bandage
+    0, 9, -- Vantus Runes
+    0, 11, -- Combat Curio
+    0, 10, -- Utility Curio
+    0, 8, -- Other
+
+    -- Key (13)
+    13, 0, -- Key
+    13, 1, -- Lockpick
+
+    -- Quest (12)
+    12, 0, -- Quest
+
+    -- Containers (1)
+    1, 0, -- Bag
+    1, 11, -- Reagent Bag
+    1, 1, -- Soul Bag	Classic
+    1, 4, -- Engineering Bag
+    1, 6, -- Mining Bag
+    1, 7, -- Leatherworking Bag
+    1, 3, -- Enchanting Bag
+    1, 5, -- Gem Bag
+    1, 2, -- Herb Bag
+    1, 8, -- Inscription Bag
+    1, 10, -- Cooking Bag
+    1, 9, -- Tackle Box
+
+    -- Weapon (2)
     2, 0, -- One-Handed Axes
     2, 4, -- One-Handed Maces
     2, 7, -- One-Handed Swords
     2, 9, -- Warglaives
     2, 15, -- Daggers
     2, 13, -- Fist Weapons
-    2, 11, -- bear claws
-    2, 12, -- cat claws
+    2, 11, -- Bear Claws
+    2, 12, -- Cat Claws
     2, 19, -- Wands
     2, 1, -- Two-Handed Axes
     2, 5, -- Two-Handed Maces
@@ -90,7 +125,7 @@ do
     2, 16, -- Thrown
     2, 20, -- Fishing Poles
 
-    -- Armor
+    -- Armor (4)
     4, 1, -- Cloth
     4, 2, -- Leather
     4, 3, -- Mail
@@ -104,37 +139,76 @@ do
     4, 5, -- Cosmetic
     4, 0, -- Generic
 
-    -- Tradeskill
+    -- Quiver (11)
+    11, 0, -- Quiver (Obsolete)
+    11, 1, -- Bolt (Obsolete)
+    11, 2, -- Quiver
+    11, 3, -- Ammo Pounch
+
+    -- Projectile (6)
+    6, 0, -- Wand (Obsolete)
+    6, 1, -- Bolt (Obsolete)
+    6, 2, -- Arrow (Obsolete)
+    6, 3, -- Bullet (Obsolete)
+    6, 4, -- Thrown (Obsolete)
+
+    -- Gems (3)
+    3, 11, -- Artifact Relic
+    3, 0, -- Intellect
+    3, 1, -- Agility
+    3, 2, -- Strength
+    3, 3, -- Stamina
+    3, 4, -- Spirit
+    3, 5, -- Critical Strike
+    3, 6, -- Mastery
+    3, 7, -- Haste
+    3, 8, -- Versatility
+    3, 9, -- Other
+    3, 10, -- Multiple Stats
+
+    -- Permanent (14)
+    14, 0, -- Permanent (Obsolete)
+
+    -- Item Enhancement (8)
+    8, 0, -- Head
+    8, 1, -- Neck
+    8, 2, -- Shoulder
+    8, 3, -- Cloak
+    8, 4, -- Chest
+    8, 5, -- Wrist
+    8, 6, -- Hands
+    8, 7, -- Waist
+    8, 8, -- Legs
+    8, 9, -- Feet
+    8, 10, -- Finger
+    8, 11, -- Weapon
+    8, 12, -- Two-Handed Weapon
+    8, 13, -- Shield/Off-hand
+    8, 14, -- Misc
+
+    -- Tradeskill (7)
+    7, 19, -- Finishing Reagents
     7, 18, -- Optional Reagents
+    7, 17, -- Explosives and Devices (Obsolete)
+    7, 2, -- Explosives (Obsolete)
+    7, 3, -- Devices (Obsolete)
+    7, 13, -- Materials (Obsolete)
     7, 1, -- Parts
-    7, 4, -- Jewelcrafting
     7, 7, -- Metal & Stone
     7, 6, -- Leather
     7, 5, -- Cloth
     7, 12, -- Enchanting
-    7, 16, -- Inscription
     7, 10, -- Elemental
+    7, 4, -- Jewelcrafting
+    7, 16, -- Inscription
     7, 9, -- Herb
     7, 8, -- Cooking
+    7, 14, -- Item Enhancement (Obsolete)
+    7, 15, -- Weapon Enhancement (Obsolete)
+    7, 0, -- Trade Goods (Obsolete)
     7, 11, -- Other
 
-     -- Profession
-    16, 7, -- Engineering
-    16, 0, -- Blacksmithing
-    16, 1, -- Leatherworking
-    16, 6, -- Tailoring
-    16, 8, -- Enchanting
-    16, 11, -- Jewelcrafting
-    16, 2, -- Alchemy
-    16, 12, -- Inscription
-    16, 5, -- Mining
-    16, 10, -- Skinning
-    16, 3, -- Herbalism
-    16, 4, -- Cooking
-    16, 9, -- Fishing
-    16, 13, -- Archaeology
-
-    -- Recipe
+    -- Recipe (9)
     9, 3, -- Engineering
     9, 4, -- Blacksmithing
     9, 1, -- Leatherworking
@@ -144,29 +218,81 @@ do
     9, 6, -- Alchemy
     9, 11, -- Inscription
     9, 5, -- Cooking
-    9, 8, -- Fishing
+    9, 9, -- Fishing
     9, 7, -- First Aid
     9, 0, -- Book
 
-    -- Battle Pets
+    -- Profession (19)
+    19, 7, -- Engineering
+    19, 0, -- Blacksmithing
+    19, 1, -- Leatherworking
+    19, 6, -- Tailoring
+    19, 8, -- Enchanting
+    19, 11, -- Jewelcrafting
+    19, 2, -- Alchemy
+    19, 12, -- Inscription
+    19, 5, -- Mining
+    19, 10, -- Skinning
+    19, 3, -- Herbalism
+    19, 4, -- Cooking
+    19, 9, -- Fishing
+    19, 13, -- Archaeology
+
+    -- Reagents (5)
+    5, 0, -- Reagent
+    5, 1, -- Keystone
+    5, 2, -- Context Token
+
+    -- Glyph (16)
+    16, 1, -- Warrior
+    16, 2, -- Paladin
+    16, 3, -- Hunter
+    16, 4, -- Rogue
+    16, 5, -- Priest
+    16, 6, -- Death Knight
+    16, 7, -- Shaman
+    16, 8, -- Mage
+    16, 9, -- Warlock
+    16, 10, -- Monk
+    16, 11, -- Druid
+    16, 12, -- Demon Hunter
+
+    -- Money (10) Obsolete
+    10, 0, -- Money (Obsolete)
+
+    -- Battle Pets (17)
     17, 0, -- Humanoid
     17, 1, -- Dragonkin
     17, 2, -- Flying
     17, 3, -- Undead
     17, 4, -- Critter
-    17, 5, -- Magic
+    17, 5, -- Magical
     17, 6, -- Elemental
     17, 7, -- Beast
     17, 8, -- Aquatic
     17, 9, -- Mechanical
+
+    -- Miscellaneous (15)
+    15, 5, -- Mount
+    15, 6, -- Mount Equipment
+    15, 2, -- Companion Pets
+    15, 3, -- Holiday
+    15, 1, -- Reagent
+    15, 0, -- Junk
+    15, 4, -- Other
+
+    -- WoW Token (18)
+    18, 0, -- WoW Token
   }
   groupingsToLabels["type"] = {}
   for i = 1, #subTypes, 2 do
     local root = subTypes[i]
     local child = subTypes[i+1]
     local childLabel = C_Item.GetItemSubClassInfo(subTypes[i], subTypes[i+1])
-    table.insert(groupings["type"], childLabel)
-    groupingsToLabels["type"][root .. "_" ..  child] = childLabel
+    if childLabel then
+      table.insert(groupings["type"], childLabel)
+      groupingsToLabels["type"][root .. "_" ..  child] = childLabel
+    end
   end
 
   groupingGetters["type"] = function(item)
