@@ -321,8 +321,15 @@ L["BINDING_OPEN_WARBAND_BANK"] = "Open Warband Bank"
 L["BINDING_OPEN_GUILD_BANK"] = "Open Guild Bank"
 L["BINDING_QUICK_SEARCH"] = "Quick Search"
 
+L["KEYWORDS_IN_TOOLTIPS_X"] = "Keywords in bag item tooltips now %s"
+L["CATEGORIES_IN_TOOLTIPS_X"] = "Category matches in bag item tooltips now %s"
+L["ENABLED"] = "enabled"
+L["DISABLED"] = "disabled"
+L["REMOVED_UNUSED_CATEGORIES"] = "All unused custom categories removed"
+
 L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
 L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
+
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
