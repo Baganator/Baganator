@@ -14,6 +14,7 @@ local function RegisterForScaling(frame)
         ['Baganator'] = {
            [frame:GetName()] = {
              NonDraggable = true,
+             IgnoreClamping = true,
            },
         },
     });
