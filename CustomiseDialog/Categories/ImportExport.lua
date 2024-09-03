@@ -182,6 +182,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
   local customCategories, categoryMods, seenItems = ImportCategories(import)
 
   local sourceMap = {}
+  local reverseMap = {}
   do
     local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     local seenSources = {}
@@ -191,6 +192,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
         source = tostring(tonumber(source) + 1)
       end
       sourceMap[key] = source
+      reverseMap[source] = key
       seenSources[source] = true
     end
   end
@@ -231,7 +233,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     local currentCategoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     -- Prevent duplicate items in multiple category modifications caused by an import
     for source, details in pairs(currentCategoryMods) do
-      if categoryMods[source] == nil and details.addedItems then
+      if details.addedItems then
         for key in pairs(seenItems) do
           details.addedItems[key] = nil
         end
@@ -239,6 +241,11 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     end
     for source, details in pairs(categoryMods) do
       currentCategoryMods[sourceMap[source] or source] = details
+    end
+    for _, source in ipairs(displayOrder) do
+      if not categoryMods[reverseMap[source] or source] then
+        currentCategoryMods[source] = nil
+      end
     end
     addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
