@@ -301,9 +301,9 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     end
     activeLayouts = container.LiveLayouts
   else
-    if #container.CachedLayouts > layoutCount then
-      for index = layoutCount + 1, #container.CachedLayouts do
-        container.CachedLayouts[index]:Hide()
+    for _, layout in ipairs(container.CachedLayouts) do
+      if not sourceKeysInUse[layout.sourceKey] then
+        layout:Hide()
       end
     end
     for _, layout in ipairs(container.LiveLayouts) do
