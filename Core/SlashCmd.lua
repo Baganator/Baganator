@@ -74,7 +74,14 @@ function addonTable.SlashCmd.RemoveUnusedCategories()
       customCategories[name] = nil
     end
   end
+  local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+  for name in pairs(categoryMods) do
+    if tIndexOf(displayOrder, name) == nil then
+      categoryMods[name] = nil
+    end
+  end
   addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+  addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
   addonTable.Utilities.Message(BAGANATOR_L_REMOVED_UNUSED_CATEGORIES)
 end
 
