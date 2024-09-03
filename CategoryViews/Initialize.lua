@@ -38,6 +38,27 @@ local function MigrateFormat()
     end
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MIGRATION, 3)
   end
+  if addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MIGRATION) == 3 then
+    local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
+    local index = 1
+    local oldCustom = CopyTable(customCategories)
+    for key, category in pairs(oldCustom) do
+      local displayIndex = tIndexOf(displayOrder, key)
+      if displayIndex then
+        displayOrder[displayIndex] = tostring(index)
+      end
+      customCategories[tostring(index)] = category
+      categoryMods[tostring(index)] = categoryMods[key]
+
+      customCategories[key] = nil
+      categoryMods[key] = nil
+
+      index = index + 1
+    end
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MIGRATION, 4)
+  end
 end
 
 local function SetupCategories()

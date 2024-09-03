@@ -11,7 +11,7 @@ local groupingToLabel = {
 local disabledAlpha = 0.5
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
-  self.currentCategory = ""
+  self.currentCategory = "-1"
 
   self.HelpButton:SetScript("OnClick", function()
     addonTable.Help.ShowSearchDialog()
@@ -27,14 +27,18 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
     local oldMods = categoryMods[self.currentCategory]
     local oldIndex
-    local isNew, isDefault = self.currentCategory == "", customCategories[self.currentCategory] == nil
+    local isNew, isDefault = self.currentCategory == "-1", customCategories[self.currentCategory] == nil
     if not isNew and not isDefault then
       oldIndex = tIndexOf(displayOrder, self.currentCategory)
-      customCategories[self.currentCategory] = nil
-      categoryMods[self.currentCategory] = nil
     end
     if not oldMods then
       oldMods = {}
+    end
+    if isNew then
+      self.currentCategory = tostring(1)
+      while customCategories[self.currentCategory] do
+        self.currentCategory = tostring(tonumber(self.currentCategory) + 1)
+      end
     end
     oldMods.priority = self.PrioritySlider:GetValue()
 
@@ -43,33 +47,18 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     if isNew or not isDefault then
       local newName = self.CategoryName:GetText():gsub("_", " ")
 
-      local isNewName = newName ~= self.currentCategory
-
-      if isNewName then
-        -- Check for an existing entry to an existing category with the same name
-        local existingIndex = tIndexOf(displayOrder, newName)
-        if existingIndex ~= nil then
-          table.remove(displayOrder, existingIndex)
-        end
-      end
-
-      customCategories[newName] = {
+      customCategories[self.currentCategory] = {
         name = newName,
         search = self.CategorySearch:GetText(),
       }
-      categoryMods[newName] = oldMods
+      categoryMods[self.currentCategory] = oldMods
 
-      hidden[newName] = self.HiddenCheckBox:GetChecked()
+      hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
 
-      self.currentCategory = newName
       self.CategoryName:SetText(newName)
 
-      if oldIndex then
-        displayOrder[oldIndex] = self.currentCategory
-      elseif isNew and tIndexOf(displayOrder, self.currentCategory) == nil then
+      if isNew and tIndexOf(displayOrder, self.currentCategory) == nil then
         table.insert(displayOrder, 1, self.currentCategory)
-      end
-      if isNewName then
         addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
       end
     else
@@ -86,7 +75,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
 
   local function SetState(value)
     local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
-    self.currentCategory = value
 
     for _, region in ipairs(self.ChangeAlpha) do
       region:SetAlpha(1)
@@ -96,6 +84,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     self.DeleteButton:Enable()
 
     if value == "" then
+      self.currentCategory = "-1"
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
       self.CategorySearch:SetText("")
       self.PrioritySlider:SetValue(0)
@@ -107,6 +96,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       Save()
       return
     end
+
+    self.currentCategory = value
 
     local category
     if customCategories[value] then
@@ -250,7 +241,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.ItemsEditor:SetPoint("TOP", 0, -250)
 
   self.ExportButton:SetScript("OnClick", function()
-    if self.currentCategory == "" then
+    if self.currentCategory == "-1" then
       return
     end
 
@@ -258,7 +249,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   end)
 
   self.DeleteButton:SetScript("OnClick", function()
-    if self.currentCategory == "" then
+    if self.currentCategory == "-1" then
       return
     end
 
@@ -294,7 +285,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:Disable()
   self.PrioritySlider:SetValue(0)
   self.GroupDropDown:SetText(BAGANATOR_L_NONE)
   self.HiddenCheckBox:SetChecked(false)
-  self.currentCategory = ""
+  self.currentCategory = "-1"
   self.DeleteButton:Disable()
   self.ExportButton:Disable()
   for _, region in ipairs(self.ChangeAlpha) do

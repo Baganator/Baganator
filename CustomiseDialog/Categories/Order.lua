@@ -82,7 +82,12 @@ local function PopulateCategoryOrder(container)
     end
   end
 
+  if container.dataProviderElements and tCompare(dataProviderElements, container.dataProviderElements, 4) then
+    return
+  end
+
   container.elements = elements
+  container.dataProviderElements = dataProviderElements
   container.ScrollBox:SetDataProvider(CreateDataProvider(dataProviderElements), true)
 end
 
@@ -181,9 +186,16 @@ local function SetCategoriesToDropDown(dropDown, ignore)
       table.insert(options, {label = category.name, value = source})
     end
   end
+  local nameCount = {}
   for source, category in pairs(addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)) do
     if not ignore[source] then
-      table.insert(options, {label = category.name .. " (*)", value = category.name})
+      if not nameCount[category.name] then
+        table.insert(options, {label = category.name .. " (*)", value = source})
+        nameCount[category.name] = 1
+      else
+        nameCount[category.name] = nameCount[category.name] + 1
+        table.insert(options, {label = category.name .. " (*" .. nameCount[category.name] .. ")", value = source})
+      end
     end
   end
   table.sort(options, function(a, b) return a.label:lower() < b.label:lower() end)
@@ -330,11 +342,9 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   dropDown:SetPoint("RIGHT", categoryOrder)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER or settingName == addonTable.Config.Options.CATEGORY_HIDDEN then
+    if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER or settingName == addonTable.Config.Options.CATEGORY_HIDDEN or settingName == addonTable.Config.Options.CUSTOM_CATEGORIES then
       SetCategoriesToDropDown(dropDown, GetInsertedCategories())
       PopulateCategoryOrder(categoryOrder)
-    elseif settingName == addonTable.Config.Options.CUSTOM_CATEGORIES then
-      SetCategoriesToDropDown(dropDown, GetInsertedCategories())
     end
   end)
 

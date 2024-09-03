@@ -10,6 +10,7 @@ function addonTable.CustomiseDialog.SingleCategoryExport(name)
   table.insert(export.categories, {
     name = category.name,
     search = category.search,
+    source = name,
   })
   local mods = addonTable.Config.Get("category_modifications")[name]
   local items, pets = {}, {}
@@ -44,10 +45,11 @@ function addonTable.CustomiseDialog.CategoriesExport()
     hidden = {},
     order = CopyTable(addonTable.Config.Get("category_display_order")),
   }
-  for _, category in pairs(addonTable.Config.Get("custom_categories")) do
+  for source, category in pairs(addonTable.Config.Get("custom_categories")) do
     table.insert(export.categories, {
       name = category.name,
       search = category.search,
+      source = source,
     })
   end
   for key, mods in pairs(addonTable.Config.Get("category_modifications")) do
@@ -99,10 +101,10 @@ local function ImportCategories(import)
       search = c.search,
     }
     if c.priority then
-      priorities[c.name] = addonTable.CategoryViews.Constants.OldPriorities[c.priority]
+      priorities[c.source or c.name] = addonTable.CategoryViews.Constants.OldPriorities[c.priority]
     end
 
-    customCategories[newCategory.name] = newCategory
+    customCategories[c.source or newCategory.name] = newCategory
   end
 
   local seenItems = {}
@@ -178,11 +180,27 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     return
   end
   local customCategories, categoryMods, seenItems = ImportCategories(import)
+
+  local sourceMap = {}
+  do
+    local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+    local seenSources = {}
+    for key in pairs(customCategories) do
+      local source = tostring(1)
+      while currentCustomCategories[source] or seenSources[source] do
+        source = tostring(tonumber(source) + 1)
+      end
+      sourceMap[key] = source
+      seenSources[source] = true
+    end
+  end
+
   if import.order then
     if type(import.order) ~= "table" then
       addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
       return
     end
+
     local hidden = {}
     if import.hidden then
       if type(import.hidden) ~= "table" then
@@ -197,7 +215,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     for _, source in ipairs(import.order) do
       local category = addonTable.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
       if category or source == addonTable.CategoryViews.Constants.DividerName or source:match("^_") then
-        table.insert(displayOrder, source)
+        table.insert(displayOrder, sourceMap[source] or source)
       end
     end
     for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
@@ -208,7 +226,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
 
     local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     for source, category in pairs(customCategories) do
-      currentCustomCategories[source] = category
+      currentCustomCategories[sourceMap[source]] = category
     end
     local currentCategoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     -- Prevent duplicate items in multiple category modifications caused by an import
@@ -220,7 +238,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
       end
     end
     for source, details in pairs(categoryMods) do
-      currentCategoryMods[source] = details
+      currentCategoryMods[sourceMap[source] or source] = details
     end
     addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
@@ -229,9 +247,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
   else
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
     for key in pairs(customCategories) do
-      if tIndexOf(displayOrder, key) == nil then
-        table.insert(displayOrder, 1, key)
-      end
+      table.insert(displayOrder, 1, sourceMap[key])
     end
     local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     local currentCategoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
@@ -242,8 +258,10 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
         end
       end
     end
-    Mixin(currentCustomCategories, customCategories)
-    Mixin(currentCategoryMods, categoryMods)
+    for key, category in pairs(customCategories) do
+      currentCustomCategories[sourceMap[key]] = category
+      currentCategoryMods[sourceMap[key]] = categoryMods[key]
+    end
     addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
