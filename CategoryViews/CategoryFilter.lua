@@ -28,11 +28,16 @@ function BaganatorCategoryViewsCategoryFilterMixin:ResetCaches()
   self.searchCache = {}
 end
 
-function BaganatorCategoryViewsCategoryFilterMixin:OnHide()
+function BaganatorCategoryViewsCategoryFilterMixin:Cancel()
+  self:SetScript("OnUpdate", nil)
   if self.timer then
     self.timer:Cancel()
     self.timer = nil
   end
+end
+
+function BaganatorCategoryViewsCategoryFilterMixin:OnHide()
+  self:Cancel()
 end
 
 function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(composed, everything, callback)

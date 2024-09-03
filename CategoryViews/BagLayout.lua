@@ -84,9 +84,11 @@ function addonTable.CategoryViews.BagLayoutMixin:OnLoad()
 
   self.CategorySort = CreateFrame("Frame", nil, self)
   Mixin(self.CategorySort, BaganatorCategoryViewsCategorySortMixin)
+  self.CategorySort:SetScript("OnHide", self.CategorySort.OnHide)
 
   self.CategoryGrouping = CreateFrame("Frame", nil, self)
   Mixin(self.CategoryGrouping, BaganatorCategoryViewsCategoryGroupingMixin)
+  self.CategoryGrouping:SetScript("OnHide", self.CategoryGrouping.OnHide)
 end
 
 function addonTable.CategoryViews.BagLayoutMixin:OnHide()
@@ -389,10 +391,11 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
 end
 
 function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
-  if self.inProgress then
-    return
-  end
-  self.inProgress = true
+  -- Just in case the rendering takes so long there's another bag update ready
+  -- that triggers a conflicting render.
+  self.CategoryFilter:Cancel()
+  self.CategoryGrouping:Cancel()
+  self.CategorySort:Cancel()
 
   local container = self:GetParent()
   local s1 = debugprofilestop()
@@ -435,6 +438,9 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("prep", debugprofilestop() - s2)
     end
+    if state ~= self.state then
+      return
+    end
     self.CategoryFilter:ApplySearches(composed, everything, function()
       self.CategoryGrouping:ApplyGroupings(composed, function()
         self.CategorySort:ApplySorts(composed, function()
@@ -445,8 +451,6 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
           end
           local s4 = debugprofilestop()
           local maxWidth, maxHeight = self:Display(bagWidth, bagIndexes, bagTypes, composed, emptySlotsOrder, emptySlotsByType, bagWidth, sideSpacing, topSpacing)
-
-          self.inProgress = false
           callback(maxWidth, maxHeight)
         end)
       end)

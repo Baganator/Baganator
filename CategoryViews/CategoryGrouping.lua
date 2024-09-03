@@ -352,6 +352,14 @@ end
 
 BaganatorCategoryViewsCategoryGroupingMixin = {}
 
+function BaganatorCategoryViewsCategoryGroupingMixin:Cancel()
+  self:SetScript("OnUpdate", nil)
+end
+
+function BaganatorCategoryViewsCategoryGroupingMixin:OnHide()
+  self:Cancel()
+end
+
 function BaganatorCategoryViewsCategoryGroupingMixin:ApplyGroupings(composed, callback)
   self.start = debugprofilestop()
   self.callback = callback
