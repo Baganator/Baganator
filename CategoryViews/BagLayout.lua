@@ -396,6 +396,8 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
   self.CategoryFilter:Cancel()
   self.CategoryGrouping:Cancel()
   self.CategorySort:Cancel()
+  self.state = {}
+  local state = self.state
 
   local container = self:GetParent()
   local s1 = debugprofilestop()
