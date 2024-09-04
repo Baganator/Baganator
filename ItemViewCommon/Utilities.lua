@@ -259,6 +259,7 @@ end
 function addonTable.Utilities.AddScrollBar(self)
   self.ScrollBox = CreateFrame("Frame", nil, self, "WowScrollBox")
   self.ScrollBar = CreateFrame("EventFrame", nil, self, "MinimalScrollBar")
+  addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
   self.ScrollChild = CreateFrame("Frame", nil, self.ScrollBox)
   self.ScrollChild.scrollable = true
   self.Container:SetParent(self.ScrollChild)
