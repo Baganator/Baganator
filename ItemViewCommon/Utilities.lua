@@ -194,6 +194,68 @@ function addonTable.Utilities.GetMoneyString(amount, splitThousands)
   return result
 end
 
+function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
+  local function UpdateVisibility()
+    if parent.isLive then
+      local cursorType, itemID = GetCursorInfo()
+      parent.backgroundButton:SetShown(cursorType == "item")
+    end
+  end
+  if parent.backgroundButton then
+    UpdateVisibility()
+    return
+  end
+
+  local pool = parent.liveItemButtonPool or addonTable.ItemViewCommon.GetLiveItemButtonPool(parent)
+
+  local indexFrame = CreateFrame("Frame", nil, parent)
+  parent.backgroundButton = pool:Acquire()
+  parent.backgroundButton:SetParent(indexFrame)
+  parent.backgroundButton:SetMotionScriptsWhileDisabled(true)
+  parent.backgroundButton:ClearAllPoints()
+  parent.backgroundButton:SetAllPoints(parent.Container, true)
+  parent.backgroundButton.icon:SetColorTexture(1, 0, 0)
+  parent.backgroundButton:ClearHighlightTexture()
+  parent.backgroundButton:ClearNormalTexture()
+  parent.backgroundButton:ClearDisabledTexture()
+  parent.backgroundButton:ClearPushedTexture()
+  for _, child in ipairs({parent.backgroundButton:GetRegions()}) do
+    child:Hide()
+  end
+
+  UpdateVisibility()
+  parent.backgroundButton:RegisterEvent("CURSOR_CHANGED")
+  parent.backgroundButton:SetScript("OnEvent", UpdateVisibility)
+
+  parent.backgroundButton:SetScript("PreClick", function()
+    local cursorType, itemID = GetCursorInfo()
+    if cursorType == "item" then
+      local usageChecks = addonTable.Sorting.GetBagUsageChecks(bagIndexes)
+      local sortedBagIDs = CopyTable(bagIndexes)
+      table.sort(sortedBagIDs, function(a, b) return usageChecks.sortOrder[a] < usageChecks.sortOrder[b] end)
+      local currentCharacterBags = getData()
+      local backupBagID = nil
+      for _, bagID in ipairs(sortedBagIDs) do
+        if not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID}) then
+          local bag = currentCharacterBags[tIndexOf(bagIndexes, bagID)]
+          for index, slot in ipairs(bag) do
+            if slot.itemID == nil then
+              parent.backgroundButton:SetID(index)
+              parent.backgroundButton:GetParent():SetID(bagID)
+              return
+            end
+          end
+        end
+        if not usageChecks.checks[bagID] then
+          backupBagID = usageChecks.checks[bagID]
+        end
+      end
+      parent.backgroundButton:SetID(1)
+      parent.backgroundButton:GetParent():SetID(backupBagID or sortedBagIDs[1])
+    end
+  end)
+end
+
 function addonTable.Utilities.GetExternalSortMethodName()
   local sortsDetails = addonTable.API.ExternalContainerSorts[addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)]
   return sortsDetails and BAGANATOR_L_USING_X:format(sortsDetails.label)

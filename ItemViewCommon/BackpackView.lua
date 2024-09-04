@@ -312,6 +312,10 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
   self.lastCharacter = character
   self.isLive = isLive
 
+  addonTable.Utilities.AddGeneralDropSlot(self, function()
+    return Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags
+  end, Syndicator.Constants.AllBagIndexes)
+
   self.BagSlots:Update(self.lastCharacter, self.isLive)
   local containerInfo = characterData.containerInfo
   self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bags))

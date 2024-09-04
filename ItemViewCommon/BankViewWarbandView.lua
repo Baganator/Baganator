@@ -323,6 +323,14 @@ end
 function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   self.isLive = isLive
 
+  addonTable.Utilities.AddGeneralDropSlot(self, function()
+    local bagData = {}
+    for _, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
+      table.insert(bagData, tab.slots)
+    end
+    return bagData
+  end, Syndicator.Constants.AllWarbandIndexes)
+
   self:GetParent():SetTitle(ACCOUNT_BANK_PANEL_TITLE)
 
   local warbandBank = Syndicator.API.GetWarband(1).bank[self.currentTab ~= 0 and self.currentTab or 1]
