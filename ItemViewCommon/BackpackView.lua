@@ -38,6 +38,8 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
   addonTable.Utilities.AddBagTransferManager(self) -- self.transferManager
 
+  addonTable.Utilities.AddScrollBar(self)
+
   self.tabsPool = addonTable.ItemViewCommon.GetTabButtonPool(self)
 
   addonTable.CallbackRegistry:RegisterCallback("BagCacheAfterNewItemsUpdate",  function(_, character, updatedBags)
@@ -74,6 +76,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
       end
     elseif settingName == addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
+      self:OnFinished()
     end
   end)
 
@@ -343,12 +346,14 @@ end
 function BaganatorItemViewCommonBackpackViewMixin:OnFinished(character, isLive)
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  self.Container:ClearAllPoints()
-  self.Container:SetPoint("TOPRIGHT", -sideSpacing, -50 - topSpacing / 4)
+  local externalVerticalSpacing = (self.BagSlots:GetHeight() > 0 and (self.BagSlots:GetTop() - self:GetTop()) or 0) + (self.Tabs[1] and self.Tabs[1]:IsShown() and (self:GetBottom() - self.Tabs[1]:GetBottom() + 5) or 0)
+
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    self.Container:GetHeight() + 75
+    math.min(self.Container:GetHeight() + 75 + topSpacing / 2, UIParent:GetHeight() - externalVerticalSpacing)
   )
+
+  self:UpdateScroll(75 + topSpacing / 2 + externalVerticalSpacing)
 
   self:HideExtraTabs()
 

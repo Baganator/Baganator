@@ -128,7 +128,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  local bankHeight = activeBank:GetHeight() + topSpacing / 2
+  local bankHeight = activeBank:GetHeight()
 
   -- Copied from SingleViews/BagView.lua
   bankHeight = bankHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
@@ -140,6 +140,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   local lastButton = nil
   for index, layout in ipairs(activeBankBagCollapsibles) do
     local button = self.CollapsingBankBags[index].button
+    button:SetParent(self)
     button:SetShown(layout:GetHeight() > 0)
     if button:IsShown() then
       button:ClearAllPoints()
@@ -147,7 +148,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
       else
         button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
-        button:SetPoint("LEFT", activeBank, -2, 0)
+        button:SetPoint("LEFT", self.Container, -2, 0)
       end
       table.insert(self:GetParent().AllButtons, button)
       lastButton = button

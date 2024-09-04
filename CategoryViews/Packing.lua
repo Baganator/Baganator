@@ -88,5 +88,5 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     end
   end
 
-  return maxWidth, -offsetY
+  return maxWidth, -offsetY - headerPadding
 end

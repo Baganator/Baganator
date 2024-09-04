@@ -122,7 +122,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  local bagHeight = activeBag:GetHeight() + topSpacing / 2
+  local bagHeight = activeBag:GetHeight()
 
   bagHeight = bagHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
 
@@ -147,6 +147,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   local lastButton = nil
   for index, layout in ipairs(activeBagCollapsibles) do
     local button = self.CollapsingBags[index].button
+    button:SetParent(self)
     button:SetShown(layout:GetHeight() > 0)
     button:ClearAllPoints()
     if button:IsShown() then
@@ -154,7 +155,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
       else
         button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
-        button:SetPoint("LEFT", activeBag, -2, 0)
+        button:SetPoint("LEFT", self.Container, -2, 0)
       end
       lastButton = button
       table.insert(self.AllButtons, button)

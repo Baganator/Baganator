@@ -412,8 +412,10 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
     end
   end
 
+  local anyShown = false
   local show = isLive and addonTable.Config.Get(self.config)
   for _, bb in ipairs(self.liveBagSlots) do
+    anyShown = show
     -- Show live bag slots if viewing live bags/bank
     bb:SetShown(show)
   end
@@ -423,6 +425,7 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
   if not isLive and containerInfo and containerInfo[self.mode] then
     local show = addonTable.Config.Get(self.config)
     for index, bb in ipairs(self.cachedBagSlots) do
+      anyShown = show
       local details = CopyTable(containerInfo[self.mode][index] or {})
       details.itemCount = addonTable.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(character)[self.mode][index + 1])
       bb:SetItemDetails(details)
@@ -437,6 +440,8 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
       bb:Hide()
     end
   end
+
+  self:SetHeight(anyShown and 39 or 0)
 end
 
 function BaganatorBagSlotsContainerMixin:OnEvent(eventName)

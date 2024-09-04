@@ -10,6 +10,8 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
   addonTable.Utilities.AddBagTransferManager(self) -- self.transferManager
 
+  addonTable.Utilities.AddScrollBar(self)
+
   addonTable.CallbackRegistry:RegisterCallback("SearchTextChanged",  function(_, text)
     self:ApplySearch(text)
   end)
@@ -403,16 +405,18 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnFinished(character, i
 
   local buttonPadding = 0
   if self.isLive then
-    buttonPadding = buttonPadding + 25
+    buttonPadding = buttonPadding + 29
   end
 
-  self.Container:ClearAllPoints()
-  self.Container:SetPoint("TOPRIGHT", -sideSpacing, -50 - topSpacing / 4)
+  self:SetSize(10, 10)
+  local externalVerticalSpacing = self:GetParent().Tabs[1] and self:GetParent().Tabs[1]:IsShown() and (self:GetParent():GetBottom() - self:GetParent().Tabs[1]:GetBottom() + 5) or 0
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    self.Container:GetHeight() + 75 + topSpacing / 2 + buttonPadding
+    math.min(self.Container:GetHeight() + 75 + topSpacing / 2 + buttonPadding, UIParent:GetHeight() - externalVerticalSpacing)
   )
+
+  self:UpdateScroll(75 + topSpacing * 1/4 + buttonPadding + externalVerticalSpacing)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DepositMoney()
