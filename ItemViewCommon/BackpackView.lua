@@ -74,6 +74,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
           PanelTemplates_SetTab(self, index)
         end
       end
+      self:OnFinished()
     elseif settingName == addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
       self:OnFinished()
