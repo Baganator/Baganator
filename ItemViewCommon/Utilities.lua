@@ -199,6 +199,7 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
     if parent.isLive then
       local cursorType, itemID = GetCursorInfo()
       parent.backgroundButton:SetShown(cursorType == "item")
+      parent.backgroundButton:SetFrameLevel(parent.ScrollBox:GetFrameLevel() + 1)
     end
   end
   if parent.backgroundButton then
@@ -208,7 +209,7 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
 
   local pool = parent.liveItemButtonPool or addonTable.ItemViewCommon.GetLiveItemButtonPool(parent)
 
-  local indexFrame = CreateFrame("Frame", nil, parent)
+  local indexFrame = CreateFrame("Frame", nil, parent.Container)
   parent.backgroundButton = pool:Acquire()
   parent.backgroundButton:SetParent(indexFrame)
   parent.backgroundButton:SetMotionScriptsWhileDisabled(true)
@@ -227,7 +228,9 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   parent.backgroundButton:RegisterEvent("CURSOR_CHANGED")
   parent.backgroundButton:SetScript("OnEvent", UpdateVisibility)
 
-  parent.backgroundButton:SetScript("PreClick", function()
+  parent.backgroundButton:SetScript("OnEnter", nil)
+  parent.backgroundButton:SetScript("OnLeave", nil)
+  parent.backgroundButton:SetScript("PreClick", function(self)
     local cursorType, itemID = GetCursorInfo()
     if cursorType == "item" then
       local usageChecks = addonTable.Sorting.GetBagUsageChecks(bagIndexes)
@@ -240,8 +243,9 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
           local bag = currentCharacterBags[tIndexOf(bagIndexes, bagID)]
           for index, slot in ipairs(bag) do
             if slot.itemID == nil then
-              parent.backgroundButton:SetID(index)
-              parent.backgroundButton:GetParent():SetID(bagID)
+              self:Enable()
+              self:SetID(index)
+              self:GetParent():SetID(bagID)
               return
             end
           end
@@ -250,8 +254,9 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
           backupBagID = usageChecks.checks[bagID]
         end
       end
-      parent.backgroundButton:SetID(1)
-      parent.backgroundButton:GetParent():SetID(backupBagID or sortedBagIDs[1])
+      self:Disable()
+      self:SetID(1)
+      self:GetParent():SetID(backupBagID or sortedBagIDs[1])
     end
   end)
 end
