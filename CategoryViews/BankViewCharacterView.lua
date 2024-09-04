@@ -15,6 +15,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   self:RegisterEvent("CURSOR_CHANGED")
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+    self.searchToApply = true
     self.LayoutManager:FullRefresh()
     for _, layout in ipairs(self.Container.Layouts) do
       layout:RequestContentRefresh()
@@ -43,6 +44,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN or settingName == addonTable.Config.Options.UPGRADE_PLUGIN then
+      self.searchToApply = true
       self.LayoutManager:SettingChanged(settingName)
       if self:IsVisible() then
         self:GetParent():UpdateView()

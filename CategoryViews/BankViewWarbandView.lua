@@ -19,6 +19,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+    self.searchToApply = true
     self.LayoutManager:FullRefresh()
     for _, layout in ipairs(self.Container.Layouts) do
       layout:RequestContentRefresh()
@@ -44,6 +45,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
         self:GetParent():UpdateView()
       end
     elseif settingName == addonTable.Config.Options.JUNK_PLUGIN or settingName == addonTable.Config.Options.UPGRADE_PLUGIN then
+      self.searchToApply = true
       self.LayoutManager:SettingChanged(settingName)
       if self:IsVisible() then
         self:GetParent():UpdateView()
