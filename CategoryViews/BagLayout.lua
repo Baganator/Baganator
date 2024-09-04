@@ -1,6 +1,33 @@
 local _, addonTable = ...
 
 local linkMap = {}
+local stackable = {}
+
+local function CheckStackable(allBags, callback)
+  local waiting, loopComplete = 0, false
+  for _, bag in ipairs(allBags) do
+    for _, slot in ipairs(bag) do
+      if slot.itemID ~= nil and stackable[slot.itemID] == nil then
+        if C_Item.IsItemDataCachedByID(slot.itemID) then
+          stackable[slot.itemID] = C_Item.GetItemMaxStackSizeByID(slot.itemID)
+        else
+          waiting = waiting + 1
+          addonTable.Utilities.LoadItemData(slot.itemID, function()
+            stackable[slot.itemID] = C_Item.GetItemMaxStackSizeByID(slot.itemID) > 1
+            waiting = waiting - 1
+            if waiting == 0 and loopComplete then
+              callback()
+            end
+          end)
+        end
+      end
+    end
+  end
+  loopComplete = true
+  if waiting == 0 then
+    callback()
+  end
+end
 
 local function Prearrange(isLive, bagID, bag, bagType)
   local junkPluginID = addonTable.Config.Get("junk_plugin")
@@ -46,7 +73,11 @@ local function Prearrange(isLive, bagID, bag, bagType)
       info.iconTexture = slot.iconTexture
       info.keyLink = linkMap[info.itemLink]
       if not info.keyLink then
-        info.keyLink = info.itemLink:gsub("(item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:)%d+:", "%1:")
+        if stackable[info.itemID] then
+          info.keyLink = "item:" .. info.itemID
+        else
+          info.keyLink = info.itemLink:gsub("(item:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:[^:]*:)%d+:", "%1:")
+        end
         linkMap[info.itemLink] = info.keyLink
       end
       info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
@@ -398,62 +429,71 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
   self.CategorySort:Cancel()
   self.state = {}
   local state = self.state
-
-  local container = self:GetParent()
-  local s1 = debugprofilestop()
-
-  local emptySlotsByType, emptySlotsOrder, everything = {}, {}, {}
-  for index, bagID in ipairs(bagIndexes) do
-    if allBags[index] then
-      local result = Prearrange(container.isLive, bagID, allBags[index], bagTypes[index])
-      -- Optimisations
-      local everythingIndex = #everything + 1
-      for _, item in ipairs(result.everything) do
-        everything[everythingIndex] = item
-        everythingIndex = everythingIndex + 1
-      end
-      if #result.emptySlots > 0 then
-        if not emptySlotsByType[bagTypes[index]] then
-          emptySlotsByType[bagTypes[index]] = {}
-          table.insert(emptySlotsOrder, bagTypes[index])
-        end
-        -- Optimisations
-        local emptySlotsTyped = emptySlotsByType[bagTypes[index]]
-        local emptySlotIndex = #emptySlotsTyped + 1
-        for _, item in ipairs(result.emptySlots) do
-          emptySlotsTyped[emptySlotIndex] = item
-          emptySlotIndex = emptySlotIndex + 1
-        end
-      end
-    end
-  end
-  self.updatedBags = {}
-
-  local composed = addonTable.CategoryViews.ComposeCategories(everything)
-
-  if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    addonTable.Utilities.DebugOutput("prearrange", debugprofilestop() - s1)
-  end
-
-  local s2 = debugprofilestop()
-  self.ItemsPreparation:PrepareItems(everything, function()
+  local s0 = debugprofilestop()
+  CheckStackable(allBags, function()
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      addonTable.Utilities.DebugOutput("prep", debugprofilestop() - s2)
+      addonTable.Utilities.DebugOutput("stackables", debugprofilestop() - s0)
     end
     if state ~= self.state then
       return
     end
-    self.CategoryFilter:ApplySearches(composed, everything, function()
-      self.CategoryGrouping:ApplyGroupings(composed, function()
-        self.CategorySort:ApplySorts(composed, function()
-          local s3 = debugprofilestop()
-          self.ItemsPreparation:CleanItems(everything)
-          if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-            addonTable.Utilities.DebugOutput("clean", debugprofilestop() - s3)
+
+    local container = self:GetParent()
+    local s1 = debugprofilestop()
+
+    local emptySlotsByType, emptySlotsOrder, everything = {}, {}, {}
+    for index, bagID in ipairs(bagIndexes) do
+      if allBags[index] then
+        local result = Prearrange(container.isLive, bagID, allBags[index], bagTypes[index])
+        -- Optimisations
+        local everythingIndex = #everything + 1
+        for _, item in ipairs(result.everything) do
+          everything[everythingIndex] = item
+          everythingIndex = everythingIndex + 1
+        end
+        if #result.emptySlots > 0 then
+          if not emptySlotsByType[bagTypes[index]] then
+            emptySlotsByType[bagTypes[index]] = {}
+            table.insert(emptySlotsOrder, bagTypes[index])
           end
-          local s4 = debugprofilestop()
-          local maxWidth, maxHeight = self:Display(bagWidth, bagIndexes, bagTypes, composed, emptySlotsOrder, emptySlotsByType, bagWidth, sideSpacing, topSpacing)
-          callback(maxWidth, maxHeight)
+          -- Optimisations
+          local emptySlotsTyped = emptySlotsByType[bagTypes[index]]
+          local emptySlotIndex = #emptySlotsTyped + 1
+          for _, item in ipairs(result.emptySlots) do
+            emptySlotsTyped[emptySlotIndex] = item
+            emptySlotIndex = emptySlotIndex + 1
+          end
+        end
+      end
+    end
+    self.updatedBags = {}
+
+    local composed = addonTable.CategoryViews.ComposeCategories(everything)
+
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+      addonTable.Utilities.DebugOutput("prearrange", debugprofilestop() - s1)
+    end
+
+    local s2 = debugprofilestop()
+    self.ItemsPreparation:PrepareItems(everything, function()
+      if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+        addonTable.Utilities.DebugOutput("prep", debugprofilestop() - s2)
+      end
+      if state ~= self.state then
+        return
+      end
+      self.CategoryFilter:ApplySearches(composed, everything, function()
+        self.CategoryGrouping:ApplyGroupings(composed, function()
+          self.CategorySort:ApplySorts(composed, function()
+            local s3 = debugprofilestop()
+            self.ItemsPreparation:CleanItems(everything)
+            if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+              addonTable.Utilities.DebugOutput("clean", debugprofilestop() - s3)
+            end
+            local s4 = debugprofilestop()
+            local maxWidth, maxHeight = self:Display(bagWidth, bagIndexes, bagTypes, composed, emptySlotsOrder, emptySlotsByType, bagWidth, sideSpacing, topSpacing)
+            callback(maxWidth, maxHeight)
+          end)
         end)
       end)
     end)
