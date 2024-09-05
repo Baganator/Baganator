@@ -200,6 +200,8 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
       local cursorType, itemID = GetCursorInfo()
       parent.backgroundButton:SetShown(cursorType == "item")
       parent.backgroundButton:SetFrameLevel(parent.ScrollBox:GetFrameLevel() + 1)
+    else
+      parent.backgroundButton:Hide()
     end
   end
   if parent.backgroundButton then
