@@ -14,11 +14,6 @@ local function HasItemLevel(details)
     or (classID == Enum.ItemClass.Gem and IsArtifactRelicItem and IsArtifactRelicItem(details.itemLink))
 end
 
-function addonTable.API.ShouldPawnShow(itemLink)
-  local classID = select(6, C_Item.GetItemInfoInstant(itemLink))
-  return classID == Enum.ItemClass.Armor or classID == Enum.ItemClass.Weapon
-end
-
 local qualityColors = {
   [0] = CreateColor(157/255, 157/255, 157/255), -- Poor
   [1] = CreateColor(240/255, 240/255, 240/255), -- Common
@@ -249,47 +244,6 @@ end, function(itemButton)
   EquipmentSet:SetTexture("interface\\addons\\baganator\\assets\\equipment-set-shield")
   EquipmentSet:SetSize(15, 15)
   return EquipmentSet
-end)
-
-addonTable.Utilities.OnAddonLoaded("Pawn", function()
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_PAWN, "pawn", function(Arrow, details)
-    return addonTable.API.ShouldPawnShow(details.itemLink) and PawnShouldItemLinkHaveUpgradeArrow(details.itemLink)
-  end, function(itemButton)
-    local Arrow = itemButton:CreateTexture(nil, "OVERLAY")
-    Arrow:SetTexture("Interface\\AddOns\\Pawn\\Textures\\UpgradeArrow")
-    Arrow:SetSize(13.5, 15)
-    return Arrow
-  end, {corner = "top_left", priority = 1})
-
-  if not Syndicator then
-    return
-  end
-  -- Equip/unequip
-  Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
-    if Baganator.API.IsCornerWidgetActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
-    end
-  end)
-  -- Spec change
-  hooksecurefunc("PawnInvalidateBestItems", function()
-    if Baganator.API.IsCornerWidgetActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
-    end
-  end)
-  -- Settings change
-  hooksecurefunc("PawnResetTooltips", function()
-    if Baganator.API.IsCornerWidgetActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
-    end
-  end)
-  -- Level up
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LEVEL_UP")
-  frame:SetScript("OnEvent", function()
-    if Baganator.API.IsCornerWidgetActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
-    end
-  end)
 end)
 
 addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()

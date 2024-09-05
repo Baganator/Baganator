@@ -134,5 +134,6 @@ API\ItemButton.lua
 API\EquipmentSets.lua
 API\Sorting.lua
 API\GuildBankSorting.lua
+API\Pawn.lua
 
 Compatibility\VanillaEngraving.lua
