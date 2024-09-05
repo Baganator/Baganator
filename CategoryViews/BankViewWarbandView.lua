@@ -24,7 +24,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
     for _, layout in ipairs(self.Container.Layouts) do
       layout:RequestContentRefresh()
     end
-    if self:IsVisible() and self.lastCharacter ~= nil then
+    if self:IsVisible() then
       self:GetParent():UpdateView()
     end
   end)

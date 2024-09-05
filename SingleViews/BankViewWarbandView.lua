@@ -1,6 +1,19 @@
 local _, addonTable = ...
 BaganatorSingleViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
 
+function BaganatorSingleViewBankViewWarbandViewMixin:OnLoad()
+  BaganatorItemViewCommonBankViewWarbandViewMixin.OnLoad(self)
+
+  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
+    for _, layout in ipairs(self.Container.Layouts) do
+      layout:RequestContentRefresh()
+    end
+    if self:IsVisible() then
+      self:GetParent():UpdateView()
+    end
+  end)
+end
+
 function BaganatorSingleViewBankViewWarbandViewMixin:GetSearchMatches()
   if self.Container.BankTabLive:IsShown() then
     return self.Container.BankTabLive.SearchMonitor:GetMatches()

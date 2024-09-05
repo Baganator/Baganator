@@ -33,15 +33,6 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     end
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Container.Layouts) do
-      layout:RequestContentRefresh()
-    end
-    if self:IsVisible() then
-      self:GetParent():UpdateView()
-    end
-  end)
-
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Container.Layouts) do
