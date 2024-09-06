@@ -9,7 +9,7 @@ local function CheckStackable(allBags, callback)
     for _, slot in ipairs(bag) do
       if slot.itemID ~= nil and stackable[slot.itemID] == nil then
         if C_Item.IsItemDataCachedByID(slot.itemID) then
-          stackable[slot.itemID] = C_Item.GetItemMaxStackSizeByID(slot.itemID)
+          stackable[slot.itemID] = C_Item.GetItemMaxStackSizeByID(slot.itemID) > 1
         else
           waiting = waiting + 1
           addonTable.Utilities.LoadItemData(slot.itemID, function()
