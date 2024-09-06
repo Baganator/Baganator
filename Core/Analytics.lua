@@ -16,7 +16,6 @@ function addonTable.Core.RunAnalytics()
 
   WagoAnalytics:Switch("NoFrameBorders", addonTable.Config.Get(addonTable.Config.Options.NO_FRAME_BORDERS))
 
-  WagoAnalytics:Switch("IgnoredSlotsForSort", addonTable.Config.Get(addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT) ~= 0 or addonTable.Config.Get(addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT) ~= 0)
   WagoAnalytics:Switch("EmptySpaceAtTop", addonTable.Config.Get(addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP))
   WagoAnalytics:Switch("FlashSimilarAlt", addonTable.Config.Get(addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT))
 
