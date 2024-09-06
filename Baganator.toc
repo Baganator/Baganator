@@ -8,6 +8,7 @@
 ## OptionalDeps: Syndicator, Masque
 ## SavedVariables: BAGANATOR_CONFIG, BAGANATOR_DATA
 ## IconTexture: Interface\AddOns\Baganator\Assets\logo.tga
+## OptionalDependencies: WagoAnalytics
 
 Embeds\json.lua
 
@@ -20,6 +21,7 @@ Core\Config.lua
 Core\Utilities.lua
 Core\SlashCmd.lua
 Core\Welcome.lua
+Core\Analytics.lua
 Core\Main.lua
 
 Skins.lua

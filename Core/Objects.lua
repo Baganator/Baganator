@@ -1,6 +1,7 @@
 local _, addonTable = ...
 Baganator = {API = { Constants = {} }}
 Mixin(addonTable, {
+  Core = {},
   Utilities = {},
   InventoryTracking = {},
   Search = {},

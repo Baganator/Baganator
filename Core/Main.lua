@@ -64,4 +64,6 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
     addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
     addonTable.Config.Set(addonTable.Config.Options.GLOBAL_VIEW_TYPE, "unset")
   end
+
+  addonTable.Core.RunAnalytics()
 end)
