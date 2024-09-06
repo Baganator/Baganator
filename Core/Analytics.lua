@@ -11,6 +11,7 @@ function addonTable.Core.RunAnalytics()
   local WagoAnalytics = WagoAnalytics:Register("kGr09M6y")
   addonTable.WagoAnalytics = WagoAnalytics
 
+  WagoAnalytics:Switch("UsingSkin", false)
   WagoAnalytics:Switch("UsingCategories", addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE) == "category" or addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE) == "category")
   WagoAnalytics:Switch("DifferentViews", addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE) ~= addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE))
 
@@ -51,7 +52,7 @@ function addonTable.Core.RunAnalytics()
 
   local sectionCount = 0
   for _, source in pairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
-    if source:match("_.*") and source ~= "__end" then
+    if source:match("^_.*") and source ~= "^__end" then
       sectionCount = sectionCount + 1
     end
   end
