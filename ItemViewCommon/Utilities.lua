@@ -270,20 +270,22 @@ function addonTable.Utilities.AddScrollBar(self)
   self.ScrollChild.scrollable = true
   self.Container:SetParent(self.ScrollChild)
   self.Container:ClearAllPoints()
-  self.Container:SetPoint("TOPLEFT")
+  -- Offset is to prevent default item buttons getting edges cropped on edges of
+  -- container
+  self.Container:SetPoint("TOPLEFT", 2, -2)
   ScrollUtil.InitScrollBoxWithScrollBar(self.ScrollBox, self.ScrollBar, CreateScrollBoxLinearView())
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(self.ScrollBox, self.ScrollBar)
 
   function self:UpdateScroll(ySaved)
     local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
     self.ScrollBox:ClearAllPoints()
-    self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2, -50 - topSpacing / 4)
-    self.ScrollChild:SetWidth(self.Container:GetWidth())
-    self.ScrollChild:SetHeight(self.Container:GetHeight())
+    self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -50 - topSpacing / 4 + 2)
+    self.ScrollChild:SetWidth(self.Container:GetWidth() + 4)
+    self.ScrollChild:SetHeight(self.Container:GetHeight() + 4)
     self.ScrollBox:SetSize(
-      self.Container:GetWidth(),
+      self.Container:GetWidth() + 4,
       math.min(
-        self.Container:GetHeight(),
+        self.Container:GetHeight() + 4,
         UIParent:GetHeight() - ySaved
       )
     )
