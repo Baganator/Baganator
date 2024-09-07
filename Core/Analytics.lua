@@ -78,6 +78,13 @@ function addonTable.Core.RunAnalytics()
     [addonTable.Config.Options.AUTO_OPEN] = true,
     [addonTable.Config.Options.JUNK_PLUGINS_IGNORED] = true,
     [addonTable.Config.Options.UPGRADE_PLUGINS_IGNORED] = true,
+    [addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY] = true,
+    [addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY] = true,
+    [addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY] = true,
+    [addonTable.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY] = true,
+    [addonTable.Config.Options.ICON_CORNERS_AUTO_INSERT_APPLIED] = true,
+    [addonTable.Config.Options.CHARACTER_SELECT_POSITION] = true,
+    [addonTable.Config.Options.GUILD_BANK_SORT_METHOD] = true,
   }
 
   local frame = CreateFrame("Frame")
