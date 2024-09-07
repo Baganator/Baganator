@@ -73,14 +73,10 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  local bankHeight = activeBank:GetHeight() + topSpacing / 2
+  local bankHeight = activeBank:GetHeight()
 
   activeBank:ClearAllPoints()
   activeBank:SetPoint("TOPLEFT", 0, 0)
-
-  if self.isLive then
-    bankHeight = bankHeight + 25
-  end
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
