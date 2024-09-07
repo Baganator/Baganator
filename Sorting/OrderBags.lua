@@ -18,32 +18,6 @@ local function ConvertToOneList(bags, indexesToUse)
   return list
 end
 
-local function RemoveIgnoredSlotsFromOneList(list, bagIDs, bagChecks, isEnd, left)
-  local offset = 0
-
-  if isEnd then
-    while left > 0 and #list > offset do
-      local item = list[#list - offset]
-      if bagChecks.checks[bagIDs[item.from.bagIndex]] then
-        offset = offset + 1
-      else
-        table.remove(list, #list - offset)
-        left = left - 1
-      end
-    end
-  else
-    while left > 0 and #list > offset do
-      local item = list[1 + offset]
-      if bagChecks.checks[bagIDs[item.from.bagIndex]] then
-        offset = offset + 1
-      else
-        table.remove(list, 1 + offset)
-        left = left - 1
-      end
-    end
-  end
-end
-
 -- We keep an index so that the order is consistent after sort application and
 -- resorting of the bag items.
 local function SetIndexes(list, bagIDs)
@@ -102,43 +76,6 @@ local function GetPositionStores(bagIDsAvailable, bagSizes)
   return stores
 end
 
-local function RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, isEnd, left)
-  local regularBags = tFilter(bagIDsAvailable, function(bagID) return not bagChecks.checks[bagID] end, true)
-
-  if isEnd then
-    for index = #regularBags, 1, -1 do
-      local bagID = regularBags[index]
-      if bagSizes[bagID] > left then
-        bagStores[bagID].last = bagStores[bagID].last - left
-        left = 0
-        break
-      elseif bagSizes[bagID] == left then
-        bagStores[bagID] = nil
-        left = 0
-        break
-      else
-        left = left - bagSizes[bagID]
-        bagStores[bagID] = nil
-      end
-    end
-  else
-    for _, bagID in ipairs(regularBags) do
-      if bagSizes[bagID] > left then
-        bagStores[bagID].first = bagStores[bagID].first + left
-        left = 0
-        break
-      elseif bagSizes[bagID] == left then
-        bagStores[bagID] = nil
-        left = 0
-        break
-      else
-        left = left - bagSizes[bagID]
-        bagStores[bagID] = nil
-      end
-    end
-  end
-end
-
 local function QueueSwap(item, bagID, slotID, bagIDs, moveQueue0, moveQueue1)
   local target = ItemLocation:CreateFromBagAndSlot(bagID, slotID)
   local fromBag, fromSlot = bagIDs[item.from.bagIndex], item.from.slot
@@ -161,21 +98,13 @@ end
 -- indexesToUse: Select specific bags
 -- bagChecks: Any special bag requirements for placing items in a specific bag
 -- isReverse: Should the item order be reversed
--- ignoreAtEnd: Should the slots (if any) that are skipped for sorting be at the
--- end of the regular bags.
--- ignoreCount: Number of slots to ignore in the regular bag (start or end
--- depending on ignoreAtEnd)
-function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse, ignoreAtEnd, ignoreCount)
+function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChecks, isReverse)
   if InCombatLockdown() or UnitIsDead("player") then -- Sorting breaks during combat due to Blizzard restrictions
     return addonTable.Constants.SortStatus.Complete
   end
 
   if Syndicator.API.IsBagEventPending() then
     return addonTable.Constants.SortStatus.WaitingMove
-  end
-
-  if ignoreCount == nil then
-    ignoreCount = 0
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.SORT_START_AT_BOTTOM) then
@@ -196,10 +125,6 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
 
   local oneList = ConvertToOneList(bags, indexesToUse)
 
-  if ignoreCount > 0 then
-    RemoveIgnoredSlotsFromOneList(oneList, bagIDs, bagChecks, ignoreAtEnd, ignoreCount)
-  end
-
   addonTable.Sorting.AddSortKeys(oneList)
 
    -- Change the indexes as sorting into all the different bag types affects the
@@ -217,13 +142,6 @@ function addonTable.Sorting.ApplyBagOrdering(bags, bagIDs, indexesToUse, bagChec
   local moveQueue1 = {}
 
   local bagStores = GetPositionStores(bagIDsAvailable, bagSizes)
-
-  if ignoreCount > 0 then
-    RemoveIgnoredSlotsFromStores(bagStores, bagSizes, bagChecks, bagIDsAvailable, ignoreAtEnd, ignoreCount)
-
-    bagIDsAvailable = tFilter(bagIDsAvailable, function(a) return bagStores[a] ~= nil end, true)
-    bagIDsInverted = tFilter(bagIDsInverted, function(a) return bagStores[a] ~= nil end, true)
-  end
 
   if showTimers then
     addonTable.Utilities.DebugOutput("sort gens", debugprofilestop() - start)
