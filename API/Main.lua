@@ -270,22 +270,6 @@ function Baganator.API.RegisterContainerSort(label, id, callback)
   }
 end
 
-addonTable.API.ExternalGuildBankSorts = {}
-
-local guildSortPriority = 0
--- Register a sort function for guild bank.
--- callback: function()
-function Baganator.API.RegisterGuildBankSort(label, id, callback)
-  assert(type(label) == "string" and type(id) == "string" and type(callback) == "function")
-  assert(not addonTable.API.ExternalGuildBankSorts[id], "id already exists")
-  guildSortPriority = guildSortPriority + 1
-  addonTable.API.ExternalGuildBankSorts[id] = {
-    label = label,
-    callback = callback,
-    priority = guildSortPriority,
-  }
-end
-
 Baganator.API.Skins = {}
 
 function Baganator.API.Skins.GetAllFrames()

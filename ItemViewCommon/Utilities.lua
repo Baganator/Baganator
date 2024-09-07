@@ -301,30 +301,6 @@ function addonTable.Utilities.GetExternalSortMethodName()
   return sortsDetails and BAGANATOR_L_USING_X:format(sortsDetails.label)
 end
 
-function addonTable.Utilities.GetGuildSortMethodName()
-  local sortsDetails = addonTable.API.ExternalGuildBankSorts[addonTable.Config.Get(addonTable.Config.Options.GUILD_BANK_SORT_METHOD)]
-  return sortsDetails and BAGANATOR_L_USING_X:format(sortsDetails.label)
-end
-
-function addonTable.Utilities.AutoSetGuildSortMethod()
-  local method = addonTable.Config.Get(addonTable.Config.Options.GUILD_BANK_SORT_METHOD)
-  if not addonTable.API.ExternalGuildBankSorts[method] then
-    if method == "unset" and next(addonTable.API.ExternalGuildBankSorts) then
-      local lowest, id = nil, nil
-      for id, details in pairs(addonTable.API.ExternalGuildBankSorts) do
-        if lowest == nil then
-          lowest, id = details.priority, id
-        elseif details.priority < lowest then
-          lowest, id = details.priority, id
-        end
-      end
-      addonTable.Config.Set("guild_bank_sort_method", id)
-    elseif method ~= "none" and method ~= "unset" then
-      addonTable.Config.ResetOne("guild_bank_sort_method")
-    end
-  end
-end
-
 function addonTable.Utilities.GetBagType(bagID, itemID)
   local classID, subClassID
   if itemID then

@@ -818,37 +818,6 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
     table.insert(SORTING_OPTIONS, 5, typeDropDown)
   end
-  if next(addonTable.API.ExternalGuildBankSorts) ~= nil then
-    local allModes = {}
-
-    addonTable.Utilities.AutoSetGuildSortMethod()
-
-    for id, details in pairs(addonTable.API.ExternalGuildBankSorts) do
-      table.insert(allModes, {id, details.label})
-    end
-
-    table.sort(allModes, function(a, b) return a[2] < b[2] end)
-
-    local typeDropDown = {
-      type = "dropdown",
-      option = "guild_bank_sort_method",
-      entries = {NONE},
-      values = {"none"},
-    }
-
-    for _, details in ipairs(allModes) do
-      table.insert(typeDropDown.values, details[1])
-      table.insert(typeDropDown.entries, details[2])
-    end
-
-    table.insert(SORTING_OPTIONS, {
-      type = "header",
-      text = BAGANATOR_L_GUILD_BANK_SORT_METHOD,
-      level = 2,
-    })
-
-    table.insert(SORTING_OPTIONS, typeDropDown)
-  end
 
   local allFrames = GenerateFrames(SORTING_OPTIONS, frame)
 

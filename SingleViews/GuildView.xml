@@ -15,19 +15,6 @@
           <Anchor point="TOP" y="-1"/>
         </Anchors>
       </Button>
-      <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
-        </Anchors>
-        <Scripts>
-          <OnClick>
-            self:GetParent():CombineStacksAndSort(button == "RightButton")
-          </OnClick>
-          <OnEnter inherit="append">
-            self.tooltipText = self:GetParent():GetGuildSortMethodName()
-          </OnEnter>
-        </Scripts>
-      </Button>
       <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
         <KeyValues>
           <KeyValue key="tooltipText" value="BAGANATOR_L_TRANSFER_GUILD_VIEW_TOOLTIP_TEXT" type="global"/>

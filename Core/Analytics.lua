@@ -24,7 +24,6 @@ function addonTable.Core.RunAnalytics()
 
   WagoAnalytics:Switch("UsingJunkPlugin", addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGIN) ~= "poor_quality" and addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGIN) ~= "none")
   WagoAnalytics:Switch("UsingUpgradePlugin", addonTable.Config.Get(addonTable.Config.Options.UPGRADE_PLUGIN) ~= "none")
-  WagoAnalytics:Switch("UsingGuildSort", addonTable.Config.Get(addonTable.Config.Options.GUILD_BANK_SORT_METHOD) ~= "unset")
 
   WagoAnalytics:Switch("RecentCharacterTabs", addonTable.Config.Get(addonTable.Config.Options.SHOW_RECENTS_TABS))
   WagoAnalytics:Switch("AutoSort", addonTable.Config.Get(addonTable.Config.Options.AUTO_SORT_ON_OPEN))

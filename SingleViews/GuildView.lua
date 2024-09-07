@@ -239,18 +239,6 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
   end
 end
 
-function BaganatorSingleViewGuildViewMixin:UpdateTransferButton()
-  self.TransferButton:SetShown(self.wouldShowTransferButton)
-
-  if self.isLive then
-    if self.SortButton:IsShown() then
-      self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
-    else
-      self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
-    end
-  end
-end
-
 function BaganatorSingleViewGuildViewMixin:OnDragStart()
   if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
@@ -502,14 +490,6 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 15)
     detailsHeight = 30
 
-    self.SortButton:SetShown(canDeposit
-      and #guildData.bank > 0
-      -- Use 7*14 to cover that every item in a tab can be sorted
-      and (remainingWithdrawals == -1 or remainingWithdrawals > #guildData.bank * 7*14)
-      and addonTable.API.ExternalGuildBankSorts[addonTable.Config.Get(addonTable.Config.Options.GUILD_BANK_SORT_METHOD)]
-      and addonTable.Config.Get(addonTable.Config.Options.SHOW_SORT_BUTTON)
-    )
-
     self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
     self.LogsFrame:ApplyTabTitle()
   else -- not live
@@ -521,10 +501,9 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 5)
     detailsHeight = 10
 
-    self.SortButton:Hide()
     self.LogsFrame:Hide()
   end
-  self:UpdateTransferButton()
+  self.TransferButton:SetShown(self.wouldShowTransferButton)
 
   active:ClearAllPoints()
   active:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, -53)
@@ -573,15 +552,6 @@ function BaganatorSingleViewGuildViewMixin:Transfer(button)
   else
     self:RemoveSearchMatches(function() end)
   end
-end
-
-function BaganatorSingleViewGuildViewMixin:CombineStacksAndSort()
-  local sortsDetails = addonTable.API.ExternalGuildBankSorts[addonTable.Config.Get(addonTable.Config.Options.GUILD_BANK_SORT_METHOD)]
-  sortsDetails.callback()
-end
-
-function BaganatorSingleViewGuildViewMixin:GetGuildSortMethodName()
-  return addonTable.Utilities.GetGuildSortMethodName()
 end
 
 function BaganatorSingleViewGuildViewMixin:ToggleTabText()
@@ -659,7 +629,6 @@ function BaganatorGuildLogsTemplateMixin:OnShow()
     anchor[2] = self:GetParent():GetName()
   end
   self:SetPoint(unpack(anchor))
-  addonTable.Utilities.AutoSetGuildSortMethod()
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStart()
