@@ -39,10 +39,17 @@ function BaganatorOpenCloseMixin:OnLoad()
     end
   end
 
+  local wagoNotDefault = false
   for _, details in pairs(interactions) do
     if data[details.option] == nil then
       data[details.option] = details.default
+    elseif addonTable.WagoAnalytics and data[details.option] ~= details.default then
+      wagoNotDefault = true
     end
+  end
+
+  if addonTable.WagoAnalytics then
+    addonTable.WagoAnalytics:Switch("AutoOpenChanged", wagoNotDefault)
   end
 
   self:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
