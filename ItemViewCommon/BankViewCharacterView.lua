@@ -203,7 +203,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character,
 
   local buttonPadding = 0
   if self.isLive then
-    buttonPadding = buttonPadding + 10 
+    buttonPadding = buttonPadding + 7
   end
 
   self:SetSize(10, 10)
@@ -214,5 +214,5 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character,
     math.min(self.Container:GetHeight() + 75 + buttonPadding, UIParent:GetHeight() - externalVerticalSpacing)
   )
 
-  self:UpdateScroll(75 + buttonPadding + externalVerticalSpacing)
+  self:UpdateScroll(73 + buttonPadding + externalVerticalSpacing)
 end

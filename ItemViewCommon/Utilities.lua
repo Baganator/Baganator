@@ -291,8 +291,8 @@ function addonTable.Utilities.AddScrollBar(self)
     )
     self.ScrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately)
     if self.ScrollBar:IsShown() then
-      self.ScrollBar:SetPoint("TOPLEFT", self.ScrollBox, "TOPRIGHT", 7 + sideSpacing / 2, -2)
-      self.ScrollBar:SetPoint("BOTTOMLEFT", self.ScrollBox, "BOTTOMRIGHT", 7 + sideSpacing / 2, 2)
+      self.ScrollBar:SetPoint("TOPLEFT", self.ScrollBox, "TOPRIGHT", 7 + sideSpacing / 2 - 2, -2)
+      self.ScrollBar:SetPoint("BOTTOMLEFT", self.ScrollBox, "BOTTOMRIGHT", 7 + sideSpacing / 2 - 2, 2)
       self:SetWidth(self:GetWidth() + 10 + sideSpacing / 2)
     end
   end

@@ -396,7 +396,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnFinished(character, i
 
   local buttonPadding = 0
   if self.isLive then
-    buttonPadding = buttonPadding + 29
+    buttonPadding = buttonPadding + 26
   end
 
   self:SetSize(10, 10)
