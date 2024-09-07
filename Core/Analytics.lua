@@ -65,4 +65,48 @@ function addonTable.Core.RunAnalytics()
   WagoAnalytics:SetCounter("GroupByCategories", groupByCount)
   WagoAnalytics:Switch("AnySections", sectionCount > 0)
   WagoAnalytics:SetCounter("Sections", sectionCount)
+
+  local ignoreDefault = {
+    [addonTable.Config.Options.SEEN_WELCOME] = true,
+    [addonTable.Config.Options.CATEGORY_DISPLAY_ORDER] = true,
+    [addonTable.Config.Options.CATEGORY_HIDDEN] = true,
+    [addonTable.Config.Options.CATEGORY_MIGRATION] = true,
+    [addonTable.Config.Options.CATEGORY_SECTION_TOGGLED] = true,
+    [addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED] = true,
+    [addonTable.Config.Options.CUSTOM_CATEGORIES] = true,
+    [addonTable.Config.Options.CATEGORY_MODIFICATIONS] = true,
+    [addonTable.Config.Options.AUTO_OPEN] = true,
+    [addonTable.Config.Options.JUNK_PLUGINS_IGNORED] = true,
+    [addonTable.Config.Options.UPGRADE_PLUGINS_IGNORED] = true,
+  }
+
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LOGIN")
+  frame:SetScript("OnEvent", function()
+    for option, value in pairs(addonTable.Config.Defaults) do
+      if not ignoreDefault[option] then
+        if type(value) == "table" then
+          WagoAnalytics:Switch("NotDefault-" .. option, not tCompare(addonTable.Config.Get(option), value, 20))
+        else
+          WagoAnalytics:Switch("NotDefault-" .. option, addonTable.Config.Get(option) ~= value)
+        end
+      end
+    end
+  end)
+
+  do
+    local sortMethod = addonTable.Config.Get(addonTable.Config.SORT_METHOD)
+    local possibleSortMethods = {
+      "type",
+      "quality",
+      "item-level",
+      "combine_stacks_only",
+      "expansion",
+      "blizzard",
+      "SortBags",
+      "tdPack2",
+      "BankStack",
+    }
+    WagoAnalytics:SetCounter("SortMethod", tIndexOf(possibleSortMethods, sortMethod) or 0)
+  end
 end
