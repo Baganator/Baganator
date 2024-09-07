@@ -66,32 +66,54 @@ function addonTable.Core.RunAnalytics()
   WagoAnalytics:Switch("AnySections", sectionCount > 0)
   WagoAnalytics:SetCounter("Sections", sectionCount)
 
-  local ignoreDefault = {
-    [addonTable.Config.Options.SEEN_WELCOME] = true,
-    [addonTable.Config.Options.CATEGORY_DISPLAY_ORDER] = true,
-    [addonTable.Config.Options.CATEGORY_HIDDEN] = true,
-    [addonTable.Config.Options.CATEGORY_MIGRATION] = true,
-    [addonTable.Config.Options.CATEGORY_SECTION_TOGGLED] = true,
-    [addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED] = true,
-    [addonTable.Config.Options.CUSTOM_CATEGORIES] = true,
-    [addonTable.Config.Options.CATEGORY_MODIFICATIONS] = true,
-    [addonTable.Config.Options.AUTO_OPEN] = true,
-    [addonTable.Config.Options.JUNK_PLUGINS_IGNORED] = true,
-    [addonTable.Config.Options.UPGRADE_PLUGINS_IGNORED] = true,
-    [addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY] = true,
-    [addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY] = true,
-    [addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY] = true,
-    [addonTable.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY] = true,
-    [addonTable.Config.Options.ICON_CORNERS_AUTO_INSERT_APPLIED] = true,
-    [addonTable.Config.Options.CHARACTER_SELECT_POSITION] = true,
-    [addonTable.Config.Options.GUILD_BANK_SORT_METHOD] = true,
+  local checkOptions = {
+    [addonTable.Config.Options.BAG_VIEW_WIDTH] = true,
+    [addonTable.Config.Options.BANK_VIEW_WIDTH] = true,
+    [addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH] = true,
+    [addonTable.Config.Options.GUILD_VIEW_WIDTH] = true,
+    [addonTable.Config.Options.BAG_ICON_SIZE] = true,
+    [addonTable.Config.Options.VIEW_ALPHA] = true,
+    [addonTable.Config.Options.LOCK_FRAMES] = true,
+    [addonTable.Config.Options.NO_FRAME_BORDERS] = true,
+    [addonTable.Config.Options.EMPTY_SLOT_BACKGROUND] = true,
+    [addonTable.Config.Options.SHOW_SORT_BUTTON] = true,
+    [addonTable.Config.Options.HIDE_BOE_ON_COMMON] = true,
+    [addonTable.Config.Options.SHOW_RECENTS_TABS] = true,
+    [addonTable.Config.Options.ICON_TEXT_QUALITY_COLORS] = true,
+    [addonTable.Config.Options.ICON_TEXT_FONT_SIZE] = true,
+    [addonTable.Config.Options.ICON_GREY_JUNK] = true,
+    [addonTable.Config.Options.ICON_EQUIPMENT_SET_BORDER] = true,
+    [addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
+    [addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
+    [addonTable.Config.Options.SHOW_BUTTONS_ON_ALT] = true,
+    [addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = true,
+    [addonTable.Config.Options.REDUCE_SPACING] = true,
+    [addonTable.Config.Options.SORT_METHOD] = true,
+    [addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER] = true,
+    [addonTable.Config.Options.SORT_START_AT_BOTTOM] = true,
+    [addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT] = true,
+    [addonTable.Config.Options.SORT_IGNORE_SLOTS_AT_END] = true,
+    [addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = true,
+    [addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = true,
+    [addonTable.Config.Options.AUTO_SORT_ON_OPEN] = true,
+
+    [addonTable.Config.Options.DEBUG_TIMERS] = true,
+    [addonTable.Config.Options.DEBUG_KEYWORDS] = true,
+    [addonTable.Config.Options.DEBUG_CATEGORIES] = true,
+    [addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH] = true,
+
+    [addonTable.Config.Options.CATEGORY_HORIZONTAL_SPACING] = true,
+    [addonTable.Config.Options.CATEGORY_ITEM_GROUPING] = true,
+    [addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS] = true,
+    [addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS] = true,
+    [addonTable.Config.Options.RECENT_TIMEOUT] = true,
   }
 
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("PLAYER_LOGIN")
   frame:SetScript("OnEvent", function()
     for option, value in pairs(addonTable.Config.Defaults) do
-      if not ignoreDefault[option] then
+      if checkOptions[option] then
         if type(value) == "table" then
           WagoAnalytics:Switch("NotDefault-" .. option, not tCompare(addonTable.Config.Get(option), value, 20))
         else
