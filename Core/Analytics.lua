@@ -91,6 +91,9 @@ function addonTable.Core.RunAnalytics()
     [addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER] = true,
     [addonTable.Config.Options.SORT_START_AT_BOTTOM] = true,
     [addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT] = true,
+    [addonTable.Config.Options.SORT_IGNORE_SLOTS_AT_END] = true,
+    [addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = true,
+    [addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = true,
     [addonTable.Config.Options.AUTO_SORT_ON_OPEN] = true,
 
     [addonTable.Config.Options.DEBUG_TIMERS] = true,

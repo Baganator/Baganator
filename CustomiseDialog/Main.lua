@@ -331,6 +331,37 @@ local SORTING_OPTIONS = {
     }
   },
   { type = "spacing" },
+  {
+    type = "dropdown",
+    text = BAGANATOR_L_IGNORED_SLOTS,
+    option = "sort_ignore_slots_at_end",
+    entries = {
+      BAGANATOR_L_FROM_THE_TOP,
+      BAGANATOR_L_FROM_THE_BOTTOM,
+    },
+    values = {
+      false,
+      true,
+    }
+  },
+  {
+    type = "slider",
+    min = 0,
+    max = 128,
+    lowText = "0",
+    highText = "128",
+    text = BAGANATOR_L_IGNORED_BAG_SLOTS,
+    option = "sort_ignore_slots_count_2",
+  },
+  {
+    type = "slider",
+    min = 0,
+    max = 500,
+    lowText = "0",
+    highText = "500",
+    text = BAGANATOR_L_IGNORED_BANK_SLOTS,
+    option = "sort_ignore_bank_slots_count",
+  },
 }
 
 local CATEGORIES_OPTIONS = {

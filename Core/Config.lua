@@ -20,6 +20,9 @@ addonTable.Config.Options = {
   SORT_METHOD = "sort_method",
   REVERSE_GROUPS_SORT_ORDER = "reverse_groups_sort_order",
   SORT_START_AT_BOTTOM = "sort_start_at_bottom",
+  SORT_IGNORE_SLOTS_AT_END = "sort_ignore_slots_at_end",
+  SORT_IGNORE_BAG_SLOTS_COUNT = "sort_ignore_slots_count_2",
+  SORT_IGNORE_BANK_SLOTS_COUNT = "sort_ignore_bank_slots_count",
   SHOW_RECENTS_TABS = "show_recents_tabs_main_view",
   AUTO_SORT_ON_OPEN = "auto_sort_on_open",
   BAG_EMPTY_SPACE_AT_TOP = "bag_empty_space_at_top",
@@ -123,6 +126,9 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER] = false,
   [addonTable.Config.Options.SORT_START_AT_BOTTOM] = false,
   [addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT] = false,
+  [addonTable.Config.Options.SORT_IGNORE_SLOTS_AT_END] = false,
+  [addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = 0,
+  [addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = 0,
   [addonTable.Config.Options.AUTO_SORT_ON_OPEN] = false,
   [addonTable.Config.Options.JUNK_PLUGIN] = "poor_quality",
   [addonTable.Config.Options.JUNK_PLUGINS_IGNORED] = {},
@@ -169,6 +175,11 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS] = true,
   [addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS] = true,
   [addonTable.Config.Options.RECENT_TIMEOUT] = 15,
+}
+
+addonTable.Config.IsCharacterSpecific = {
+  [addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = true,
+  [addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = true,
 }
 
 addonTable.Config.VisualsFrameOnlySettings = {
@@ -223,8 +234,15 @@ function addonTable.Config.Set(name, value)
   elseif not addonTable.Config.IsValidOption(name) then
     error("Invalid option '" .. name .. "'")
   else
-    local oldValue = BAGANATOR_CONFIG[name]
-    BAGANATOR_CONFIG[name] = value
+    local oldValue
+    if addonTable.Config.IsCharacterSpecific[name] then
+      local characterName = addonTable.Utilities.GetCharacterFullName()
+      oldValue = BAGANATOR_CONFIG[name][characterName]
+      BAGANATOR_CONFIG[name][characterName] = value
+    else
+      oldValue = BAGANATOR_CONFIG[name]
+      BAGANATOR_CONFIG[name] = value
+    end
     if value ~= oldValue then
       addonTable.CallbackRegistry:TriggerEvent("SettingChangedEarly", name)
       addonTable.CallbackRegistry:TriggerEvent("SettingChanged", name)
@@ -243,7 +261,11 @@ end
 function addonTable.Config.Reset()
   BAGANATOR_CONFIG = {}
   for option, value in pairs(addonTable.Config.Defaults) do
-    BAGANATOR_CONFIG[option] = value
+    if addonTable.Config.IsCharacterSpecific[option] then
+      BAGANATOR_CONFIG[option] = {}
+    else
+      BAGANATOR_CONFIG[option] = value
+    end
   end
 end
 
@@ -253,7 +275,11 @@ function addonTable.Config.InitializeData()
   else
     for option, value in pairs(addonTable.Config.Defaults) do
       if BAGANATOR_CONFIG[option] == nil then
-        BAGANATOR_CONFIG[option] = value
+        if addonTable.Config.IsCharacterSpecific[option] then
+          BAGANATOR_CONFIG[option] = {}
+        else
+          BAGANATOR_CONFIG[option] = value
+        end
       end
     end
   end
@@ -263,6 +289,13 @@ function addonTable.Config.Get(name)
   -- This is ONLY if a config is asked for before variables are loaded
   if BAGANATOR_CONFIG == nil then
     return addonTable.Config.Defaults[name]
+  elseif addonTable.Config.IsCharacterSpecific[name] then
+    local value = BAGANATOR_CONFIG[name][addonTable.Utilities.GetCharacterFullName()]
+    if value == nil then
+      return addonTable.Config.Defaults[name]
+    else
+      return value
+    end
   else
     return BAGANATOR_CONFIG[name]
   end
