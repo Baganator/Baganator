@@ -356,3 +356,23 @@ function addonTable.Utilities.GetSpacing()
 
   return sideSpacing, topSpacing
 end
+
+addonTable.Utilities.MasqueRegistration = function() end
+
+if LibStub then
+  -- Establish a reference to Masque.
+  local Masque, MSQ_Version = LibStub("Masque", true)
+  if Masque ~= nil then
+    -- Retrieve a reference to a new or existing group.
+    local masqueGroup = Masque:Group("Baganator", "Bag")
+
+    addonTable.Utilities.MasqueRegistration = function(button)
+      if button.masqueApplied then
+        masqueGroup:ReSkin(button)
+      else
+        button.masqueApplied = true
+        masqueGroup:AddButton(button, nil, "Item")
+      end
+    end
+  end
+end
