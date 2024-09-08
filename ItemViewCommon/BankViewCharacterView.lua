@@ -211,8 +211,8 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character,
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    math.min(self.Container:GetHeight() + 75 + buttonPadding, UIParent:GetHeight() - externalVerticalSpacing)
+    math.min(self.Container:GetHeight() + 75 + buttonPadding, UIParent:GetHeight() / self:GetParent():GetScale() - externalVerticalSpacing)
   )
 
-  self:UpdateScroll(73 + buttonPadding + externalVerticalSpacing)
+  self:UpdateScroll(73 + buttonPadding + externalVerticalSpacing, self:GetParent():GetScale())
 end

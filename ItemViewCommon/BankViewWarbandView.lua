@@ -404,10 +404,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnFinished(character, i
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    math.min(self.Container:GetHeight() + 75 + topSpacing / 2 + buttonPadding, UIParent:GetHeight() - externalVerticalSpacing)
+    math.min(self.Container:GetHeight() + 75 + topSpacing / 2 + buttonPadding, UIParent:GetHeight() / self:GetParent():GetScale() - externalVerticalSpacing)
   )
 
-  self:UpdateScroll(75 + topSpacing * 1/4 + buttonPadding + externalVerticalSpacing)
+  self:UpdateScroll(75 + topSpacing * 1/4 + buttonPadding + externalVerticalSpacing, self:GetParent():GetScale())
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DepositMoney()

@@ -276,7 +276,7 @@ function addonTable.Utilities.AddScrollBar(self)
   ScrollUtil.InitScrollBoxWithScrollBar(self.ScrollBox, self.ScrollBar, CreateScrollBoxLinearView())
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(self.ScrollBox, self.ScrollBar)
 
-  function self:UpdateScroll(ySaved)
+  function self:UpdateScroll(ySaved, scale)
     local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
     self.ScrollBox:ClearAllPoints()
     self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -50 - topSpacing / 4 + 2)
@@ -286,7 +286,7 @@ function addonTable.Utilities.AddScrollBar(self)
       self.Container:GetWidth() + 4,
       math.min(
         self.Container:GetHeight() + 4,
-        UIParent:GetHeight() - ySaved
+        UIParent:GetHeight() / scale - ySaved
       )
     )
     self.ScrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately)
