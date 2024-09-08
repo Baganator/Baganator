@@ -92,14 +92,7 @@ function addonTable.Core.RunAnalytics()
     [addonTable.Config.Options.SORT_START_AT_BOTTOM] = true,
     [addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT] = true,
     [addonTable.Config.Options.SORT_IGNORE_SLOTS_AT_END] = true,
-    [addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = true,
-    [addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = true,
     [addonTable.Config.Options.AUTO_SORT_ON_OPEN] = true,
-
-    [addonTable.Config.Options.DEBUG_TIMERS] = true,
-    [addonTable.Config.Options.DEBUG_KEYWORDS] = true,
-    [addonTable.Config.Options.DEBUG_CATEGORIES] = true,
-    [addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH] = true,
 
     [addonTable.Config.Options.CATEGORY_HORIZONTAL_SPACING] = true,
     [addonTable.Config.Options.CATEGORY_ITEM_GROUPING] = true,
@@ -120,6 +113,19 @@ function addonTable.Core.RunAnalytics()
         end
       end
     end
+
+    local nonDefault = false
+    for _, count in pairs(BAGANATOR_CONFIG[addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT]) do
+      if count ~= 0 then
+        nonDefault = true
+      end
+    end
+    for _, count in pairs(BAGANATOR_CONFIG[addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT]) do
+      if count ~= 0 then
+        nonDefault = true
+      end
+    end
+    WagoAnalytics:Switch("Changed-" .. "IgnoreSlotsCount", nonDefault)
   end)
 
   do
