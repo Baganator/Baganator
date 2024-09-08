@@ -50,6 +50,8 @@ function BaganatorRetailBagSlotButtonMixin:Init()
         self:SetItemButtonQuality(GetInventoryItemQuality("player", inventorySlot), itemID)
       end)
     end
+  else
+    self:SetItemButtonQuality(Enum.ItemQuality.Poor)
   end
   self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(self:GetID()))
 end
