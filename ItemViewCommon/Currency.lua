@@ -3,6 +3,23 @@ BaganatorCurrencyWidgetMixin = {}
 
 function BaganatorCurrencyWidgetMixin:OnLoad()
   self.currencyPool = CreateFontStringPool(self, "BACKGROUND", 0, "GameFontHighlight")
+  -- Using an (in)secure button to avoid taint of the transfer functionality
+  -- when accessing currency panel
+  self.currencyButtons = CreateFramePool("Button", self, "InsecureActionButtonTemplate", function(_, b)
+    if b.setup then
+      return
+    end
+    b.setup = true
+
+    b:SetAttribute("type", "macro")
+    b:HookScript("PreClick", function()
+      if not InCombatLockdown() then
+        ShowUIPanel(CharacterFrame)
+      end
+    end)
+    b:SetAttribute("macrotext", "/click CharacterFrameTab3")
+    b:RegisterForClicks("AnyUp", "AnyDown")
+  end)
 
   self.activeCurrencyTexts = {}
 
@@ -131,13 +148,16 @@ local function ShowCurrencies(self, character)
       currencyText = AbbreviateNumbers(count)
     end
     currencyText = currencyText .. " " .. CreateSimpleTextureMarkup(details.icon, 12, 12)
+    fontString:SetText(currencyText)
+
+    fontString.button = self.currencyButtons:Acquire()
     if GameTooltip.SetCurrencyByID then
       -- Show retail currency tooltip
-      fontString:SetScript("OnEnter", function(self)
+      fontString.button:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetCurrencyByID(details.currencyID)
       end)
-      fontString:SetScript("OnMouseDown", function(self)
+      fontString.button:SetScript("OnMouseDown", function(self)
         if IsModifiedClick("CHATLINK") then
           ChatEdit_InsertLink(C_CurrencyInfo.GetCurrencyLink(details.currencyID, count))
         end
@@ -145,15 +165,15 @@ local function ShowCurrencies(self, character)
     else
       -- SetCurrencyByID doesn't exist on classic, but we want to show the
       -- other characters info via the tooltip anyway
-      fontString:SetScript("OnEnter", function(self)
+      fontString.button:SetScript("OnEnter", function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         Syndicator.Tooltips.AddCurrencyLines(GameTooltip, details.currencyID)
       end)
     end
-    fontString:SetScript("OnLeave", function(self)
+    fontString.button:SetScript("OnLeave", function(self)
       GameTooltip:Hide()
     end)
-    fontString:SetText(currencyText)
+    fontString.button:SetAllPoints(fontString)
     fontString:SetPoint("RIGHT", prev, "LEFT", -15, 0)
     table.insert(self.activeCurrencyTexts, fontString)
     prev = fontString
@@ -172,7 +192,9 @@ function BaganatorCurrencyWidgetMixin:UpdateCurrencyTextVisibility(offsetLeft)
   end
 
   for _, fs in ipairs(self.activeCurrencyTexts) do
-    fs:SetShown(fs:GetLeft() > self:GetParent():GetLeft() + offsetLeft)
+    local show = fs:GetLeft() > self:GetParent():GetLeft() + offsetLeft
+    fs:SetShown(show)
+    fs.button:SetShown(show)
   end
 end
 
