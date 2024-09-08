@@ -97,7 +97,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
     if self:IsVisible() then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
-  elseif eventName == "MODIFIER_STATE_CHANGED" and self.addToCategoryMode and addonTable.CategoryViews.Utilities.GetAddButtonsState() and C_Cursor.GetCursorItem() then
+  elseif eventName == "MODIFIER_STATE_CHANGED" and self.addToCategoryMode and (addonTable.CategoryViews.Utilities.GetAddButtonsState() or self.LayoutManager.showAddButtons) and C_Cursor.GetCursorItem() then
     self:UpdateForCharacter(self.lastCharacter, self.isLive)
   end
 end
