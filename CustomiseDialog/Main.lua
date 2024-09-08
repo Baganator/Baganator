@@ -898,10 +898,19 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   local allFrames = {}
 
   local showAddButtons, editorHeader = unpack(GenerateFrames({{
-    type = "checkbox",
+    type = "dropdown",
     text = BAGANATOR_L_SHOW_ADD_BUTTONS,
-    option = "add_to_category_buttons",
-    rightText = BAGANATOR_L_BRACKETS_WHILE_DRAGGING,
+    option = "add_to_category_buttons_2",
+    entries = {
+      BAGANATOR_L_DRAGGING,
+      BAGANATOR_L_DRAGGING_THEN_ALT,
+      BAGANATOR_L_NEVER,
+    },
+    values = {
+      "drag",
+      "drag+alt",
+      "never",
+    }
   }, {
     type = "header",
     text = BAGANATOR_L_EDIT,
@@ -914,9 +923,8 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   table.insert(allFrames, editorHeader)
 
   showAddButtons:SetPoint("RIGHT", frame, -28, 0)
-  showAddButtons:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset + 40, 0)
-  showAddButtons.CheckBox.HoverBackground:SetPoint("TOPLEFT", showAddButtons, "TOPLEFT", -60, 0)
-  showAddButtons.CheckBox.HoverBackground:SetPoint("BOTTOMRIGHT", showAddButtons, "BOTTOMRIGHT", 10, 0)
+  showAddButtons.DropDown:SetWidth(155)
+  showAddButtons:SetPoint("LEFT", frame, "CENTER", addonTable.Constants.ButtonFrameOffset - 10, 0)
 
   local editors = {}
 

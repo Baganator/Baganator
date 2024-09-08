@@ -14,6 +14,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.LayoutManager:OnLoad()
 
   self:RegisterEvent("CURSOR_CHANGED")
+  self:RegisterEvent("MODIFIER_STATE_CHANGED")
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.searchToApply = true
@@ -62,7 +63,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   addonTable.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
     self.addToCategoryMode = fromCategory
     self.addedToFromCategory = addedDirectly == true
-    if self:IsVisible() then
+    if self:IsVisible() and addonTable.CategoryViews.Utilities.GetAddButtonsState() then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
   end)
@@ -96,6 +97,8 @@ function BaganatorCategoryViewBackpackViewMixin:OnEvent(eventName)
     if self:IsVisible() then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
+  elseif eventName == "MODIFIER_STATE_CHANGED" and self.addToCategoryMode and addonTable.CategoryViews.Utilities.GetAddButtonsState() and C_Cursor.GetCursorItem() then
+    self:UpdateForCharacter(self.lastCharacter, self.isLive)
   end
 end
 

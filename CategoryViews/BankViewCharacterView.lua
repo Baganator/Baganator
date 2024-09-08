@@ -13,6 +13,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   self.LayoutManager:OnLoad()
 
   self:RegisterEvent("CURSOR_CHANGED")
+  self:RegisterEvent("MODIFIER_STATE_CHANGED")
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
     self.searchToApply = true
@@ -55,7 +56,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   addonTable.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
     self.addToCategoryMode = fromCategory
     self.addedToFromCategory = addedDirectly == true
-    if self:IsVisible() then
+    if self:IsVisible() and addonTable.CategoryViews.Utilities.GetAddButtonsState() then
       self:GetParent():UpdateView()
     end
   end)
@@ -67,6 +68,8 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnEvent(eventName, ...)
     if self:IsVisible() then
       self:GetParent():UpdateView()
     end
+  elseif eventName == "MODIFIER_STATE_CHANGED" and self:IsVisible() and self.addToCategoryMode and addonTable.CategoryViews.Utilities.GetAddButtonsState() and C_Cursor.GetCursorItem() then
+    self:GetParent():UpdateView()
   end
 end
 

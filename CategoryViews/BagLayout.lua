@@ -216,6 +216,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
 
   local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
   local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
+  local showAddButtons = addonTable.CategoryViews.Utilities.GetAddButtonsState()
 
   self.notShown = {}
   for _, details in pairs(composed.details) do
@@ -237,7 +238,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       else
         entries = details.results
       end
-      if container.isLive and container.addToCategoryMode and addonTable.Config.Get(addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS) and not details.auto then
+      if container.isLive and container.addToCategoryMode and showAddButtons and not details.auto then
         if container.addToCategoryMode ~= details.source then
           table.insert(entries, {isDummy = true, label = BAGANATOR_L_ADD_TO_CATEGORY, dummyType = "add"})
         else
