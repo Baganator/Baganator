@@ -54,6 +54,7 @@ function BaganatorRetailBagSlotButtonMixin:Init()
     self:SetItemButtonQuality(Enum.ItemQuality.Poor)
   end
   self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(self:GetID()))
+  self.icon:SetAlpha(1)
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnClick(button)
@@ -108,6 +109,7 @@ function BaganatorClassicBagSlotButtonMixin:Init()
     end)
   end
   SetItemButtonQuality(self, GetInventoryItemQuality("player", inventorySlot))
+  self.icon:SetAlpha(1)
 end
 
 function BaganatorClassicBagSlotButtonMixin:OnClick()
@@ -219,6 +221,7 @@ function BaganatorRetailBankButtonMixin:Init()
   SetItemButtonTextureVertexColor(self, 1.0,1.0,1.0)
   local itemID, texture, quality = GetBankBagInfo(self:GetID())
   if itemID == nil then
+    self.icon:SetAlpha(1)
     return
   end
   self:SetItemButtonTexture(texture)
@@ -276,6 +279,7 @@ function BaganatorClassicBankButtonMixin:Init()
   self.needPurchase = false
   local info = C_Container.GetContainerItemInfo(Enum.BagIndex.Bankbag, self:GetID())
   if info == nil then
+    self.icon:SetAlpha(1)
     return
   end
   SetItemButtonTexture(self, info.iconFileID)
