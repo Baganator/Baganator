@@ -940,10 +940,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     table.insert(self.buttons, newButton)
   end
 
-  if #toSet > 0 or self.anyRemoved or self.reflow or rowWidth ~= self.prevRowWidth then
-    self.reflow = false
-    self.anyRemoved = false
-    FlowButtonsRows(self, rowWidth)
+  if #toSet > 0 then
     for _, details in ipairs(toSet) do
       details[1]:SetItemDetails(details[2])
       details[1].addedDirectly = details[2].addedDirectly
@@ -978,6 +975,19 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     self.buttonsByKey[key] = self.buttonsByKey[key] or {}
     table.insert(self.buttonsByKey[key], button)
   end
+end
+
+function BaganatorLiveCategoryLayoutMixin:Flow(rowWidth, wrapIndex)
+  if self.reflow or self.anyRemoved or rowWidth ~= self.prevRowWidth then
+    self.reflow = false
+    self.anyRemoved = false
+    FlowButtonsRows(self, rowWidth)
+    self.prevRowWidth = rowWidth
+  end
+end
+
+function BaganatorLiveCategoryLayoutMixin:TestWrap(wrapIndex)
+  return math.ceil(#self.buttons / wrapIndex) >= wrapIndex
 end
 
 BaganatorCachedCategoryLayoutMixin = {}
@@ -1017,6 +1027,14 @@ function BaganatorCachedCategoryLayoutMixin:InformSettingChanged(setting)
   end
 end
 
+function BaganatorCachedCategoryLayoutMixin:TestWrap(wrapIndex)
+  return math.ceil(#self.buttons / wrapIndex) >= wrapIndex
+end
+
+function BaganatorCachedCategoryLayoutMixin:Flow(width)
+  FlowButtonsRows(self, width)
+end
+
 function BaganatorCachedCategoryLayoutMixin:RequestContentRefresh()
   self.refreshContent = true
 end
@@ -1038,8 +1056,6 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
   end
 
   self.updateTextures = false
-
-  FlowButtonsRows(self, rowWidth)
 
   for index, button in ipairs(self.buttons) do
     button:Show()

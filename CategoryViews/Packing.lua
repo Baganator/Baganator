@@ -13,15 +13,49 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
 
   local maxWidth = 0
 
-  local offsetX, offsetY = 0, 0
-  local prevLayout, prevLabel = nil, nil
+  local offsetY = 0
+  local lastOffsetX = 0
+  local prevLayout = nil
   local endOfLineLabels = {}
 
+  local categoriesInRow = {}
+  local wrapIndex = 1
+  local prevHeight = 0
+
+  local function ArrangeRow()
+    local offsetX = 0
+    prevHeight = 0
+    for _, details in ipairs(categoriesInRow) do
+      local layout, label = details.layout, details.label
+      local targetWidth = math.ceil(#layout.buttons / wrapIndex)
+      layout:Flow(targetWidth, wrapIndex)
+      layout:Show()
+      label:Resize()
+      label:Show()
+      label:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY)
+      label:SetWidth(math.min(layout:GetWidth() + categorySpacing, targetPixelWidth - offsetX))
+      layout:ClearAllPoints()
+      layout:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY - label:GetHeight() - headerPadding / 2)
+      prevHeight = math.max(layout:GetHeight() + label:GetHeight() + headerPadding * 3/2, prevHeight)
+      details.offsetX = offsetX
+      offsetX = offsetX + layout:GetWidth()
+      if offsetX > targetPixelWidth then
+        return false
+      end
+      offsetX = offsetX + categorySpacing + iconPadding
+    end
+    lastOffsetX = offsetX - categorySpacing - iconPadding
+    return true
+  end
+
   local function NewLine()
-    local labelOffsetX = offsetX - categorySpacing - iconPadding - prevLayout:GetWidth()
-    table.insert(endOfLineLabels, {label = prevLabel, offsetX = labelOffsetX})
-    offsetX = 0
-    offsetY = offsetY - prevLayout:GetHeight() - prevLabel:GetHeight() - headerPadding * 3 / 2
+    local labelOffsetX = categorySpacing - iconPadding - prevLayout:GetWidth()
+    offsetY = offsetY - prevHeight
+    maxWidth = math.max(maxWidth, lastOffsetX)
+    table.insert(endOfLineLabels, categoriesInRow[#categoriesInRow])
+    categoriesInRow = {}
+    prevHeight = 0
+    wrapIndex = 1
   end
 
   for index, layout in ipairs(activeLayouts) do
@@ -34,7 +68,6 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
       layout:ClearAllPoints()
       layout:SetPoint("TOPLEFT", baseOffsetX, offsetY + baseOffsetY)
       offsetY = offsetY - layout:GetHeight() - headerPadding
-      offsetX = 0
       prevLayout = layout
     elseif layout.type == "section" then
       if prevLayout and prevLayout.type == "category" then
@@ -44,26 +77,36 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
       layout:SetSize(targetPixelWidth, 20)
       layout:SetPoint("TOPLEFT", baseOffsetX, baseOffsetY + offsetY)
       offsetY = offsetY - layout:GetHeight() - headerPadding
-      offsetX = 0
       prevLayout = layout
-    elseif layout.type == "category" and layout:GetHeight() > 0 then
-      if prevLayout and prevLayout.type == "category" and math.floor(offsetX + layout:GetWidth()) > targetPixelWidth then
-        NewLine()
+    elseif layout.type == "category" and #layout.buttons > 0 then
+      table.insert(categoriesInRow, {layout = layout, label = activeLabels[index]})
+      local oldWrapIndex  = wrapIndex
+      while not ArrangeRow() do
+        wrapIndex = wrapIndex + 1
+        local bail = false
+        for _, details in ipairs(categoriesInRow) do
+          if not details.layout:TestWrap(wrapIndex) and wrapIndex > 1 and not details.layout:TestWrap(wrapIndex - 1) then
+            wrapIndex = oldWrapIndex
+            bail = true
+            break
+          end
+        end
+        if bail then
+          local details = table.remove(categoriesInRow)
+          ArrangeRow()
+          NewLine()
+          table.insert(categoriesInRow, details)
+          while not ArrangeRow() do
+            wrapIndex = wrapIndex + 1
+            ArrangeRow()
+          end
+          break
+        end
       end
-      layout:Show()
-      local label = activeLabels[index]
-      label:Resize()
-      label:Show()
-      label:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY)
-      label:SetWidth(math.min(layout:GetWidth() + categorySpacing, targetPixelWidth - offsetX))
-      layout:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY - label:GetHeight() - headerPadding / 2)
-      offsetX = offsetX + layout:GetWidth()
-      maxWidth = math.max(maxWidth, offsetX)
-      offsetX = offsetX + categorySpacing + iconPadding
       prevLayout = layout
-      prevLabel = label
     end
   end
+  maxWidth = math.max(maxWidth, lastOffsetX)
 
   for _, layout in ipairs(activeLayouts) do -- Ensure dividers don't overflow when width is reduced
     if layout.type == "divider" or layout.type == "section" then
