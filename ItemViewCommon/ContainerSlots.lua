@@ -14,13 +14,19 @@ function ApplyCursor(targetInventorySlot, associatedTargetBag)
   -- dropped on.
   if bagID == associatedTargetBag then
     ClearCursor()
-    C_Container.PickupContainerItem(location:GetBagAndSlot())
+    local bagID, slotID = location:GetBagAndSlot()
+    C_Container.PickupContainerItem(bagID, slotID)
     -- The first bag, the backpack will never be replaced, so using this slot is
     -- fine.
     local target = {bagID = 0, slotIndex = 1}
 
-    if C_Item.IsLocked(target) then
-      return
+    local movedGUID = nil
+    if C_Item.DoesItemExist(target) then
+      if C_Item.IsLocked(target) then
+        return
+      else
+        movedGUID = C_Item.GetItemGUID(target)
+      end
     end
 
     C_Container.PickupContainerItem(0, 1)
@@ -36,7 +42,21 @@ function ApplyCursor(targetInventorySlot, associatedTargetBag)
           C_Timer.After(0, function()
             addonTable.NewItems:ClearNewItem(0, 1)
             C_Container.PickupContainerItem(0, 1)
-            C_Container.PickupContainerItem(location:GetBagAndSlot())
+            if not C_Item.DoesItemExist(location) or C_Item.GetItemGUID(location) ~= movedGUID then
+              for index = 1, C_Container.GetContainerNumSlots(bagID) do
+                local potentialLocation = {bagID = bagID, slotIndex = index}
+                if C_Item.DoesItemExist(potentialLocation) then
+                  if C_Item.GetItemGUID(potentialLocation) == movedGUID then
+                    slotID = index
+                    break
+                  end
+                elseif movedGUID == nil then
+                  slotID = index
+                  break
+                end
+              end
+            end
+            C_Container.PickupContainerItem(bagID, slotID)
           end)
           swapTracker:UnregisterEvent("ITEM_LOCK_CHANGED")
         end
