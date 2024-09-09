@@ -1,4 +1,55 @@
 local _, addonTable = ...
+
+local swapTracker = CreateFrame("Frame")
+
+function ApplyCursor(targetInventorySlot, associatedTargetBag)
+  local location = C_Cursor.GetCursorItem()
+  if location == nil or not C_Item.DoesItemExist(location) or select(6, C_Item.GetItemInfoInstant(C_Item.GetItemID(location))) ~= Enum.ItemClass.Container then
+    PutItemInBag(targetInventorySlot)
+    return
+  end
+
+  local bagID, slotID = location:GetBagAndSlot()
+  -- Swap items around so that the bag can be assigned to the slot it was
+  -- dropped on.
+  if bagID == associatedTargetBag then
+    ClearCursor()
+    C_Container.PickupContainerItem(location:GetBagAndSlot())
+    -- The first bag, the backpack will never be replaced, so using this slot is
+    -- fine.
+    local target = {bagID = 0, slotIndex = 1}
+
+    if C_Item.IsLocked(target) then
+      return
+    end
+
+    C_Container.PickupContainerItem(0, 1)
+    Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate", function()
+      C_Container.PickupContainerItem(0, 1)
+
+      -- Fallback for if the swap fails (eg. bag too small or BoE and bind
+      -- cancelled). Also swaps the items back so it looks like nothing was
+      -- repositioned.
+      swapTracker:RegisterEvent("ITEM_LOCK_CHANGED")
+      swapTracker:SetScript("OnEvent", function()
+        if not C_Item.IsLocked(target) then
+          C_Timer.After(0, function()
+            addonTable.NewItems:ClearNewItem(0, 1)
+            C_Container.PickupContainerItem(0, 1)
+            C_Container.PickupContainerItem(location:GetBagAndSlot())
+          end)
+          swapTracker:UnregisterEvent("ITEM_LOCK_CHANGED")
+        end
+      end)
+
+      PutItemInBag(targetInventorySlot)
+      Syndicator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", swapTracker)
+    end, swapTracker)
+  else
+    PutItemInBag(targetInventorySlot)
+  end
+end
+
 -- REGULAR BAGS
 BaganatorRetailBagSlotButtonMixin = {}
 
@@ -12,7 +63,7 @@ local function OnBagSlotClick(self, button)
   elseif button == "RightButton" then
     addonTable.ItemViewCommon.AddBlizzardBagContextMenu(self:GetID())
   else
-    PutItemInBag(GetBagInventorySlot(self))
+    ApplyCursor(GetBagInventorySlot(self), self:GetID())
   end
 end
 
@@ -74,7 +125,7 @@ function BaganatorRetailBagSlotButtonMixin:OnReceiveDrag()
     return
   end
 
-  PutItemInBag(GetBagInventorySlot(self))
+  ApplyCursor(GetBagInventorySlot(self), self:GetID())
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnEnter()
@@ -129,7 +180,7 @@ function BaganatorClassicBagSlotButtonMixin:OnReceiveDrag()
     return
   end
 
-  PutItemInBag(GetBagInventorySlot(self))
+  ApplyCursor(GetBagInventorySlot(self), self:GetID())
 end
 
 function BaganatorClassicBagSlotButtonMixin:OnEnter()
@@ -168,7 +219,7 @@ local function OnBankSlotClick(self, button)
     if IsModifiedClick("PICKUPITEM") then
       PickupBagFromSlot(GetBankInventorySlot(self))
     else
-      PutItemInBag(GetBankInventorySlot(self))
+      ApplyCursor(GetBankInventorySlot(self), Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
     end
   else
     StaticPopup_Show("Baganator.ConfirmBuyBankSlot")
@@ -248,7 +299,7 @@ function BaganatorRetailBankButtonMixin:OnReceiveDrag()
     return
   end
 
-  PutItemInBag(GetBankInventorySlot(self))
+  ApplyCursor(GetBankInventorySlot(self), Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
 end
 
 function BaganatorRetailBankButtonMixin:OnEnter()
@@ -306,7 +357,7 @@ function BaganatorClassicBankButtonMixin:OnReceiveDrag()
     return
   end
 
-  PutItemInBag(GetBankInventorySlot(self))
+  ApplyCursor(GetBankInventorySlot(self), Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
 end
 
 function BaganatorClassicBankButtonMixin:OnEnter()
