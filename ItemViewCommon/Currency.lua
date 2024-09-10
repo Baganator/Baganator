@@ -127,6 +127,7 @@ local function ShowCurrencies(self, character)
 
   self.activeCurrencyTexts = {}
   self.currencyPool:ReleaseAll()
+  self.currencyButtons:ReleaseAll()
 
   if not characterCurrencies then
     return
