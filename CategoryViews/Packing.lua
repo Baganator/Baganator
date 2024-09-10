@@ -22,33 +22,41 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
   local wrapIndex = 1
   local prevHeight = 0
 
-  local function ArrangeRow()
+  local function PredictRow()
     local offsetX = 0
     prevHeight = 0
     for _, details in ipairs(categoriesInRow) do
-      local layout, label = details.layout, details.label
-      local targetWidth = math.ceil(#layout.buttons / wrapIndex)
-      layout:Flow(targetWidth, wrapIndex)
-      layout:Show()
-      label:Resize()
-      label:Show()
-      label:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY)
-      label:SetWidth(math.min(layout:GetWidth() + categorySpacing, targetPixelWidth - offsetX))
-      layout:ClearAllPoints()
-      layout:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY - label:GetHeight() - headerPadding / 2)
-      prevHeight = math.max(layout:GetHeight() + label:GetHeight() + headerPadding * 3/2, prevHeight)
-      details.offsetX = offsetX
-      offsetX = offsetX + layout:GetWidth()
+      local targetWidth = math.ceil(#details.layout.buttons / wrapIndex)
+      details.targetWidth = targetWidth
+      offsetX = offsetX + #details.layout.buttons * (iconSize + iconPadding) - iconPadding
       if offsetX > targetPixelWidth then
         return false
       end
       offsetX = offsetX + categorySpacing + iconPadding
     end
-    lastOffsetX = offsetX - categorySpacing - iconPadding
     return true
+  end
+  local function ArrangeRow()
+    local offsetX = 0
+    prevHeight = 0
+    for _, details in ipairs(categoriesInRow) do
+      local layout, label = details.layout, details.label
+      layout:Flow(details.targetWidth)
+      layout:Show()
+      label:Resize()
+      label:Show()
+      label:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY)
+      label:SetWidth(math.min(layout:GetWidth() + categorySpacing, targetPixelWidth - offsetX))
+      layout:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY - label:GetHeight() - headerPadding / 2)
+      prevHeight = math.max(layout:GetHeight() + label:GetHeight() + headerPadding * 3/2, prevHeight)
+      details.offsetX = offsetX
+      offsetX = offsetX + layout:GetWidth() + categorySpacing + iconPadding
+    end
+    lastOffsetX = offsetX - categorySpacing - iconPadding
   end
 
   local function NewLine()
+    ArrangeRow()
     local labelOffsetX = categorySpacing - iconPadding - prevLayout:GetWidth()
     offsetY = offsetY - prevHeight
     maxWidth = math.max(maxWidth, lastOffsetX)
@@ -81,7 +89,7 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     elseif layout.type == "category" and #layout.buttons > 0 then
       table.insert(categoriesInRow, {layout = layout, label = activeLabels[index]})
       local oldWrapIndex  = wrapIndex
-      while not ArrangeRow() do
+      while not PredictRow() do
         wrapIndex = wrapIndex + 1
         local bail = false
         for _, details in ipairs(categoriesInRow) do
@@ -93,12 +101,10 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
         end
         if bail then
           local details = table.remove(categoriesInRow)
-          ArrangeRow()
           NewLine()
           table.insert(categoriesInRow, details)
-          while not ArrangeRow() do
+          while not PredictRow() do
             wrapIndex = wrapIndex + 1
-            ArrangeRow()
           end
           break
         end
@@ -107,6 +113,10 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     end
   end
   maxWidth = math.max(maxWidth, lastOffsetX)
+
+  if #categoriesInRow > 0 then
+    ArrangeRow()
+  end
 
   for _, layout in ipairs(activeLayouts) do -- Ensure dividers don't overflow when width is reduced
     if layout.type == "divider" or layout.type == "section" then

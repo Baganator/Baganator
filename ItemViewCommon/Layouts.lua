@@ -977,7 +977,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
   end
 end
 
-function BaganatorLiveCategoryLayoutMixin:Flow(rowWidth, wrapIndex)
+function BaganatorLiveCategoryLayoutMixin:Flow(rowWidth)
   if self.reflow or self.anyRemoved or rowWidth ~= self.prevRowWidth then
     self.reflow = false
     self.anyRemoved = false
