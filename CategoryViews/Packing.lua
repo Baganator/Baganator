@@ -28,7 +28,7 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     for _, details in ipairs(categoriesInRow) do
       local targetWidth = math.ceil(#details.layout.buttons / wrapIndex)
       details.targetWidth = targetWidth
-      offsetX = offsetX + #details.layout.buttons * (iconSize + iconPadding) - iconPadding
+      offsetX = offsetX + targetWidth * (iconSize + iconPadding) - iconPadding
       if offsetX > targetPixelWidth then
         return false
       end
