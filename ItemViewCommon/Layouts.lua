@@ -988,10 +988,6 @@ function BaganatorLiveCategoryLayoutMixin:Flow(rowWidth)
   end
 end
 
-function BaganatorLiveCategoryLayoutMixin:TestWrap(wrapIndex)
-  return math.ceil(#self.buttons / wrapIndex) >= wrapIndex
-end
-
 BaganatorCachedCategoryLayoutMixin = {}
 
 function BaganatorCachedCategoryLayoutMixin:OnLoad()
@@ -1027,10 +1023,6 @@ function BaganatorCachedCategoryLayoutMixin:InformSettingChanged(setting)
   if tIndexOf(RefreshContentSettings, setting) ~= nil then
     self.refreshContent = true
   end
-end
-
-function BaganatorCachedCategoryLayoutMixin:TestWrap(wrapIndex)
-  return math.ceil(#self.buttons / wrapIndex) >= wrapIndex
 end
 
 function BaganatorCachedCategoryLayoutMixin:Flow(width)

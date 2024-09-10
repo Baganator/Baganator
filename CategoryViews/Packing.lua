@@ -24,9 +24,8 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
 
   local function PredictRow()
     local offsetX = 0
-    prevHeight = 0
     for _, details in ipairs(categoriesInRow) do
-      local targetWidth = math.ceil(#details.layout.buttons / wrapIndex)
+      local targetWidth = math.min(bagWidth, math.ceil(#details.layout.buttons/math.min(details.wrapLimit, wrapIndex)))
       details.targetWidth = targetWidth
       offsetX = offsetX + targetWidth * (iconSize + iconPadding) - iconPadding
       if offsetX > targetPixelWidth then
@@ -57,7 +56,6 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
 
   local function NewLine()
     ArrangeRow()
-    local labelOffsetX = categorySpacing - iconPadding - prevLayout:GetWidth()
     offsetY = offsetY - prevHeight
     maxWidth = math.max(maxWidth, lastOffsetX)
     table.insert(endOfLineLabels, categoriesInRow[#categoriesInRow])
@@ -87,19 +85,35 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
       offsetY = offsetY - layout:GetHeight() - headerPadding
       prevLayout = layout
     elseif layout.type == "category" and #layout.buttons > 0 then
-      table.insert(categoriesInRow, {layout = layout, label = activeLabels[index]})
-      local oldWrapIndex  = wrapIndex
+      table.insert(categoriesInRow, {layout = layout, label = activeLabels[index], rootLimit = math.ceil(math.max(math.log(#layout.buttons)/math.log(3), 1)), goldenLimit = math.max(math.floor(math.sqrt(#layout.buttons/1.618)), 1)})
+      local oldWrapIndex = wrapIndex
+        if wrapIndex > 1 then
+          for _, details in ipairs(categoriesInRow) do
+            details.wrapLimit = details.rootLimit
+          end
+        else
+          for _, details in ipairs(categoriesInRow) do
+            details.wrapLimit = details.goldenLimit
+          end
+        end
       while not PredictRow() do
         wrapIndex = wrapIndex + 1
-        local bail = false
+        local bail = true
         for _, details in ipairs(categoriesInRow) do
-          if not details.layout:TestWrap(wrapIndex) and wrapIndex > 1 and not details.layout:TestWrap(wrapIndex - 1) then
-            wrapIndex = oldWrapIndex
-            bail = true
-            break
+          bail = bail and details.goldenLimit < wrapIndex
+        end
+        if wrapIndex > 1 then
+          for _, details in ipairs(categoriesInRow) do
+            details.wrapLimit = details.rootLimit
+          end
+        else
+          for _, details in ipairs(categoriesInRow) do
+            details.wrapLimit = details.goldenLimit
           end
         end
         if bail then
+          wrapIndex = oldWrapIndex
+          PredictRow()
           local details = table.remove(categoriesInRow)
           NewLine()
           table.insert(categoriesInRow, details)
