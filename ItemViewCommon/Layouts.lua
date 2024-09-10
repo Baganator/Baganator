@@ -941,6 +941,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
   end
 
   if #toSet > 0 then
+    self.toSet = true
     for _, details in ipairs(toSet) do
       details[1]:SetItemDetails(details[2])
       details[1].addedDirectly = details[2].addedDirectly
@@ -978,7 +979,8 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
 end
 
 function BaganatorLiveCategoryLayoutMixin:Flow(rowWidth)
-  if self.reflow or self.anyRemoved or rowWidth ~= self.prevRowWidth then
+  if self.reflow or self.toSet or self.anyRemoved or rowWidth ~= self.prevRowWidth then
+    self.toSet = false
     self.reflow = false
     self.anyRemoved = false
     FlowButtonsRows(self, rowWidth)
