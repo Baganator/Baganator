@@ -26,7 +26,7 @@ function addonTable.ShowWelcome()
   singleBagHeader:SetPoint("TOP", 0, -70)
 
   local singleBagText = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-  singleBagText:SetText(BAGANATOR_L_SINGLE_BAG_DESCRIPTION)
+  singleBagText:SetText(BAGANATOR_L_SINGLE_BAG_DESCRIPTION_2)
   singleBagText:SetPoint("LEFT", singleBagHeader)
   singleBagText:SetPoint("RIGHT", singleBagHeader)
   singleBagText:SetPoint("TOP", singleBagHeader, "BOTTOM", 0, -10)

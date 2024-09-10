@@ -313,7 +313,7 @@ L["ATTACHED_DIRECTLY_TO_X"] = "Attached directly %s"
 L["WELCOME_TO_BAGANATOR"] = "Welcome to Baganator"
 L["WELCOME_DESCRIPTION"] = "Decide which kind of bags you want. This can be changed later."
 L["CHOOSE"] = "Choose"
-L["SINGLE_BAG_DESCRIPTION"] = "The most common option. Keeps your items in one large container."
+L["SINGLE_BAG_DESCRIPTION_2"] = "Arrange items by slot. Keeps your items in one large container."
 L["CATEGORY_GROUPS_DESCRIPTION"] = "Group items by type, with features to add new custom categories."
 
 L["CATEGORIES_FAILED_WARNING"] = "Something went wrong when displaying the categories.\n\nFailed search was \"%s\". The following items failed:\n%s\n\nScreenshot this and visit the discord:"
