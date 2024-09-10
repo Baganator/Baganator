@@ -78,7 +78,9 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
       realmTotal = realmTotal + money
     end
   end
-  AddRealm(currentRealm, realmCount, realmTotal)
+  if currentRealm ~= nil then
+    AddRealm(currentRealm, realmCount, realmTotal)
+  end
 
   GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
