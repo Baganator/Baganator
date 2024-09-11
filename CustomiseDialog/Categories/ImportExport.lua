@@ -31,7 +31,7 @@ function addonTable.CustomiseDialog.SingleCategoryExport(name)
     items = #items > 0 and items or nil,
     pets = #pets > 0 and pets or nil,
     group = mods and mods.group,
-    showName = mods.showName,
+    showGroupPrefix = mods.showGroupPrefix,
     priority = mods.priority,
   })
 
@@ -72,7 +72,7 @@ function addonTable.CustomiseDialog.CategoriesExport()
       items = #items > 0 and items or nil,
       pets = #pets > 0 and pets or nil,
       group = mods.group,
-      showName = mods.showName,
+      showGroupPrefix = mods.showGroupPrefix,
       priority = mods.priority,
     })
   end
@@ -157,12 +157,12 @@ local function ImportCategories(import)
       end
       newMods.group = c.group
     end
-    if c.showName ~= nil then
-      if type(c.showName) ~= "boolean" then
+    if c.showGroupPrefix ~= nil then
+      if type(c.showGroupPrefix) ~= "boolean" then
         addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
         return
       end
-      newMods.showName = c.showName
+      newMods.showGroupPrefix = c.showGroupPrefix
     end
     categoryMods[c.source or c.name] = newMods
   end

@@ -294,6 +294,7 @@ L["ADD_FROM_ATT"] = "Add From ATT"
 L["ADD_FROM_ATT_MESSAGE"] = "Use items from All The Things popout mini-list windows to add into this category."
 L["ADD_FROM_ATT_POPUP_COMPLETE"] = "Added %s items (from %s popouts)"
 L["ENABLE_CATEGORY_MODE_WARNING"] = "You need to enable category view if you want to use categories"
+L["SHOW_NAME_PREFIX"] = "Show name prefix"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"

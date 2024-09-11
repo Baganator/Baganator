@@ -388,7 +388,7 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
       self.composed.details[insertPoint].results = nonResults
       for _, label in ipairs(groupings[details.grouping]) do
         local prefix = ""
-        if details.details.label ~= "" then
+        if details.details.groupPrefix ~= false then
           prefix = details.details.label .. ": "
         end
         insertPoint = insertPoint + 1
