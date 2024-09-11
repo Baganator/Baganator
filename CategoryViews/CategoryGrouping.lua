@@ -387,10 +387,14 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
       local groups = {}
       self.composed.details[insertPoint].results = nonResults
       for _, label in ipairs(groupings[details.grouping]) do
+        local prefix = ""
+        if details.details.label ~= "" then
+          prefix = details.details.label .. ": "
+        end
         insertPoint = insertPoint + 1
         table.insert(self.composed.details, insertPoint, {
           type = "category",
-          label = details.details.label .. ": " .. label,
+          label = prefix .. label,
           section = details.details.section,
           source = details.details.source,
           groupLabel = label,

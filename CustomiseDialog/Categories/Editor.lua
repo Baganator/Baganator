@@ -10,6 +10,30 @@ local groupingToLabel = {
 
 local disabledAlpha = 0.5
 
+local function GetCheckBox(self)
+  local checkBoxWrapper = CreateFrame("Frame", nil, self)
+  checkBoxWrapper:SetHeight(40)
+  checkBoxWrapper:SetPoint("LEFT", 15, 0)
+  checkBoxWrapper:SetPoint("RIGHT")
+  local checkBox
+  if DoesTemplateExist("SettingsCheckBoxTemplate") then
+    checkBox = CreateFrame("CheckButton", nil, checkBoxWrapper, "SettingsCheckBoxTemplate")
+  else
+    checkBox = CreateFrame("CheckButton", nil, checkBoxWrapper, "SettingsCheckboxTemplate")
+  end
+  checkBoxWrapper:SetScript("OnEnter", function() checkBox:OnEnter() end)
+  checkBoxWrapper:SetScript("OnLeave", function() checkBox:OnLeave() end)
+  checkBoxWrapper:SetScript("OnMouseUp", function() checkBox:Click() end)
+  checkBox:SetPoint("LEFT", checkBoxWrapper, "CENTER", 10, 0)
+  checkBox:SetText(" ")
+  checkBox:SetNormalFontObject(GameFontHighlight)
+  checkBox:GetFontString():SetPoint("RIGHT", checkBoxWrapper, "CENTER", -10, 0)
+  addonTable.Skins.AddFrame("CheckBox", checkBox)
+
+  checkBoxWrapper.checkBox = checkBox
+  return checkBoxWrapper
+end
+
 function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.currentCategory = "-1"
 
@@ -41,6 +65,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       end
     end
     oldMods.priority = self.PrioritySlider:GetValue()
+    oldMods.showName = self.NameCheckBox:GetChecked()
 
     local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
     local oldHidden = hidden[self.currentCategory] == true
@@ -89,6 +114,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategorySearch:SetText("")
       self.PrioritySlider:SetValue(0)
       self.GroupDropDown:SetText(BAGANATOR_L_NONE)
+      self.NameCheckBox:SetChecked(true)
       self.HiddenCheckBox:SetChecked(false)
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
@@ -127,6 +153,11 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       else
         self.GroupDropDown:SetText(BAGANATOR_L_NONE)
       end
+      if categoryMods[value] and categoryMods[value].showName == false then
+        self.NameCheckBox:SetChecked(false)
+      else
+        self.NameCheckBox:SetChecked(true)
+      end
     else
       self.GroupDropDown:SetAlpha(disabledAlpha)
       self.GroupDropDown:Disable()
@@ -137,26 +168,21 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     SetState(value)
   end)
 
-  local checkBoxWrapper = CreateFrame("Frame", nil, self)
-  checkBoxWrapper:SetHeight(40)
-  checkBoxWrapper:SetPoint("LEFT")
-  checkBoxWrapper:SetPoint("RIGHT")
-  checkBoxWrapper:SetPoint("TOP", 0, -200)
-  checkBoxWrapper:SetScript("OnEnter", function() self.HiddenCheckBox:OnEnter() end)
-  checkBoxWrapper:SetScript("OnLeave", function() self.HiddenCheckBox:OnLeave() end)
-  checkBoxWrapper:SetScript("OnMouseUp", function() self.HiddenCheckBox:Click() end)
-  if DoesTemplateExist("SettingsCheckBoxTemplate") then
-    self.HiddenCheckBox = CreateFrame("CheckButton", nil, checkBoxWrapper, "SettingsCheckBoxTemplate")
-  else
-    self.HiddenCheckBox = CreateFrame("CheckButton", nil, checkBoxWrapper, "SettingsCheckboxTemplate")
-  end
-  self.HiddenCheckBox:SetPoint("LEFT", checkBoxWrapper, "CENTER", 0, 0)
+  local hiddenCheckBoxWrapper = GetCheckBox(self)
+  hiddenCheckBoxWrapper:SetPoint("TOP", 0, -200)
+  hiddenCheckBoxWrapper:SetPoint("RIGHT", self, "CENTER", 5, 0)
+  self.HiddenCheckBox = hiddenCheckBoxWrapper.checkBox
   self.HiddenCheckBox:SetText(BAGANATOR_L_HIDDEN)
-  self.HiddenCheckBox:SetNormalFontObject(GameFontHighlight)
-  self.HiddenCheckBox:GetFontString():SetPoint("RIGHT", checkBoxWrapper, "CENTER", -20, 0)
-  addonTable.Skins.AddFrame("CheckBox", self.HiddenCheckBox)
 
   table.insert(self.ChangeAlpha, self.HiddenCheckBox)
+
+  local nameCheckBoxWrapper = GetCheckBox(self)
+  nameCheckBoxWrapper:SetPoint("TOP", 0, -200)
+  nameCheckBoxWrapper:SetPoint("LEFT", self, "CENTER", 15, 0)
+  self.NameCheckBox = nameCheckBoxWrapper.checkBox
+  self.NameCheckBox:SetText(NAME)
+
+  table.insert(self.ChangeAlpha, self.NameCheckBox)
 
   self.PrioritySlider = CreateFrame("Frame", nil, self, "BaganatorCustomSliderTemplate")
   self.PrioritySlider:Init({
@@ -219,6 +245,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.CategoryName:SetScript("OnEditFocusLost", Save)
   self.CategorySearch:SetScript("OnEditFocusLost", Save)
   self.HiddenCheckBox:SetScript("OnClick", Save)
+  self.NameCheckBox:SetScript("OnClick", Save)
 
   self.CategoryName:SetScript("OnKeyDown", function(_, key)
     if key == "ENTER" then

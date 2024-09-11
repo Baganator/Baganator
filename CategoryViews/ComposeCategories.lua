@@ -228,6 +228,10 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         section = currentSection,
       }
     end
+
+    if mods and mods.showName == false then
+      allDetails[#allDetails].label = ""
+    end
   end
 
   local copy = tFilter(allDetails, function(a) return a.type == "category" end, true)
