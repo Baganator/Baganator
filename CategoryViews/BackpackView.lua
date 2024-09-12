@@ -171,6 +171,8 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
       maxHeight
     )
 
+    self:OnFinished()
+
     self.CurrencyWidget:UpdateCurrencyTextVisibility(sideSpacing + addonTable.Constants.ButtonFrameOffset)
 
     local searchText = self.SearchWidget.SearchBox:GetText()
@@ -181,8 +183,6 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("-- updateforcharacter backpack", debugprofilestop() - start)
     end
-
-    self:OnFinished()
 
     addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
   end)
