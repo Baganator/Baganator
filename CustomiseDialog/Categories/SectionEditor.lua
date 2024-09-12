@@ -56,7 +56,8 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       Save()
     else
       self.currentSection = value
-      self.SectionName:SetText((value:match("^_(.*)")))
+      local section = value:match("^_(.*)")
+      self.SectionName:SetText(_G["BAGANATOR_L_SECTION_" .. section] or section)
     end
   end)
 

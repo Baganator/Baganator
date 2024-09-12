@@ -63,6 +63,7 @@ function addonTable.SlashCmd.ResetCategories()
   addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
   addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS)
   addonTable.Config.ResetOne(addonTable.Config.Options.RECENT_TIMEOUT)
+  addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT)
   ReloadUI()
 end
 

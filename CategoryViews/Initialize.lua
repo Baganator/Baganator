@@ -62,17 +62,27 @@ local function MigrateFormat()
 end
 
 local function SetupCategories()
-  local alreadyAdded = addonTable.Config.Get(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED)
   local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
-  for index, category in ipairs(addonTable.CategoryViews.Constants.DefaultCategories) do
-    if not alreadyAdded[category.source] and not category.doNotAdd then
-      if index > #displayOrder then
-        table.insert(displayOrder, category.source)
-      else
-        table.insert(displayOrder, index, category.source)
-      end
-      alreadyAdded[category.source] = true
+  local oldCategoryMods = CopyTable(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS))
+
+  if addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT) < addonTable.CategoryViews.Constants.DefaultImportVersion then
+    local displayOrderForCmp = CopyTable(displayOrder)
+    if displayOrderForCmp[1] == "default_auto_recents" then
+      table.remove(displayOrderForCmp, 1)
     end
+    -- If the layout hasn't been changed, or has only had "Recent (Auto)" added
+    if tCompare(displayOrderForCmp, addonTable.CategoryViews.Constants.OldDefaults) or #displayOrder == 0 then
+      addonTable.CustomiseDialog.CategoriesImport(addonTable.CategoryViews.Constants.DefaultImport[addonTable.CategoryViews.Constants.DefaultImportVersion])
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, oldCategoryMods)
+      local newAdded = {}
+      for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
+        if addonTable.CategoryViews.Constants.SourceToCategory[source] then
+          table.insert(newAdded, source)
+        end
+      end
+      addonTable.Config.Set(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED, newAdded)
+    end
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT, addonTable.CategoryViews.Constants.DefaultImportVersion)
   end
 
   for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
@@ -80,10 +90,6 @@ local function SetupCategories()
       table.insert(displayOrder, source)
     end
   end
-
-  -- Trigger settings changed event
-  addonTable.Config.Set(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED, CopyTable(alreadyAdded))
-  addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
 end
 
 local function SetupAddRemoveItems()

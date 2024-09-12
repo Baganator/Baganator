@@ -143,11 +143,11 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       table.insert(allDetails, {
         type = "divider",
       })
+      currentSection = _G["BAGANATOR_L_SECTION_" .. section] or section
       table.insert(allDetails, {
         type = "section",
-        label = section,
+        label = currentSection,
       })
-      currentSection = section
     end
 
     local priority = categoryMods[source] and categoryMods[source].priority and (categoryMods[source].priority + 1) * 200 or 0

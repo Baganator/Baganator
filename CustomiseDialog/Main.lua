@@ -123,7 +123,7 @@ local LAYOUT_OPTIONS = {
     lowText = "0%",
     highText = "200%",
     text = BAGANATOR_L_CATEGORY_SPACING,
-    option = "category_horizontal_spacing",
+    option = "category_horizontal_spacing_2",
     valuePattern = BAGANATOR_L_PERCENTAGE_PATTERN,
   },
   {
