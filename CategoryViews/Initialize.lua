@@ -61,6 +61,15 @@ local function MigrateFormat()
   end
 end
 
+local function CompareCurrent()
+  local current = addonTable.CustomiseDialog.CategoriesExport()
+  local toMod = addonTable.json.decode(current)
+  toMod.modifications = {}
+  toMod.hidden = {}
+  local reencoded = addonTable.json.encode(toMod)
+  return reencoded == addonTable.CategoryViews.Constants.DefaultImport[addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT)]
+end
+
 local function SetupCategories()
   local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
   local oldCategoryMods = CopyTable(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS))
@@ -71,7 +80,8 @@ local function SetupCategories()
       table.remove(displayOrderForCmp, 1)
     end
     -- If the layout hasn't been changed, or has only had "Recent (Auto)" added
-    if tCompare(displayOrderForCmp, addonTable.CategoryViews.Constants.OldDefaults) or #displayOrder == 0 then
+    if tCompare(displayOrderForCmp, addonTable.CategoryViews.Constants.OldDefaults) or #displayOrder == 0 or CompareCurrent() then
+
       addonTable.CustomiseDialog.CategoriesImport(addonTable.CategoryViews.Constants.DefaultImport[addonTable.CategoryViews.Constants.DefaultImportVersion])
       addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, oldCategoryMods)
       local newAdded = {}
