@@ -2,6 +2,7 @@
   <Frame name="BaganatorItemViewCommonBankViewWarbandViewTemplate" virtual="true" mixin="BaganatorItemViewCommonBankViewWarbandViewMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
     </Scripts>
     <Frames>
       <Button parentKey="DepositItemsButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_WARBOUND" parentArray="LiveButtons">

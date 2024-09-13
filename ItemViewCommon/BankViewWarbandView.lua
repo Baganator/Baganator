@@ -106,6 +106,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
   end
 end
 
+function BaganatorItemViewCommonBankViewWarbandViewMixin:OnShow()
+  self.transferState = {}
+end
+
 function BaganatorItemViewCommonBankViewWarbandViewMixin:CombineStacks(callback)
   local bagData = GetUnifiedSortData()
   addonTable.Sorting.CombineStacks(
@@ -147,16 +151,33 @@ end
 function BaganatorItemViewCommonBankViewWarbandViewMixin:RemoveSearchMatches(getItems)
   local matches = (getItems and getItems()) or self:GetSearchMatches()
 
+  -- Limit to the first 5 items (avoids slots locking up)
+  local newMatches = {}
+  for i = 1, 5 do
+    table.insert(newMatches, matches[i])
+  end
+  matches = newMatches
+
   local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(
     Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags,
     Syndicator.Constants.AllBagIndexes
   )
 
-  local status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
+  local status
+  -- Only move more items if the last set moved in, or the last transfer
+  -- completed.
+  if #emptyBagSlots ~= self.transferState.emptyBagSlots then
+    self.transferState.emptyBagSlots = #emptyBagSlots
+    status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
+  else
+    status = addonTable.Constants.SortStatus.WaitingMove
+  end
 
   self.transferManager:Apply(status, {"BagCacheUpdate"}, function()
     self:RemoveSearchMatches(getItems)
-  end, function() end)
+  end, function()
+    self.transferState = {}
+  end)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:ResetToLive()
