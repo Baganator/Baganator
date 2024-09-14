@@ -125,6 +125,7 @@ local function SetupAddRemoveItems()
 
     -- Either the target doesn't exist or this is a remove from category request
     if not toCategory then
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
       return
     end
 
@@ -135,6 +136,8 @@ local function SetupAddRemoveItems()
     categoryMods[toCategory].addedItems = categoryMods[toCategory].addedItems or {}
 
     categoryMods[toCategory].addedItems[details] = true
+
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
   end)
 end
 

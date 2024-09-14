@@ -154,6 +154,11 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrefixCheckBox:GetParent():Hide()
       self.GroupDropDown:SetText(BAGANATOR_L_NONE)
     end
+    if categoryMods[value] and categoryMods[value].addedItems then
+      self.ItemsEditor:SetupItems()
+    else
+      self.ItemsEditor:SetupItems({})
+    end
     if categoryMods[value] and categoryMods[value].showGroupPrefix == false then
       self.PrefixCheckBox:SetChecked(false)
     else
@@ -312,6 +317,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:Disable()
   self.currentCategory = "-1"
   self.DeleteButton:Disable()
   self.ExportButton:Disable()
+  self.ItemsEditor:SetupItems()
   for _, region in ipairs(self.ChangeAlpha) do
     region:SetAlpha(disabledAlpha)
   end
@@ -327,21 +333,25 @@ end
 function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
   local container = CreateFrame("Frame", nil, self)
   table.insert(self.ChangeAlpha, container)
-  container:SetSize(250, 200)
+  container:SetSize(242, 260)
   local itemText = container:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
   itemText:SetText(BAGANATOR_L_ITEMS)
-  itemText:SetPoint("TOPLEFT", 5, -5)
+  itemText:SetPoint("TOPLEFT", 0, -5)
 
-  local addButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-  addonTable.Skins.AddFrame("Button", addButton)
-  addButton:SetPoint("TOPRIGHT")
-  addButton:SetText(BAGANATOR_L_ADD)
-  DynamicResizeButton_Resize(addButton)
+  self:MakeItemsGrid(container)
+
+  container.ItemsScrollBox:SetPoint("TOPLEFT", 0, -25)
+
   local addItemsEditBox = CreateFrame("EditBox", nil, container, "InputBoxTemplate")
-  addItemsEditBox:SetSize(60, 22)
-  addItemsEditBox:SetPoint("RIGHT", addButton, "LEFT", -5, 0)
+  addItemsEditBox:SetSize(70, 22)
+  addItemsEditBox:SetPoint("BOTTOMLEFT", 3, 0)
   addItemsEditBox:SetAutoFocus(false)
   addonTable.Skins.AddFrame("EditBox", addItemsEditBox)
+  local addButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+  addonTable.Skins.AddFrame("Button", addButton)
+  addButton:SetPoint("LEFT", addItemsEditBox, "RIGHT", 1, 0)
+  addButton:SetText(BAGANATOR_L_ADD_IDS)
+  DynamicResizeButton_Resize(addButton)
 
   addItemsEditBox:SetScript("OnKeyDown", function(_, key)
     if key == "ENTER" then
@@ -385,99 +395,241 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
   end)
 
   if ATTC then
-    local completeDialog = "Baganator_ATT_Add_Items_Complete"
-    StaticPopupDialogs[completeDialog] = {
-      text = "",
-      button1 = DONE,
-      timeout = 0,
-      hideOnEscape = 1,
-    }
-    local addFromATTButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-    addonTable.Skins.AddFrame("Button", addFromATTButton)
-    addFromATTButton:SetText(BAGANATOR_L_ADD_FROM_ATT)
-    DynamicResizeButton_Resize(addFromATTButton)
-    addFromATTButton:SetPoint("TOPRIGHT", addButton, "BOTTOMRIGHT")
-    addFromATTButton:SetScript("OnEnter", function()
-      GameTooltip:SetOwner(addFromATTButton, "ANCHOR_TOP")
-      GameTooltip:SetText(BAGANATOR_L_ADD_FROM_ATT_MESSAGE, nil, nil, nil, nil, true)
-    end)
-    addFromATTButton:SetScript("OnLeave", function()
-      GameTooltip:Hide()
-    end)
-
-    local function GetItemsFromATTEntry(entry)
-      local result = {}
-      if entry.itemID then
-        table.insert(result, "i:" .. entry.itemID)
-      end
-      if entry.petID then
-        table.insert(result, "p:" .. entry.petID)
-      end
-      if entry.g then
-        for _, val in pairs(entry.g) do
-          tAppendAll(result, GetItemsFromATTEntry(val))
-        end
-      end
-      return result
-    end
-
-    addFromATTButton:SetScript("OnClick", function()
-      local activePaths = {}
-      for key, frame in pairs(_G) do
-        local path = key:match("^AllTheThings%-Window%-.*%|r(.*%>.*%d)$")
-        if path and frame:IsVisible() then
-          table.insert(activePaths, path)
-        end
-      end
-
-      local items = {}
-      for _, path in ipairs(activePaths) do
-        local hashes = {strsplit(">", path)}
-        local entry = ATTC.SearchForSourcePath(ATTC:GetDataCache().g, hashes, 2, #hashes)
-
-        local label, value = hashes[#hashes]:match("(%a+)(%-?%d+)")
-
-        if not entry then
-          local searchResults = ATTC.SearchForField(label, tonumber(value))
-          for _, result in ipairs(searchResults) do
-            if ATTC.GenerateSourceHash(result) == path then
-              entry = result
-            end
-          end
-        end
-
-        if not entry then
-          entry = ATTC.GetCachedSearchResults(ATTC.SearchForLink, label .. ":" .. value);
-        end
-
-        if not entry then
-          local tmp = {}
-          ATTC.BuildFlatSearchResponse(ATTC:GetDataCache().g, label, tonumber(value), tmp)
-          if #tmp == 1 then
-            entry = tmp[1]
-          end
-        end
-        if entry then
-          tAppendAll(items, GetItemsFromATTEntry(entry))
-        end
-      end
-
-      local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
-      if not categoryMods[self.currentCategory] then
-        categoryMods[self.currentCategory] = {}
-      end
-      if not categoryMods[self.currentCategory].addedItems then
-        categoryMods[self.currentCategory].addedItems = {}
-      end
-      for _, item in ipairs(items) do
-        categoryMods[self.currentCategory].addedItems[item] = true
-      end
-      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
-
-      StaticPopupDialogs[completeDialog].text = BAGANATOR_L_ADD_FROM_ATT_POPUP_COMPLETE:format(#items, #activePaths)
-      StaticPopup_Show(completeDialog)
-    end)
+    local addFromATTButton = self:MakeATTImportButton(container)
+    addFromATTButton:SetPoint("BOTTOMRIGHT")
   end
 
   return container
+end
+
+function BaganatorCustomiseDialogCategoriesEditorMixin:MakeATTImportButton(container)
+  local completeDialog = "Baganator_ATT_Add_Items_Complete"
+  StaticPopupDialogs[completeDialog] = {
+    text = "",
+    button1 = DONE,
+    timeout = 0,
+    hideOnEscape = 1,
+  }
+  local addFromATTButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+  addonTable.Skins.AddFrame("Button", addFromATTButton)
+  addFromATTButton:SetText(BAGANATOR_L_ATT_ADDON)
+  DynamicResizeButton_Resize(addFromATTButton)
+  addFromATTButton:SetScript("OnEnter", function()
+    GameTooltip:SetOwner(addFromATTButton, "ANCHOR_TOP")
+    GameTooltip:SetText(BAGANATOR_L_ADD_FROM_ATT_MESSAGE, nil, nil, nil, nil, true)
+  end)
+  addFromATTButton:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
+
+  local function GetItemsFromATTEntry(entry)
+    local result = {}
+    if entry.itemID then
+      table.insert(result, "i:" .. entry.itemID)
+    end
+    if entry.petID then
+      table.insert(result, "p:" .. entry.petID)
+    end
+    if entry.g then
+      for _, val in pairs(entry.g) do
+        tAppendAll(result, GetItemsFromATTEntry(val))
+      end
+    end
+    return result
+  end
+
+  addFromATTButton:SetScript("OnClick", function()
+    local activePaths = {}
+    for key, frame in pairs(_G) do
+      local path = key:match("^AllTheThings%-Window%-.*%|r(.*%>.*%d)$")
+      if path and frame:IsVisible() then
+        table.insert(activePaths, path)
+      end
+    end
+
+    local items = {}
+    for _, path in ipairs(activePaths) do
+      local hashes = {strsplit(">", path)}
+      local entry = ATTC.SearchForSourcePath(ATTC:GetDataCache().g, hashes, 2, #hashes)
+
+      local label, value = hashes[#hashes]:match("(%a+)(%-?%d+)")
+
+      if not entry then
+        local searchResults = ATTC.SearchForField(label, tonumber(value))
+        for _, result in ipairs(searchResults) do
+          if ATTC.GenerateSourceHash(result) == path then
+            entry = result
+          end
+        end
+      end
+
+      if not entry then
+        entry = ATTC.GetCachedSearchResults(ATTC.SearchForLink, label .. ":" .. value);
+      end
+
+      if not entry then
+        local tmp = {}
+        ATTC.BuildFlatSearchResponse(ATTC:GetDataCache().g, label, tonumber(value), tmp)
+        if #tmp == 1 then
+          entry = tmp[1]
+        end
+      end
+      if entry then
+        tAppendAll(items, GetItemsFromATTEntry(entry))
+      end
+    end
+
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    if not categoryMods[self.currentCategory] then
+      categoryMods[self.currentCategory] = {}
+    end
+    if not categoryMods[self.currentCategory].addedItems then
+      categoryMods[self.currentCategory].addedItems = {}
+    end
+    for _, item in ipairs(items) do
+      categoryMods[self.currentCategory].addedItems[item] = true
+    end
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+
+    StaticPopupDialogs[completeDialog].text = BAGANATOR_L_ADD_FROM_ATT_POPUP_COMPLETE:format(#items, #activePaths)
+    StaticPopup_Show(completeDialog)
+  end)
+
+  return addFromATTButton
+end
+
+function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
+  local scrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")
+  scrollBox:SetSize(242, 200)
+  local scrollBar = CreateFrame("EventFrame", nil, container, "MinimalScrollBar")
+  scrollBar:SetPoint("TOPLEFT", scrollBox, "TOPRIGHT", 8, 0)
+  scrollBar:SetPoint("BOTTOMLEFT", scrollBox, "BOTTOMRIGHT", 8, 0)
+  local view = CreateScrollBoxListLinearView()
+
+  local inset =  CreateFrame("Frame", nil, container, "InsetFrameTemplate")
+  inset:SetPoint("TOPLEFT", scrollBox, "TOPLEFT", -2, 2)
+  inset:SetPoint("BOTTOMRIGHT", scrollBox, "BOTTOMRIGHT", 2, -2)
+  inset:SetFrameLevel(scrollBox:GetFrameLevel() - 1)
+  addonTable.Skins.AddFrame("InsetFrame", inset)
+
+  local itemsPerRow = 7
+  local itemSize = 31
+
+  local cachedItemButtonCounter = 0
+  local function GetCachedItemButton()
+    -- Use cached item buttons from cached layout views
+    if addonTable.Constants.IsRetail then
+      return CreateFrame("ItemButton", nil, container, "BaganatorRetailCachedItemButtonTemplate")
+    else
+      cachedItemButtonCounter = cachedItemButtonCounter + 1
+      return CreateFrame("Button", "BGRCachedCustomiseCategoryItemButton" .. cachedItemButtonCounter, container, "BaganatorClassicCachedItemButtonTemplate")
+    end
+  end
+
+  view:SetElementExtent(itemSize + 3)
+  view:SetElementInitializer("Frame", function(row, items)
+    if not row.setup then
+      row.setup = true
+      row.buttons = {}
+      for i = 1, itemsPerRow do
+        local itemButton = GetCachedItemButton()
+        itemButton:SetParent(row)
+        itemButton:SetScale(itemSize / 37)
+        itemButton:SetPoint("LEFT", 37/itemSize * ((i - 1) * itemSize + (i - 1) * 3 + 4), 0)
+        addonTable.Utilities.MasqueRegistration(itemButton)
+        itemButton:UpdateTextures()
+        itemButton:SetScript("OnClick", function(_, mouseButton)
+          if mouseButton == "RightButton" then
+            local details = addonTable.CategoryViews.Utilities.GetAddedItemData(itemButton.BGR.itemID, itemButton.BGR.itemLink)
+            local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+            categoryMods[self.currentCategory].addedItems[details] = nil
+            addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+          end
+        end)
+        hooksecurefunc(itemButton, "UpdateTooltip", function(_)
+          if GameTooltip:IsShown() and not items[i].invalid then
+            GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
+            GameTooltip:Show()
+          elseif BattlePetTooltip:IsShown() then
+            BattlePetTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
+            BattlePetTooltip:Show()
+          else
+            items[i].invalid = true
+            GameTooltip:SetOwner(itemButton, "ANCHOR_RIGHT")
+            GameTooltip:AddLine(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_ITEM_INFORMATION_MISSING))
+            GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
+            GameTooltip:Show()
+          end
+        end)
+        table.insert(row.buttons, itemButton)
+      end
+    end
+    for index, item in ipairs(items) do
+      row.buttons[index]:Show()
+      row.buttons[index]:SetItemDetails(item)
+    end
+    if #items < itemsPerRow then
+      for index = #items + 1, itemsPerRow do
+        row.buttons[index]:Hide()
+      end
+    end
+  end)
+
+  ScrollUtil.InitScrollBoxListWithScrollBar(scrollBox, scrollBar, view)
+
+  container.ItemsScrollBox = scrollBox
+
+  container.SetupItems = function()
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    local itemRefs = categoryMods[self.currentCategory] and categoryMods[self.currentCategory].addedItems or {}
+    local keys = {}
+    for ref in pairs(itemRefs) do
+      table.insert(keys, ref)
+    end
+    table.sort(keys)
+    local lastGroup = {}
+    local items = {}
+    for _, ref in ipairs(keys) do
+      local t, id = ref:match("^(.):(%d+)$")
+      id = tonumber(id)
+      if t == "i" then
+        table.insert(lastGroup, {
+          itemID = id,
+          itemLink = "item:" .. id,
+          iconTexture = select(5, C_Item.GetItemInfoInstant(id)),
+          quality = 1,
+          itemCount = 1,
+          isBound = false,
+        })
+      elseif t == "p" then
+        table.insert(lastGroup, {
+          itemID = addonTable.Constants.BattlePetCageID,
+          itemLink = "|Hbattlepet:" .. id .. ":0:1:0|h|h",
+          iconTexture = select(2, C_PetJournal.GetPetInfoBySpeciesID(id)),
+          quality = 1,
+          itemCount = 1,
+          isBound = false,
+        })
+      end
+      if #lastGroup >= itemsPerRow then
+        table.insert(items, lastGroup)
+        lastGroup = {}
+      end
+    end
+    if #lastGroup > 0 then
+      table.insert(items, lastGroup)
+    end
+    scrollBox:SetDataProvider(CreateDataProvider(items), true)
+    scrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately);
+  end
+
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if not self:IsVisible() then
+      return
+    end
+
+    if settingName == addonTable.Config.Options.CATEGORY_MODIFICATIONS then
+      container.SetupItems()
+    end
+  end)
 end
