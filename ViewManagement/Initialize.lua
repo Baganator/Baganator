@@ -181,6 +181,8 @@ local function SetupBackpackView()
 end
 
 local function SetupBankView()
+  local characterTab = "Character"
+  local warbandTab = "Warband"
   local bankView
   local allBankViews = {
     single = CreateFrame("Frame", "Baganator_SingleViewBankViewFrame", UIParent, "BaganatorSingleViewBankViewTemplate"),
@@ -220,16 +222,25 @@ local function SetupBankView()
     ResetPositions()
   end
 
+  local function GetSelectedBankTab(entity)
+    if type(entity) == "string" or entity == nil then -- Character bank
+      return characterTab
+    elseif type(entity) == "number" then -- Warband bank
+      return warbandTab
+    end
+  end
+
   addonTable.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, entity, subView)
-    if type(entity) == "string" or entity == nil then -- Character bank
+    local selectedTab = GetSelectedBankTab(entity)
+    if selectedTab == characterTab then -- Character bank
       local characterName = entity or Syndicator.API.GetCurrentCharacter()
       bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
       bankView:UpdateViewToCharacter(characterName)
-    elseif type(entity) == "number" then -- Warband bank
+    elseif selectedTab == warbandTab then -- Warband bank
       subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
       bankView:SetShown(not bankView:IsShown())
       bankView:UpdateViewToWarband(entity, subView)
