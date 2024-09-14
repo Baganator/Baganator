@@ -5,6 +5,12 @@
   <Binding name="BAGANATOR_OPEN_GUILD_BANK" category="Baganator">
     Baganator.CallbackRegistry:TriggerEvent("GuildShow")
   </Binding>
+  <Binding name="BAGANATOR_TOGGLE_BANK" category="Baganator">
+    Baganator.CallbackRegistry:TriggerEvent("BankToggle")
+  </Binding>
+  <Binding name="BAGANATOR_TOGGLE_GUILD_BANK" category="Baganator">
+    Baganator.CallbackRegistry:TriggerEvent("GuildToggle")
+  </Binding>
   <Binding name="BAGANATOR_QUICK_SEARCH" category="Baganator">
     Baganator.CallbackRegistry:TriggerEvent("QuickSearch")
   </Binding>
