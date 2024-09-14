@@ -231,11 +231,3 @@ end
 function BaganatorItemViewCommonBankViewMixin:GetExternalSortMethodName()
   return addonTable.Utilities.GetExternalSortMethodName()
 end
-
-function BaganatorItemViewCommonBankViewMixin:GetCurrentTab()
-  if self.currentTab == self.Warband then
-    return "Warband"
-  else
-    return "Character"
-  end
-end
