@@ -181,8 +181,6 @@ local function SetupBackpackView()
 end
 
 local function SetupBankView()
-  local characterTab = "Character"
-  local warbandTab = "Warband"
   local bankView
   local allBankViews = {
     single = CreateFrame("Frame", "Baganator_SingleViewBankViewFrame", UIParent, "BaganatorSingleViewBankViewTemplate"),
@@ -224,9 +222,9 @@ local function SetupBankView()
 
   local function GetSelectedBankTab(entity)
     if type(entity) == "string" or entity == nil then -- Character bank
-      return characterTab
+      return addonTable.Constants.BankTabType.Character
     elseif type(entity) == "number" then -- Warband bank
-      return warbandTab
+      return addonTable.Constants.BankTabType.Warband
     end
   end
 
@@ -236,11 +234,11 @@ local function SetupBankView()
 
   addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, entity, subView)
     local selectedTab = GetSelectedBankTab(entity)
-    if selectedTab == characterTab then -- Character bank
+    if selectedTab == addonTable.Constants.BankTabType.Character then -- Character bank
       local characterName = entity or Syndicator.API.GetCurrentCharacter()
       bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
       bankView:UpdateViewToCharacter(characterName)
-    elseif selectedTab == warbandTab then -- Warband bank
+    elseif selectedTab == addonTable.Constants.BankTabType.Warband then -- Warband bank
       subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
       bankView:SetShown(not bankView:IsShown())
       bankView:UpdateViewToWarband(entity, subView)
@@ -249,11 +247,11 @@ local function SetupBankView()
 
   addonTable.CallbackRegistry:RegisterCallback("BankShow", function(_, entity, subView)
     local selectedTab = GetSelectedBankTab(entity)
-    if selectedTab == characterTab then -- Character bank
+    if selectedTab == addonTable.Constants.BankTabType.Character then -- Character bank
       local characterName = entity or Syndicator.API.GetCurrentCharacter()
       bankView:Show()
       bankView:UpdateViewToCharacter(characterName)
-    elseif selectedTab == warbandTab then -- Warband bank
+    elseif selectedTab == addonTable.Constants.BankTabType.Warband then -- Warband bank
       subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
       bankView:Show()
       bankView:UpdateViewToWarband(entity, subView)
