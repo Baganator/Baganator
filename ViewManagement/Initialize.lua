@@ -220,22 +220,38 @@ local function SetupBankView()
     ResetPositions()
   end
 
+  local function GetSelectedBankTab(entity)
+    if type(entity) == "string" or entity == nil then -- Character bank
+      return addonTable.Constants.BankTabType.Character
+    elseif type(entity) == "number" then -- Warband bank
+      return addonTable.Constants.BankTabType.Warband
+    end
+  end
+
   addonTable.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
     ResetPositions()
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
-    characterName = characterName or Syndicator.API.GetCurrentCharacter()
-    bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
-    bankView:UpdateViewToCharacter(characterName)
+  addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, entity, subView)
+    local selectedTab = GetSelectedBankTab(entity)
+    if selectedTab == addonTable.Constants.BankTabType.Character then -- Character bank
+      local characterName = entity or Syndicator.API.GetCurrentCharacter()
+      bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
+      bankView:UpdateViewToCharacter(characterName)
+    elseif selectedTab == addonTable.Constants.BankTabType.Warband then -- Warband bank
+      subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
+      bankView:SetShown(not bankView:IsShown())
+      bankView:UpdateViewToWarband(entity, subView)
+    end
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("BankShow", function(_, entity, subView)
-    if type(entity) == "string" or entity == nil then -- Character bank
+    local selectedTab = GetSelectedBankTab(entity)
+    if selectedTab == addonTable.Constants.BankTabType.Character then -- Character bank
       local characterName = entity or Syndicator.API.GetCurrentCharacter()
       bankView:Show()
       bankView:UpdateViewToCharacter(characterName)
-    elseif type(entity) == "number" then -- Warband bank
+    elseif selectedTab == addonTable.Constants.BankTabType.Warband then -- Warband bank
       subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
       bankView:Show()
       bankView:UpdateViewToWarband(entity, subView)
