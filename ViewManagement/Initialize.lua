@@ -224,10 +224,16 @@ local function SetupBankView()
     ResetPositions()
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, characterName)
-    characterName = characterName or Syndicator.API.GetCurrentCharacter()
-    bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
-    bankView:UpdateViewToCharacter(characterName)
+  addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, entity, subView)
+    if type(entity) == "string" or entity == nil then -- Character bank
+      local characterName = entity or Syndicator.API.GetCurrentCharacter()
+      bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
+      bankView:UpdateViewToCharacter(characterName)
+    elseif type(entity) == "number" then -- Warband bank
+      subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
+      bankView:SetShown(not bankView:IsShown())
+      bankView:UpdateViewToWarband(entity, subView)
+    end
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("BankShow", function(_, entity, subView)
