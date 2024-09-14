@@ -2,9 +2,6 @@
   <Binding name="BAGANATOR_OPEN_BANK" category="Baganator">
     Baganator.CallbackRegistry:TriggerEvent("BankShow")
   </Binding>
-  <Binding name="BAGANATOR_TOGGLE_BANK" category="Baganator">
-    Baganator.CallbackRegistry:TriggerEvent("BankToggle")
-  </Binding>
   <Binding name="BAGANATOR_QUICK_SEARCH" category="Baganator">
     Baganator.CallbackRegistry:TriggerEvent("QuickSearch")
   </Binding>
