@@ -561,8 +561,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
             GameTooltip:Show()
           end
         end)
-        itemButton:HookScript("OnEnter", function(_)
-        end)
         table.insert(row.buttons, itemButton)
       end
     end
