@@ -225,14 +225,43 @@ local function SetupBankView()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, entity, subView)
+    local characterTab = "Character"
+    local warbandTab = "Warband"
+
+    local currentTab = bankView:GetCurrentTab()
+    local selectedTab = nil
     if type(entity) == "string" or entity == nil then -- Character bank
-      local characterName = entity or Syndicator.API.GetCurrentCharacter()
-      bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
-      bankView:UpdateViewToCharacter(characterName)
+      selectedTab = characterTab
     elseif type(entity) == "number" then -- Warband bank
-      subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
-      bankView:SetShown(not bankView:IsShown())
-      bankView:UpdateViewToWarband(entity, subView)
+      selectedTab = warbandTab
+    end
+
+    if currentTab == selectedTab then
+      -- Toggle bank view
+      if selectedTab == characterTab then
+        local characterName = entity or Syndicator.API.GetCurrentCharacter()
+        bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
+        bankView:UpdateViewToCharacter(characterName)
+      elseif selectedTab == warbandTab then
+        subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
+        bankView:SetShown(not bankView:IsShown())
+        bankView:UpdateViewToWarband(entity, subView)
+      end
+    else
+      -- Switch bank tab
+      if selectedTab == characterTab then
+        local characterName = entity or Syndicator.API.GetCurrentCharacter()
+        if not bankView:IsShown() then
+          bankView:Show()
+        end
+        bankView:UpdateViewToCharacter(characterName)
+      elseif selectedTab == warbandTab then
+        subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
+        if not bankView:IsShown() then
+          bankView:Show()
+        end
+        bankView:UpdateViewToWarband(entity, subView)
+      end
     end
   end)
 
