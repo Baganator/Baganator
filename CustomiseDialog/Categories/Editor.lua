@@ -547,8 +547,21 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
           end
         end)
         hooksecurefunc(itemButton, "UpdateTooltip", function(_)
-          GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
-          GameTooltip:Show()
+          if GameTooltip:IsShown() and not items[i].invalid then
+            GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
+            GameTooltip:Show()
+          elseif BattlePetTooltip:IsShown() then
+            BattlePetTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
+            BattlePetTooltip:Show()
+          else
+            items[i].invalid = true
+            GameTooltip:SetOwner(itemButton, "ANCHOR_RIGHT")
+            GameTooltip:AddLine(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_ITEM_INFORMATION_MISSING))
+            GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
+            GameTooltip:Show()
+          end
+        end)
+        itemButton:HookScript("OnEnter", function(_)
         end)
         table.insert(row.buttons, itemButton)
       end
@@ -592,8 +605,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
         })
       elseif t == "p" then
         table.insert(lastGroup, {
-          itemID = id,
-          itemLink = "battlepet:" .. id,
+          itemID = addonTable.Constants.BattlePetCageID,
+          itemLink = "|Hbattlepet:" .. id .. ":0:1:0|h|h",
           iconTexture = select(2, C_PetJournal.GetPetInfoBySpeciesID(id)),
           quality = 1,
           itemCount = 1,
