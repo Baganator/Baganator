@@ -256,7 +256,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
     self:SetCurrentTab(0)
     self:GetParent():UpdateView()
   end)
-  tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
+  tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
   tabButton.SelectedTexture:Hide()
   tabButton:SetScale(tabScale)
   tabButton:Show()
@@ -291,7 +291,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
     addonTable.Skins.AddFrame("SideTabButton", tabButton)
     tabButton.Icon:SetTexture("Interface\\GuildBankFrame\\UI-GuildBankFrame-NewTab")
     if not lastTab then
-      tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
+      tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
     else
       tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     end
