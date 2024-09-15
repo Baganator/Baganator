@@ -75,6 +75,8 @@ addonTable.Constants.Events = {
   "PluginsUpdated",
 
   "TransferCancel",
+
+  "PropagateAlt",
 }
 
 addonTable.Constants.SortStatus = {

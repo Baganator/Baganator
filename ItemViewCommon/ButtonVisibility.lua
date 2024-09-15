@@ -14,6 +14,7 @@ end
 
 function BaganatorItemViewButtonVisibilityMixin:OnShow()
   self:RegisterEvent("MODIFIER_STATE_CHANGED")
+  addonTable.CallbackRegistry:RegisterCallback("PropagateAlt", self.Update, self)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
     if settingName == addonTable.Config.Options.SHOW_BUTTONS_ON_ALT then
@@ -26,6 +27,7 @@ end
 
 function BaganatorItemViewButtonVisibilityMixin:OnHide()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
+  addonTable.CallbackRegistry:RegisterCallback("PropagateAlt", self)
   addonTable.CallbackRegistry:UnregisterCallback("SettingChanged", self)
 
   local AllButtons = self:GetParent().AllButtons

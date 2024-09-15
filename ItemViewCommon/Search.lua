@@ -78,6 +78,16 @@ function BaganatorSearchWidgetMixin:OnLoad()
       self.SearchBox.Instructions:SetText(addonTable.Utilities.GetRandomSearchesText())
     end
   end)
+  self.SearchBox:HookScript("OnKeyDown", function(_, key)
+    if key == "LALT" or key == "RALT" or key == "ALT" then
+      addonTable.CallbackRegistry:TriggerEvent("PropagateAlt")
+    end
+  end)
+  self.SearchBox:HookScript("OnKeyUp", function(_, key)
+    if key == "LALT" or key == "RALT" or key == "ALT" then
+      addonTable.CallbackRegistry:TriggerEvent("PropagateAlt")
+    end
+  end)
   self.SearchBox.clearButton:SetScript("OnClick", function()
     addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
   end)
