@@ -10,7 +10,7 @@ function addonTable.Transfers.VendorItems(toSell)
   local sold = 0
   for _, item in ipairs(toSell) do
     local location = ItemLocation:CreateFromBagAndSlot(item.bagID, item.slotID)
-    if C_Item.DoesItemExist(location) and not item.hasNoValue then
+    if C_Item.DoesItemExist(location) and not C_Container.GetContainerItemInfo(item.bagID, item.slotID).hasNoValue then
       C_Container.UseContainerItem(item.bagID, item.slotID)
       sold = sold + 1
       -- Limit sold to the most that can be bought back from the merchant if
