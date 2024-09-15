@@ -39,7 +39,7 @@ end)
 if addonTable.Constants.IsRetail then
   addonTable.Utilities.OnAddonLoaded("Vendor", function()
     Baganator.API.RegisterJunkPlugin(BAGANATOR_L_VENDOR, "vendor", function(bagID, slotID, itemID, itemLink)
-      return Vendor.EvaluateItem(bagID, slotID) == 1
+      return Vendor.EvaluateItem(bagID, slotID) ~= 0
     end)
 
     local extension = {
