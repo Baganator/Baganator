@@ -27,7 +27,7 @@ end
 
 function BaganatorItemViewButtonVisibilityMixin:OnHide()
   self:UnregisterEvent("MODIFIER_STATE_CHANGED")
-  addonTable.CallbackRegistry:RegisterCallback("PropagateAlt", self)
+  addonTable.CallbackRegistry:UnregisterCallback("PropagateAlt", self)
   addonTable.CallbackRegistry:UnregisterCallback("SettingChanged", self)
 
   local AllButtons = self:GetParent().AllButtons
