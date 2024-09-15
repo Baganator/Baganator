@@ -313,10 +313,11 @@ if addonTable.Constants.IsEra then
     [[{"categories":[],"version":1,"order":["default_auto_recents","default_hearthstone","default_consumable","default_questitem","_EQUIPMENT","default_auto_equipment_sets","default_weapon","default_armor","__end","_CRAFTING","default_reagent","default_tradegoods","default_recipe","__end","default_projectile","default_container","default_quiver","default_key","default_miscellaneous","default_other","----","default_junk","default_special_empty"],"modifications":[],"hidden":[]}]],
   }
 elseif addonTable.Constants.IsClassic then -- Cata
-  addonTable.CategoryViews.Constants.DefaultImportVersion = 2
+  addonTable.CategoryViews.Constants.DefaultImportVersion = 3
   addonTable.CategoryViews.Constants.DefaultImport = {
     [[{"categories":[],"version":1,"order":["_CRAFTING","__end","default_auto_recents","----","default_hearthstone","default_consumable","default_questitem","----","default_auto_equipment_sets","_EQUIPMENT","default_weapon","default_armor","__end","_CRAFTING","default_reagent","default_tradegoods","default_recipe","__end","default_gem","default_container","default_key","default_miscellaneous","default_battlepet","default_other","----","default_junk","default_special_empty"],"modifications":[],"hidden":[]}]],
     [[{"categories":[],"version":1,"order":["default_auto_recents","----","default_hearthstone","default_consumable","default_questitem","----","default_auto_equipment_sets","_EQUIPMENT","default_weapon","default_armor","__end","_CRAFTING","default_reagent","default_tradegoods","default_recipe","__end","default_gem","default_container","default_key","default_miscellaneous","default_battlepet","default_other","----","default_junk","default_special_empty"],"modifications":[],"hidden":[]}]],
+    [[{"categories":[],"version":1,"order":["default_auto_recents","----","default_hearthstone","default_consumable","default_questitem","_EQUIPMENT","default_auto_equipment_sets","default_weapon","default_armor","__end","_CRAFTING","default_reagent","default_tradegoods","default_recipe","__end","default_gem","default_container","default_key","default_miscellaneous","default_battlepet","default_other","----","default_junk","default_special_empty"],"modifications":[],"hidden":[]}]],
   }
 elseif addonTable.Constants.IsRetail then
   addonTable.CategoryViews.Constants.DefaultImportVersion = 1
