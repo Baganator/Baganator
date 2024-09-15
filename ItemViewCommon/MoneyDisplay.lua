@@ -35,12 +35,6 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
 
-  local warband = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1).money or 0
-  if warband > 0 then
-    GameTooltip_AddBlankLineToTooltip(GameTooltip)
-    GameTooltip:AddDoubleLine(PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), addonTable.Utilities.GetMoneyString(warband, true), nil, nil, nil, 1, 1, 1)
-  end
-
   GameTooltip_AddBlankLineToTooltip(GameTooltip)
   GameTooltip:AddLine(BAGANATOR_L_HOLD_SHIFT_TO_SHOW_ACCOUNT_TOTAL, 0, 1, 0)
   GameTooltip:Show()
