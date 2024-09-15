@@ -34,7 +34,6 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
-  GameTooltip:Show() -- Used so that the width is set for the divider for Warband money use
 
   local warband = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1).money or 0
   if warband > 0 then
