@@ -440,14 +440,8 @@ function addonTable.ViewManagement.Initialize()
   xpcall(function()
     local info = C_XMLUtil.GetTemplateInfo("BackpackTokenTemplate")
     local tokenWidth = info and info.width or 50
-    -- Reverts token frame width change after using the character frame to avoid
-    -- unexpected freezes.
-    TokenFramePopup:HookScript("OnShow", function()
-      BackpackTokenFrame:SetWidth(tokenWidth * addonTable.Constants.MaxPinnedCurrencies + 1) -- Support tracking up to 100 currencies
-    end)
-    TokenFramePopup:HookScript("OnHide", function()
-      BackpackTokenFrame:SetWidth(tokenWidth * 3 + 1)
-    end)
+    BackpackTokenFrame:UnregisterEvent("CURRENCY_DISPLAY_UPDATE")
+    BackpackTokenFrame:SetWidth(tokenWidth * addonTable.Constants.MaxPinnedCurrencies + 1) -- Support tracking up to 100 currencies
   end, CallErrorHandler)
 
   xpcall(function()
