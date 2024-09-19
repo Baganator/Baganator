@@ -87,12 +87,20 @@ local function SetupCategories()
       local newAdded = {}
       for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
         if addonTable.CategoryViews.Constants.SourceToCategory[source] then
-          table.insert(newAdded, source)
+          newAdded[source] = true
         end
       end
       addonTable.Config.Set(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED, newAdded)
     end
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT, addonTable.CategoryViews.Constants.DefaultImportVersion)
+  end
+  -- Bugfix for AUTOMATIC_CATEGORIES_ADDED being set wrong in previous versions
+  if #addonTable.Config.Get(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED) > 0 then
+    local newAdded = {}
+    for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED)) do
+      newAdded[source] = true
+    end
+    addonTable.Config.Set(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED, newAdded)
   end
 
   for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
