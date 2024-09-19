@@ -546,15 +546,15 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
             addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
           end
         end)
-        hooksecurefunc(itemButton, "UpdateTooltip", function(_)
-          if GameTooltip:IsShown() and not items[i].invalid then
+        hooksecurefunc(itemButton, "UpdateTooltip", function()
+          if GameTooltip:IsShown() and not itemButton.BGR.invalid then
             GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
             GameTooltip:Show()
           elseif BattlePetTooltip:IsShown() then
             BattlePetTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
             BattlePetTooltip:Show()
           else
-            items[i].invalid = true
+            itemButton.BGR.invalid = true
             GameTooltip:SetOwner(itemButton, "ANCHOR_RIGHT")
             GameTooltip:AddLine(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_ITEM_INFORMATION_MISSING))
             GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_REMOVE))
