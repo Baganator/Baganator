@@ -162,6 +162,12 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
   end
 
   local characterData = Syndicator.API.GetCharacter(character)
+
+  if not characterData then
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
+    return
+  end
+
   local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bags", Syndicator.Constants.AllBagIndexes)
   local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
 
