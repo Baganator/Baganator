@@ -399,7 +399,9 @@ function addonTable.ItemViewCommon.GetTransferButton(parent)
   end)
 
   local unusedState = {}
-  button:SetPropagateMouseMotion(true)
+  if button.SetPropagateMouseMotion then
+    button:SetPropagateMouseMotion(true)
+  end
   button:SetScript("OnEnter", function()
     if InCombatLockdown() or button.clicked or not button.currencyID then
       return
