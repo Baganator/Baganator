@@ -23,14 +23,14 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
-      self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
+      self:UpdateCurrencyTextPositions(self.allowedWidth)
     end
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
-      self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
+      self:UpdateCurrencyTextPositions(self.allowedWidth)
     end
   end)
 
@@ -58,7 +58,7 @@ function BaganatorCurrencyWidgetMixin:OnShow()
   addonTable.ItemViewCommon.SyncCurrenciesTrackedWithBlizzard()
   if self.currencyUpdateNeeded and self.lastCharacter then
     self:UpdateCurrencies(self.lastCharacter)
-    self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
+    self:UpdateCurrencyTextPositions(self.allowedWidth)
   end
 end
 
@@ -119,28 +119,42 @@ local function ShowCurrencies(self, character)
       GameTooltip:Hide()
     end)
     fontString.button:SetAllPoints(fontString)
-    fontString:SetPoint("RIGHT", prev, "LEFT", -15, 0)
     table.insert(self.activeCurrencyTexts, fontString)
     prev = fontString
   end
 end
 
-function BaganatorCurrencyWidgetMixin:UpdateCurrencyTextVisibility(offsetLeft)
-  if not offsetLeft then
+function BaganatorCurrencyWidgetMixin:UpdateCurrencyTextPositions(allowedWidth)
+  if not allowedWidth then
     return
   end
 
-  self.lastOffsetLeft = offsetLeft
+  self.allowedWidth = allowedWidth
 
-  if self:GetParent():GetLeft() == nil then
-    return
-  end
-
+  local baseX, baseY = -10, 10
+  local xDiff, yDiff = -15, 20
+  local root = self:GetParent()
+  local offsetX, offsetY = -self.Money:GetWidth() + xDiff, 0
   for _, fs in ipairs(self.activeCurrencyTexts) do
-    local show = fs:GetLeft() > self:GetParent():GetLeft() + offsetLeft
-    fs:SetShown(show)
-    fs.button:SetShown(show)
+    if math.abs(offsetX - fs:GetWidth()) > allowedWidth then
+      offsetY = offsetY + yDiff
+      offsetX = 0
+    end
+    fs:SetPoint("BOTTOMRIGHT", root, offsetX + baseX, offsetY + baseY)
+    offsetX = offsetX + xDiff - fs:GetWidth()
+    fs:Show()
+    fs.button:Show()
   end
+
+  local old = self.lastOffsetY
+  self.lastOffsetY = offsetY
+  if old ~= offsetY then
+    self:GetParent():OnFinished()
+  end
+end
+
+function BaganatorCurrencyWidgetMixin:GetExtraHeight()
+  return self.lastOffsetY or 0
 end
 
 function BaganatorCurrencyWidgetMixin:UpdateCurrencies(character)

@@ -356,7 +356,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnFinished(character, isLive)
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    math.min(self.Container:GetHeight() + 74 + additionalPadding + topSpacing / 2, UIParent:GetHeight() / self:GetScale() - externalVerticalSpacing)
+    math.min(self.Container:GetHeight() + 74 + additionalPadding + topSpacing / 2 + self.CurrencyWidget:GetExtraHeight(), UIParent:GetHeight() / self:GetScale() - externalVerticalSpacing)
   )
 
   self:UpdateScroll(74 + additionalPadding + topSpacing / 2 + externalVerticalSpacing, self:GetScale())

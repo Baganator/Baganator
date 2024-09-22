@@ -137,12 +137,14 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
   tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
   tAppendAll(self:GetParent().AllButtons, self.TopButtons)
 
+  local buttonsWidth = 0
   local lastButton = nil
   for index, layout in ipairs(activeBankBagCollapsibles) do
     local button = self.CollapsingBankBags[index].button
     button:SetParent(self)
     button:SetShown(layout:GetHeight() > 0)
     if button:IsShown() then
+      buttonsWidth = button:GetWidth() + 5
       button:ClearAllPoints()
       if lastButton then
         button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
@@ -180,7 +182,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   self:OnFinished()
 
-  self.CurrencyWidget:UpdateCurrencyTextVisibility(lastButton and lastButton:GetRight() - self:GetLeft() + 10 or sideSpacing + addonTable.Constants.ButtonFrameOffset)
+  self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 5)
 
   self:GetParent():OnTabFinished()
 end

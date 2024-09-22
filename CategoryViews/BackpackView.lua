@@ -178,14 +178,14 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
       maxHeight
     )
 
-    self:OnFinished()
-
     local lastButton = self.CurrencyButton
     lastButton:ClearAllPoints()
     lastButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
     lastButton:SetPoint("LEFT", self.Container, -2, 0)
 
-    self.CurrencyWidget:UpdateCurrencyTextVisibility(lastButton and lastButton:GetRight() - self:GetLeft() + 10 or sideSpacing + addonTable.Constants.ButtonFrameOffset)
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - lastButton:GetWidth() - 10)
+
+    self:OnFinished()
 
     local searchText = self.SearchWidget.SearchBox:GetText()
     if self.searchToApply then
