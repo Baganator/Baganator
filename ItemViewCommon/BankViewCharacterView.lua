@@ -201,9 +201,10 @@ end
 function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character, isLive)
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  local buttonPadding = 0
-  if self.isLive then
-    buttonPadding = buttonPadding + 7
+  local buttonPadding = 5
+  local additionalPadding = 0
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
+    buttonPadding = 3
   end
 
   self:SetSize(10, 10)

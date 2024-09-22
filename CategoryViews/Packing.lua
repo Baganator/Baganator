@@ -155,5 +155,10 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     end
   end
 
-  return maxWidth, -offsetY - headerPadding
+  local bottomSpacing = 2
+  if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
+    bottomSpacing = 4
+  end
+
+  return maxWidth, -offsetY - headerPadding + bottomSpacing
 end
