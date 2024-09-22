@@ -418,8 +418,50 @@ local function SetupCharacterSelect()
     SetPositions()
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("CharacterSelectToggle", function(_, guildName)
+  addonTable.CallbackRegistry:RegisterCallback("CharacterSelectToggle", function()
     characterSelect:SetShown(not characterSelect:IsShown())
+  end)
+end
+
+local function SetupCurrencyPanel()
+  local currencyPanel = addonTable.ItemViewCommon.GetCurrencyPanel("Baganator_CurrencyPanelFrame")
+
+  table.insert(UISpecialFrames, currencyPanel:GetName())
+
+  local function SetPositions()
+    currencyPanel:ClearAllPoints()
+    local setting = addonTable.Config.Get(addonTable.Config.Options.CURRENCY_PANEL_POSITION)
+    if type(setting[2]) == "string" then
+      setting[2] = nil
+    end
+    local anchor = CopyTable(setting)
+    if setting[2] == nil then -- Accommodate renamed backpack frames
+      anchor[2] = addonTable.ViewManagement.GetBackpackFrame() or UIParent
+      setting[2] = anchor[2]:GetName()
+    end
+    currencyPanel:SetPoint(unpack(anchor))
+  end
+
+  local function ResetPositions()
+    addonTable.Config.ResetOne(addonTable.Config.Options.CURRENCY_PANEL_POSITION)
+    SetPositions()
+  end
+
+  local success = pcall(SetPositions) -- work around broken values
+  if not success then
+    ResetPositions()
+  end
+
+  addonTable.CallbackRegistry:RegisterCallback("ResetFramePositions", function()
+    ResetPositions()
+  end)
+
+  addonTable.CallbackRegistry:RegisterCallback("BackpackFrameChanged", function()
+    SetPositions()
+  end)
+
+  addonTable.CallbackRegistry:RegisterCallback("CurrencyPanelToggle", function()
+    currencyPanel:SetShown(not currencyPanel:IsShown())
   end)
 end
 
@@ -455,4 +497,5 @@ function addonTable.ViewManagement.Initialize()
   end, CallErrorHandler)
 
   SetupCharacterSelect()
+  SetupCurrencyPanel()
 end

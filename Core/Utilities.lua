@@ -29,11 +29,6 @@ do
   end
 end
 
-function addonTable.Utilities.GetCharacterFullName()
-  local characterName, realm = UnitFullName("player")
-  return characterName .. "-" .. realm
-end
-
 local queue = {}
 local reporter = CreateFrame("Frame")
 function reporter:OnUpdate()

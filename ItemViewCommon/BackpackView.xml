@@ -59,6 +59,7 @@
           </OnClick>
         </Scripts>
       </Button>
+      <Button parentKey="CurrencyButton" inherits="BaganatorCurrencyButtonTemplate" frameLevel="700"/>
 
       <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
       <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>

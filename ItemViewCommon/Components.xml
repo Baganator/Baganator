@@ -288,4 +288,28 @@
       </Layer>
     </Layers>
   </Button>
+
+  <Button name="BaganatorCurrencyButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true" motionScriptsWhileDisabled="true">
+    <KeyValues>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_CURRENCIES" type="global"/>
+    </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"currency"})
+      </OnLoad>
+      <OnClick>
+        Baganator.CallbackRegistry:TriggerEvent("CurrencyPanelToggle")
+      </OnClick>
+    </Scripts>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\Currency.png">
+          <Size x="14" y="14"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
 </Ui>

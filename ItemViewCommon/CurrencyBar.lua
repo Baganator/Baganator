@@ -5,20 +5,15 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   self.currencyPool = CreateFontStringPool(self, "BACKGROUND", 0, "GameFontHighlight")
   -- Using an (in)secure button to avoid taint of the transfer functionality
   -- when accessing currency panel
-  self.currencyButtons = CreateFramePool("Button", self, "InsecureActionButtonTemplate", function(_, b)
+  self.currencyButtons = CreateFramePool("Button", self, nil, function(_, b)
     if b.setup then
       return
     end
     b.setup = true
 
-    b:SetAttribute("type", "macro")
-    b:HookScript("PreClick", function()
-      if not InCombatLockdown() then
-        ShowUIPanel(CharacterFrame)
-      end
+    b:SetScript("OnClick", function()
+      addonTable.CallbackRegistry:TriggerEvent("CurrencyPanelToggle")
     end)
-    b:SetAttribute("macrotext", "/click CharacterFrameTab3")
-    b:RegisterForClicks("AnyUp", "AnyDown")
   end)
 
   self.activeCurrencyTexts = {}
@@ -32,30 +27,10 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
     end
   end)
 
-  -- Update currencies when they are watched/unwatched in Blizz UI
-  EventRegistry:RegisterCallback("TokenFrame.OnTokenWatchChanged", function()
-    self.cacheBackpackCurrenciesNeeded = true
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
       self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
-    end
-  end)
-
-  -- Needed to get currencies to load correctly on classic versions of WoW
-  addonTable.Utilities.OnAddonLoaded("Blizzard_TokenUI", function()
-    if self.lastCharacter then
-      self:UpdateCurrencies(self.lastCharacter)
-      self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
-    end
-
-    -- Wrath Classic
-    if ManageBackpackTokenFrame then
-      hooksecurefunc("ManageBackpackTokenFrame", function()
-        if self.lastCharacter then
-          self:UpdateCurrencies(self.lastCharacter)
-          self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
-        end
-      end)
     end
   end)
 
@@ -79,37 +54,8 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   end)
 end
 
-function BaganatorCurrencyWidgetMixin:CacheBackpackCurrencies()
-  if not self.cacheBackpackCurrenciesNeeded then
-    return
-  end
-
-  self.backpackCurrencies = {}
-
-  local existingCurrencies = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).currencies
-
-  for i = 1, addonTable.Constants.MaxPinnedCurrencies do
-    local currencyID, icon
-    if C_CurrencyInfo and C_CurrencyInfo.GetBackpackCurrencyInfo then
-      local currencyInfo = C_CurrencyInfo.GetBackpackCurrencyInfo(i)
-      if currencyInfo then
-        currencyID = currencyInfo.currencyTypesID
-        icon = currencyInfo.iconFileID
-      end
-    elseif GetBackpackCurrencyInfo then
-      icon, currencyID = select(3, GetBackpackCurrencyInfo(i))
-    end
-    if currencyID and existingCurrencies[currencyID] then
-      table.insert(self.backpackCurrencies, {icon = icon, currencyID = currencyID})
-    else
-      break
-    end
-  end
-
-  self.cacheBackpackCurrenciesNeeded = false
-end
-
 function BaganatorCurrencyWidgetMixin:OnShow()
+  addonTable.ItemViewCommon.SyncCurrenciesTrackedWithBlizzard()
   if self.currencyUpdateNeeded and self.lastCharacter then
     self:UpdateCurrencies(self.lastCharacter)
     self:UpdateCurrencyTextVisibility(self.lastOffsetLeft)
@@ -135,9 +81,7 @@ local function ShowCurrencies(self, character)
 
   local prev = self.Money
 
-  self:CacheBackpackCurrencies()
-
-  for _, details in ipairs(self.backpackCurrencies) do
+  for _, details in ipairs(addonTable.Config.Get(addonTable.Config.Options.CURRENCIES_TRACKED, character)) do
     local fontString = self.currencyPool:Acquire()
     local count = 0
     if characterCurrencies[details.currencyID] ~= nil then
@@ -148,7 +92,7 @@ local function ShowCurrencies(self, character)
     if strlenutf8(currencyText) > 5 then
       currencyText = AbbreviateNumbers(count)
     end
-    currencyText = currencyText .. " " .. CreateSimpleTextureMarkup(details.icon, 12, 12)
+    currencyText = currencyText .. " " .. CreateSimpleTextureMarkup(C_CurrencyInfo.GetCurrencyInfo(details.currencyID).iconFileID, 12, 12)
     fontString:SetText(currencyText)
 
     fontString.button = self.currencyButtons:Acquire()

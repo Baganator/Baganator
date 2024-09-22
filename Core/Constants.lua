@@ -40,6 +40,7 @@ addonTable.Constants.Events = {
   "GuildToggle",
   "GuildShow",
   "GuildHide",
+  "CurrencyPanelToggle",
 
   "ViewComplete",
   "BagCacheAfterNewItemsUpdate",

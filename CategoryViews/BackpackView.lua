@@ -71,6 +71,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
   self.AllButtons = {}
   tAppendAll(self.AllButtons, self.TopButtons)
   tAppendAll(self.AllButtons, self.AllFixedButtons)
+  table.insert(self.AllButtons, self.CurrencyButton)
 
   addonTable.AddBagTransferActivationCallback(function()
     self:UpdateTransferButton()
@@ -179,7 +180,12 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
 
     self:OnFinished()
 
-    self.CurrencyWidget:UpdateCurrencyTextVisibility(sideSpacing + addonTable.Constants.ButtonFrameOffset)
+    local lastButton = self.CurrencyButton
+    lastButton:ClearAllPoints()
+    lastButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
+    lastButton:SetPoint("LEFT", self.Container, -2, 0)
+
+    self.CurrencyWidget:UpdateCurrencyTextVisibility(lastButton and lastButton:GetRight() - self:GetLeft() + 10 or sideSpacing + addonTable.Constants.ButtonFrameOffset)
 
     local searchText = self.SearchWidget.SearchBox:GetText()
     if self.searchToApply then
