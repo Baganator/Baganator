@@ -92,7 +92,7 @@ local function ShowCurrencies(self, character)
     if strlenutf8(currencyText) > 5 then
       currencyText = AbbreviateNumbers(count)
     end
-    currencyText = currencyText .. " " .. CreateSimpleTextureMarkup(C_CurrencyInfo.GetCurrencyInfo(details.currencyID).iconFileID, 12, 12)
+    currencyText = currencyText .. " " .. CreateTextureMarkup(C_CurrencyInfo.GetCurrencyInfo(details.currencyID).iconFileID, 14, 14, 12, 12, 0.08, 0.96, 0.08, 0.96)
     fontString:SetText(currencyText)
 
     fontString.button = self.currencyButtons:Acquire()

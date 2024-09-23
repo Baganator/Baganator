@@ -199,6 +199,7 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
       row:SetNormalFontObject(GameFontHighlight)
       row.rightText:SetText(details.amount)
       row.rightIcon:SetTexture(details.icon)
+      row.rightIcon:SetTexCoord(0.08, 0.96, 0.08, 0.96)
       if GameTooltip.SetCurrencyByID then
         -- Show retail currency tooltip
         row:SetScript("OnEnter", function(self)
