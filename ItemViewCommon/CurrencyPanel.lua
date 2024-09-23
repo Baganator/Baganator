@@ -73,6 +73,14 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     frame:SetPoint(unpack(addonTable.Config.Get(addonTable.Config.Options.CURRENCY_PANEL_POSITION)))
   end)
 
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
+      if frame:IsVisible() then
+        addonTable.Utilities.ApplyVisuals(frame)
+      end
+    end
+  end)
+
   frame:SetSize(350, 500)
 
   frame:SetTitle(BAGANATOR_L_CURRENCIES)
@@ -364,6 +372,7 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
   end)
 
   frame:SetScript("OnShow", function()
+    addonTable.Utilities.ApplyVisuals(frame)
     addonTable.ItemViewCommon.SyncCurrenciesTrackedWithBlizzard()
     UpdateCurrencies()
     C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
