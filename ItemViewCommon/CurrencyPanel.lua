@@ -376,7 +376,9 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     addonTable.Utilities.ApplyVisuals(frame)
     addonTable.ItemViewCommon.SyncCurrenciesTrackedWithBlizzard()
     UpdateCurrencies()
-    C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+    if C_CurrencyInfo.RequestCurrencyDataForAccountCharacters then
+      C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+    end
   end)
 
   searchBox:HookScript("OnTextChanged", UpdateCurrencies)
