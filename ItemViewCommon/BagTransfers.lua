@@ -178,7 +178,7 @@ RegisterBagTransfer(
     if guildTab == 0 then
       emptyGuildSlots = {}
       for tabIndex, tabData in ipairs(Syndicator.API.GetGuild(Syndicator.API.GetCurrentGuild()).bank) do
-        tAppendAll(emptyGuildSlots, addonTable.Transfers.GetEmptyGuildSlots(tabData[guildTab], guildTab))
+        tAppendAll(emptyGuildSlots, addonTable.Transfers.GetEmptyGuildSlots(tabData, tabIndex))
       end
     else
       emptyGuildSlots = addonTable.Transfers.GetEmptyGuildSlots(Syndicator.API.GetGuild(Syndicator.API.GetCurrentGuild()).bank[guildTab], guildTab)
