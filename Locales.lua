@@ -45,7 +45,7 @@ L["SHIFT_CLICK_TO_TRACK_UNTRACK"] = "<Shift-click to track/untrack>"
 L["CTRL_CLICK_TO_TRANSFER"] = "<Ctrl-click to transfer>"
 L["SHOW_TRANSFERABLE_ONLY"] = "Show transferable only"
 L["TRACKED"] = "Tracked"
-L["SHIFT_CLICK_TO_TRACK"] = "Shift-click to track"
+L["ACTION_TO_TRACK_TEXT"] = "Shift-click currency or drop item"
 
 L["CUSTOMISE_BAGANATOR"] = "Customise Baganator"
 L["BAG_VIEW_TYPE"] = "Bag view type"

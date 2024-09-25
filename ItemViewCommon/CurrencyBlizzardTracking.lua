@@ -4,6 +4,10 @@ local isSyncing = false
 local function ApplyBlizzard()
   local backpackCurrencies = {}
 
+  if not Syndicator.API.GetCurrentCharacter() then
+    return
+  end
+
   local existingCurrencies = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).currencies
 
   for i = 1, addonTable.Constants.MaxPinnedCurrencies do

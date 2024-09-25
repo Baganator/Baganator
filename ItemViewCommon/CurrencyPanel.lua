@@ -28,7 +28,7 @@ StaticPopupDialogs[transferImpossibleDialogName] = {
 function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
   local isWarbandOnly = false
   local categories = {}
-  local UpdateCurrencies
+  local UpdateCurrencies, UpdateForCursor
 
   local function TrackUntrackCurrency(currencyID)
     local tracked = addonTable.Config.Get(addonTable.Config.Options.CURRENCIES_TRACKED)
@@ -39,6 +39,17 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     else
       table.remove(tracked, index)
       addonTable.ItemViewCommon.SetCurrencyTrackedBlizzard(currencyID, false)
+    end
+    addonTable.Config.Set(addonTable.Config.Options.CURRENCIES_TRACKED, CopyTable(tracked))
+  end
+
+  local function TrackUntrackItem(itemID)
+    local tracked = addonTable.Config.Get(addonTable.Config.Options.CURRENCIES_TRACKED)
+    local index = FindInTableIf(tracked, function(a) return a.itemID == itemID end)
+    if index == nil then
+      table.insert(tracked, {itemID = itemID})
+    else
+      table.remove(tracked, index)
     end
     addonTable.Config.Set(addonTable.Config.Options.CURRENCIES_TRACKED, CopyTable(tracked))
   end
@@ -57,6 +68,26 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
   frame:SetUserPlaced(false)
   frame:Hide()
 
+  local dropRegion = CreateFrame("Button", nil , frame)
+  dropRegion:SetAllPoints()
+  dropRegion:Hide()
+  dropRegion:SetFrameStrata("DIALOG")
+  dropRegion:EnableMouse(true)
+  dropRegion:SetScript("OnReceiveDrag", function()
+    local cursorType, itemID = GetCursorInfo()
+    if cursorType == "item" then
+      TrackUntrackItem(itemID)
+      ClearCursor()
+    end
+  end)
+  dropRegion:SetScript("OnClick", function()
+    local cursorType, itemID = GetCursorInfo()
+    if cursorType == "item" then
+      TrackUntrackItem(itemID)
+      ClearCursor()
+    end
+  end)
+
   frame:SetScript("OnDragStart", function()
     if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
       frame:StartMoving()
@@ -71,6 +102,13 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     addonTable.Config.Set(addonTable.Config.Options.CURRENCY_PANEL_POSITION, {addonTable.Utilities.ConvertAnchorToCorner(oldCorner, frame)})
     frame:ClearAllPoints()
     frame:SetPoint(unpack(addonTable.Config.Get(addonTable.Config.Options.CURRENCY_PANEL_POSITION)))
+  end)
+
+  frame:RegisterEvent("CURSOR_CHANGED")
+  frame:SetScript("OnEvent", function(_, eventName)
+    if frame:IsVisible() and eventName == "CURSOR_CHANGED" then
+      UpdateForCursor()
+    end
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
@@ -117,11 +155,9 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
   scrollBox:SetPoint("TOPLEFT", addonTable.Constants.ButtonFrameOffset + 5, -57)
   scrollBox:SetPoint("BOTTOMRIGHT", -20, 8)
   view:SetElementExtentCalculator(function(index, details)
-    if details.type == "currency" then
+    if details.type == "currency" or details.type == "item" then
       return 25
-    elseif details.type == "header" then
-      return 30
-    elseif details.type == "text" then
+    elseif details.type == "header" or details.type == "text" then
       return 30
     end
   end)
@@ -258,6 +294,18 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
         row.warbandIcon:Hide()
         GameTooltip:Hide()
       end)
+    elseif details.type == "item" then
+      row:GetFontString():SetJustifyH("LEFT")
+      row:SetNormalFontObject(GameFontHighlight)
+      row.rightText:Show()
+      row.rightIcon:Show()
+      row.rightIcon:SetTexture(details.icon)
+      row.rightText:SetText(details.amount)
+      row:SetScript("OnClick", function(self)
+        if details.isLive and IsShiftKeyDown() then
+          TrackUntrackItem(details.itemID)
+        end
+      end)
     elseif details.type == "text" then
       row:SetNormalFontObject(GameFontNormalMed2)
       row:SetDisabledFontObject(GameFontNormalMed2)
@@ -283,48 +331,50 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
         end
       end
 
-      local function AddHeader(headerDetails, force)
-        if #headerDetails.currencies > 0 or force then
-          table.insert(currencyByHeaderDisplay, {header = headerDetails.header, items = {}})
+      local function AddCurrencyToItems(items, currencyID)
+        local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
+        local name = info.name
+        local amount = FormatLargeNumber(currencies[currencyID])
+        if amount == "0" then
+          name = GRAY_FONT_COLOR:WrapTextInColorCode(name)
+          amount = GRAY_FONT_COLOR:WrapTextInColorCode(amount)
         end
-        for _, currencyID in ipairs(headerDetails.currencies) do
-          local info = C_CurrencyInfo.GetCurrencyInfo(currencyID)
-          local name = info.name
-          local amount = FormatLargeNumber(currencies[currencyID])
-          if amount == "0" then
-            name = GRAY_FONT_COLOR:WrapTextInColorCode(name)
-            amount = GRAY_FONT_COLOR:WrapTextInColorCode(amount)
-          end
-          if info.name:lower():match(search) and (not isWarbandOnly or info.isAccountTransferable) then
-            table.insert(currencyByHeaderDisplay[#currencyByHeaderDisplay].items, {type = "currency", name = name, currencyID = currencyID, amount = amount, icon = info.iconFileID, isWarband = info.isAccountWide, isWarbandTransfer = info.isAccountTransferable, isLive = isLive})
-          end
+        if info.name:lower():match(search) and (not isWarbandOnly or info.isAccountTransferable) then
+          table.insert(items, {type = "currency", name = name, currencyID = currencyID, amount = amount, icon = info.iconFileID, isWarband = info.isAccountWide, isWarbandTransfer = info.isAccountTransferable, isLive = isLive})
         end
       end
 
       local tracked = {}
-      local trackedList = {}
+      local items = {}
       for _, details in ipairs(addonTable.Config.Get(addonTable.Config.Options.CURRENCIES_TRACKED, frame.selectedCharacter)) do
-        table.insert(trackedList, details.currencyID)
-        tracked[details.currencyID] = true
+        if details.currencyID then
+          tracked[details.currencyID] = true
+          AddCurrencyToItems(items, details.currencyID)
+        elseif details.itemID then
+          local itemName = C_Item.GetItemNameByID(details.itemID)
+          table.insert(items, {type = "item", name = itemName or " ", itemID = details.itemID, amount = addonTable.ItemViewCommon.GetTrackedItemCount(details.itemID, frame.selectedCharacter), icon = select(5, C_Item.GetItemInfoInstant(details.itemID)), isLive = isLive})
+        end
       end
+      table.insert(currencyByHeaderDisplay, {header = BAGANATOR_L_TRACKED, items = items})
 
-      AddHeader({
-        header = BAGANATOR_L_TRACKED,
-        currencies = trackedList,
-      }, true)
       if isLive then
         table.insert(currencyByHeaderDisplay[#currencyByHeaderDisplay].items, {
           type = "text",
-          name = LIGHTGRAY_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SHIFT_CLICK_TO_TRACK),
+          name = LIGHTGRAY_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_ACTION_TO_TRACK_TEXT),
           disabled = true,
         })
       end
 
       for _, headerDetails in pairs(currencyByHeader) do
-        AddHeader({
-          header = headerDetails.header,
-          currencies = tFilter(headerDetails.currencies, function(a) return not tracked[a] end, true)
-        })
+        local items = {}
+        for _, currencyID in ipairs(headerDetails.currencies) do
+          if not tracked[currencyID] then
+            AddCurrencyToItems(items, currencyID)
+          end
+        end
+        if #items > 0 then
+          table.insert(currencyByHeaderDisplay, {header = headerDetails.header, items = items})
+        end
       end
 
       local collapsedState = addonTable.Config.Get(addonTable.Config.Options.CURRENCY_HEADERS_COLLAPSED)
@@ -353,6 +403,10 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     scrollBox:SetDataProvider(CreateDataProvider(entries), true)
   end
 
+  UpdateForCursor = function()
+    dropRegion:SetShown(GetCursorInfo() == "item")
+  end
+
   addonTable.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
     frame.selectedCharacter = character
     if frame:IsVisible() then
@@ -366,16 +420,20 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     end
   end)
 
-  Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate",  function(_, character)
+  local function Update(_, character)
     if frame.selectedCharacter and frame:IsVisible() then
       UpdateCurrencies()
     end
-  end)
+  end
+  Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate", Update)
+  Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate", Update)
+  Syndicator.CallbackRegistry:RegisterCallback("VoidCacheUpdate", Update)
 
   frame:SetScript("OnShow", function()
     addonTable.Utilities.ApplyVisuals(frame)
     addonTable.ItemViewCommon.SyncCurrenciesTrackedWithBlizzard()
     UpdateCurrencies()
+    UpdateForCursor()
     if C_CurrencyInfo.RequestCurrencyDataForAccountCharacters then
       C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
     end
