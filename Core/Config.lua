@@ -32,6 +32,7 @@ addonTable.Config.Options = {
   CURRENCIES_TRACKED_IMPORTED = "currencies_tracked_imported",
 
   WARBAND_CURRENT_TAB = "warband_current_tab",
+  GUILD_CURRENT_TAB = "guild_current_tab",
 
   RECENT_CHARACTERS_MAIN_VIEW = "recent_characters_main_view",
 
@@ -142,6 +143,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.UPGRADE_PLUGINS_IGNORED] = {},
   [addonTable.Config.Options.SETTING_ANCHORS] = false,
   [addonTable.Config.Options.WARBAND_CURRENT_TAB] = 1,
+  [addonTable.Config.Options.GUILD_CURRENT_TAB] = 1,
   [addonTable.Config.Options.CURRENCY_HEADERS_COLLAPSED] = {},
   [addonTable.Config.Options.CURRENCIES_TRACKED] = {},
   [addonTable.Config.Options.CURRENCIES_TRACKED_IMPORTED] = 0,

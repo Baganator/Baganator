@@ -100,15 +100,33 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Frame parentKey="GuildLive" inherits="BaganatorLiveGuildLayoutTemplate">
+      <Frame parentKey="Container">
         <Anchors>
-          <Anchor point="TOPLEFT" x="13" y="-50"/>
+          <Anchor point="TOPLEFT"/>
         </Anchors>
-      </Frame>
-      <Frame parentKey="GuildCached" inherits="BaganatorCachedGuildLayoutTemplate">
-        <Anchors>
-          <Anchor point="TOPLEFT" x="13" y="-50"/>
-        </Anchors>
+        <Frames>
+          <Frame parentKey="GuildLive" inherits="BaganatorLiveGuildLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT"/>
+            </Anchors>
+          </Frame>
+          <Frame parentKey="GuildCached" inherits="BaganatorCachedGuildLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT"/>
+            </Anchors>
+          </Frame>
+
+          <Frame parentKey="GuildUnifiedLive" inherits="BaganatorLiveUnifiedGuildLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT"/>
+            </Anchors>
+          </Frame>
+          <Frame parentKey="GuildUnifiedCached" inherits="BaganatorCachedUnifiedGuildLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT"/>
+            </Anchors>
+          </Frame>
+        </Frames>
       </Frame>
 
       <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>

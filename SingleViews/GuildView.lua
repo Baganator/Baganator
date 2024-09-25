@@ -13,10 +13,12 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
 
+  addonTable.Utilities.AddScrollBar(self)
+
   self.Anchor = addonTable.ItemViewCommon.GetAnchorSetter(self, addonTable.Config.Options.GUILD_VIEW_POSITION)
 
   self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
-  self.currentTab = 1
+  self.currentTab = addonTable.Config.Get(addonTable.Config.Options.GUILD_CURRENT_TAB)
   self.otherTabsCache = {}
   self.searchMonitors = {}
 
@@ -32,8 +34,8 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
             self.otherTabsCache[guild] = {}
           end
           self.otherTabsCache[guild][tabIndex] = nil
-          if tabIndex == self.currentTab then
-            for _, layout in ipairs(self.Layouts) do
+          if tabIndex == self.currentTab or self.currentTab == 0 then
+            for _, layout in ipairs(self.Container.Layouts) do
               layout:RequestContentRefresh()
             end
           end
@@ -52,7 +54,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Layouts) do
+    for _, layout in ipairs(self.Container.Layouts) do
       layout:RequestContentRefresh()
     end
     if self:IsVisible() then
@@ -69,7 +71,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
         addonTable.Utilities.ApplyVisuals(self)
       end
     elseif tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
-      for _, layout in ipairs(self.Layouts) do
+      for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       if self:IsVisible() then
@@ -204,9 +206,9 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
   end
 
   if self.isLive then
-    self.GuildLive:ApplySearch(text)
+    self.Container.GuildLive:ApplySearch(text)
   else
-    self.GuildCached:ApplySearch(text)
+    self.Container.GuildCached:ApplySearch(text)
   end
 
   if text == "" then
@@ -305,6 +307,23 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
 
   local lastTab
   local tabs = {}
+
+  local tabButton = self.tabsPool:Acquire()
+  addonTable.Skins.AddFrame("SideTabButton", tabButton)
+  tabButton:RegisterForClicks("LeftButtonUp")
+  tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\Everything.png")
+  tabButton:SetScript("OnClick", function(_, button)
+    self:SetCurrentTab(0)
+    self:UpdateForGuild(self.lastGuild, self.isLive)
+  end)
+  tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
+  tabButton.SelectedTexture:Hide()
+  tabButton:SetScale(tabScale)
+  tabButton:Show()
+  tabButton.tabName = BAGANATOR_L_EVERYTHING
+  lastTab = tabButton
+  table.insert(tabs, tabButton)
+
   self.lastTabData = {}
   for index, tabInfo in ipairs(guildData.bank) do
     local tabButton = self.tabsPool:Acquire()
@@ -318,11 +337,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
         self:OpenTabEditor()
       end
     end)
-    if not lastTab then
-      tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
-    else
-      tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
-    end
+    tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     tabButton.SelectedTexture:Hide()
     tabButton:SetScale(tabScale)
     tabButton:Show()
@@ -360,6 +375,10 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   end
 
   self.Tabs = tabs
+
+  if self.currentTab > #guildData.bank then
+    self:SetCurrentTab(#guildData.bank)
+  end
 end
 
 function BaganatorSingleViewGuildViewMixin:HighlightCurrentTab()
@@ -367,18 +386,20 @@ function BaganatorSingleViewGuildViewMixin:HighlightCurrentTab()
     return
   end
   for tabIndex, tab in ipairs(self.Tabs) do
-    tab.SelectedTexture:SetShown(tabIndex == self.currentTab)
+    tab.SelectedTexture:SetShown(tabIndex == (self.currentTab + 1))
   end
 end
 
 function BaganatorSingleViewGuildViewMixin:SetCurrentTab(index)
   addonTable.CallbackRegistry:TriggerEvent("TransferCancel")
   self.currentTab = index
+  addonTable.Config.Set(addonTable.Config.Options.GUILD_CURRENT_TAB, self.currentTab)
   self:HighlightCurrentTab()
 
   if self.isLive then
-    SetCurrentGuildBankTab(self.currentTab)
-    QueryGuildBankTab(self.currentTab)
+    -- Query the first guild bank tab if we're using the unified view
+    SetCurrentGuildBankTab(math.max(1, self.currentTab))
+    QueryGuildBankTab(math.max(1, self.currentTab))
     if GuildBankPopupFrame:IsShown() then
       self:OpenTabEditor()
     end
@@ -411,8 +432,10 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
 
   self.isLive = isLive
 
-  self.GuildCached:SetShown(not self.isLive)
-  self.GuildLive:SetShown(self.isLive)
+  self.Container.GuildCached:SetShown(not self.isLive and self.currentTab > 0)
+  self.Container.GuildLive:SetShown(self.isLive and self.currentTab > 0)
+  self.Container.GuildUnifiedCached:SetShown(not self.isLive and self.currentTab == 0)
+  self.Container.GuildUnifiedLive:SetShown(self.isLive and self.currentTab == 0)
 
   local guildData = Syndicator.API.GetGuild(guild)
   if not guildData then
@@ -423,7 +446,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   end
 
   if self.isLive then
-    if self.currentTab ~= GetCurrentGuildBankTab() then
+    if self.currentTab ~= 0 and self.currentTab ~= GetCurrentGuildBankTab() then
       self.currentTab = GetCurrentGuildBankTab()
       if GuildBankPopupFrame:IsShown() then
         self:OpenTabEditor()
@@ -433,6 +456,8 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   for _, button in ipairs(self.LiveButtons) do
     button:SetShown(self.isLive)
   end
+  self.ToggleTabLogsButton:SetEnabled(self.currentTab ~= 0)
+  self.ToggleTabTextButton:SetEnabled(self.currentTab ~= 0)
 
   self:UpdateTabs(guildData)
   self:HighlightCurrentTab()
@@ -440,13 +465,25 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   local active
 
   if not self.isLive then
-    self.GuildCached:ShowGuild(guild, self.currentTab, guildWidth)
-    self.GuildCached:SetShown(guildData and #guildData.bank > 0)
-    active = self.GuildCached
+    if self.currentTab > 0 then
+      self.Container.GuildCached:ShowGuild(guild, self.currentTab, guildWidth)
+      self.Container.GuildCached:SetShown(guildData and #guildData.bank > 0)
+      active = self.Container.GuildCached
+    else
+      self.Container.GuildUnifiedCached:ShowGuild(guild, guildWidth * 2)
+      self.Container.GuildUnifiedCached:SetShown(guildData and #guildData.bank > 0)
+      active = self.Container.GuildUnifiedCached
+    end
   else
-    self.GuildLive:ShowGuild(guild, self.currentTab, guildWidth)
-    self.GuildLive:SetShown(guildData and #guildData.bank > 0)
-    active = self.GuildLive
+    if self.currentTab > 0 then
+      self.Container.GuildLive:ShowGuild(guild, self.currentTab, guildWidth)
+      self.Container.GuildLive:SetShown(guildData and #guildData.bank > 0)
+      active = self.Container.GuildLive
+    else
+      self.Container.GuildUnifiedLive:ShowGuild(guild, guildWidth * 2)
+      self.Container.GuildUnifiedLive:SetShown(guildData and #guildData.bank > 0)
+      active = self.Container.GuildUnifiedLive
+    end
   end
 
   local searchText = self.SearchWidget.SearchBox:GetText()
@@ -465,15 +502,21 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
 
   local detailsHeight = 0
   if self.isLive then
-    local _, _, _, canDeposit, _, remainingWithdrawals = GetGuildBankTabInfo(self.currentTab)
-    local depositText = canDeposit and GREEN_FONT_COLOR:WrapTextInColorCode(YES) or RED_FONT_COLOR:WrapTextInColorCode(NO)
-    local withdrawText
-    if remainingWithdrawals == -1 then
-      withdrawText = GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_UNLIMITED)
-    elseif remainingWithdrawals == 0 then
-      withdrawText = RED_FONT_COLOR:WrapTextInColorCode(NO)
+    local _, canDeposit, remainingWithdrawals, depositText, withdrawText
+    if self.currentTab > 0 then
+      _, _, _, canDeposit, _, remainingWithdrawals = GetGuildBankTabInfo(self.currentTab)
+      depositText = canDeposit and GREEN_FONT_COLOR:WrapTextInColorCode(YES) or RED_FONT_COLOR:WrapTextInColorCode(NO)
+      if remainingWithdrawals == -1 then
+        withdrawText = GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_UNLIMITED)
+      elseif remainingWithdrawals == 0 then
+        withdrawText = RED_FONT_COLOR:WrapTextInColorCode(NO)
+      else
+        withdrawText = FormatLargeNumber(remainingWithdrawals)
+      end
     else
-      withdrawText = FormatLargeNumber(remainingWithdrawals)
+      depositText = LIGHTGRAY_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_MULTIPLE_TABS)
+      withdrawText = LIGHTGRAY_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_MULTIPLE_TABS)
+      remainingWithdrawals = -2
     end
     self.WithdrawalsInfo:SetText(BAGANATOR_L_GUILD_WITHDRAW_DEPOSIT_X_X:format(withdrawText, depositText))
     local guildMoney = GetGuildBankMoney()
@@ -505,9 +548,6 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   end
   self.TransferButton:SetShown(self.wouldShowTransferButton)
 
-  active:ClearAllPoints()
-  active:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, -53)
-
   self.SearchWidget:SetShown(active:IsShown())
   self.NotVisitedText:SetShown(not active:IsShown() and (not guildData or not guildData.details.visited))
   self.NoTabsText:SetShown(not active:IsShown() and guildData and guildData.details.visited)
@@ -517,15 +557,12 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   self.Money:SetPoint("BOTTOMLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 10)
   self.DepositButton:SetPoint("BOTTOMRIGHT", self, -sideSpacing + 1, 6)
 
-  local height = 6
-  -- active will be hidden if no guild bank tabs have been purchased
-  if active:IsShown() then
-    height = height + active:GetHeight()
-  end
+  self.Container:SetSize(active:GetWidth(), active:GetHeight())
   self:SetSize(
-    active:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset,
-    height + 63 + detailsHeight
+    self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
+    math.min(self.Container:GetHeight() + 6 + 63 + detailsHeight, UIParent:GetHeight() / self:GetScale())
   )
+  self:UpdateScroll(6 + 63 + detailsHeight, self:GetScale())
 
   self.ButtonVisibility:Update()
 
@@ -533,7 +570,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
 end
 
 function BaganatorSingleViewGuildViewMixin:RemoveSearchMatches(callback)
-  local matches = self.GuildLive.SearchMonitor:GetMatches()
+  local matches = self.Container.GuildLive.SearchMonitor:GetMatches()
 
   local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags, Syndicator.Constants.AllBagIndexes)
 

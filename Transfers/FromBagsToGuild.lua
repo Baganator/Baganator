@@ -44,6 +44,7 @@ function addonTable.Transfers.FromBagsToGuild(toMove, guildTargets)
     local target, swapLocked = GetSwap(item, guildTargets)
     if target then
       C_Container.PickupContainerItem(item.bagID, item.slotID)
+      SetCurrentGuildBankTab(target.tabIndex)
       PickupGuildBankItem(target.tabIndex, target.slotID)
       ClearCursor()
       moved = true

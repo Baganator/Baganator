@@ -204,6 +204,7 @@ L["MONEY_LOGS"] = "Money Logs"
 L["NO_TRANSACTIONS_AVAILABLE"] = "No Transactions Available"
 L["CANNOT_EDIT_GUILD_BANK_TAB_ERROR"] = "You do not have permissions to edit this tab"
 L["GUILD_NO_TABS_PURCHASED"] = "No guild bank tabs purchased"
+L["MULTIPLE_TABS"] = "Multiple tabs"
 
 L["BUY_WARBAND_BANK_TAB"] = "Buy Warband Bank Tab?"
 L["DEPOSIT_WARBOUND"] = "Deposit Warbound Items"
