@@ -199,6 +199,7 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     row:SetEnabled(not details.disabled)
     transferButton:Hide()
     transferButton.currencyID = nil
+    row.UpdateTooltip = nil
 
     row:SetText(details.name)
     row:GetFontString():SetPoint("LEFT", 25, 0)
