@@ -96,8 +96,8 @@ local function ShowCurrencies(self, character)
     local fontString = self.currencyPool:Acquire()
     fontString.button = self.currencyButtons:Acquire()
     fontString.button:SetAllPoints(fontString)
-    local count = 0
     if details.currencyID then
+      local count = 0
       if characterCurrencies[details.currencyID] ~= nil then
         count = characterCurrencies[details.currencyID]
       end
@@ -129,7 +129,7 @@ local function ShowCurrencies(self, character)
         end)
       end
     elseif details.itemID then
-      count = addonTable.ItemViewCommon.GetTrackedItemCount(details.itemID, character)
+      local count = addonTable.ItemViewCommon.GetTrackedItemCount(details.itemID, character)
       local currencyText = BreakUpLargeNumbers(count)
 
       if strlenutf8(currencyText) > 5 then
