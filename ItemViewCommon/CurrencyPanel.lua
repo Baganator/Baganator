@@ -318,6 +318,10 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
     local entries = {}
     local search = searchBox:GetText():lower()
 
+    if not frame.selectedCharacter then
+      frame.selectedCharacter = Syndicator.API.GetCurrentCharacter()
+    end
+
     local currencies = Syndicator.API.GetCharacter(frame.selectedCharacter).currencies
     local currencyByHeader = Syndicator.API.GetCharacter(frame.selectedCharacter).currencyByHeader
     local isLive = frame.selectedCharacter == Syndicator.API.GetCurrentCharacter()

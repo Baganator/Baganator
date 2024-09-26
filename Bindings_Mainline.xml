@@ -8,6 +8,9 @@
   <Binding name="BAGANATOR_TOGGLE_GUILD_BANK" category="Baganator">
     Baganator.CallbackRegistry:TriggerEvent("GuildToggle")
   </Binding>
+  <Binding name="BAGANATOR_TOGGLE_CURRENCY_PANEL" category="Baganator">
+    Baganator.CallbackRegistry:TriggerEvent("CurrencyPanelToggle")
+  </Binding>
   <Binding name="BAGANATOR_QUICK_SEARCH" category="Baganator">
     Baganator.CallbackRegistry:TriggerEvent("QuickSearch")
   </Binding>

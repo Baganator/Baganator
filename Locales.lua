@@ -333,6 +333,7 @@ L["CATEGORIES_FAILED_WARNING"] = "Something went wrong when displaying the categ
 L["BINDING_TOGGLE_BANK"] = "Toggle Bank"
 L["BINDING_TOGGLE_WARBAND_BANK"] = "Toggle Warband Bank"
 L["BINDING_TOGGLE_GUILD_BANK"] = "Toggle Guild Bank"
+L["BINDING_TOGGLE_CURRENCY_PANEL"] = "Toggle Currency Panel"
 L["BINDING_QUICK_SEARCH"] = "Quick Search"
 
 L["KEYWORDS_IN_TOOLTIPS_X"] = "Keywords in bag item tooltips now %s"
