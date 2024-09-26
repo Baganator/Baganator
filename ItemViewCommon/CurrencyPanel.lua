@@ -71,7 +71,6 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
   local dropRegion = CreateFrame("Button", nil , frame)
   dropRegion:SetAllPoints()
   dropRegion:Hide()
-  dropRegion:SetFrameStrata("DIALOG")
   dropRegion:EnableMouse(true)
   dropRegion:SetScript("OnReceiveDrag", function()
     local cursorType, itemID = GetCursorInfo()
@@ -405,6 +404,7 @@ function addonTable.ItemViewCommon.GetCurrencyPanel(frameName)
 
   UpdateForCursor = function()
     dropRegion:SetShown(GetCursorInfo() == "item")
+    dropRegion:SetFrameStrata("DIALOG")
   end
 
   addonTable.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
@@ -544,6 +544,9 @@ function addonTable.ItemViewCommon.GetTransferButton(parent)
   end
   button:SetScript("OnLeave", TidyUp)
   button:SetScript("OnHide", TidyUp)
+  button:SetScript("OnShow", function()
+    button:SetFrameStrata("DIALOG")
+  end)
 
   local handler = CreateFrame("Frame")
   handler:RegisterEvent("MODIFIER_STATE_CHANGED")
