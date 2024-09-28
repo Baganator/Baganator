@@ -248,7 +248,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         end
       end
       details.results = entries
-      details.any = #entries > 0
+      details.any = #entries > 0 and not hidden[details.source] -- used to determine showing section headers
       if hidden[details.source] or sectionToggled[details.section] then
         for _, entry in ipairs(details.results) do
           table.insert(self.notShown, entry)
