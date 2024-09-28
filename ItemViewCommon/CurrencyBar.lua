@@ -15,7 +15,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   self.currencyPool = CreateFontStringPool(self, "BACKGROUND", 0, "GameFontHighlight")
   -- Using an (in)secure button to avoid taint of the transfer functionality
   -- when accessing currency panel
-  self.currencyButtons = CreateFramePool("Button", self, nil, nil, function(_, b)
+  self.currencyButtons = CreateFramePool("Button", self, nil, nil, false, function(b)
     if b.setup then
       return
     end
