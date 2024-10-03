@@ -10,6 +10,7 @@
 ## IconTexture: Interface\AddOns\Baganator\Assets\logo.tga
 ## OptionalDependencies: WagoAnalytics
 
+
 Embeds\json.lua
 
 Locales.lua
