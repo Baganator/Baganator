@@ -166,11 +166,13 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
       self.BuyReagentBankButton:SetPoint("LEFT", activeBank, -2, 0)
       self.BuyReagentBankButton:SetPoint("BOTTOM", 0, 6)
     end
+    buttonsWidth = buttonsWidth + self.BuyReagentBankButton:GetWidth()
   end
   if self.DepositIntoReagentsBankButton:IsShown() then
     table.insert(self:GetParent().AllButtons, self.DepositIntoReagentsBankButton)
     self.DepositIntoReagentsBankButton:ClearAllPoints()
     self.DepositIntoReagentsBankButton:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", 5, 0)
+    buttonsWidth = buttonsWidth + self.DepositIntoReagentsBankButton:GetWidth()
   end
 
   activeBank:ClearAllPoints()

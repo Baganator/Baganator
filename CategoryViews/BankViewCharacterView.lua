@@ -137,11 +137,13 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
   local buttonPadding = 0
 
+  local lastButton
   if self.BuyReagentBankButton:IsShown() then
     table.insert(self:GetParent().AllButtons, self.BuyReagentBankButton)
     self.BuyReagentBankButton:ClearAllPoints()
     self.BuyReagentBankButton:SetPoint("LEFT", self, addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
     self.BuyReagentBankButton:SetPoint("BOTTOM", self, 0, 6)
+    lastButton = self.BuyReagentBankButton
     buttonPadding = 2
   end
   if self.DepositIntoReagentsBankButton:IsShown() then
@@ -149,6 +151,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
     self.DepositIntoReagentsBankButton:ClearAllPoints()
     self.DepositIntoReagentsBankButton:SetPoint("LEFT", self, addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
     self.DepositIntoReagentsBankButton:SetPoint("BOTTOM", self, 0, 6)
+    lastButton = self.DepositIntoReagentsBankButton
     buttonPadding = 2
   end
 
@@ -167,7 +170,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
     self:OnFinished()
 
-    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth())
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - (lastButton and lastButton:GetWidth() + 10 or 0))
 
     local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
     if self.searchToApply then
