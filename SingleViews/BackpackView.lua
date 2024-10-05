@@ -164,6 +164,10 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
     end
   end
 
+  -- Necessary extra call as collapsing bag region buttons get updated
+  -- out-of-sync with everything else
+  self.ButtonVisibility:Update()
+
   self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 10)
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
