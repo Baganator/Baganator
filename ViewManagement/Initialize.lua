@@ -86,7 +86,7 @@ local function SetupBackpackView()
 
   local lastToggleTime = 0
   local function ToggleBackpackView()
-    if GetTime() == lastToggleTime then
+    if GetTime() == lastToggleTime or not Syndicator.API.GetCurrentCharacter() then
       return
     end
     backpackView:SetShown(not backpackView:IsShown())
@@ -99,6 +99,9 @@ local function SetupBackpackView()
 
   addonTable.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
     characterName = characterName or Syndicator.API.GetCurrentCharacter()
+    if not characterName then
+      return
+    end
     backpackView:Show()
     backpackView:UpdateForCharacter(characterName, characterName == backpackView.liveCharacter)
     UpdateButtons()
