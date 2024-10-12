@@ -110,7 +110,7 @@ function addonTable.ItemViewCommon.SetCurrencyTrackedBlizzard(toTrackCurrencyID,
         if link ~= nil then
           local currencyID = tonumber((link:match("|Hcurrency:(%d+)")))
           if currencyID == toTrackCurrencyID then
-            SetCurrencyBackpack(index, state)
+            SetCurrencyBackpack(index, state and 1 or 0)
             return
           end
         end
