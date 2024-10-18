@@ -154,6 +154,12 @@ else -- retail
   }
   addonTable.CategoryViews.Constants.DefaultCategories = {
     {
+      key = "keystone",
+      name = BAGANATOR_L_CATEGORY_KEYSTONE,
+      search = "#" .. SYNDICATOR_L_KEYWORD_KEYSTONE,
+      priorityOffset = -40,
+    },
+    {
       key = "potion",
       name = BAGANATOR_L_CATEGORY_POTION,
       search = "#" .. SYNDICATOR_L_KEYWORD_POTION,
@@ -320,9 +326,10 @@ elseif addonTable.Constants.IsClassic then -- Cata
     [[{"categories":[],"version":1,"order":["default_auto_recents","----","default_hearthstone","default_consumable","default_questitem","_EQUIPMENT","default_auto_equipment_sets","default_weapon","default_armor","__end","_CRAFTING","default_reagent","default_tradegoods","default_recipe","__end","default_gem","default_container","default_key","default_miscellaneous","default_battlepet","default_other","----","default_junk","default_special_empty"],"modifications":[],"hidden":[]}]],
   }
 elseif addonTable.Constants.IsRetail then
-  addonTable.CategoryViews.Constants.DefaultImportVersion = 1
+  addonTable.CategoryViews.Constants.DefaultImportVersion = 2
   addonTable.CategoryViews.Constants.DefaultImport = {
     [[{"categories":[],"version":1,"order":["default_auto_recents","----","default_hearthstone","default_potion","default_food","default_consumable","default_questitem","_EQUIPMENT","default_auto_equipment_sets","default_weapon","default_armor","__end","_CRAFTING","default_reagent","default_tradegoods","default_profession","default_recipe","__end","default_gem","default_itemenhancement","default_container","default_key","default_miscellaneous","default_battlepet","default_toy","default_other","----","default_junk","default_special_empty"],"modifications":[],"hidden":[]}]],
+    [[{"categories":[],"version":1,"order":["default_auto_recents","----","default_hearthstone","default_keystone","default_potion","default_food","default_consumable","default_questitem","_EQUIPMENT","default_auto_equipment_sets","default_weapon","default_armor","__end","_CRAFTING","default_reagent","default_tradegoods","default_profession","default_recipe","__end","default_gem","default_itemenhancement","default_container","default_key","default_miscellaneous","default_battlepet","default_toy","default_other","----","default_junk","default_special_empty"],"modifications":[],"hidden":[]}]],
   }
 end
 
