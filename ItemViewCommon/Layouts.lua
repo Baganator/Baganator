@@ -1163,7 +1163,7 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-    addonTable.Utilities.DebugOutput(self.layoutType .. " guild layout " .. tabIndex .. " took", debugprofilestop() - start)
+    addonTable.Utilities.DebugOutput("guild layout " .. tabIndex .. " took", debugprofilestop() - start)
   end
 
   self.prevState = {

@@ -206,9 +206,17 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
   end
 
   if self.isLive then
-    self.Container.GuildLive:ApplySearch(text)
+    if self.currentTab == 0 then
+      self.Container.GuildUnifiedLive:ApplySearch(text)
+    else
+      self.Container.GuildLive:ApplySearch(text)
+    end
   else
-    self.Container.GuildCached:ApplySearch(text)
+    if self.currentTab == 0 then
+      self.Container.GuildUnifiedCached:ApplySearch(text)
+    else
+      self.Container.GuildCached:ApplySearch(text)
+    end
   end
 
   if text == "" then
