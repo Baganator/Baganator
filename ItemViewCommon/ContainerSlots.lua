@@ -348,15 +348,15 @@ function BaganatorClassicBankButtonMixin:Init()
   end
   SetItemButtonTextureVertexColor(self, 1.0,1.0,1.0)
   self.needPurchase = false
-  local info = C_Container.GetContainerItemInfo(Enum.BagIndex.Bankbag, self:GetID())
-  if info == nil then
+  local itemID, texture, quality = GetBankBagInfo(self:GetID())
+  if itemID == nil then
     self.icon:SetAlpha(1)
     return
   end
-  SetItemButtonTexture(self, info.iconFileID)
-  SetItemButtonQuality(self, info.quality)
-  addonTable.Utilities.LoadItemData(info.itemID, function()
-    SetItemButtonQuality(self, C_Item.GetItemQualityByID(info.itemID))
+  SetItemButtonTexture(self, texture)
+  SetItemButtonQuality(self, quality)
+  addonTable.Utilities.LoadItemData(itemID, function()
+    SetItemButtonQuality(self, C_Item.GetItemQualityByID(itemID))
   end)
 end
 
