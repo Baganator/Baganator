@@ -219,10 +219,11 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
     end
   end
 
+  for _, tabButton in ipairs(self.Tabs) do
+    tabButton.Icon:SetAlpha(1)
+  end
+
   if text == "" then
-    for _, tabButton in ipairs(self.Tabs) do
-      tabButton.Icon:SetAlpha(1)
-    end
     return
   end
 
@@ -241,9 +242,9 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
 
     self.searchMonitors[index]:StartSearch(self.otherTabsCache[self.lastGuild][index], text, function(matches)
       if #matches > 0 then
-        self.Tabs[index].Icon:SetAlpha(1)
+        self.Tabs[index + 1].Icon:SetAlpha(1)
       else
-        self.Tabs[index].Icon:SetAlpha(0.2)
+        self.Tabs[index + 1].Icon:SetAlpha(0.2)
       end
     end)
   end
