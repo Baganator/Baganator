@@ -125,6 +125,20 @@ local function IsBindOnAccount(details)
   return false
 end
 
+local function IsWarboundUntilEquipped(details)
+  if not details.tooltipInfo then
+    details.tooltipInfo = details.tooltipGetter()
+  end
+  if details.tooltipInfo then
+    for _, row in ipairs(details.tooltipInfo.lines) do
+      if row.leftText == ITEM_ACCOUNTBOUND_UNTIL_EQUIP or (not details.isBound and row.leftText == ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP) then
+        return true
+      end
+    end
+  end
+  return false
+end
+
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_ACCOUNT, "boa", function(BindingText, details)
   if IsBindOnAccount(details) then
     BindingText:SetText(BAGANATOR_L_BOA)
@@ -368,4 +382,18 @@ if addonTable.Constants.IsRetail then
     end
     return true
   end, textInit, {corner = "top_left", priority = 3})
+
+  Baganator.API.RegisterCornerWidget(BAGANATOR_L_WARBOUND_UNTIL_EQUIPPED, "wue", function(BindingText, details)
+    if IsWarboundUntilEquipped(details) then
+      BindingText:SetText(BAGANATOR_L_WUE)
+      if iconSettings.useQualityColors then
+        local color = qualityColors[details.quality]
+        BindingText:SetTextColor(color.r, color.g, color.b)
+      else
+        BindingText:SetTextColor(1,1,1)
+      end
+      return true
+    end
+    return false
+  end, textInit)
 end
