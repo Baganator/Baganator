@@ -412,12 +412,12 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self:SetItemButtonTexture(details.iconTexture)
   self:SetItemButtonQuality(details.quality, details.itemLink, false, details.isBound)
   self:SetItemButtonCount(details.itemCount)
-  SetItemCraftingQualityOverlay(self, details.itemLink)
   SetItemButtonDesaturated(self, false);
   ReparentOverlays(self)
 
   GetInfo(self, details, nil, function()
     self:SetItemButtonQuality(details.quality, details.itemLink, false, details.isBound)
+    ReparentOverlays(self)
   end)
 end
 
@@ -732,8 +732,6 @@ function BaganatorRetailLiveGuildItemButtonMixin:UpdateTextures()
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIndex)
-  GetInfo(self, cacheData)
-
   self.tabIndex = tabIndex
 
   local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
@@ -744,15 +742,14 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIn
   itemCount = cacheData.itemCount
   quality = cacheData.quality or quality
 
-  self.BGR.tooltipGetter = function() return C_TooltipInfo.GetGuildBankItem(tabIndex, self:GetID()) end
-
   SetItemButtonTexture(self, texture);
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
 
   self:SetMatchesSearch(true);
 
-  SetItemButtonQuality(self, quality, self.BGR.itemLink or GetGuildBankItemLink(tabIndex, self:GetID()));
+  SetItemButtonQuality(self, quality, cacheData.itemLink or GetGuildBankItemLink(tabIndex, self:GetID()));
+  ReparentOverlays(self)
 
   if GameTooltip:IsOwned(self) then
     GameTooltip:Hide()
@@ -760,6 +757,13 @@ function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIn
   if self:IsMouseOver() then
     self:OnEnter()
   end
+
+  GetInfo(self, cacheData, function()
+    self.BGR.tooltipGetter = function() return C_TooltipInfo.GetGuildBankItem(tabIndex, self:GetID()) end
+  end, function()
+    SetItemButtonQuality(self, quality, self.BGR.itemLink or GetGuildBankItemLink(tabIndex, self:GetID()));
+    ReparentOverlays(self)
+  end)
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:BGRStartFlashing()
