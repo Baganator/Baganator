@@ -596,6 +596,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self:UpdateItemContextMatching();
     local doNotSuppressOverlays = false
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
+    ReparentOverlays(self)
   end)
 
   if not self.BGR.itemID then
@@ -871,6 +872,7 @@ function BaganatorRetailLiveWarbandItemButtonMixin:SetItemDetails(cacheData)
     self:UpdateItemContextMatching();
     local doNotSuppressOverlays = false
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
+    ReparentOverlays(self)
   end)
 end
 
