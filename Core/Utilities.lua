@@ -51,10 +51,11 @@ local itemFrame = CreateFrame("Frame")
 itemFrame.elapsed = 0
 itemFrame:SetScript("OnEvent", function(_, _, itemID)
   if pendingItems[itemID] ~= nil then
-    for _, callback in ipairs(pendingItems[itemID]) do
+    local forItemID = pendingItems[itemID]
+    pendingItems[itemID] = nil
+    for _, callback in ipairs(forItemID) do
       callback()
     end
-    pendingItems[itemID] = nil
   end
 end)
 itemFrame.OnUpdate = function(self, elapsed)
