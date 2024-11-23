@@ -1003,33 +1003,6 @@ function BaganatorClassicCachedItemButtonMixin:OnLeave()
   GameTooltip:Hide()
 end
 
-local UpdateQuestItemClassic
-if addonTable.Constants.IsVanilla then
-  UpdateQuestItemClassic = function(self)
-    local questTexture = _G[self:GetName().."IconQuestTexture"]
-    if questTexture then
-      questTexture:Hide()
-    end
-  end
-else
-  UpdateQuestItemClassic = function(self)
-    local questInfo = C_Container.GetContainerItemQuestInfo(self:GetParent():GetID(), self:GetID());
-    self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questId
-
-    local questTexture = _G[self:GetName().."IconQuestTexture"];
-
-    if ( questInfo.questId and not questInfo.isActive ) then
-      questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG);
-      questTexture:Show();
-    elseif ( questInfo.questId or questInfo.isQuestItem ) then
-      questTexture:SetTexture(TEXTURE_ITEM_QUEST_BORDER);
-      questTexture:Show();
-    else
-      questTexture:Hide();
-    end
-  end
-end
-
 BaganatorClassicLiveContainerItemButtonMixin = {}
 
 -- Alter the item button so that the tooltip works both on bag items and bank
@@ -1074,7 +1047,20 @@ end
 
 
 function BaganatorClassicLiveContainerItemButtonMixin:BGRUpdateQuests()
-  UpdateQuestItemClassic(self)
+  local questInfo = C_Container.GetContainerItemQuestInfo(self:GetParent():GetID(), self:GetID());
+  self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questId
+
+  local questTexture = _G[self:GetName().."IconQuestTexture"];
+
+  if ( questInfo.questId and not questInfo.isActive ) then
+    questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG);
+    questTexture:Show();
+  elseif ( questInfo.questId or questInfo.isQuestItem ) then
+    questTexture:SetTexture(TEXTURE_ITEM_QUEST_BORDER);
+    questTexture:Show();
+  else
+    questTexture:Hide();
+  end
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:OnLeave()
