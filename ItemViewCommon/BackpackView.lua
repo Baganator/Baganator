@@ -101,6 +101,12 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     end
   end)
 
+  Syndicator.CallbackRegistry:RegisterCallback("GuildNameSet",  function(_, guild)
+    if self.lastCharacter ~= nil and Syndicator.API.GetCharacter(self.lastCharacter) then
+      self:UpdateGuildButton()
+    end
+  end)
+
   self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG,
@@ -405,6 +411,10 @@ end
 
 function BaganatorItemViewCommonBackpackViewMixin:UpdateAllButtons()
   self.ButtonVisibility:Update()
+  self:UpdateGuildButton()
+end
+
+function BaganatorItemViewCommonBackpackViewMixin:UpdateGuildButton()
   local guildName = Syndicator.API.GetCharacter(self.lastCharacter).details.guild
   self.ToggleGuildBankButton:SetEnabled(guildName ~= nil and Syndicator.API.GetGuild(guildName))
   self.ToggleGuildBankButton.Icon:SetDesaturated(not self.ToggleGuildBankButton:IsEnabled())
