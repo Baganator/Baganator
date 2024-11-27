@@ -195,7 +195,42 @@ function addonTable.Utilities.GetMoneyString(amount, splitThousands)
 end
 
 function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
+  local cursorChanged = false
+  local function UpdateSlot(self)
+    if not cursorChanged then
+      return
+    end
+    cursorChanged = false
+    local cursorType, itemID = GetCursorInfo()
+    if cursorType == "item" then
+      local usageChecks = addonTable.Sorting.GetBagUsageChecks(bagIndexes)
+      local sortedBagIDs = CopyTable(bagIndexes)
+      table.sort(sortedBagIDs, function(a, b) return usageChecks.sortOrder[a] < usageChecks.sortOrder[b] end)
+      local currentCharacterBags = getData()
+      local backupBagID = nil
+      for _, bagID in ipairs(sortedBagIDs) do
+        if not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID}) then
+          local bag = currentCharacterBags[tIndexOf(bagIndexes, bagID)]
+          for index, slot in ipairs(bag) do
+            if slot.itemID == nil then
+              self:Enable()
+              self:SetID(index)
+              self:GetParent():SetID(bagID)
+              return
+            end
+          end
+        end
+        if not usageChecks.checks[bagID] then
+          backupBagID = usageChecks.checks[bagID]
+        end
+      end
+      self:Disable()
+      self:SetID(1)
+      self:GetParent():SetID(backupBagID or sortedBagIDs[1])
+    end
+  end
   local function UpdateVisibility()
+    cursorChanged = true
     if parent.isLive then
       local cursorType, itemID = GetCursorInfo()
       parent.backgroundButton:SetShown(cursorType == "item")
@@ -229,37 +264,8 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   parent.backgroundButton:RegisterEvent("CURSOR_CHANGED")
   parent.backgroundButton:SetScript("OnEvent", UpdateVisibility)
 
-  parent.backgroundButton:SetScript("OnEnter", nil)
+  parent.backgroundButton:SetScript("OnEnter", UpdateSlot)
   parent.backgroundButton:SetScript("OnLeave", nil)
-  parent.backgroundButton:SetScript("PreClick", function(self)
-    local cursorType, itemID = GetCursorInfo()
-    if cursorType == "item" then
-      local usageChecks = addonTable.Sorting.GetBagUsageChecks(bagIndexes)
-      local sortedBagIDs = CopyTable(bagIndexes)
-      table.sort(sortedBagIDs, function(a, b) return usageChecks.sortOrder[a] < usageChecks.sortOrder[b] end)
-      local currentCharacterBags = getData()
-      local backupBagID = nil
-      for _, bagID in ipairs(sortedBagIDs) do
-        if not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID}) then
-          local bag = currentCharacterBags[tIndexOf(bagIndexes, bagID)]
-          for index, slot in ipairs(bag) do
-            if slot.itemID == nil then
-              self:Enable()
-              self:SetID(index)
-              self:GetParent():SetID(bagID)
-              return
-            end
-          end
-        end
-        if not usageChecks.checks[bagID] then
-          backupBagID = usageChecks.checks[bagID]
-        end
-      end
-      self:Disable()
-      self:SetID(1)
-      self:GetParent():SetID(backupBagID or sortedBagIDs[1])
-    end
-  end)
 end
 
 function addonTable.Utilities.AddScrollBar(self)
