@@ -295,7 +295,7 @@ tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
     key = "auto_recents",
     name = BAGANATOR_L_CATEGORY_RECENT_AUTO,
     auto = "recents",
-    priorityOffset = 600,
+    priorityOffset = 10000,
     doNotAdd = true,
   },
   {

@@ -53,10 +53,12 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(composed, every
   self.callback = callback
 
   self.results = {}
+  local indexMap = {}
   self.searchPending = nil
-  for _, entry in ipairs(composed.details) do
+  for index, entry in ipairs(composed.details) do
     if entry.search then
       self.results[entry.search] = entry.results
+      indexMap[entry.search] = index
     end
   end
 
@@ -72,7 +74,8 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(composed, every
   end
 
   local superAttachedItems = {}
-  for _, details in ipairs(composed.details) do
+  for _, search in ipairs(self.searches) do
+    local details = composed.details[indexMap[search]]
     local items = details.attachedItems
     local search = details.search
     if items then
