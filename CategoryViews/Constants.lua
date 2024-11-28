@@ -6,6 +6,7 @@ end
 addonTable.CategoryViews.Constants = {
   ProtectedCategories = { "default_other", "default_special_empty" },
   EmptySlotsCategory = "default_special_empty",
+  RecentItemsCategory = "default_auto_recents",
   DividerName = "----",
   DividerLabel = "——————",
   SectionEnd = "__end",
