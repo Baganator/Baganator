@@ -77,7 +77,7 @@ local function GetAuto(category, everything)
     local newItems = {}
     for _, item in ipairs(everything) do
       if newItems[item.key] ~= false and item.bagID ~= nil then
-        newItems[item.key] = addonTable.NewItems:IsNewItemTimeout(item.bagID, item.slotID)
+        newItems[item.key] = addonTable.NewItems:IsNewItemTimeout(item.bagID, item.slotID) and addonTable.CategoryViews.Utilities.GetAddedItemData(item.itemID, item.itemLink)
       end
     end
     attachedItems[1] = newItems
@@ -94,7 +94,7 @@ local function GetAuto(category, everything)
           if not groups[groupPath] then
             groups[groupPath] = {}
           end
-          groups[groupPath][item.key] = true
+          groups[groupPath][item.key] = addonTable.CategoryViews.Utilities.GetAddedItemData(item.itemID, item.itemLink)
         end
       end
     end
