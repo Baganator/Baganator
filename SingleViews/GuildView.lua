@@ -578,6 +578,10 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 end
 
+function BaganatorSingleViewGuildViewMixin:IsTransferActive()
+  return self.TransferButton:IsShown()
+end
+
 function BaganatorSingleViewGuildViewMixin:RemoveSearchMatches(callback)
   local matches = self.Container.GuildLive.SearchMonitor:GetMatches()
 

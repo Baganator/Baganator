@@ -334,6 +334,7 @@ L["SINGLE_BAG_DESCRIPTION_2"] = "Arrange items by slot. Keeps your items in one 
 L["CATEGORY_GROUPS_DESCRIPTION"] = "Group items by type, with features to add new custom categories."
 
 L["CATEGORIES_FAILED_WARNING"] = "Something went wrong when displaying the categories.\n\nFailed search was \"%s\". The following items failed:\n%s\n\nScreenshot this and visit the discord:"
+L["RIGHT_CLICK_TO_TRANSFER"] = "<Right-click to transfer>"
 
 L["BINDING_TOGGLE_BANK"] = "Toggle Bank"
 L["BINDING_TOGGLE_WARBAND_BANK"] = "Toggle Warband Bank"

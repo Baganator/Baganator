@@ -409,6 +409,10 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateTransferButton()
   self.TransferButton:Hide()
 end
 
+function BaganatorItemViewCommonBackpackViewMixin:IsTransferActive()
+  return self.TransferButton:IsShown()
+end
+
 function BaganatorItemViewCommonBackpackViewMixin:UpdateAllButtons()
   self.ButtonVisibility:Update()
   self:UpdateGuildButton()

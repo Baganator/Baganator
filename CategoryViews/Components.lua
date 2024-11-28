@@ -22,9 +22,14 @@ function BaganatorCategoryViewsCategoryButtonMixin:OnClick(button)
 end
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnEnter()
-  if self:GetFontString():IsTruncated() then
-    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+  local _, transferActive = CallMethodOnNearestAncestor(self, "IsTransferActive")
+  if self:GetFontString():IsTruncated() or transferActive then
+    GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
     GameTooltip:SetText(self:GetText())
+    if transferActive then
+      GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_TRANSFER))
+    end
+    GameTooltip:Show()
   end
 end
 

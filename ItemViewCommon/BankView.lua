@@ -102,6 +102,10 @@ function BaganatorItemViewCommonBankViewMixin:UpdateTransferButton()
   self.TransferButton:Show()
 end
 
+function BaganatorItemViewCommonBankViewMixin:IsTransferActive()
+  return self.TransferButton:IsShown()
+end
+
 function BaganatorItemViewCommonBankViewMixin:OnDragStart()
   if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
     self:StartMoving()
