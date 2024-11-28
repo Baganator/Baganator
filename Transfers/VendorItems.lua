@@ -14,8 +14,8 @@ function addonTable.Transfers.VendorItems(toSell)
       C_Container.UseContainerItem(item.bagID, item.slotID)
       sold = sold + 1
       -- Limit sold to the most that can be bought back from the merchant if
-      -- clicked by mistaked
-      if sold >= 6 then
+      -- clicked by mistaked, with unlimited sales only if shift is held down
+      if not IsShiftKeyDown() and sold >= 6 then
         break
       end
     end
