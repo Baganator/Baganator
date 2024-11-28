@@ -690,10 +690,61 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     searchHelpButton:SetScript("OnClick", function() addonTable.Help.ShowSearchDialog() end)
   end
 
-  local optionFrames = GenerateFrames(GENERAL_OPTIONS, frame)
-  optionFrames[1]:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -30)
+  do
+    local DONATE_OPTIONS = {{
+      type = "header",
+      text = BAGANATOR_L_CONSIDER_SUPPORTING_DEVELOPMENT,
+      level = 2,
+    }}
+    local optionFrames = GenerateFrames(DONATE_OPTIONS, frame)
+    optionFrames[1]:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, 0)
+    tAppendAll(allFrames, optionFrames)
 
-  tAppendAll(allFrames, optionFrames)
+    local donateFrame = CreateFrame("Frame", nil, frame)
+    donateFrame:SetPoint("LEFT")
+    donateFrame:SetPoint("RIGHT")
+    donateFrame:SetPoint("TOP", allFrames[#allFrames], "BOTTOM")
+    donateFrame:SetHeight(40)
+    local text = donateFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+    text:SetPoint("RIGHT", donateFrame, "CENTER", -50, 0)
+    text:SetText(BAGANATOR_L_DONATE)
+    text:SetJustifyH("RIGHT")
+
+    local donateLinkDialog = "Baganator_General_Settings_Discord_Dialog"
+    StaticPopupDialogs[donateLinkDialog] = {
+      text = BAGANATOR_L_CTRL_C_TO_COPY,
+      button1 = DONE,
+      hasEditBox = 1,
+      OnShow = function(self)
+        self.editBox:SetText("https://buymeacoffee.com/plusmouse")
+        self.editBox:HighlightText()
+      end,
+      EditBoxOnEnterPressed = function(self)
+        self:GetParent():Hide()
+      end,
+      EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+      editBoxWidth = 230,
+      timeout = 0,
+      hideOnEscape = 1,
+    }
+
+    local button = CreateFrame("Button", nil, donateFrame, "UIPanelDynamicResizeButtonTemplate")
+    button:SetText("Buy Me A Coffee")
+    DynamicResizeButton_Resize(button)
+    button:SetPoint("LEFT", donateFrame, "CENTER", -35, 0)
+    button:SetScript("OnClick", function()
+      StaticPopup_Show(donateLinkDialog)
+    end)
+    addonTable.Skins.AddFrame("Button", button)
+    table.insert(allFrames, donateFrame)
+  end
+
+  do
+    local optionFrames = GenerateFrames(GENERAL_OPTIONS, frame)
+    optionFrames[1]:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -60)
+
+    tAppendAll(allFrames, optionFrames)
+  end
 
   local tooltipButtonFrame = CreateFrame("Frame", nil, frame)
   do
