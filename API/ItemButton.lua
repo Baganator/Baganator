@@ -117,6 +117,21 @@ local function IsBindOnAccount(details)
   end
   if details.tooltipInfo then
     for _, row in ipairs(details.tooltipInfo.lines) do
+      if tIndexOf(Syndicator.Constants.AccountBoundTooltipLines, row.leftText) ~= nil or
+          (not details.isBound and tIndexOf(Syndicator.Constants.AccountBoundTooltipLinesNotBound, row.leftText) ~= nil) then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+local function IsWarboundOnly(details)
+  if not details.tooltipInfo then
+    details.tooltipInfo = details.tooltipGetter()
+  end
+  if details.tooltipInfo then
+    for _, row in ipairs(details.tooltipInfo.lines) do
       if tIndexOf(Syndicator.Constants.AccountBoundTooltipLines, row.leftText) ~= nil then
         return true
       end
@@ -129,9 +144,9 @@ local function IsWarboundUntilEquipped(details)
   if not details.tooltipInfo then
     details.tooltipInfo = details.tooltipGetter()
   end
-  if details.tooltipInfo then
+  if details.tooltipInfo and not details.isBound then
     for _, row in ipairs(details.tooltipInfo.lines) do
-      if row.leftText == ITEM_ACCOUNTBOUND_UNTIL_EQUIP or (not details.isBound and row.leftText == ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP) then
+      if tIndexOf(Syndicator.Constants.AccountBoundTooltipLinesNotBound, row.leftText) ~= nil then
         return true
       end
     end
@@ -382,6 +397,20 @@ if addonTable.Constants.IsRetail then
     end
     return true
   end, textInit, {corner = "top_left", priority = 3})
+
+  Baganator.API.RegisterCornerWidget(BAGANATOR_L_WARBOUND_ONLY, "warbound_only", function(BindingText, details)
+    if IsWarboundOnly(details) then
+      BindingText:SetText(BAGANATOR_L_W)
+      if iconSettings.useQualityColors then
+        local color = qualityColors[details.quality]
+        BindingText:SetTextColor(color.r, color.g, color.b)
+      else
+        BindingText:SetTextColor(1,1,1)
+      end
+      return true
+    end
+    return false
+  end, textInit)
 
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_WARBOUND_UNTIL_EQUIPPED, "wue", function(BindingText, details)
     if IsWarboundUntilEquipped(details) then
