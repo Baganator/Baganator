@@ -153,6 +153,34 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_ACCOUNT, "boa", function(
   return false
 end, textInit)
 
+function IsSoulbound(details)
+  if not details.isBound then
+    return false
+  end
+
+  local bindOnAccount = Syndicator.Utilities.BindOnAccountCheck(details)
+
+  if bindOnAccount == nil then
+    return
+  else
+    return not bindOnAccount
+  end
+end
+
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_NOT_SOULBOUND, "nsb", function(BindingText, details)
+  if not IsSoulbound(details) then
+    BindingText:SetText("@")
+    if iconSettings.useQualityColors then
+      local color = qualityColors[details.quality]
+      BindingText:SetTextColor(color.r, color.g, color.b)
+    else
+      BindingText:SetTextColor(1,1,1)
+    end
+    return true
+  end
+  return false
+end, textInit)
+
 local function IsBindOnUse(details)
   if details.isBound then
     return false
