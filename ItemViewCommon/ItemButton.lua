@@ -529,6 +529,11 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
       end
     end
   end)
+
+  self:HookScript("OnEnter", function(self)
+    local bagID, slotID = self:GetParent():GetID(), self:GetID()
+    addonTable.NewItems:ClearNewItem(bagID, slotID)
+  end)
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:UpdateTextures()
