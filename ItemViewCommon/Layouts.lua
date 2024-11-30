@@ -1257,9 +1257,16 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
 
   local guildData = Syndicator.API.GetGuild(guild)
 
+  local availableTabs = 0
+  for _, tabData in ipairs(guildData.bank) do
+    if tabData.isViewable then
+      availableTabs = availableTabs + 1
+    end
+  end
+
   if #self.buttons ~= Syndicator.Constants.MaxGuildBankTabItemSlots * #guildData.bank then
     self.refreshContent = true
-    self:RebuildLayout(#guildData.bank, rowWidth)
+    self:RebuildLayout(availableTabs, rowWidth)
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
     FlowButtonsRows(self, rowWidth)
@@ -1283,10 +1290,12 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
 
     local index = 1
     for tabIndex, tabData in ipairs(guildData.bank) do
-      for _, cacheData in ipairs(tabData.slots) do
-        local button = self.buttons[index]
-        button:SetItemDetails(cacheData, tabIndex)
-        index = index + 1
+      if tabData.isViewable then
+        for _, cacheData in ipairs(tabData.slots) do
+          local button = self.buttons[index]
+          button:SetItemDetails(cacheData, tabIndex)
+          index = index + 1
+        end
       end
     end
   end

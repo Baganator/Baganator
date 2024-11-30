@@ -709,7 +709,7 @@ function BaganatorRetailLiveGuildItemButtonMixin:OnEnter()
   else
     ResetCursor()
   end
-  if self.tabIndex ~= GetCurrentGuildBankTab() then
+  if self.tabIndex ~= nil and self.tabIndex ~= GetCurrentGuildBankTab() then
     SetCurrentGuildBankTab(self.tabIndex)
   end
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
