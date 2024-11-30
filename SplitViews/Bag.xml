@@ -1,0 +1,11 @@
+<Ui>
+  <Frame name="BaganatorSplitViewBagTemplate" virtual="true" mixin="BaganatorSplitViewBagMixin" inherits="ButtonFrameTemplate" topLevel="true">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="BagLive" inherits="BaganatorLiveBagLayoutTemplate"/>
+      <Frame parentKey="BagCached" inherits="BaganatorCachedBagLayoutTemplate"/>
+    </Frames>
+  </Frame>
+</Ui>

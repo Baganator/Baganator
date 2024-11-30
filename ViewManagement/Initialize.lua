@@ -29,6 +29,7 @@ local function SetupBackpackView()
   local allBackpackViews = {
     single = CreateFrame("Frame", "Baganator_SingleViewBackpackViewFrame", UIParent, "BaganatorSingleViewBackpackViewTemplate"),
     category = CreateFrame("Frame", "Baganator_CategoryViewBackpackViewFrame", UIParent, "BaganatorCategoryViewBackpackViewTemplate"),
+    split = CreateFrame("Frame", "Baganator_SplitViewBackpackViewFrame", UIParent, "BaganatorSplitViewBackpackViewTemplate"),
   }
 
   function addonTable.ViewManagement.GetBackpackFrame()

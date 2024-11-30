@@ -1,0 +1,10 @@
+<Ui>
+  <Frame name="BaganatorSplitViewBackpackViewTemplate" virtual="true" mixin="BaganatorSplitViewBackpackViewMixin">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="Hotbar" name="$parentHotbar" inherits="BaganatorSplitViewHotbarTemplate"/>
+    </Frames>
+  </Frame>
+</Ui>
