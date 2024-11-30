@@ -19,10 +19,12 @@ local LAYOUT_OPTIONS = {
     entries = {
       BAGANATOR_L_SINGLE_BAG,
       BAGANATOR_L_CATEGORY_GROUPS,
+      BAGANATOR_L_SPLIT_BAG,
     },
     values = {
       "single",
       "category",
+      "split",
     }
   },
   {

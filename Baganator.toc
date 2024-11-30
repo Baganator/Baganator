@@ -116,6 +116,13 @@ CategoryViews\BackpackView.lua
 CategoryViews\BackpackView.xml
 CategoryViews\Initialize.lua
 
+SplitViews\Bag.lua
+SplitViews\Bag.xml
+SplitViews\Hotbar.lua
+SplitViews\Hotbar.xml
+SplitViews\BackpackView.lua
+SplitViews\BackpackView.xml
+
 ViewManagement\Initialize.lua
 
 CustomiseDialog\Components.lua

@@ -1,5 +1,22 @@
 local _, addonTable = ...
 
+function addonTable.Utilities.PreallocateItemButtons(pool, buttonCount)
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LOGIN")
+  frame:SetScript("OnEvent", function()
+    for i = 1, buttonCount do
+      local button = pool:Acquire()
+      addonTable.Skins.AddFrame("ItemButton", button)
+    end
+    pool:ReleaseAll()
+  end)
+end
+
+local classicBorderFrames = {
+  "BotLeftCorner", "BotRightCorner", "BottomBorder", "LeftBorder", "RightBorder",
+  "TopRightCorner", "TopLeftCorner", "TopBorder"
+}
+
 function addonTable.Utilities.GetAllCharacters(searchText)
   searchText = searchText and searchText:lower() or ""
   local characters = {}

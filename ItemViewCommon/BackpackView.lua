@@ -4,15 +4,6 @@ local classicTabObjectCounter = 0
 
 BaganatorItemViewCommonBackpackViewMixin = {}
 
-local function PreallocateItemButtons(pool, buttonCount)
-  assert(not InCombatLockdown())
-  for i = 1, buttonCount do
-    local button = pool:Acquire()
-    addonTable.Skins.AddFrame("ItemButton", button)
-  end
-  pool:ReleaseAll()
-end
-
 function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
@@ -30,7 +21,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   -- Preallocating is necessary to avoid taint issues if a
   -- player logs in or first opens their bags when in combat
   -- 6 is bags + reagent bag (retail) or bags + keyring (wrath)
-  PreallocateItemButtons(self.liveItemButtonPool, Syndicator.Constants.MaxBagSize * 6 + addonTable.Constants.ContainerTypes)
+  addonTable.Utilities.PreallocateItemButtons(self.liveItemButtonPool, Syndicator.Constants.MaxBagSize * 6 + addonTable.Constants.ContainerTypes)
 
   addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
   addonTable.Utilities.AddBagTransferManager(self) -- self.transferManager
