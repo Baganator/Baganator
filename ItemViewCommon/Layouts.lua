@@ -1264,7 +1264,7 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
     end
   end
 
-  if #self.buttons ~= Syndicator.Constants.MaxGuildBankTabItemSlots * #guildData.bank then
+  if #self.buttons ~= availableTabs * #guildData.bank then
     self.refreshContent = true
     self:RebuildLayout(availableTabs, rowWidth)
   elseif self.reflow or rowWidth ~= self.oldRowWidth then

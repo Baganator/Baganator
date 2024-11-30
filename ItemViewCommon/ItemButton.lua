@@ -712,8 +712,10 @@ function BaganatorRetailLiveGuildItemButtonMixin:OnEnter()
   if self.tabIndex ~= nil and self.tabIndex ~= GetCurrentGuildBankTab() then
     SetCurrentGuildBankTab(self.tabIndex)
   end
-  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-  GameTooltip:SetGuildBankItem(self.tabIndex, self:GetID())
+  if self.tabIndex ~= nil then
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetGuildBankItem(self.tabIndex, self:GetID())
+  end
 end
 
 function BaganatorRetailLiveGuildItemButtonMixin:OnLeave()
@@ -1248,8 +1250,13 @@ function BaganatorClassicLiveGuildItemButtonMixin:OnEnter()
   else
     ResetCursor()
   end
-  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-  GameTooltip:SetGuildBankItem(self.tabIndex, self:GetID())
+  if self.tabIndex ~= nil and self.tabIndex ~= GetCurrentGuildBankTab() then
+    SetCurrentGuildBankTab(self.tabIndex)
+  end
+  if self.tabIndex ~= nil then
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetGuildBankItem(self.tabIndex, self:GetID())
+  end
 end
 
 function BaganatorClassicLiveGuildItemButtonMixin:OnLeave()
