@@ -740,7 +740,7 @@ local function AddCategories(self)
   local itemKey = addonTable.CategoryViews.Utilities.GetAddedItemData(self.BGR.itemID, self.BGR.itemLink)
   local searchToLabel = {}
   for _, details in ipairs(composed.details) do
-    if details.attachedItems and (details.attachedItems[itemKey] or details.attachedItems[self.BGR.key]) then
+    if details.attachedItems and details.attachedItems[itemKey] then
       GameTooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(
         BAGANATOR_L_ATTACHED_DIRECTLY_TO_X:format(GREEN_FONT_COLOR:WrapTextInColorCode("**" .. details.label .. "**"))
       ))
@@ -940,6 +940,14 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     table.insert(self.buttons, newButton)
   end
 
+  self.buttonsByKey = {}
+  for index, button in ipairs(self.buttons) do
+    local cacheData = cacheList[index]
+    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
+    self.buttonsByKey[key] = self.buttonsByKey[key] or {}
+    table.insert(self.buttonsByKey[key], button)
+  end
+
   if #toSet > 0 then
     self.toSet = true
     for _, details in ipairs(toSet) do
@@ -967,14 +975,8 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
 
   self.refreshContent = false
 
-  self.buttonsByKey = {}
   for index, button in ipairs(self.buttons) do
     button.BGR.category = category
-    local cacheData = cacheList[index]
-    button.BGR.key = cacheData.key
-    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
-    self.buttonsByKey[key] = self.buttonsByKey[key] or {}
-    table.insert(self.buttonsByKey[key], button)
   end
 end
 
