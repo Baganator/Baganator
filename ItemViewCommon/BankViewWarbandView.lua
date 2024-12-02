@@ -339,8 +339,14 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   addonTable.Utilities.AddGeneralDropSlot(self, function()
     local bagData = {}
-    for _, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
-      table.insert(bagData, tab.slots)
+    for index, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
+      if index == self.currentTab or self.currentTab == 0 then
+        table.insert(bagData, tab.slots)
+      -- mark tabs as unavailable for dropping into if they aren't the current
+      -- one
+      else
+        table.insert(bagData, {})
+      end
     end
     return bagData
   end, Syndicator.Constants.AllWarbandIndexes)
