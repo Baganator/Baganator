@@ -5,17 +5,18 @@ local function CheckFromTo(bagChecks, source, target)
   return not bagChecks.checks[target.bagID] or bagChecks.checks[target.bagID](source)
 end
 
-local function GetSwap(bagChecks, source, targets)
+local function GetSwap(bagChecks, source, targets, stackLimit)
   if IsGuildSlotLocked(source) then
     return nil, true
   end
 
   for index, item in ipairs(targets) do
-    assert(item.itemID == nil)
-    local outgoing = CheckFromTo(bagChecks, source, item)
-    if outgoing then
-      table.remove(targets, index)
-      return item, false
+    if item.itemID == nil or (item.itemID == source.itemID and item.itemCount + source.itemCount <= stackLimit) then
+      local outgoing = CheckFromTo(bagChecks, source, item)
+      if outgoing then
+        table.remove(targets, index)
+        return item, false
+      end
     end
   end
 
@@ -59,15 +60,21 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
   local locked, moved = false, false
   -- Move items if possible
   for _, item in ipairs(toMove) do
-    local target, swapLocked = GetSwap(bagChecks, item, bagTargets)
-    if target then
-      PickupGuildBankItem(item.tabIndex, item.slotID)
-      C_Container.PickupContainerItem(target.bagID, target.slotID)
-      ClearCursor()
-      moved = true
-      break
-    elseif swapLocked then
-      locked = true
+    local stackLimit = C_Item.GetItemMaxStackSizeByID(item.itemID)
+    if stackLimit == nil then
+      infoPending = true
+      C_Item.RequestLoadItemDataByID(item.itemID)
+    else
+      local target, swapLocked = GetSwap(bagChecks, item, bagTargets, stackLimit)
+      if target then
+        PickupGuildBankItem(item.tabIndex, item.slotID)
+        C_Container.PickupContainerItem(target.bagID, target.slotID)
+        ClearCursor()
+        moved = true
+        break
+      elseif swapLocked then
+        locked = true
+      end
     end
   end
 
@@ -75,6 +82,8 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
     return addonTable.Constants.SortStatus.WaitingMove, modes
   elseif locked then
     return addonTable.Constants.SortStatus.WaitingUnlock, modes
+  elseif infoPending then
+    return addonTable.Constants.SortStatus.WaitingItemData, modes
   else
     return addonTable.Constants.SortStatus.Complete, modes
   end

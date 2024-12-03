@@ -41,6 +41,13 @@ StaticPopupDialogs[importDialog] = {
   hideOnEscape = 1,
 }
 
+local folderMarker
+if C_Texture.GetAtlasInfo("AnimCreate_Icon_Folder") then
+  folderMarker = "AnimCreate_Icon_Folder"
+else
+  folderMarker = "FXAM-SmallSpikeyGlow"
+end
+
 local function PopulateCategoryOrder(container)
   local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
 
@@ -76,7 +83,7 @@ local function PopulateCategoryOrder(container)
       else
         indent = "      "
         local section = source:match("^_(.*)")
-        name = CreateAtlasMarkup("AnimCreate_Icon_Folder") .. " " .. (_G["BAGANATOR_L_SECTION_" .. section] or section)
+        name = CreateAtlasMarkup(folderMarker) .. " " .. (_G["BAGANATOR_L_SECTION_" .. section] or section)
       end
       table.insert(dataProviderElements, {value = source, label = name})
       table.insert(elements, source)

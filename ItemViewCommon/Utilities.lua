@@ -209,19 +209,21 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
       local currentCharacterBags = getData()
       local backupBagID = nil
       for _, bagID in ipairs(sortedBagIDs) do
-        if not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID}) then
-          local bag = currentCharacterBags[tIndexOf(bagIndexes, bagID)]
-          for index, slot in ipairs(bag) do
-            if slot.itemID == nil then
-              self:Enable()
-              self:SetID(index)
-              self:GetParent():SetID(bagID)
-              return
+        local bag = currentCharacterBags[tIndexOf(bagIndexes, bagID)]
+        if bag and #bag > 0 then
+          if not usageChecks.checks[bagID] or usageChecks.checks[bagID]({itemID = itemID}) then
+            for index, slot in ipairs(bag) do
+              if slot.itemID == nil then
+                self:Enable()
+                self:SetID(index)
+                self:GetParent():SetID(bagID)
+                return
+              end
             end
           end
-        end
-        if not usageChecks.checks[bagID] then
-          backupBagID = usageChecks.checks[bagID]
+          if not usageChecks.checks[bagID] then
+            backupBagID = usageChecks.checks[bagID]
+          end
         end
       end
       self:Disable()

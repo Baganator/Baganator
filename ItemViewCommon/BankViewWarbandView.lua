@@ -158,17 +158,18 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:RemoveSearchMatches(get
   end
   matches = newMatches
 
-  local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(
+  local bagSlots = addonTable.Transfers.GetBagsSlots(
     Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags,
     Syndicator.Constants.AllBagIndexes
   )
 
   local status
+  local counts = addonTable.Transfers.CountByItemIDs(bagSlots)
   -- Only move more items if the last set moved in, or the last transfer
   -- completed.
-  if #emptyBagSlots ~= self.transferState.emptyBagSlots then
-    self.transferState.emptyBagSlots = #emptyBagSlots
-    status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
+  if not self.transferState.counts or not tCompare(counts, self.transferState.counts, 2) then
+    self.transferState.counts = counts
+    status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, bagSlots)
   else
     status = addonTable.Constants.SortStatus.WaitingMove
   end
@@ -339,8 +340,14 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   addonTable.Utilities.AddGeneralDropSlot(self, function()
     local bagData = {}
-    for _, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
-      table.insert(bagData, tab.slots)
+    for index, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
+      if index == self.currentTab or self.currentTab == 0 then
+        table.insert(bagData, tab.slots)
+      -- mark tabs as unavailable for dropping into if they aren't the current
+      -- one
+      else
+        table.insert(bagData, {})
+      end
     end
     return bagData
   end, Syndicator.Constants.AllWarbandIndexes)

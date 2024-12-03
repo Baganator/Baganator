@@ -740,7 +740,7 @@ local function AddCategories(self)
   local itemKey = addonTable.CategoryViews.Utilities.GetAddedItemData(self.BGR.itemID, self.BGR.itemLink)
   local searchToLabel = {}
   for _, details in ipairs(composed.details) do
-    if details.attachedItems and (details.attachedItems[itemKey] or details.attachedItems[self.BGR.key]) then
+    if details.attachedItems and details.attachedItems[itemKey] then
       GameTooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(
         BAGANATOR_L_ATTACHED_DIRECTLY_TO_X:format(GREEN_FONT_COLOR:WrapTextInColorCode("**" .. details.label .. "**"))
       ))
@@ -940,6 +940,14 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     table.insert(self.buttons, newButton)
   end
 
+  self.buttonsByKey = {}
+  for index, button in ipairs(self.buttons) do
+    local cacheData = cacheList[index]
+    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
+    self.buttonsByKey[key] = self.buttonsByKey[key] or {}
+    table.insert(self.buttonsByKey[key], button)
+  end
+
   if #toSet > 0 then
     self.toSet = true
     for _, details in ipairs(toSet) do
@@ -967,14 +975,8 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
 
   self.refreshContent = false
 
-  self.buttonsByKey = {}
   for index, button in ipairs(self.buttons) do
     button.BGR.category = category
-    local cacheData = cacheList[index]
-    button.BGR.key = cacheData.key
-    local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
-    self.buttonsByKey[key] = self.buttonsByKey[key] or {}
-    table.insert(self.buttonsByKey[key], button)
   end
 end
 
@@ -1257,9 +1259,16 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
 
   local guildData = Syndicator.API.GetGuild(guild)
 
-  if #self.buttons ~= Syndicator.Constants.MaxGuildBankTabItemSlots * #guildData.bank then
+  local availableTabs = 0
+  for _, tabData in ipairs(guildData.bank) do
+    if tabData.isViewable then
+      availableTabs = availableTabs + 1
+    end
+  end
+
+  if #self.buttons ~= availableTabs * #guildData.bank then
     self.refreshContent = true
-    self:RebuildLayout(#guildData.bank, rowWidth)
+    self:RebuildLayout(availableTabs, rowWidth)
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
     self.reflow = false
     FlowButtonsRows(self, rowWidth)
@@ -1283,10 +1292,12 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
 
     local index = 1
     for tabIndex, tabData in ipairs(guildData.bank) do
-      for _, cacheData in ipairs(tabData.slots) do
-        local button = self.buttons[index]
-        button:SetItemDetails(cacheData, tabIndex)
-        index = index + 1
+      if tabData.isViewable then
+        for _, cacheData in ipairs(tabData.slots) do
+          local button = self.buttons[index]
+          button:SetItemDetails(cacheData, tabIndex)
+          index = index + 1
+        end
       end
     end
   end

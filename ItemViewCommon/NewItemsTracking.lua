@@ -4,8 +4,10 @@ BaganatorItemViewCommonNewItemsTrackingMixin = {}
 function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
   self:RegisterEvent("BANKFRAME_OPENED")
   self:RegisterEvent("BANKFRAME_CLOSED")
+  self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")
 
   self.firstStart = true
+  self.startupCooldown = false
   self.timeout = addonTable.Config.Get(addonTable.Config.Options.RECENT_TIMEOUT)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
@@ -43,7 +45,11 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
           timeout.bagID, timeout.slotID = bagID, slotID
           self.recentByContainerTimeout[bagID][slotID] = guid
         end
+        if self.recentByContainer[bagID][slotID] ~= guid then
+          self.recentByContainer[bagID][slotID] = nil
+        end
       else
+        self.recentByContainer[bagID][slotID] = nil
         containerGuids[slotID] = -1
       end
     end
@@ -62,7 +68,14 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
       ScanBagData(bagID, characterData.bags[bagIndex])
     end
     if self.firstStart then
-      self.firstStart = false
+      if not self.startupCooldown then
+        self.startupCooldown = true
+        -- Cooldown for further "first start" events to fire on login
+        C_Timer.After(5, function()
+          self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
+          self.firstStart = false
+        end)
+      end
       for bagID, containerGuids in pairs(self.guidsByContainer) do
         for _, guid in ipairs(containerGuids) do
           if guid ~= -1 then
@@ -90,7 +103,12 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
 end
 
 function BaganatorItemViewCommonNewItemsTrackingMixin:OnEvent(eventName)
-  self.bankOpen = eventName == "BANKFRAME_OPENED"
+  if eventName == "BANKFRAME_OPENED" or eventName == "BANKFRAME_CLOSED" then
+    self.bankOpen = eventName == "BANKFRAME_OPENED"
+  elseif eventName == "BAG_NEW_ITEMS_UPDATED" then
+    self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
+    self.firstStart = false
+  end
 end
 
 -- Compare previous set of seen items to the current items to determine which
@@ -107,7 +125,7 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems(timeout)
           if self.recentByContainerTimeout[bagID][slotID] then
             self.recentByContainerTimeout[bagID][slotID] = nil
           end
-        elseif guild ~= -1 and not self.seen[guid] and self.recentByContainer[bagID] then
+        elseif not self.seen[guid] and self.recentByContainer[bagID] then
           self.recentByContainer[bagID][slotID] = guid
           if timeout then
             self.recentTimeout[guid] = {time = GetTime(), bagID = bagID, slotID = slotID}

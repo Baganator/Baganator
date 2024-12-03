@@ -6,17 +6,18 @@ end
 
 local IsBagSlotLocked = addonTable.Transfers.IsContainerItemLocked
 
-local function GetSwap(bagChecks, source, targets)
+local function GetSwap(bagChecks, source, targets, stackLimit)
   if IsBagSlotLocked(source) then
     return nil, true
   end
 
   for index, item in ipairs(targets) do
-    assert(item.itemID == nil)
-    local outgoing = CheckFromTo(bagChecks, source, item)
-    if outgoing then
-      table.remove(targets, index)
-      return item, false
+    if item.itemID == nil or (item.itemID == source.itemID and item.itemCount + source.itemCount <= stackLimit) then
+      local outgoing = CheckFromTo(bagChecks, source, item)
+      if outgoing then
+        table.remove(targets, index)
+        return item, false
+      end
     end
   end
 
@@ -38,17 +39,23 @@ function addonTable.Transfers.FromBagsToBags(toMove, bagIDs, targets)
   -- Prioritise special bags
   targets = addonTable.Transfers.SortChecksFirst(bagChecks, targets)
 
-  local locked, moved = false, false
+  local locked, moved, infoPending = false, false, false
   -- Move items if possible
   for _, item in ipairs(toMove) do
-    local target, swapLocked = GetSwap(bagChecks, item, targets)
-    if target then
-      C_Container.PickupContainerItem(item.bagID, item.slotID)
-      C_Container.PickupContainerItem(target.bagID, target.slotID)
-      ClearCursor()
-      moved = true
-    elseif swapLocked then
-      locked = true
+    local stackLimit = C_Item.GetItemMaxStackSizeByID(item.itemID)
+    if stackLimit == nil then
+      infoPending = true
+      C_Item.RequestLoadItemDataByID(item.itemID)
+    else
+      local target, swapLocked = GetSwap(bagChecks, item, targets, stackLimit)
+      if target then
+        C_Container.PickupContainerItem(item.bagID, item.slotID)
+        C_Container.PickupContainerItem(target.bagID, target.slotID)
+        ClearCursor()
+        moved = true
+      elseif swapLocked then
+        locked = true
+      end
     end
   end
 
@@ -56,6 +63,8 @@ function addonTable.Transfers.FromBagsToBags(toMove, bagIDs, targets)
     return addonTable.Constants.SortStatus.WaitingMove
   elseif locked then
     return addonTable.Constants.SortStatus.WaitingUnlock
+  elseif infoPending then
+    return addonTable.Constants.SortStatus.WaitingItemData
   else
     return addonTable.Constants.SortStatus.Complete
   end
