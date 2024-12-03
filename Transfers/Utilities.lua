@@ -1,33 +1,50 @@
 local _, addonTable = ...
-function addonTable.Transfers.GetEmptyBagsSlots(bags, bagIDs)
+function addonTable.Transfers.GetBagsSlots(bags, bagIDs)
+  local filledSlots = {}
   local emptySlots = {}
   for index, contents in ipairs(bags) do
     local bagID = bagIDs[index]
     for slotID, item in ipairs(contents) do
-      if item.itemID == nil then
-        table.insert(emptySlots, {
-          bagID = bagID,
-          slotID = slotID,
-          itemID = nil,
-        })
+      local newItem = {
+        bagID = bagID,
+        slotID = slotID,
+      }
+      Mixin(newItem, item)
+      if newItem.itemID == nil then
+        table.insert(emptySlots, newItem)
+      else
+        table.insert(filledSlots, newItem)
       end
     end
   end
-  return emptySlots
+
+  local slots = filledSlots
+  tAppendAll(slots, emptySlots)
+
+  return slots
 end
 
-function addonTable.Transfers.GetEmptyGuildSlots(tab, tabIndex)
+function addonTable.Transfers.GetGuildSlots(tab, tabIndex)
+  local filledSlots = {}
   local emptySlots = {}
+
   for slotID, item in ipairs(tab.slots) do
-    if item.itemID == nil then
-      table.insert(emptySlots, {
-        tabIndex = tabIndex,
-        slotID = slotID,
-        itemID = nil,
-      })
+    local newItem = {
+      tabIndex = tabIndex,
+      slotID = slotID,
+    }
+    Mixin(newItem, item)
+    if newItem.itemID == nil then
+      table.insert(emptySlots, newItem)
+    else
+      table.insert(filledSlots, newItem)
     end
   end
-  return emptySlots
+
+  local slots = filledSlots
+  tAppendAll(slots, emptySlots)
+
+  return slots
 end
 
 -- Prioritise items in special bags
@@ -38,6 +55,13 @@ function addonTable.Transfers.SortChecksFirst(bagChecks, items)
   end
 
   table.sort(indexes, function(a, b)
+    -- Group existing stacks
+    if items[a].itemID and not items[b].itemID then
+      return true
+    elseif items[b].itemID and not items[a].itemID then
+      return false
+    end
+
     local aOrder = bagChecks.sortOrder[items[a].bagID]
     local bOrder = bagChecks.sortOrder[items[b].bagID]
     if aOrder == bOrder then
@@ -65,4 +89,14 @@ end
 function addonTable.Transfers.IsGuildItemLocked(item)
   local _, _, isLocked = GetGuildBankItemInfo(item.tabIndex, item.slotID)
   return isLocked
+end
+
+function addonTable.Transfers.CountByItemIDs(slots)
+  local result = {}
+  for _, item in ipairs(slots) do
+    if item.itemID then
+      result[item.itemID] = (result[item.itemID] or 0) + item.itemCount
+    end
+  end
+  return result
 end

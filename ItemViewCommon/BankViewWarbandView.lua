@@ -158,17 +158,18 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:RemoveSearchMatches(get
   end
   matches = newMatches
 
-  local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(
+  local bagSlots = addonTable.Transfers.GetBagsSlots(
     Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags,
     Syndicator.Constants.AllBagIndexes
   )
 
   local status
+  local counts = addonTable.Transfers.CountByItemIDs(bagSlots)
   -- Only move more items if the last set moved in, or the last transfer
   -- completed.
-  if #emptyBagSlots ~= self.transferState.emptyBagSlots then
-    self.transferState.emptyBagSlots = #emptyBagSlots
-    status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
+  if not self.transferState.counts or not tCompare(counts, self.transferState.counts, 2) then
+    self.transferState.counts = counts
+    status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, bagSlots)
   else
     status = addonTable.Constants.SortStatus.WaitingMove
   end

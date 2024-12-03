@@ -585,9 +585,9 @@ end
 function BaganatorSingleViewGuildViewMixin:RemoveSearchMatches(callback)
   local matches = self.Container.GuildLive.SearchMonitor:GetMatches()
 
-  local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags, Syndicator.Constants.AllBagIndexes)
+  local slots = addonTable.Transfers.GetBagsSlots(Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags, Syndicator.Constants.AllBagIndexes)
 
-  local status, modes = addonTable.Transfers.FromGuildToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
+  local status, modes = addonTable.Transfers.FromGuildToBags(matches, Syndicator.Constants.AllBagIndexes, slots)
 
   self.transferManager:Apply(status, modes or {"GuildCacheUpdate"}, function()
     self:RemoveSearchMatches(callback)

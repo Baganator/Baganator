@@ -1,15 +1,16 @@
 local _, addonTable = ...
 local IsBagSlotLocked = addonTable.Transfers.IsContainerItemLocked
 
-local function GetSwap(source, targets)
+local function GetSwap(source, targets, stackLimit)
   if IsBagSlotLocked(source) then
     return nil, true
   end
 
   for index, item in ipairs(targets) do
-    assert(item.itemID == nil)
-    table.remove(targets, index)
-    return item, false
+    if item.itemID == nil or (item.itemID == source.itemID and item.itemCount + source.itemCount <= stackLimit) then
+      table.remove(targets, index)
+      return item, false
+    end
   end
 
   return nil, false
@@ -41,16 +42,22 @@ function addonTable.Transfers.FromBagsToGuild(toMove, guildTargets)
   local locked, moved = false, false
   -- Move items if possible
   for _, item in ipairs(toMove) do
-    local target, swapLocked = GetSwap(item, guildTargets)
-    if target then
-      C_Container.PickupContainerItem(item.bagID, item.slotID)
-      SetCurrentGuildBankTab(target.tabIndex)
-      PickupGuildBankItem(target.tabIndex, target.slotID)
-      ClearCursor()
-      moved = true
-      break
-    elseif swapLocked then
-      locked = true
+    local stackLimit = C_Item.GetItemMaxStackSizeByID(item.itemID)
+    if stackLimit == nil then
+      infoPending = true
+      C_Item.RequestLoadItemDataByID(item.itemID)
+    else
+      local target, swapLocked = GetSwap(item, guildTargets, stackLimit)
+      if target then
+        C_Container.PickupContainerItem(item.bagID, item.slotID)
+        SetCurrentGuildBankTab(target.tabIndex)
+        PickupGuildBankItem(target.tabIndex, target.slotID)
+        ClearCursor()
+        moved = true
+        break
+      elseif swapLocked then
+        locked = true
+      end
     end
   end
 
@@ -58,6 +65,8 @@ function addonTable.Transfers.FromBagsToGuild(toMove, guildTargets)
     return addonTable.Constants.SortStatus.WaitingMove, modes
   elseif locked then
     return addonTable.Constants.SortStatus.WaitingUnlock, modes
+  elseif infoPending then
+    return addonTable.Constants.SortStatus.WaitingItemData, modes
   else
     return addonTable.Constants.SortStatus.Complete, modes
   end

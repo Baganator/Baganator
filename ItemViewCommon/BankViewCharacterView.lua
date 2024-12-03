@@ -131,7 +131,7 @@ end
 function BaganatorItemViewCommonBankViewCharacterViewMixin:RemoveSearchMatches(getItems)
   local matches = (getItems and getItems()) or self:GetSearchMatches()
 
-  local emptyBagSlots = addonTable.Transfers.GetEmptyBagsSlots(Syndicator.API.GetCharacter(self.liveCharacter).bags, Syndicator.Constants.AllBagIndexes)
+  local emptyBagSlots = addonTable.Transfers.GetBagsSlots(Syndicator.API.GetCharacter(self.liveCharacter).bags, Syndicator.Constants.AllBagIndexes)
 
   local status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, emptyBagSlots)
 
