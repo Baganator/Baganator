@@ -811,7 +811,7 @@ function BaganatorLiveCategoryLayoutMixin:SetupDummyButton(button)
   button.isDummy = true
 
   local function ProcessCursor()
-    if C_Cursor.GetCursorItem() ~= nil then
+    if C_Cursor.GetCursorItem() ~= nil and button.dummyType ~= "empty" then
       addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemEnd", button.dummyType == "add" and button.BGR.category or nil)
       ClearCursor()
     end
@@ -821,8 +821,10 @@ function BaganatorLiveCategoryLayoutMixin:SetupDummyButton(button)
   button:SetScript("OnReceiveDrag", ProcessCursor)
 
   button:SetScript("OnEnter", function()
-    GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-    GameTooltip:SetText(button.label)
+    if button.label then
+      GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+      GameTooltip:SetText(button.label)
+    end
   end)
 
   button:SetScript("OnLeave", function()
@@ -839,12 +841,17 @@ function BaganatorLiveCategoryLayoutMixin:ApplyDummyButtonSettings(button, cache
   end
 
   button.dummyType = cacheData.dummyType
+  button.ModifiedIcon:SetDesaturated(false)
   if cacheData.dummyType == "remove" then
     button.ModifiedIcon:SetAtlas("transmog-icon-remove")
     button.ModifiedIcon:SetSize(25, 25)
   elseif cacheData.dummyType == "add" then
     button.ModifiedIcon:SetAtlas("Garr_Building-AddFollowerPlus")
     button.ModifiedIcon:SetSize(37, 37)
+  elseif cacheData.dummyType == "empty" then
+    button.ModifiedIcon:SetAtlas("transmog-icon-remove")
+    button.ModifiedIcon:SetSize(25, 25)
+    button.ModifiedIcon:SetDesaturated(true)
   end
 end
 

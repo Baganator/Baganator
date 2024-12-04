@@ -264,7 +264,8 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     local anyNew = false
     for index, old in ipairs(oldComposed.details) do
       local current = composed.details[index]
-      if current == nil or old.source ~= current.source or (current.source and not old.emptySlots and old.oldLength and old.oldLength < #current.results) then
+      if (current.source and (current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory)
+          and not old.emptySlots and old.oldLength and old.oldLength < #current.results) then
         anyNew = true
         break
       end
@@ -278,17 +279,14 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         if old.results then
           local current = composed.details[index]
           current.oldLength = #current.results
-          if #old.results > #current.results and not old.emptySlots then
+          if #old.results > #current.results and not old.emptySlots and (#current.results > 0 or current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory) then
             for index, info in ipairs(old.results) do
               if #current.results >= #old.results then
                 break
               end
-              if info.bagID and info.slotID and not C_Item.DoesItemExist({bagID = info.bagID, slotIndex = info.slotID}) then
-                if not info.key or not old.isGrouping or not FindInTableIf(current.results, function(a) return a.key == info.key end) then
-                  table.insert(current.results, index, {bagID = info.bagID, slotID = info.slotID, itemCount = 0, keyLink = typeMap[info.bagID], bagType = typeMap[info.bagID]})
-                  if splitEmpty then
-                    table.remove(splitEmpty, (FindInTableIf(splitEmpty, function(a) return a.bagID == info.bagID and a.slotID == info.slotID end)))
-                  end
+              if info.bagID and info.slotID then
+                if not current.results[index] or current.results[index].key ~= info.key then
+                  table.insert(current.results, index, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty"})
                 end
               end
             end
