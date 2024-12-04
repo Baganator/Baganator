@@ -109,231 +109,6 @@ end
 function BaganatorHeaderMixin:SetValue(value)
 end
 
-BaganatorCustomiseGetSelectionPopoutButtonMixin = CreateFromMixins(CallbackRegistryMixin, EventButtonMixin);
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnLoad()
-  CallbackRegistryMixin.OnLoad(self);
-
-  self.Label = self:CreateFontString(nil, nil, "GameFontNormal")
-  self.Label:SetAllPoints()
-  self.Label:SetSize(250, 20)
-
-  self.parent = self:GetParent();
-
-  self.Popout.logicalParent = self;
-
-  self.buttonPool = CreateFramePool("BUTTON", self.Popout, "SettingsSelectionPopoutEntryTemplate");
-  self.initialAnchor = AnchorUtil.CreateAnchor("TOPLEFT", self.Popout, "TOPLEFT", 6, -12);
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetText(text)
-  self.Label:SetText(text)
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:HandlesGlobalMouseEvent(buttonID, event)
-  return event == "GLOBAL_MOUSE_DOWN" and buttonID == "LeftButton";
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEnter()
-  if not self.Popout:IsShown() then
-    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox-hover");
-  end
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnLeave()
-  if not self.Popout:IsShown() then
-    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox");
-  end
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetEnabled_(enabled)
-  self:SetEnabled(enabled);
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnPopoutShown()
-  if self.parent.OnPopoutShown then
-    self.parent:OnPopoutShown();
-  end
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnHide()
-  self:HidePopout();
-  self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox");
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:HidePopout()
-  self.Popout:Hide();
-
-  if (GetMouseFocus and GetMouseFocus() == self) or (GetMouseFoci and GetMouseFoci()[1]) == self then
-    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox-hover");
-  else
-    self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox");
-  end
-
-  self.HighlightTexture:SetAlpha(0);
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnClick()
-  self:TogglePopout()
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:ShowPopout()
-  if self.popoutNeedsUpdate then
-    self:UpdatePopout();
-  end
-  SelectionPopouts:CloseAll();
-
-  self.Popout:Show();
-  self.NormalTexture:SetAtlas("charactercreate-customize-dropdownbox-open");
-  self.HighlightTexture:SetAlpha(0.2);
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetPopoutStrata(strata)
-  self.Popout:SetFrameStrata(strata);
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:SetupOptions(entries, values)
-  local container = Settings.CreateControlTextContainer();
-  for index, option in ipairs(entries) do
-    container:Add(values[index], option);
-  end
-
-  self.selections = container:GetData()
-  self.selectedIndex = 1;
-
-  if self.Popout:IsShown() then
-    self:UpdatePopout();
-  else
-    self.popoutNeedsUpdate = true;
-  end
-
-  return self:UpdateButtonDetails();
-end
-
-local MAX_POPOUT_ENTRIES_FOR_1_COLUMN = 10;
-local MAX_POPOUT_ENTRIES_FOR_2_COLUMNS = 24;
-local MAX_POPOUT_ENTRIES_FOR_3_COLUMNS = 36;
-
-local function getNumColumnsAndStride(numSelections, maxStride)
-  local numColumns, stride;
-  if numSelections > MAX_POPOUT_ENTRIES_FOR_3_COLUMNS then
-    numColumns, stride = 4, math.ceil(numSelections / 4);
-  elseif numSelections > MAX_POPOUT_ENTRIES_FOR_2_COLUMNS then
-    numColumns, stride = 3, math.ceil(numSelections / 3);
-  elseif numSelections > MAX_POPOUT_ENTRIES_FOR_1_COLUMN then
-    numColumns, stride =  2, math.ceil(numSelections / 2);
-  else
-    numColumns, stride =  1, numSelections;
-  end
-
-  if maxStride and stride > maxStride then
-    numColumns = math.ceil(numSelections / maxStride);
-    stride = math.ceil(numSelections / numColumns);
-  end
-
-  return numColumns, stride;
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:GetMaxPopoutStride()
-  local maxPopoutHeight = self.parent.GetMaxPopoutHeight and self.parent:GetMaxPopoutHeight() or nil;
-  if maxPopoutHeight then
-    local selectionHeight = 20;
-    return math.floor(maxPopoutHeight / selectionHeight);
-  end
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:UpdatePopout()
-  self.buttonPool:ReleaseAll();
-
-  local selections = self:GetSelections();
-  local numColumns, stride = getNumColumnsAndStride(#selections, self:GetMaxPopoutStride());
-  local buttons = {};
-
-  local hasIneligibleChoice = false;
-  local hasLockedChoice = false;
-  for _, selectionData in ipairs(selections) do
-    if selectionData.ineligibleChoice then
-      hasIneligibleChoice = true;
-    end
-    if selectionData.isLocked then
-      hasLockedChoice = true;
-    end
-  end
-
-  local maxDetailsWidth = 0;
-  for index, selectionInfo in ipairs(selections) do
-    local button = self.buttonPool:Acquire();
-
-    local isSelected = false--(index == self.selectedIndex);
-    button:SetupEntry(selectionInfo, index, isSelected, numColumns > 1, hasIneligibleChoice, hasLockedChoice);
-    maxDetailsWidth = math.max(maxDetailsWidth, button.SelectionDetails:GetWidth(), button.SelectionDetails.SelectionName:GetWidth() + 10);
-
-    table.insert(buttons, button);
-  end
-
-  for _, button in ipairs(buttons) do
-    button.SelectionDetails:SetWidth(maxDetailsWidth);
-    button:Layout();
-    button:Show();
-  end
-
-  if stride ~= self.lastStride then
-    self.layout = AnchorUtil.CreateGridLayout(GridLayoutMixin.Direction.TopLeftToBottomRightVertical, stride);
-    self.lastStride = stride;
-  end
-
-  AnchorUtil.GridLayout(buttons, self.initialAnchor, self.layout);
-
-  self.popoutNeedsUpdate = false;
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:GetSelections()
-  return self.selections;
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:GetCurrentSelectedData()
-  local selections = self:GetSelections();
-  return selections[self.selectedIndex];
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:UpdateButtonDetails()
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:TogglePopout()
-  local showPopup = not self.Popout:IsShown();
-  if showPopup then
-    self:ShowPopout();
-  else
-    self:HidePopout();
-  end
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:FindIndex(predicate)
-  return FindInTableIf(self:GetSelections(), predicate);
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:IsDataMatch(data1, data2)
-  return data1 == data2;
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEntryClicked(entryData)
-  self:HidePopout();
-
-  PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEntryMouseEnter(entry)
-  if self.parent.OnEntryMouseEnter then
-    self.parent:OnEntryMouseEnter(entry);
-  end
-end
-
-function BaganatorCustomiseGetSelectionPopoutButtonMixin:OnEntryMouseLeave(entry)
-  if self.parent.OnEntryMouseLeave then
-    self.parent:OnEntryMouseLeave(entry);
-  end
-end
-
 function addonTable.CustomiseDialog.GetDraggable(callback, movedCallback)
   local frame = CreateFrame("Frame", nil, UIParent)
   frame:SetSize(80, 20)
@@ -451,60 +226,50 @@ function BaganatorCustomSliderMixin:Enable()
 end
 
 function addonTable.CustomiseDialog.GetDropdown(parent)
-  if DoesTemplateExist("WowStyle1DropdownTemplate") then
-    local dropdown = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
-    dropdown.SetupOptions = function(_, entries, values)
-      dropdown:SetupMenu(function(_, rootDescription)
-        for index = 1, #entries do
-          local entry, value = entries[index], values[index]
-          rootDescription:CreateButton(entry, function() dropdown:OnEntryClicked({value = value, label = entry}) end)
-        end
-      end)
-    end
-    dropdown.disableSelectionText = true
-    dropdown.OnEntryClicked = function() end
-    return dropdown
-  else
-    local dropDown = CreateFrame("EventButton", nil, parent, "BaganatorCustomiseGetSelectionPopoutButtonTemplate")
-    addonTable.Skins.AddFrame("DropDownWithPopout", dropDown)
-    return dropDown
+  local dropdown = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+  dropdown.SetupOptions = function(_, entries, values)
+    dropdown:SetupMenu(function(_, rootDescription)
+      for index = 1, #entries do
+        local entry, value = entries[index], values[index]
+        rootDescription:CreateButton(entry, function() dropdown:OnEntryClicked({value = value, label = entry}) end)
+      end
+    end)
   end
+  dropdown.disableSelectionText = true
+  dropdown.OnEntryClicked = function() end
+  return dropdown
 end
 
 -- Dropdown for selecting and storing an option
 function addonTable.CustomiseDialog.GetBasicDropdown(parent)
-  if DoesTemplateExist("SelectionPopoutButtonTemplate") then
-    return CreateFrame("Frame", nil, parent, "BaganatorDropDownTemplate")
-  else
-    local frame = CreateFrame("Frame", nil, parent)
-    local dropdown = CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")
-    dropdown:SetWidth(250)
-    dropdown:SetPoint("LEFT", frame, "CENTER", -32, 0)
-    local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-    label:SetPoint("LEFT", 20, 0)
-    label:SetPoint("RIGHT", frame, "CENTER", -50, 0)
-    label:SetJustifyH("RIGHT")
-    frame:SetPoint("LEFT", 30, 0)
-    frame:SetPoint("RIGHT", -30, 0)
-    frame.Init = function(_, option)
-      label:SetText(option.text)
-      local entries = {}
-      for index = 1, #option.entries do
-        table.insert(entries, {option.entries[index], option.values[index]})
-      end
-      MenuUtil.CreateRadioMenu(dropdown, function(value)
-        return addonTable.Config.Get(option.option) == value
-      end, function(value)
-        addonTable.Config.Set(option.option, value)
-      end, unpack(entries))
+  local frame = CreateFrame("Frame", nil, parent)
+  local dropdown = CreateFrame("DropdownButton", nil, frame, "WowStyle1DropdownTemplate")
+  dropdown:SetWidth(250)
+  dropdown:SetPoint("LEFT", frame, "CENTER", -32, 0)
+  local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  label:SetPoint("LEFT", 20, 0)
+  label:SetPoint("RIGHT", frame, "CENTER", -50, 0)
+  label:SetJustifyH("RIGHT")
+  frame:SetPoint("LEFT", 30, 0)
+  frame:SetPoint("RIGHT", -30, 0)
+  frame.Init = function(_, option)
+    label:SetText(option.text)
+    local entries = {}
+    for index = 1, #option.entries do
+      table.insert(entries, {option.entries[index], option.values[index]})
     end
-    frame.SetValue = function(_, value)
-      dropdown:GenerateMenu()
-      -- don't need to do anything as dropdown's onshow handles this
-    end
-    frame.DropDown = dropdown
-    frame:SetHeight(40)
-
-    return frame
+    MenuUtil.CreateRadioMenu(dropdown, function(value)
+      return addonTable.Config.Get(option.option) == value
+    end, function(value)
+      addonTable.Config.Set(option.option, value)
+    end, unpack(entries))
   end
+  frame.SetValue = function(_, value)
+    dropdown:GenerateMenu()
+    -- don't need to do anything as dropdown's onshow handles this
+  end
+  frame.DropDown = dropdown
+  frame:SetHeight(40)
+
+  return frame
 end
