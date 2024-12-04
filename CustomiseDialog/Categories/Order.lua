@@ -244,6 +244,8 @@ local function SetCategoriesToDropDown(dropdown, ignore)
         end)
       end
     end
+
+    rootDescription:SetScrollMode(20 * 20)
   end)
 end
 
