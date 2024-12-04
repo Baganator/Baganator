@@ -189,25 +189,31 @@ end
 
 local function SetCategoriesToDropDown(dropdown, ignore)
   dropdown:SetupMenu(function(_, rootDescription)
-    local options = {}
+    local defaultOptions = {}
     for source, category in pairs(addonTable.CategoryViews.Constants.SourceToCategory) do
       if not ignore[source] then
-        table.insert(options, {label = category.name, value = source})
+        table.insert(defaultOptions, {label = category.name, value = source})
       end
     end
+    table.sort(defaultOptions, function(a, b) return a.label:lower() < b.label:lower() end)
+
+    local customOptions = {}
     local nameCount = {}
     for source, category in pairs(addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)) do
       if not ignore[source] then
         if not nameCount[category.name] then
-          table.insert(options, {label = category.name .. " (*)", value = source, isCustom = true})
+          table.insert(customOptions, {label = category.name .. " (*)", value = source, isCustom = true})
           nameCount[category.name] = 1
         else
           nameCount[category.name] = nameCount[category.name] + 1
-          table.insert(options, {label = category.name .. " (*" .. nameCount[category.name] .. ")", value = source, isCustom = true})
+          table.insert(customOptions, {label = category.name .. " (*" .. nameCount[category.name] .. ")", value = source, isCustom = true})
         end
       end
     end
-    table.sort(options, function(a, b) return a.label:lower() < b.label:lower() end)
+    table.sort(customOptions, function(a, b) return a.label:lower() < b.label:lower() end)
+
+    local options = customOptions
+    tAppendAll(options, defaultOptions)
 
     table.insert(options, 1, {
       value = "", label = NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CREATE_NEW_CATEGORY)
