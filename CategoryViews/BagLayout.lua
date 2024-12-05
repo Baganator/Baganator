@@ -143,7 +143,9 @@ function addonTable.CategoryViews.BagLayoutMixin:SettingChanged(settingName)
     self.ItemsPreparation:ResetCaches()
     self.CategoryFilter:ResetCaches()
   end
-  self.composed = nil
+  if settingName ~= addonTable.Config.Options.CATEGORY_SECTION_TOGGLED then
+    self.composed = nil
+  end
 end
 
 -- Called in response to the ContentRefreshRequired event triggered when items
