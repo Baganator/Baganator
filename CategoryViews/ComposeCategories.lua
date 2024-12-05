@@ -55,12 +55,10 @@ local function GetAuto(category, everything)
         end
       end
       for _, n in ipairs(names) do
-        if groupedItems[n] ~= nil then
-          local index = #searches + 1
-          searches[index] = ""
-          searchLabels[index] = n
-          attachedItems[index] = groupedItems[n]
-        end
+        local index = #searches + 1
+        searches[index] = ""
+        searchLabels[index] = n
+        attachedItems[index] = groupedItems[n] or {}
       end
     end
   elseif category.auto == "inventory_slots" then
@@ -102,11 +100,9 @@ local function GetAuto(category, everything)
       if groupPath:find("`") then
         groupPath = groupPath:match("`([^`]*)$")
       end
-      if groups[groupPath] then
-        table.insert(searches, "")
-        table.insert(searchLabels, groupPath)
-        table.insert(attachedItems, groups[groupPath])
-      end
+      table.insert(searches, "")
+      table.insert(searchLabels, groupPath)
+      table.insert(attachedItems, groups[groupPath] or {})
     end
   else
     error("automatic category type not supported")
