@@ -146,7 +146,6 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems(timeout)
             self.recentByContainerTimeout[bagID][slotID] = nil
           end
         elseif not self.seenGUIDs[guid] and (not self.stackable[itemID] or not self.seenItemIDs[itemID]) and self.recentByContainer[bagID] then
-          print(itemID, self.stackable[itemID], self.seenItemIDs[itemID])
           self.recentByContainer[bagID][slotID] = guid
           if timeout then
             self.recentTimeout[guid] = {time = GetTime(), bagID = bagID, slotID = slotID}
