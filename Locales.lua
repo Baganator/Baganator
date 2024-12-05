@@ -364,6 +364,9 @@ local L = Locales.deDE
 local L = Locales.ruRU
 --@localization(locale="ruRU", format="lua_additive_table")@
 
+local L = Locales.ptBR
+--@localization(locale="ptBR", format="lua_additive_table")@
+
 local L = Locales.esES
 --@localization(locale="esES", format="lua_additive_table")@
 
