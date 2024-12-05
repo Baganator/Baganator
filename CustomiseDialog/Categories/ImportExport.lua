@@ -219,7 +219,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
         return
       end
       for _, source in ipairs(import.hidden) do
-        hidden[source] = true
+        hidden[sourceMap[source] or source] = true
       end
     end
     local displayOrder = {}
