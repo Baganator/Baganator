@@ -58,7 +58,7 @@ local function GetAuto(category, everything)
         local index = #searches + 1
         searches[index] = ""
         searchLabels[index] = n
-        attachedItems[index] = groupedItems[n] or {}
+        attachedItems[index] = groupedItems[n] -- nil if no items
       end
     end
   elseif category.auto == "inventory_slots" then
@@ -102,7 +102,7 @@ local function GetAuto(category, everything)
       end
       table.insert(searches, "")
       table.insert(searchLabels, groupPath)
-      table.insert(attachedItems, groups[groupPath] or {})
+      table.insert(attachedItems, groups[groupPath]) -- nil if no items
     end
   else
     error("automatic category type not supported")
