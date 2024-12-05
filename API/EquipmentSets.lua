@@ -122,6 +122,7 @@ if not addonTable.Constants.IsRetail then
           end
         end
       end
+      table.sort(equipmentSetNames)
 
       Baganator.API.RequestItemButtonsRefresh()
     end
