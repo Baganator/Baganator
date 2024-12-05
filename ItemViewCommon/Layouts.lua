@@ -1187,6 +1187,7 @@ function BaganatorLiveGuildLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetLiveGuildItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
+  self.layoutType = "live"
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
 
   self:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
@@ -1324,6 +1325,7 @@ function BaganatorLiveUnifiedGuildLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetLiveGuildItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
+  self.layoutType = "live"
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
 
   self:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
