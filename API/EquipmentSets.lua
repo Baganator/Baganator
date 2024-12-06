@@ -115,10 +115,12 @@ if not addonTable.Constants.IsRetail then
           table.insert(equipmentSetNames, name)
           local setInfo = {name = name, iconTexture = details.icon}
           for _, itemRef in pairs(details.equip) do
-            if itemRef ~= 0 and not equipmentSetInfo[itemRef] then
-              equipmentSetInfo[itemRef] = {}
+            if itemRef ~= 0 then
+              if not equipmentSetInfo[itemRef] then
+                equipmentSetInfo[itemRef] = {}
+              end
+              table.insert(equipmentSetInfo[itemRef], setInfo)
             end
-            table.insert(equipmentSetInfo[itemRef], setInfo)
           end
         end
       end
