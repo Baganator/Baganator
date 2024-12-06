@@ -107,6 +107,7 @@ if not addonTable.Constants.IsRetail then
   addonTable.Utilities.OnAddonLoaded("ItemRack", function()
     local equipmentSetInfo = {}
     local equipmentSetNames = {}
+    local bankOpen, updatePending = false, false
     local function ItemRackUpdated()
       equipmentSetInfo = {}
       equipmentSetNames = {}
@@ -125,6 +126,7 @@ if not addonTable.Constants.IsRetail then
         end
       end
       table.sort(equipmentSetNames)
+      updatePending = true
 
       Baganator.API.RequestItemButtonsRefresh()
     end
@@ -134,7 +136,6 @@ if not addonTable.Constants.IsRetail then
     ItemRack:RegisterExternalEventListener("ITEMRACK_SET_DELETED", ItemRackUpdated)
 
     local monitor = CreateFrame("Frame")
-    local bankOpen, updatePending = false, false
     local firstBankOpen = true
     monitor:RegisterEvent("BANKFRAME_OPENED")
     monitor:RegisterEvent("BANKFRAME_CLOSED")
