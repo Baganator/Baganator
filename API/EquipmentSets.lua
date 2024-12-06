@@ -115,7 +115,7 @@ if not addonTable.Constants.IsRetail then
           table.insert(equipmentSetNames, name)
           local setInfo = {name = name, iconTexture = details.icon}
           for _, itemRef in pairs(details.equip) do
-            if not equipmentSetInfo[itemRef] then
+            if itemRef ~= 0 and not equipmentSetInfo[itemRef] then
               equipmentSetInfo[itemRef] = {}
             end
             table.insert(equipmentSetInfo[itemRef], setInfo)
@@ -143,6 +143,10 @@ if not addonTable.Constants.IsRetail then
       else
         bankOpen = eventName == "BANKFRAME_OPENED"
         updatePending = true
+        if bankOpen and firstBankOpen then
+          firstBankOpen = false
+          Baganator.API.RequestItemButtonsRefresh()
+        end
       end
     end)
 
