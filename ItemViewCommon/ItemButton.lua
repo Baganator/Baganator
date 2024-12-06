@@ -1055,14 +1055,14 @@ end
 
 function BaganatorClassicLiveContainerItemButtonMixin:BGRUpdateQuests()
   local questInfo = C_Container.GetContainerItemQuestInfo(self:GetParent():GetID(), self:GetID());
-  self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questId
+  self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questID
 
   local questTexture = _G[self:GetName().."IconQuestTexture"];
 
-  if ( questInfo.questId and not questInfo.isActive ) then
+  if ( questInfo.questID and not questInfo.isActive ) then
     questTexture:SetTexture(TEXTURE_ITEM_QUEST_BANG);
     questTexture:Show();
-  elseif ( questInfo.questId or questInfo.isQuestItem ) then
+  elseif ( questInfo.questID or questInfo.isQuestItem ) then
     questTexture:SetTexture(TEXTURE_ITEM_QUEST_BORDER);
     questTexture:Show();
   else
