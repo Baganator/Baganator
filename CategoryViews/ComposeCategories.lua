@@ -100,9 +100,10 @@ local function GetAuto(category, everything)
       if groupPath:find("`") then
         groupPath = groupPath:match("`([^`]*)$")
       end
-      table.insert(searches, "")
-      table.insert(searchLabels, groupPath)
-      table.insert(attachedItems, groups[groupPath]) -- nil if no items
+      local index = #searches + 1
+      searches[index] = ""
+      searchLabels[index] = groupPath
+      attachedItems[index] = groups[groupPath] -- nil if no items
     end
   else
     error("automatic category type not supported")
