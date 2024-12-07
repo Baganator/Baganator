@@ -108,8 +108,7 @@ function BaganatorSplitViewBackpackViewMixin:UpdateForCharacter(character, isLiv
     self.CurrencyWidget:UpdateCurrencies(character)
   end
   ]]
-  self.Hotbar:SetPoint("BOTTOMRIGHT", UIParent, -50, 90)
-  self.Hotbar:SetWidth(200)
+  self.Hotbar:SetPoint("TOPLEFT", self.bags[1], "TOPRIGHT")
   self.Hotbar:UpdateAll()
 
   local maxY, minY, minX, maxX = 0, 0, 0, 0
@@ -121,12 +120,12 @@ function BaganatorSplitViewBackpackViewMixin:UpdateForCharacter(character, isLiv
       if prevB then
         b:SetPoint("BOTTOMRIGHT", prevB, "TOPRIGHT", 0, 20)
         if b:GetTop() >= (UIParent:GetTop() - 200) then
-          b:SetPoint("BOTTOM", self.Hotbar, "TOP", 0,  20)
+          b:SetPoint("BOTTOM", self.bags[1], "BOTTOM")
           b:SetPoint("RIGHT", prevB, "LEFT", -20, 0)
         end
         maxY = math.max(maxY, b:GetTop())
       else
-        b:SetPoint("BOTTOMRIGHT", self.Hotbar, "TOPRIGHT", 0,  20)
+        b:SetPoint("BOTTOMRIGHT", UIParent, -100, 90)
         maxY = b:GetTop()
         minY = b:GetBottom()
         maxX = b:GetRight()
@@ -135,15 +134,14 @@ function BaganatorSplitViewBackpackViewMixin:UpdateForCharacter(character, isLiv
     end
   end
   minX = prevB:GetLeft()
-  self.Hotbar:SetWidth(maxX - minX)
   self.Hotbar:UpdateAll()
   self.Hotbar:Show()
 
-  self:SetSize(maxX - minX + 20, maxY - minY + self.Hotbar:GetHeight() + 20)
+  self:SetSize(maxX - minX + self.Hotbar:GetWidth() + 20, maxY - minY + 20)
   self:ClearAllPoints()
   self:SetPoint("BOTTOMRIGHT", UIParent, -50, 90)
 
   if self.searchToApply then
-    self:ApplySearch(self.Hotbar.SearchWidget.SearchBox:GetText())
+    --self:ApplySearch(self.Hotbar.SearchWidget.SearchBox:GetText())
   end
 end
