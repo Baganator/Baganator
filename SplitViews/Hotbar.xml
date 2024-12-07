@@ -1,20 +1,30 @@
 <Ui>
-  <Frame name="BaganatorSplitViewHotbarTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" inherits="ButtonFrameTemplate" mixin="BaganatorSplitViewHotbarMixin">
+  <Frame name="BaganatorSplitViewHotbarTemplate" virtual="true" hidden="true" topLevel="true" enableMouse="true" mixin="BaganatorSplitViewHotbarMixin">
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
     </Scripts>
+    <KeyValues>
+      <KeyValue key="layoutType" value="TooltipDefaultLayout" type="string"/>
+    </KeyValues>
     <Frames>
-      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.CloseButton" relativePoint="LEFT"/>
-          <Anchor point="TOP" y="-1"/>
-        </Anchors>
+      <Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate"/>
+      <Button parentKey="ToggleBankButton" inherits="BaganatorBankButtonTemplate" frameLevel="700" parentArray="AllButtons">
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleBank()
+          </OnClick>
+        </Scripts>
       </Button>
-      <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.CustomiseButton" relativePoint="LEFT"/>
-        </Anchors>
+      <Button parentKey="ToggleGuildBankButton" inherits="BaganatorGuildBankButtonTemplate" frameLevel="700" parentArray="AllButtons">
+        <Scripts>
+          <OnClick>
+            self:GetParent():ToggleGuildBank()
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="AllButtons"/>
+      <Button parentKey="SortButton" inherits="BaganatorSortButtonTemplate" frameLevel="700" registerForClicks="LeftButtonUp,RightButtonUp" hidden="true" parentArray="AllButtons">
         <Scripts>
           <OnClick>
             self:GetParent():CombineStacksAndSort(button == "RightButton")
@@ -24,35 +34,19 @@
           </OnEnter>
         </Scripts>
       </Button>
-      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllFixedButtons">
-        <Anchors>
-          <Anchor point="RIGHT" relativeKey="$parent.SortButton" relativePoint="LEFT"/>
-        </Anchors>
+      <Button parentKey="TransferButton" inherits="BaganatorTransferButtonTemplate" frameLevel="700" parentArray="AllButtons">
         <Scripts>
           <OnClick>
             self:GetParent():Transfer()
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="ToggleBankButton" inherits="BaganatorBankButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleBank()
-          </OnClick>
-        </Scripts>
+      <Button parentKey="CustomiseButton" inherits="BaganatorCustomiseButtonTemplate" frameLevel="700" parentArray="AllButtons">
       </Button>
-      <Button parentKey="ToggleGuildBankButton" inherits="BaganatorGuildBankButtonTemplate" frameLevel="700" parentArray="TopButtons">
-        <Scripts>
-          <OnClick>
-            self:GetParent():ToggleGuildBank()
-          </OnClick>
-        </Scripts>
-      </Button>
-      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons"/>
-      <Button parentKey="CurrencyButton" inherits="BaganatorCurrencyButtonTemplate" frameLevel="700"/>
+      <Button parentKey="CurrencyButton" inherits="BaganatorCurrencyButtonTemplate" frameLevel="700" parentArray="AllButtons"/>
 
-      <Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
-      <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>
+      <!--<Frame parentKey="SearchWidget" inherits="BaganatorSearchWidgetTemplate"/>
+      <Frame parentKey="ButtonVisibility" inherits="BaganatorItemViewButtonVisibilityTemplate"/>-->
 
       <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
     </Frames>

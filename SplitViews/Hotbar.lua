@@ -3,9 +3,6 @@ local _, addonTable = ...
 BaganatorSplitViewHotbarMixin = {}
 
 function BaganatorSplitViewHotbarMixin:OnLoad()
-  ButtonFrameTemplate_HidePortrait(self)
-  ButtonFrameTemplate_HideButtonBar(self)
-  self.Inset:Hide()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
   self:SetClampedToScreen(true)
@@ -39,25 +36,12 @@ function BaganatorSplitViewHotbarMixin:OnLoad()
   end)
 
   if addonTable.Constants.IsEra then
-    local index = tIndexOf(self.TopButtons, self.ToggleGuildBankButton)
-    table.remove(self.TopButtons, index)
+    local index = tIndexOf(self.AllButtons, self.ToggleGuildBankButton)
+    table.remove(self.AllButtons, index)
     self.ToggleGuildBankButton:Hide()
   end
 
-  for index = 2, #self.TopButtons do
-    local button = self.TopButtons[index]
-    button:SetPoint("TOPLEFT", self.TopButtons[index-1], "TOPRIGHT")
-  end
-
-  self.TopButtons[1]:ClearAllPoints()
-  self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset + 2, -1)
-
-  addonTable.Skins.AddFrame("ButtonFrame", self, {"backpack"})
-
-  self.AllButtons = {}
-  tAppendAll(self.AllButtons, self.AllFixedButtons)
-  tAppendAll(self.AllButtons, self.TopButtons)
-  table.insert(self.AllButtons, self.CurrencyButton)
+  addonTable.Skins.AddFrame("ButtonFrame", self)
 end
 
 function BaganatorSplitViewHotbarMixin:OnShow()
@@ -85,13 +69,6 @@ function BaganatorSplitViewHotbarMixin:UpdateTransferButton()
     return
   end
 
-  self.TransferButton:ClearAllPoints()
-  if self.SortButton:IsShown() then
-    self.TransferButton:SetPoint("RIGHT", self.SortButton, "LEFT")
-  else
-    self.TransferButton:SetPoint("RIGHT", self.CustomiseButton, "LEFT")
-  end
-
   for _, info in ipairs(addonTable.BagTransfers) do
     if info.condition() then
       self.TransferButton:Show()
@@ -107,26 +84,38 @@ function BaganatorSplitViewHotbarMixin:IsTransferActive()
 end
 
 function BaganatorSplitViewHotbarMixin:UpdateAll()
-  addonTable.Utilities.ApplyVisuals(self)
-
   self.SortButton:SetShown(addonTable.Utilities.ShouldShowSortButton() and self:GetParent().isLive)
   self:UpdateTransferButton()
 
-  if self.CurrencyWidget.lastCharacter ~= self:GetParent().lastCharacter then
+  local prev = nil
+  local count = 0
+  for _, button in ipairs(self.AllButtons) do
+    if button:IsShown() then
+      count = count + 1
+      button:ClearAllPoints()
+      if not prev then
+        button:SetPoint("TOP", self, 0, -5)
+      else
+        button:SetPoint("TOP", prev, "BOTTOM")
+      end
+      prev = button
+    end
+  end
+
+  self:SetSize(prev:GetWidth() + 10, prev:GetHeight() * count + 10)
+
+  --[[if self.CurrencyWidget.lastCharacter ~= self:GetParent().lastCharacter then
     self.CurrencyWidget:UpdateCurrencies(self:GetParent().lastCharacter)
   end
 
-  self.CurrencyWidget:UpdateCurrencyTextPositions(self:GetWidth() - 20 - self.CurrencyButton:GetWidth())
+  self.CurrencyWidget:UpdateCurrencyTextPositions(self:GetWidth() - 20 - self.CurrencyButton:GetWidth())]]
 end
 
 function BaganatorSplitViewHotbarMixin:OnFinished()
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  self.SearchWidget:SetSpacing(sideSpacing)
-  self.CurrencyButton:SetPoint("BOTTOMLEFT", addonTable.Constants.ButtonFrameOffset + 2, 6)
-  self:SetHeight(74 + topSpacing / 2 + self.CurrencyWidget:GetExtraHeight())
+  --self.SearchWidget:SetSpacing(sideSpacing)
 
-  self.ButtonVisibility:Update()
   self:UpdateGuildButton()
 end
 
