@@ -41,9 +41,11 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("VoidCacheUpdate", Update)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if self.lastCharacter then
-      self:UpdateCurrencies(self.lastCharacter)
-      self:UpdateCurrencyTextPositions(self.allowedWidth)
+    if settingName == addonTable.Config.Options.CURRENCIES_TRACKED then
+      if self.lastCharacter then
+        self:UpdateCurrencies(self.lastCharacter)
+        self:UpdateCurrencyTextPositions(self.allowedWidth)
+      end
     end
   end)
 
