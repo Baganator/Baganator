@@ -352,6 +352,7 @@ L["BLIZZARD"] = "Blizzard"
 L["DARK"] = "Dark"
 L["GW2_UI"] = "GW2 UI"
 L["ELVUI"] = "ElvUI"
+L["NDUI"] = "NDui"
 
 L["REMOVE_BORDERS"] = "Remove borders"
 L["HIDE_ICON_BACKGROUNDS"] = "Hide icon backgrounds"
