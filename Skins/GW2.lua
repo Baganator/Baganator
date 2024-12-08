@@ -149,9 +149,12 @@ local function SetupIconButton(button, texture)
 end
 
 local skinners = {
-  ItemButton = function(frame)
+  ItemButton = function(frame, tags)
     frame.bgrGW2SkinHooked = true
-    frame.SlotBackground:SetParent(GW.HiddenFrame)
+    if not tags.containerbag then
+      frame.SlotBackground:SetParent(GW.HiddenFrame)
+    end
+    frame.SlotBackground:SetTexCoord(0.07, 0.93, 0.07, 0.93)
     -- Fix for GW2 assuming named frames have a named cooldown
     if frame:GetName() and not _G[frame:GetName().."Cooldown"] then
       CreateFrame("Cooldown", frame:GetName().."Cooldown", frame)

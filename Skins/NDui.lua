@@ -27,8 +27,10 @@ end)
 local hidden = CreateFrame("Frame")
 hidden:Hide()
 local skinners = {
-  ItemButton = function(button)
-    button.SlotBackground:SetParent(hidden)
+  ItemButton = function(button, tags)
+    if not tags.containerbag then
+      button.SlotBackground:SetParent(hidden)
+    end
     button:SetNormalTexture(0)
     button:SetPushedTexture(0)
     if button.Background then button.Background:SetAlpha(0) end
@@ -36,6 +38,7 @@ local skinners = {
     button.searchOverlay:SetOutside()
 
     button.icon:SetTexCoord(unpack(DB.TexCoord))
+    button.SlotBackground:SetTexCoord(unpack(DB.TexCoord))
     button.backdrop = B.CreateBDFrame(button.icon, .25)
     B.ReskinIconBorder(button.IconBorder)
     button.backdrop:SetBackdropColor(.3,.3,.3,.3)
@@ -139,5 +142,5 @@ local function LoadSkin()
 end
 
 if (select(4, C_AddOns.GetAddOnInfo("NDui"))) then
-  addonTable.Skins.RegisterSkin(BAGANATOR_L_NDUI, "ndui", LoadSkin, SkinFrame, {}, true)
+  addonTable.Skins.RegisterSkin(BAGANATOR_L_NDUI, "ndui", LoadSkin, SkinFrame, SetConstants, {}, true)
 end

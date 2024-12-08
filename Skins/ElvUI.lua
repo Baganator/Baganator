@@ -31,9 +31,12 @@ end)
 local hidden = CreateFrame("Frame")
 hidden:Hide()
 local skinners = {
-  ItemButton = function(frame)
+  ItemButton = function(frame, tags)
     frame.bgrElvUISkin = true
-    frame.SlotBackground:SetParent(hidden)
+    if not tags.containerbag then
+      frame.SlotBackground:SetParent(hidden)
+    end
+    frame.SlotBackground:SetTexCoord(unpack(E.TexCoords))
     S:HandleItemButton(frame, true)
     S:HandleIconBorder(frame.IconBorder)
     if frame.SetItemButtonTexture then

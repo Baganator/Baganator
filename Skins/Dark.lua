@@ -184,13 +184,15 @@ local function StyleButton(button)
 end
 
 local skinners = {
-  ItemButton = function(frame)
+  ItemButton = function(frame, tags)
     frame.bgrSimpleHooked = true
     local r, g, b = Lighten(color.r, color.g, color.b, -0.2)
-    frame.SlotBackground:SetColorTexture(r, g, b, 0.3)
-    frame.SlotBackground:SetPoint("CENTER")
-    frame.SlotBackground:SetSize(35, 35)
-    table.insert(toColor.textures, {texture = frame.SlotBackground, alpha = 0.3, lightened = -0.2})
+    if not tags.containerbag then
+      frame.SlotBackground:SetColorTexture(r, g, b, 0.3)
+      frame.SlotBackground:SetPoint("CENTER")
+      frame.SlotBackground:SetSize(35, 35)
+      table.insert(toColor.textures, {texture = frame.SlotBackground, alpha = 0.3, lightened = -0.2})
+    end
     if frame.SetItemButtonQuality then
       hooksecurefunc(frame, "SetItemButtonQuality", ItemButtonQualityHook)
     end
