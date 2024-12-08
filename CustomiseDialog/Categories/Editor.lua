@@ -106,7 +106,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
     self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
     self.Blocker:SetPoint("BOTTOMRIGHT", self.CategorySearch)
-    self.DeleteButton:Enable()
+    self.DeleteButton:SetEnabled(tIndexOf(addonTable.CategoryViews.Constants.ProtectedCategories, value) == nil)
 
     if value == "" then
       self.currentCategory = "-1"
