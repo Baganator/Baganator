@@ -127,6 +127,8 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset + 2, -1)
 
   addonTable.Skins.AddFrame("ButtonFrame", self, {"backpack"})
+
+  self:SetLiveCharacter(Syndicator.API.GetCurrentCharacter())
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnShow()
@@ -144,6 +146,9 @@ end
 
 function BaganatorItemViewCommonBackpackViewMixin:SetLiveCharacter(character)
   self.liveCharacter = character
+  if self.lastCharacter == nil then
+    self.lastCharacter = self.liveCharacter
+  end
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnDragStart()
