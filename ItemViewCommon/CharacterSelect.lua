@@ -30,14 +30,6 @@ function BaganatorCharacterSelectMixin:OnLoad()
   addonTable.Skins.AddFrame("ButtonFrame", self)
   addonTable.Skins.AddFrame("Button", self.ManageCharactersButton)
 
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
-
   self:SetTitle(BAGANATOR_L_ALL_CHARACTERS)
 
   local function UpdateForSelection(frame)
@@ -131,7 +123,6 @@ function BaganatorCharacterSelectMixin:UpdateList()
 end
 
 function BaganatorCharacterSelectMixin:OnShow()
-  addonTable.Utilities.ApplyVisuals(self)
   self:UpdateList()
 end
 

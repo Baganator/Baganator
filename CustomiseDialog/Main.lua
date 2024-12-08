@@ -146,27 +146,6 @@ local LAYOUT_OPTIONS = {
 }
 
 local THEME_OPTIONS = {
-  {
-    type = "slider",
-    min = 1,
-    max = 100,
-    lowText = "0%",
-    highText = "100%",
-    scale = 100,
-    text = BAGANATOR_L_TRANSPARENCY,
-    valuePattern = BAGANATOR_L_PERCENTAGE_PATTERN,
-    option = "view_alpha",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_REMOVE_BORDERS,
-    option = "no_frame_borders",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_HIDE_ICON_BACKGROUNDS,
-    option = "empty_slot_background",
-  },
 }
 
 local ICON_OPTIONS = {
@@ -223,79 +202,67 @@ local OPEN_CLOSE_OPTIONS = {
   {
     type = "checkbox",
     text = BAGANATOR_L_BANK,
-    option = "bank",
-    root = "auto_open",
+    option = "auto_open.bank",
   },
   {
     type = "checkbox",
     text = GUILD_BANK,
-    option = "guild_bank",
-    root = "auto_open",
+    option = "auto_open.guild_bank",
     check = NotIsEraCheck,
   },
   {
     type = "checkbox",
     text = TRADE,
-    option = "trade_partner",
-    root = "auto_open",
+    option = "auto_open.trade_partner",
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_CRAFTING_WINDOW,
-    option = "tradeskill",
-    root = "auto_open",
+    option = "auto_open.tradeskill",
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_AUCTION_HOUSE,
-    option = "auction_house",
-    root = "auto_open",
+    option = "auto_open.auction_house",
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_VOID_STORAGE,
-    option = "void_storage",
-    root = "auto_open",
+    option = "auto_open.void_storage",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_MAIL,
-    option = "mail",
-    root = "auto_open",
+    option = "auto_open.mail",
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_VENDOR,
-    option = "merchant",
-    root = "auto_open",
+    option = "auto_open.merchant",
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_SOCKET_INTERFACE,
-    option = "sockets",
-    root = "auto_open",
+    option = "auto_open.sockets",
     check = NotIsEraCheck,
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_SCRAPPING_MACHINE,
-    option = "scrapping_machine",
-    root = "auto_open",
+    option = "auto_open.scrapping_machine",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_FORGE_OF_BONDS,
-    option = "forge_of_bonds",
-    root = "auto_open",
+    option = "auto_open.forge_of_bonds",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_CHARACTER_PANEL,
-    option = "character_panel",
-    root = "auto_open",
+    option = "auto_open.character_panel",
   },
 }
 local SORTING_OPTIONS = {
@@ -674,8 +641,8 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
         header = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\Transfer.png", 64, 64, 13, 13, 0, 1, 0, 1) .. " " .. BAGANATOR_L_TRANSFER,
         text = BAGANATOR_L_TIPS_TRANSFER,
       }, {
-        header = BAGANATOR_L_SKINS,
-        text = BAGANATOR_L_TIPS_SKINS_2,
+        header = BAGANATOR_L_THEMES,
+        text = BAGANATOR_L_TIPS_THEMES,
       }),
     }
     for _, row in ipairs(tipsRows) do
@@ -797,7 +764,7 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
     itemButton = CreateFrame("Button", nil, frame, "ItemButtonTemplate")
   end
   itemButton:SetPoint("CENTER", cornersEditor, 0, 0)
-  addonTable.Skins.AddFrame("ItemButton", itemButton)
+  --addonTable.Skins.AddFrame("ItemButton", itemButton)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
@@ -820,7 +787,9 @@ function BaganatorCustomiseDialogMixin:SetupOpenClose()
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(addonTable.Config.Get(addonTable.Config.Options.AUTO_OPEN)[frame.option])
+      if frame.SetValue then
+        frame:SetValue(addonTable.Config.Get(frame.option))
+      end
     end
   end)
 
@@ -874,7 +843,9 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(addonTable.Config.Get(frame.option))
+      if frame.SetValue then
+        frame:SetValue(addonTable.Config.Get(frame.option))
+      end
     end
   end)
 
@@ -891,7 +862,9 @@ function BaganatorCustomiseDialogMixin:SetupLayout()
 
   local function UpdateValues()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(addonTable.Config.Get(frame.option))
+      if frame.SetValue then
+        frame:SetValue(addonTable.Config.Get(frame.option))
+      end
     end
   end
 
@@ -929,11 +902,13 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
 
   local frame = GetWrapperFrame(self)
 
-  local allFrames = GenerateFrames(THEME_OPTIONS, frame)
+  local allFrames = GenerateFrames(addonTable.Skins.currentOptions, frame)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
-      frame:SetValue(addonTable.Config.Get(frame.option))
+      if frame.SetValue then
+        frame:SetValue(addonTable.Config.Get(frame.option))
+      end
     end
   end)
 

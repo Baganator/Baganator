@@ -106,9 +106,6 @@ function BaganatorHeaderMixin:Init(details)
   self.Label:SetText(details.text);
 end
 
-function BaganatorHeaderMixin:SetValue(value)
-end
-
 function addonTable.CustomiseDialog.GetDraggable(callback, movedCallback)
   local frame = CreateFrame("Frame", nil, UIParent)
   frame:SetSize(80, 20)
@@ -253,6 +250,7 @@ function addonTable.CustomiseDialog.GetBasicDropdown(parent)
   frame:SetPoint("LEFT", 30, 0)
   frame:SetPoint("RIGHT", -30, 0)
   frame.Init = function(_, option)
+    frame.option = option.option
     label:SetText(option.text)
     local entries = {}
     for index = 1, #option.entries do

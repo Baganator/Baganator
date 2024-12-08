@@ -86,6 +86,10 @@ addonTable.Config.Options = {
   CATEGORY_GROUP_EMPTY_SLOTS = "category_group_empty_slots",
   RECENT_TIMEOUT = "recent_timeout",
   ADD_TO_CATEGORY_BUTTONS = "add_to_category_buttons_2",
+
+  SKINS = "skins",
+  DISABLED_SKINS = "disabled_skins",
+  CURRENT_SKIN = "current_skin",
 }
 
 addonTable.Config.Defaults = {
@@ -187,6 +191,9 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS] = true,
   [addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS] = "drag",
   [addonTable.Config.Options.RECENT_TIMEOUT] = 15,
+  [addonTable.Config.Options.SKINS] = {},
+  [addonTable.Config.Options.DISABLED_SKINS] = {},
+  [addonTable.Config.Options.CURRENT_SKIN] = "blizzard",
 }
 
 addonTable.Config.IsCharacterSpecific = {
@@ -196,14 +203,9 @@ addonTable.Config.IsCharacterSpecific = {
   [addonTable.Config.Options.CURRENCIES_TRACKED_IMPORTED] = true,
 }
 
-addonTable.Config.VisualsFrameOnlySettings = {
-  addonTable.Config.Options.VIEW_ALPHA,
-  addonTable.Config.Options.NO_FRAME_BORDERS,
-}
-
 addonTable.Config.ItemButtonsRelayoutSettings = {
   addonTable.Config.Options.BAG_ICON_SIZE,
-  addonTable.Config.Options.EMPTY_SLOT_BACKGROUND,
+  --addonTable.Config.Options.EMPTY_SLOT_BACKGROUND, -- now done by theme
   addonTable.Config.Options.BAG_VIEW_WIDTH,
   addonTable.Config.Options.BANK_VIEW_WIDTH,
   addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH,
@@ -243,11 +245,12 @@ function addonTable.Config.Create(constant, name, defaultValue)
 end
 
 function addonTable.Config.Set(name, value)
+  local tree = {strsplit(".", name)}
   if BAGANATOR_CONFIG == nil then
     error("JOURNALATOR_CONFIG not initialized")
-  elseif not addonTable.Config.IsValidOption(name) then
+  elseif not addonTable.Config.IsValidOption(tree[1]) then
     error("Invalid option '" .. name .. "'")
-  else
+  elseif #tree == 1 then
     local oldValue
     if addonTable.Config.IsCharacterSpecific[name] then
       local characterName = Syndicator.API.GetCurrentCharacter()
@@ -261,15 +264,59 @@ function addonTable.Config.Set(name, value)
       addonTable.CallbackRegistry:TriggerEvent("SettingChangedEarly", name)
       addonTable.CallbackRegistry:TriggerEvent("SettingChanged", name)
     end
+  else
+    local root = BAGANATOR_CONFIG
+    for i = 1, #tree - 1 do
+      root = root[tree[i]]
+      if type(root) ~= "table" then
+        error("Invalid option '" .. name .. "', broke at [" .. i .. "]")
+      end
+    end
+    local tail = tree[#tree]
+    if root[tail] == nil then
+      error("Invalid option '" .. name .. "', broke at [tail]")
+    end
+    local oldValue = root[tail]
+    root[tail] = value
+    if value ~= oldValue then
+      addonTable.CallbackRegistry:TriggerEvent("SettingChangedEarly", name)
+      addonTable.CallbackRegistry:TriggerEvent("SettingChanged", name)
+    end
+  end
+end
+
+function addonTable.Config.Install(name, defaultValue)
+  if BAGANATOR_CONFIG == nil then
+    error("BAGANATOR_CONFIG not initialized")
+  elseif name:find("%.") == nil then
+    if BAGANATOR_CONFIG[name] == nil then
+      BAGANATOR_CONFIG[name] = defaultValue
+    end
+  else
+    local tree = {strsplit(".", name)}
+    local root = BAGANATOR_CONFIG
+    for i = 1, #tree - 1 do
+      if not root[tree[i]] then
+        root[tree[i]] = {}
+      end
+      root = root[tree[i]]
+    end
+    if root[tree[#tree]] == nil then
+      root[tree[#tree]] = defaultValue
+    end
   end
 end
 
 function addonTable.Config.ResetOne(name)
   local newValue = addonTable.Config.Defaults[name]
-  if type(newValue) == "table" then
-    newValue = CopyTable(newValue)
+  if newValue == nil then
+    error("Can't reset that", name)
+  else
+    if type(newValue) == "table" then
+      newValue = CopyTable(newValue)
+    end
+    addonTable.Config.Set(name, newValue)
   end
-  addonTable.Config.Set(name, newValue)
 end
 
 function addonTable.Config.Reset()
@@ -305,14 +352,26 @@ function addonTable.Config.Get(name, characterName)
   -- This is ONLY if a config is asked for before variables are loaded
   if BAGANATOR_CONFIG == nil then
     return addonTable.Config.Defaults[name]
-  elseif addonTable.Config.IsCharacterSpecific[name] then
-    local value = BAGANATOR_CONFIG[name][characterName or Syndicator.API.GetCurrentCharacter()]
-    if value == nil then
-      return addonTable.Config.Defaults[name]
+  elseif name:find("%.") == nil then
+    if addonTable.Config.IsCharacterSpecific[name] then
+      local value = BAGANATOR_CONFIG[name][characterName or Syndicator.API.GetCurrentCharacter()]
+      if value == nil then
+        return addonTable.Config.Defaults[name]
+      else
+        return value
+      end
     else
-      return value
+      return BAGANATOR_CONFIG[name]
     end
   else
-    return BAGANATOR_CONFIG[name]
+    local tree = {strsplit(".", name)}
+    local root = BAGANATOR_CONFIG
+    for i = 1, #tree do
+      root = root[tree[i]]
+      if root == nil then
+        break
+      end
+    end
+    return root
   end
 end

@@ -129,7 +129,7 @@ function addonTable.Core.RunAnalytics()
   end)
 
   do
-    local sortMethod = addonTable.Config.Get(addonTable.Config.SORT_METHOD)
+    local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
     local possibleSortMethods = {
       "type",
       "quality",

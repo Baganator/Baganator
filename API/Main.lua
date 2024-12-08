@@ -277,11 +277,18 @@ function Baganator.API.Skins.GetAllFrames()
 end
 
 function Baganator.API.Skins.RegisterListener(callback)
-  if not addonTable.Skins.skinListeners then
-    addonTable.Skins.skinListeners = {}
-  end
   table.insert(addonTable.Skins.skinListeners, callback)
   if addonTable.WagoAnalytics then
-    addonTable.WagoAnalytics:Switch("UsingSkin", true)
+    addonTable.WagoAnalytics:Switch("UsingSkinRaw", true)
+  end
+end
+
+local blockedSkins = {
+  "Baganator-ElvUI", "Baganator-GW2UI", "Baganator-NDui", "Baganator-Simple"
+}
+for _, skin in ipairs(blockedSkins) do
+  if C_AddOns.DoesAddOnExist(skin) then
+    addonTable.Utilities.Message("You have a legacy skin. Please remove " .. RED_FONT_COLOR:WrapTextInColorCode(skin) .. " it is no longer needed - the skin is included with the Baganator package")
+    C_AddOns.DisableAddOn(skin)
   end
 end

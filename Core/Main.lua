@@ -54,6 +54,8 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
 
   addonTable.CustomiseDialog.Initialize()
 
+  addonTable.Skins.Initialize()
+
   if addonTable.Config.Get(addonTable.Config.Options.SEEN_WELCOME) < 1 then
     addonTable.Config.Set(addonTable.Config.Options.SEEN_WELCOME, 1)
     addonTable.ShowWelcome()

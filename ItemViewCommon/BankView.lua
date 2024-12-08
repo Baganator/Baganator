@@ -27,14 +27,6 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
     self.hasCharacter = true
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsShown() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
-
   self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK,
@@ -196,8 +188,6 @@ function BaganatorItemViewCommonBankViewMixin:UpdateView()
   if Syndicator.Constants.WarbandBankActive and not C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.AccountBanker) then
     self.Tabs[1]:Show()
   end
-
-  addonTable.Utilities.ApplyVisuals(self)
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 

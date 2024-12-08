@@ -1,6 +1,7 @@
 <Ui>
   <ItemButton name="BaganatorRetailCachedItemButtonTemplate" virtual="true" mixin="BaganatorRetailCachedItemButtonMixin">
     <Scripts>
+      <OnLoad method="OnLoad"/>
       <OnClick method="OnClick"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
@@ -37,6 +38,7 @@
 
   <Button name="BaganatorClassicCachedItemButtonTemplate" virtual="true" inherits="ItemButtonTemplate" mixin="BaganatorClassicCachedItemButtonMixin">
     <Scripts>
+      <OnLoad method="OnLoad"/>
       <OnClick method="OnClick"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>

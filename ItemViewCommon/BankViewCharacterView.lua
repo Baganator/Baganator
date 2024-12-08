@@ -60,8 +60,6 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
 
   addonTable.Skins.AddFrame("Button", self.DepositIntoReagentsBankButton)
   addonTable.Skins.AddFrame("Button", self.BuyReagentBankButton)
-
-  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
 end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:ToggleBagSlots()
@@ -194,6 +192,8 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   if self.CurrencyWidget.lastCharacter ~= self.lastCharacter then
     self.CurrencyWidget:UpdateCurrencies(character)
   end
+
+  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
 
   self:SetupBlizzardFramesForTab()
 end

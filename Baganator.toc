@@ -25,7 +25,12 @@ Core\Welcome.lua
 Core\Analytics.lua
 Core\Main.lua
 
-Skins.lua
+Skins\Main.lua
+Skins\Default.lua
+Skins\Dark.lua
+Skins\ElvUI.lua
+Skins\GW2.lua
+Skins\NDui.lua
 
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua

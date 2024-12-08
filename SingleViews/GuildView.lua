@@ -66,11 +66,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     if not self.lastGuild then
       return
     end
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    elseif tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+    if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -435,7 +431,6 @@ end
 
 function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   guild = guild or ""
-  addonTable.Utilities.ApplyVisuals(self)
 
   local guildWidth = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_WIDTH)
 
@@ -661,18 +656,9 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
 
   addonTable.Skins.AddFrame("ButtonFrame", self)
   addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
-
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
 end
 
 function BaganatorGuildLogsTemplateMixin:OnShow()
-  addonTable.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
   local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
@@ -807,18 +793,9 @@ function BaganatorGuildTabTextTemplateMixin:OnLoad()
 
   addonTable.Skins.AddFrame("EditBox", self.TextContainer:GetEditBox())
   addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
-
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnShow()
-  addonTable.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
   local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
