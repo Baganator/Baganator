@@ -150,6 +150,7 @@ end
 
 local skinners = {
   ItemButton = function(frame)
+    frame.bgrGW2SkinHooked = true
     frame.SlotBackground:SetParent(GW.HiddenFrame)
     -- Fix for GW2 assuming named frames have a named cooldown
     if frame:GetName() and not _G[frame:GetName().."Cooldown"] then
@@ -370,7 +371,11 @@ local function LoadSkin()
   if C_AddOns.IsAddOnLoaded("Masque") then
     skinners.ItemButton = function() end
   else
-    hooksecurefunc("SetItemButtonQuality", GW.SetBagItemButtonQualitySkin)
+    hooksecurefunc("SetItemButtonQuality", function(button, ...)
+      if button.bgrGW2SkinHooked then
+        GW.SetBagItemButtonQualitySkin(button, ...)
+      end
+    end)
   end
 
   for _, details in ipairs(addonTable.Skins.GetAllFrames()) do

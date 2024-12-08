@@ -292,6 +292,6 @@ addonTable.Skins.RegisterSkin(BAGANATOR_L_DARK, "dark", LoadSkin, SkinFrame, Set
     text = BAGANATOR_L_SQUARE_ICONS,
     rightText = BAGANATOR_L_RELOAD_REQUIRED,
     option = "square_icons",
-    default = true,
+    default = false,
   },
 })
