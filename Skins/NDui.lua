@@ -16,10 +16,10 @@ frame:RegisterEvent("UI_SCALE_CHANGED")
 frame:SetScript("OnEvent", function()
   C_Timer.After(0, function()
     for _, frame in ipairs(icons) do
-      local c1, c2, c3, c4 = frame.backdrop:GetBackdropBorderColor()
-      frame.backdrop:SetIgnoreParentScale(true)
-      frame.backdrop:SetScale(UIParent:GetScale())
-      frame.backdrop:SetBackdropBorderColor(c1, c2, c3, c4)
+      local c1, c2, c3, c4 = frame.bg:GetBackdropBorderColor()
+      frame.bg:SetIgnoreParentScale(true)
+      frame.bg:SetScale(UIParent:GetScale())
+      frame.bg:SetBackdropBorderColor(c1, c2, c3, c4)
     end
   end)
 end)
@@ -39,9 +39,9 @@ local skinners = {
 
     button.icon:SetTexCoord(unpack(DB.TexCoord))
     button.SlotBackground:SetTexCoord(unpack(DB.TexCoord))
-    button.backdrop = B.CreateBDFrame(button.icon, .25)
+    button.bg = B.CreateBDFrame(button.icon, .25)
     B.ReskinIconBorder(button.IconBorder)
-    button.backdrop:SetBackdropColor(.3,.3,.3,.3)
+    button.bg:SetBackdropColor(.3,.3,.3,.3)
 
     local questTexture = button.IconQuestTexture
     if questTexture then
@@ -54,8 +54,8 @@ local skinners = {
       hl:SetColorTexture(1, .8, 0, .5)
     end
     table.insert(icons, button)
-    button.backdrop:SetIgnoreParentScale(true)
-    button.backdrop:SetScale(UIParent:GetScale())
+    button.bg:SetIgnoreParentScale(true)
+    button.bg:SetScale(UIParent:GetScale())
   end,
   IconButton = function(frame)
     B.Reskin(frame)
