@@ -57,13 +57,13 @@ local function SetupBackpackHooks()
     UpdateBackpackButtons()
   end
 
-  addonTable.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
+  addonTable.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName, isLive)
     characterName = characterName or Syndicator.API.GetCurrentCharacter()
     if not characterName then
       return
     end
     backpackView:Show()
-    backpackView:UpdateForCharacter(characterName, characterName == backpackView.liveCharacter)
+    backpackView:UpdateForCharacter(characterName, characterName == Syndicator.API.GetCurrentCharacter())
     UpdateBackpackButtons()
   end)
 

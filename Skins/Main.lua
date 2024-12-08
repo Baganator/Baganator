@@ -50,7 +50,7 @@ function addonTable.Skins.Initialize()
         end
       end
       local bagsShown = addonTable.ViewManagement.GetBackpackFrame():IsShown()
-      local lastCharacter = addonTable.ViewManagement.GetBackpackFrame().lastCharacter
+      local lastCharacter, isLive = addonTable.ViewManagement.GetBackpackFrame().lastCharacter, addonTable.ViewManagement.GetBackpackFrame().isLive
       currentSkin = addonTable.Skins.availableSkins[addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)]
       currentSkinner = currentSkin.skinner
       currentSkin.constants()

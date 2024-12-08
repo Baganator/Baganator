@@ -214,6 +214,7 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   parent.backgroundButton:ClearNormalTexture()
   parent.backgroundButton:ClearDisabledTexture()
   parent.backgroundButton:ClearPushedTexture()
+  parent.backgroundButton.SlotBackground:Hide()
   for _, child in ipairs({parent.backgroundButton:GetRegions()}) do
     child:Hide()
   end
