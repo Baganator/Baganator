@@ -61,16 +61,23 @@ local function ConvertTags(tags)
   return res
 end
 
-local function LoadSkin()
-  local function SkinFrame(details)
-    local func = skinners[details.regionType]
-    if func then
-      func(details.region, details.tags and ConvertTags(details.tags) or {})
-    end
+local function SkinFrame(details)
+  local func = skinners[details.regionType]
+  if func then
+    func(details.region, details.tags and ConvertTags(details.tags) or {})
   end
+end
 
-  addonTable.Skins.RegisterListener(SkinFrame)
+local function SetConstants()
+  if addonTable.Constants.IsRetail then
+    addonTable.Constants.ButtonFrameOffset = 6
+  end
+  if addonTable.Constants.IsClassic then
+    addonTable.Constants.ButtonFrameOffset = 0
+  end
+end
 
+local function LoadSkin()
   for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
     SkinFrame(details)
   end
@@ -94,7 +101,7 @@ local function LoadSkin()
   end)
 end
 
-addonTable.Skins.RegisterSkin(BAGANATOR_L_BLIZZARD, "blizzard", LoadSkin, {
+addonTable.Skins.RegisterSkin(BAGANATOR_L_BLIZZARD, "blizzard", LoadSkin, SkinFrame, SetConstants, {
   {
     type = "slider",
     min = 0,

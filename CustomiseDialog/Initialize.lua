@@ -1,20 +1,29 @@
 local addonName, addonTable = ...
 
 function addonTable.CustomiseDialog.Initialize()
-  local customiseDialog
+  local customiseDialog = {}
 
   addonTable.CallbackRegistry:RegisterCallback("ShowCustomise", function()
-    if not customiseDialog then
-      customiseDialog = CreateFrame("Frame", "BaganatorCustomiseDialogFrame", UIParent, "BaganatorCustomiseDialogTemplate")
-      customiseDialog:SetPoint("CENTER")
-      table.insert(UISpecialFrames, customiseDialog:GetName())
+    local currentSkin = addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
+    if not customiseDialog[currentSkin] then
+      customiseDialog[currentSkin] = CreateFrame("Frame", "BaganatorCustomiseDialogFrame" .. currentSkin, UIParent, "BaganatorCustomiseDialogTemplate")
+      customiseDialog[currentSkin]:SetPoint("CENTER")
+      table.insert(UISpecialFrames, customiseDialog[currentSkin]:GetName())
+      customiseDialog[currentSkin].CloseButton:SetScript("OnClick", function()
+        customiseDialog[currentSkin]:Hide()
+      end)
     end
-    customiseDialog.CloseButton:SetScript("OnClick", function()
-      customiseDialog:Hide()
-    end)
-    customiseDialog:RefreshOptions()
-    customiseDialog:SetShown(not customiseDialog:IsShown())
-    customiseDialog:Raise()
+    for key, dialog in pairs(customiseDialog) do
+      if key ~= currentSkin and dialog:IsShown() then
+        dialog:Hide()
+        customiseDialog[currentSkin]:Hide()
+        customiseDialog[currentSkin]:SetIndex(customiseDialog[key].lastIndex)
+      end
+    end
+
+    customiseDialog[currentSkin]:RefreshOptions()
+    customiseDialog[currentSkin]:SetShown(not customiseDialog[currentSkin]:IsShown())
+    customiseDialog[currentSkin]:Raise()
   end)
 
   -- Create shortcut to open Baganator options from the Bliizzard addon options

@@ -16,13 +16,6 @@ Baganator.Constants = {
   IsClassic = addonTable.Constants.IsClassic,
 }
 
-if addonTable.Constants.IsRetail then
-  addonTable.Constants.ButtonFrameOffset = 6
-end
-if addonTable.Constants.IsClassic then
-  addonTable.Constants.ButtonFrameOffset = 0
-end
-
 addonTable.Constants.Events = {
   "SettingChangedEarly",
   "SettingChanged",
@@ -78,6 +71,8 @@ addonTable.Constants.Events = {
   "TransferCancel",
 
   "PropagateAlt",
+
+  "FrameGroupSwapped",
 }
 
 addonTable.Constants.SortStatus = {

@@ -2,14 +2,13 @@ local _, addonTable = ...
 
 addonTable.Skins.allFrames = {}
 addonTable.Skins.availableSkins = {}
-addonTable.Skins.currentOptions = {}
 addonTable.Skins.skinListeners = {}
+
+local currentSkinner = function() end
 
 function addonTable.Skins.Initialize()
   local autoEnabled = nil
-  local chooseSkinValues = {}
   for key, skin in pairs(addonTable.Skins.availableSkins) do
-    table.insert(chooseSkinValues, skin.key)
     for _, opt in ipairs(skin.options) do
       addonTable.Config.Install("skins." .. key .. "." .. opt.option, opt.default)
     end
@@ -21,20 +20,6 @@ function addonTable.Skins.Initialize()
     addonTable.Config.Set(addonTable.Config.Options.CURRENT_SKIN, autoEnabled)
   end
 
-  table.sort(chooseSkinValues)
-  local chooseSkinEntries = {}
-  for _, key in ipairs(chooseSkinValues) do
-    table.insert(chooseSkinEntries, addonTable.Skins.availableSkins[key].label)
-  end
-
-  table.insert(addonTable.Skins.currentOptions, {
-    type = "dropdown",
-    text = BAGANATOR_L_THEME_RELOAD_REQUIRED,
-    option = "current_skin",
-    entries = chooseSkinEntries,
-    values = chooseSkinValues,
-  })
-
   local currentSkinKey = addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
   if addonTable.WagoAnalytics then
     addonTable.WagoAnalytics:Switch("UsingSkin", currentSkinKey ~= "default")
@@ -45,14 +30,16 @@ function addonTable.Skins.Initialize()
     addonTable.Config.ResetOne(addonTable.Config.Options.CURRENT_SKIN)
     currentSkin = addonTable.Skins.availableSkins[addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)]
   end
-  xpcall(currentSkin.initializer, CallErrorHandler)
 
-  for _, opt in ipairs(currentSkin.options) do
-    if opt.option then
-      opt.option = "skins." .. currentSkin.key .. "." .. opt.option
-    end
-    table.insert(addonTable.Skins.currentOptions, opt)
-  end
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LOGIN")
+  frame:SetScript("OnEvent", function()
+    frame:UnregisterEvent("PLAYER_LOGIN")
+    currentSkin.constants()
+    xpcall(currentSkin.initializer, CallErrorHandler)
+    currentSkinner = currentSkin.skinner
+    addonTable.ViewManagement.GenerateFrameGroup(currentSkinKey)
+  end)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.CURRENT_SKIN then
@@ -62,6 +49,20 @@ function addonTable.Skins.Initialize()
           addonTable.Config.Get(addonTable.Config.Options.DISABLED_SKINS)[key] = currentSkinKey ~= key
         end
       end
+      local bagsShown = addonTable.ViewManagement.GetBackpackFrame():IsShown()
+      local lastCharacter = addonTable.ViewManagement.GetBackpackFrame().lastCharacter
+      currentSkin = addonTable.Skins.availableSkins[addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)]
+      currentSkinner = currentSkin.skinner
+      currentSkin.constants()
+      if not currentSkin.initialized then
+        xpcall(currentSkin.initializer, CallErrorHandler)
+        currentSkin.initialized = true
+      end
+      addonTable.ViewManagement.GenerateFrameGroup(currentSkinKey)
+      if bagsShown then
+        addonTable.CallbackRegistry:TriggerEvent("BagShow", lastCharacter)
+      end
+      addonTable.CallbackRegistry:TriggerEvent("ShowCustomise")
     end
   end)
 end
@@ -70,6 +71,7 @@ function addonTable.Skins.AddFrame(regionType, region, tags)
   if not region.added then
     local details = {regionType = regionType, region = region, tags = tags}
     table.insert(addonTable.Skins.allFrames, details)
+    xpcall(currentSkinner, CallErrorHandler, details)
     if addonTable.Skins.skinListeners then
       for _, listener in ipairs(addonTable.Skins.skinListeners) do
         xpcall(listener, CallErrorHandler, details)
@@ -79,11 +81,13 @@ function addonTable.Skins.AddFrame(regionType, region, tags)
   end
 end
 
-function addonTable.Skins.RegisterSkin(label, key, initializer, options, autoEnable)
+function addonTable.Skins.RegisterSkin(label, key, initializer, skinner, constants, options, autoEnable)
   addonTable.Skins.availableSkins[key] = {
     label = label,
     key = key,
     initializer = initializer,
+    skinner = skinner,
+    constants = constants,
     options = options or {},
     autoEnable = autoEnable,
   }
@@ -97,7 +101,7 @@ function addonTable.Skins.RegisterListener(callback)
 end
 
 function addonTable.Skins.GetAllFrames()
-  return addonTable.Skins.allFrames
+  return {}--addonTable.Skins.allFrames
 end
 
 Baganator.Skins = { AddFrame = addonTable.Skins.AddFrame }

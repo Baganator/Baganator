@@ -145,9 +145,6 @@ local LAYOUT_OPTIONS = {
   },
 }
 
-local THEME_OPTIONS = {
-}
-
 local ICON_OPTIONS = {
   {
     type = "checkbox",
@@ -483,6 +480,8 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
 
   local infoInset = CreateFrame("Frame", nil, frame, "InsetFrameTemplate")
 
+  local GENERAL_OPTIONS = CopyTable(GENERAL_OPTIONS)
+
   do
     infoInset:SetPoint("TOP")
     infoInset:SetPoint("LEFT", 20 + addonTable.Constants.ButtonFrameOffset, 0)
@@ -800,6 +799,8 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   local tab = GetTab(self)
   tab:SetText(BAGANATOR_L_SORTING)
 
+  local SORTING_OPTIONS = CopyTable(SORTING_OPTIONS)
+
   local frame = GetWrapperFrame(self)
 
   do
@@ -900,9 +901,38 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
   local tab = GetTab(self)
   tab:SetText(BAGANATOR_L_THEME)
 
+  local THEME_OPTIONS = {
+  }
+
+  local chooseSkinValues = {}
+  for key in pairs(addonTable.Skins.availableSkins) do
+    table.insert(chooseSkinValues, key)
+  end
+  table.sort(chooseSkinValues)
+  local chooseSkinEntries = {}
+  for _, key in ipairs(chooseSkinValues) do
+    table.insert(chooseSkinEntries, addonTable.Skins.availableSkins[key].label)
+  end
+
+  table.insert(THEME_OPTIONS, {
+    type = "dropdown",
+    text = BAGANATOR_L_THEME,
+    option = "current_skin",
+    entries = chooseSkinEntries,
+    values = chooseSkinValues,
+  })
+
+  local currentSkinKey = addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
+  for _, opt in ipairs(addonTable.Skins.availableSkins[currentSkinKey].options) do
+    if opt.option then
+      opt.option = "skins." .. currentSkinKey .. "." .. opt.option
+    end
+    table.insert(THEME_OPTIONS, opt)
+  end
+
   local frame = GetWrapperFrame(self)
 
-  local allFrames = GenerateFrames(addonTable.Skins.currentOptions, frame)
+  local allFrames = GenerateFrames(THEME_OPTIONS, frame)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
@@ -910,6 +940,13 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
     end
+  end)
+
+  allFrames[1].DropDown:SetEnabled(not InCombatLockdown())
+  frame:RegisterEvent("PLAYER_REGEN_DISABLED")
+  frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+  frame:SetScript("OnEvent", function()
+    allFrames[1].DropDown:SetEnabled(not InCombatLockdown())
   end)
 
   table.insert(self.lowestFrames, allFrames[#allFrames])

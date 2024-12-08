@@ -360,32 +360,27 @@ local function HideBagButtons()
   end
 end
 
-local function LoadSkin()
+local function SetConstants()
   addonTable.Constants.ButtonFrameOffset = 0
+end
 
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-  frame:SetScript("OnEvent", function()
-    GW = GW2_ADDON
+local function LoadSkin()
+  GW = GW2_ADDON
 
-    if C_AddOns.IsAddOnLoaded("Masque") then
-      skinners.ItemButton = function() end
-    else
-      hooksecurefunc("SetItemButtonQuality", GW.SetBagItemButtonQualitySkin)
-    end
+  if C_AddOns.IsAddOnLoaded("Masque") then
+    skinners.ItemButton = function() end
+  else
+    hooksecurefunc("SetItemButtonQuality", GW.SetBagItemButtonQualitySkin)
+  end
 
-    frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
-    addonTable.Skins.RegisterListener(SkinFrame)
+  for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
+    SkinFrame(details)
+  end
 
-    for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
-      SkinFrame(details)
-    end
-
-    DisableGW2Defaults()
-    HideBagButtons()
-  end)
+  DisableGW2Defaults()
+  HideBagButtons()
 end
 
 if (select(4, C_AddOns.GetAddOnInfo("GW2_UI"))) then
-  addonTable.Skins.RegisterSkin(BAGANATOR_L_GW2_UI, "gw2_ui", LoadSkin, {}, true)
+  addonTable.Skins.RegisterSkin(BAGANATOR_L_GW2_UI, "gw2_ui", LoadSkin, SkinFrame, SetConstants, {}, true)
 end

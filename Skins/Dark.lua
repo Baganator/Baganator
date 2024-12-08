@@ -250,6 +250,17 @@ local skinners = {
   end,
 }
 
+local function SkinFrame(details)
+  local func = skinners[details.regionType]
+  if func then
+    func(details.region, details.tags and ConvertTags(details.tags) or {})
+  end
+end
+
+local function SetConstants()
+  addonTable.Constants.ButtonFrameOffset = 0
+end
+
 local function LoadSkin()
   if C_AddOns.IsAddOnLoaded("Masque") or not addonTable.Config.Get("skins.dark.square_icons") then
     skinners.ItemButton = function() end
@@ -258,22 +269,12 @@ local function LoadSkin()
     hooksecurefunc("SetItemButtonTexture", ItemButtonTextureHook)
   end
 
-  local function SkinFrame(details)
-    local func = skinners[details.regionType]
-    if func then
-      func(details.region, details.tags and ConvertTags(details.tags) or {})
-    end
-  end
-
-  addonTable.Skins.RegisterListener(SkinFrame)
-  addonTable.Constants.ButtonFrameOffset = 0
-
   for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
     SkinFrame(details)
   end
 end
 
-addonTable.Skins.RegisterSkin(BAGANATOR_L_DARK, "dark", LoadSkin, {
+addonTable.Skins.RegisterSkin(BAGANATOR_L_DARK, "dark", LoadSkin, SkinFrame, SetConstants, {
   {
     type = "slider",
     min = 0,

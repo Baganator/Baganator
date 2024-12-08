@@ -141,48 +141,44 @@ local skinners = {
   end,
 }
 
+local function SkinFrame(details)
+  local func = skinners[details.regionType]
+  if func then
+    func(details.region, details.tags and ConvertTags(details.tags) or {})
+  end
+end
+
+local function SetConstants()
+  addonTable.Constants.ButtonFrameOffset = 0
+end
+
 local function LoadSkin()
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LOGIN")
-  frame:SetScript("OnEvent", function()
-    addonTable.Constants.ButtonFrameOffset = 0
+  E, L, V, P, G = unpack(ElvUI)
+  S = E:GetModule("Skins")
+  B = E:GetModule('Bags')
+  LSM = E.Libs.LSM
 
-    E, L, V, P, G = unpack(ElvUI)
-    S = E:GetModule("Skins")
-    B = E:GetModule('Bags')
-    LSM = E.Libs.LSM
-
-    if C_AddOns.IsAddOnLoaded("Masque") then
-      local Masque = LibStub("Masque", true)
-      local masqueGroup = Masque:Group("Baganator", "Bag")
-      if not masqueGroup.db.Disabled then
-        skinners.ItemButton = function() end
+  if C_AddOns.IsAddOnLoaded("Masque") then
+    local Masque = LibStub("Masque", true)
+    local masqueGroup = Masque:Group("Baganator", "Bag")
+    if not masqueGroup.db.Disabled then
+      skinners.ItemButton = function() end
+    end
+  else
+    hooksecurefunc("SetItemButtonTexture", function(frame)
+      if frame.bgrElvUISkin then
+        (frame.icon or frame.Icon):SetTexCoord(unpack(E.TexCoords))
       end
-    else
-      hooksecurefunc("SetItemButtonTexture", function(frame)
-        if frame.bgrElvUISkin then
-          (frame.icon or frame.Icon):SetTexCoord(unpack(E.TexCoords))
-        end
-      end)
-    end
+    end)
+  end
 
-    local function SkinFrame(details)
-      local func = skinners[details.regionType]
-      if func then
-        func(details.region, details.tags and ConvertTags(details.tags) or {})
-      end
-    end
-
-    addonTable.Skins.RegisterListener(SkinFrame)
-
-    for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
-      SkinFrame(details)
-    end
-  end)
+  for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
+    SkinFrame(details)
+  end
 end
 
 if (select(4, C_AddOns.GetAddOnInfo("ElvUI"))) then
-  addonTable.Skins.RegisterSkin(BAGANATOR_L_ELVUI, "elvui", LoadSkin, {
+  addonTable.Skins.RegisterSkin(BAGANATOR_L_ELVUI, "elvui", LoadSkin, SkinFrame, SetConstants, {
     {
       type = "checkbox",
       text = BAGANATOR_L_USE_EXPRESSWAY_FONT_ON_ITEMS,

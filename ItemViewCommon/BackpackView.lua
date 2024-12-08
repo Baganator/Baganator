@@ -5,15 +5,12 @@ local classicTabObjectCounter = 0
 BaganatorItemViewCommonBackpackViewMixin = {}
 
 local function PreallocateItemButtons(pool, buttonCount)
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LOGIN")
-  frame:SetScript("OnEvent", function()
-    for i = 1, buttonCount do
-      local button = pool:Acquire()
-      addonTable.Skins.AddFrame("ItemButton", button)
-    end
-    pool:ReleaseAll()
-  end)
+  assert(not InCombatLockdown())
+  for i = 1, buttonCount do
+    local button = pool:Acquire()
+    addonTable.Skins.AddFrame("ItemButton", button)
+  end
+  pool:ReleaseAll()
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
