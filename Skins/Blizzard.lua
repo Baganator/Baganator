@@ -40,11 +40,13 @@ local function UpdateButtonFrameVisuals(frame)
   end
 end
 
+local showSlots = true
 local allItemButtons = {}
 local allButtonFrames = {}
 
 local skinners = {
   ItemButton = function(frame)
+    frame.SlotBackground:SetShown(showSlots)
     table.insert(allItemButtons, frame)
   end,
   ButtonFrame = function(frame, tags)
@@ -78,18 +80,11 @@ local function SetConstants()
 end
 
 local function LoadSkin()
-  for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
-    SkinFrame(details)
-  end
-
-  local showSlots = not addonTable.Config.Get("skins.blizzard.empty_slot_background")
-  for _, button in ipairs(allItemButtons) do
-    button.SlotBackground:SetShown(showSlots)
-  end
+  showSlots = not addonTable.Config.Get("skins.blizzard.empty_slot_background")
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == "skins.blizzard.empty_slot_background" then
-      local showSlots = not addonTable.Config.Get("skins.blizzard.empty_slot_background")
+      showSlots = not addonTable.Config.Get("skins.blizzard.empty_slot_background")
       for _, button in ipairs(allItemButtons) do
         button.SlotBackground:SetShown(showSlots)
       end

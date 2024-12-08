@@ -171,10 +171,6 @@ local function LoadSkin()
       end
     end)
   end
-
-  for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
-    SkinFrame(details)
-  end
 end
 
 if (select(4, C_AddOns.GetAddOnInfo("ElvUI"))) then

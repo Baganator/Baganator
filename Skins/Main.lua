@@ -1,6 +1,5 @@
 local _, addonTable = ...
 
-addonTable.Skins.allFrames = {}
 addonTable.Skins.availableSkins = {}
 addonTable.Skins.skinListeners = {}
 
@@ -21,9 +20,6 @@ function addonTable.Skins.Initialize()
   end
 
   local currentSkinKey = addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
-  if addonTable.WagoAnalytics then
-    addonTable.WagoAnalytics:Switch("UsingSkin", currentSkinKey ~= "default")
-  end
 
   local currentSkin = addonTable.Skins.availableSkins[currentSkinKey]
   if not currentSkin then
@@ -70,7 +66,6 @@ end
 function addonTable.Skins.AddFrame(regionType, region, tags)
   if not region.added then
     local details = {regionType = regionType, region = region, tags = tags}
-    table.insert(addonTable.Skins.allFrames, details)
     xpcall(currentSkinner, CallErrorHandler, details)
     if addonTable.Skins.skinListeners then
       for _, listener in ipairs(addonTable.Skins.skinListeners) do
@@ -91,17 +86,6 @@ function addonTable.Skins.RegisterSkin(label, key, initializer, skinner, constan
     options = options or {},
     autoEnable = autoEnable,
   }
-end
-
-function addonTable.Skins.RegisterListener(callback)
-  table.insert(addonTable.Skins.skinListeners, callback)
-  if addonTable.WagoAnalytics then
-    addonTable.WagoAnalytics:Switch("UsingSkin", true)
-  end
-end
-
-function addonTable.Skins.GetAllFrames()
-  return {}--addonTable.Skins.allFrames
 end
 
 Baganator.Skins = { AddFrame = addonTable.Skins.AddFrame }

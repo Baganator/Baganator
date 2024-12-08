@@ -136,11 +136,6 @@ local function LoadSkin()
   end
 
   B, C, L, DB = unpack(NDui)
-  addonTable.Skins.RegisterListener(SkinFrame)
-
-  for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
-    SkinFrame(details)
-  end
 end
 
 if (select(4, C_AddOns.GetAddOnInfo("NDui"))) then

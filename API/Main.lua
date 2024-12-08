@@ -272,8 +272,8 @@ end
 
 Baganator.API.Skins = {}
 
-function Baganator.API.Skins.GetAllFrames()
-  return addonTable.Skins.allFrames
+function Baganator.API.Skins.GetCurrentSkin()
+  return addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
 end
 
 function Baganator.API.Skins.RegisterListener(callback)

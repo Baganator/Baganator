@@ -799,7 +799,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   local tab = GetTab(self)
   tab:SetText(BAGANATOR_L_SORTING)
 
-  local SORTING_OPTIONS = CopyTable(SORTING_OPTIONS)
+  local options = CopyTable(SORTING_OPTIONS)
 
   local frame = GetWrapperFrame(self)
 
@@ -837,10 +837,10 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
       addonTable.Config.ResetOne("sort_method")
     end
 
-    table.insert(SORTING_OPTIONS, 5, typeDropDown)
+    table.insert(options, 5, typeDropDown)
   end
 
-  local allFrames = GenerateFrames(SORTING_OPTIONS, frame)
+  local allFrames = GenerateFrames(options, frame)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
@@ -901,9 +901,6 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
   local tab = GetTab(self)
   tab:SetText(BAGANATOR_L_THEME)
 
-  local THEME_OPTIONS = {
-  }
-
   local chooseSkinValues = {}
   for key in pairs(addonTable.Skins.availableSkins) do
     table.insert(chooseSkinValues, key)
@@ -914,7 +911,9 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
     table.insert(chooseSkinEntries, addonTable.Skins.availableSkins[key].label)
   end
 
-  table.insert(THEME_OPTIONS, {
+  local options = {}
+
+  table.insert(options, {
     type = "dropdown",
     text = BAGANATOR_L_THEME,
     option = "current_skin",
@@ -927,12 +926,12 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
     if opt.option then
       opt.option = "skins." .. currentSkinKey .. "." .. opt.option
     end
-    table.insert(THEME_OPTIONS, opt)
+    table.insert(options, opt)
   end
 
   local frame = GetWrapperFrame(self)
 
-  local allFrames = GenerateFrames(THEME_OPTIONS, frame)
+  local allFrames = GenerateFrames(options, frame)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do

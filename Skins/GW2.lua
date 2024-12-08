@@ -378,10 +378,6 @@ local function LoadSkin()
     end)
   end
 
-  for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
-    SkinFrame(details)
-  end
-
   DisableGW2Defaults()
   HideBagButtons()
 end

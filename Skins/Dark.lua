@@ -268,10 +268,6 @@ local function LoadSkin()
     hooksecurefunc("SetItemButtonQuality", ItemButtonQualityHook)
     hooksecurefunc("SetItemButtonTexture", ItemButtonTextureHook)
   end
-
-  for _, details in ipairs(addonTable.Skins.GetAllFrames()) do
-    SkinFrame(details)
-  end
 end
 
 addonTable.Skins.RegisterSkin(BAGANATOR_L_DARK, "dark", LoadSkin, SkinFrame, SetConstants, {
