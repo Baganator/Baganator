@@ -329,6 +329,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   end)
 
   local dropdown = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+  addonTable.Skins.AddFrame("Dropdown", dropdown)
   dropdown.disableSelectionText = true
   SetCategoriesToDropDown(dropdown, GetInsertedCategories())
 

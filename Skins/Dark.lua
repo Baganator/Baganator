@@ -246,7 +246,7 @@ local skinners = {
   end,
   CornerWidget = function(frame, tags)
   end,
-  DropDownWithPopout = function(button)
+  Dropdown = function(button)
   end,
 }
 

@@ -312,6 +312,9 @@ local skinners = {
       frame:SetFont(UNIT_NAME_FONT, 12, "THINOUTLINED")
     end
   end,
+  Dropdown = function(button)
+    button:GwHandleDropDownBox()
+  end,
 }
 
 local function SkinFrame(details)

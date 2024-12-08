@@ -89,6 +89,9 @@ local skinners = {
   CategorySectionHeader = function(btn)
     btn:GetFontString():SetTextColor(DB.r, DB.g, DB.b)
   end,
+  Dropdown = function(button)
+    B.ReskinDropDown(button)
+  end
 }
 
 local function LoadSkin()

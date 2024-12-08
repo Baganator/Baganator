@@ -129,23 +129,8 @@ local skinners = {
       frame:FontTemplate(LSM:Fetch('font', E.db.bags.countFont), addonTable.Config.Get("icon_text_font_size"), E.db.bags.countFontOutline)
     end
   end,
-  DropDownWithPopout = function(button)
-    button.HighlightTexture:SetAlpha(0)
-    button.NormalTexture:SetAlpha(0)
-
-    local r, g, b, a = unpack(E.media.backdropfadecolor)
-    button.Popout:StripTextures()
-    button.Popout:SetTemplate('Transparent')
-    button.Popout:SetBackdropColor(r, g, b, max(a, 0.9))
-
-    local expandArrow = button:CreateTexture(nil, "ARTWORK")
-    expandArrow:SetTexture(E.Media.Textures.ArrowUp)
-    expandArrow:SetRotation(S.ArrowRotation.down)
-    expandArrow:Size(15)
-    expandArrow:SetPoint("RIGHT", -10, 0)
-
-    S:HandleButton(button, nil, nil, nil, true)
-    button.backdrop:SetInside(nil, 4, 4)
+  Dropdown = function(button)
+    S:HandleDropDownBox(button)
   end,
   Divider = function(tex)
     tex:SetTexture("Interface\\Common\\UI-TooltipDivider-Transparent")
