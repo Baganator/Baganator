@@ -287,9 +287,11 @@ local skinners = {
     if frame.NineSlice then
       frame.NineSlice:Hide()
     end
-    Mixin(frame, BackdropTemplateMixin)
-    frame:SetBackdrop(GW.BackdropTemplates.ColorableBorderOnly)
-    frame:SetBackdropBorderColor(0, 0, 0, 1)
+    if GW.BackdropTemplates and GW.BackdropTemplates.ColorableBorderOnly then
+      Mixin(frame, BackdropTemplateMixin)
+      frame:SetBackdrop(GW.BackdropTemplates.ColorableBorderOnly)
+      frame:SetBackdropBorderColor(0, 0, 0, 1)
+    end
   end,
   Divider = function(tex)
     tex:SetTexture("Interface\\Common\\UI-TooltipDivider-Transparent")
