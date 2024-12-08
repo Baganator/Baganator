@@ -26,7 +26,7 @@ Core\Analytics.lua
 Core\Main.lua
 
 Skins\Main.lua
-Skins\Default.lua
+Skins\Blizzard.lua
 Skins\Dark.lua
 Skins\ElvUI.lua
 Skins\GW2.lua

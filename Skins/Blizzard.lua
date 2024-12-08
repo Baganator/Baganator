@@ -6,8 +6,8 @@ local classicBorderFrames = {
 }
 
 local function UpdateButtonFrameVisuals(frame)
-  local alpha = 1 - addonTable.Config.Get("skins.default.view_transparency")
-  local noFrameBorders = addonTable.Config.Get("skins.default.no_frame_borders")
+  local alpha = 1 - addonTable.Config.Get("skins.blizzard.view_transparency")
+  local noFrameBorders = addonTable.Config.Get("skins.blizzard.no_frame_borders")
 
   frame.Bg:SetAlpha(alpha)
   frame.TopTileStreaks:SetAlpha(alpha)
@@ -75,18 +75,18 @@ local function LoadSkin()
     SkinFrame(details)
   end
 
-  local showSlots = not addonTable.Config.Get("skins.default.empty_slot_background")
+  local showSlots = not addonTable.Config.Get("skins.blizzard.empty_slot_background")
   for _, button in ipairs(allItemButtons) do
     button.SlotBackground:SetShown(showSlots)
   end
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
-    if settingName == "skins.default.empty_slot_background" then
-      local showSlots = not addonTable.Config.Get("skins.default.empty_slot_background")
+    if settingName == "skins.blizzard.empty_slot_background" then
+      local showSlots = not addonTable.Config.Get("skins.blizzard.empty_slot_background")
       for _, button in ipairs(allItemButtons) do
         button.SlotBackground:SetShown(showSlots)
       end
-    elseif settingName == "skins.default.no_frame_borders" or settingName == "skins.default.view_transparency" then
+    elseif settingName == "skins.blizzard.no_frame_borders" or settingName == "skins.blizzard.view_transparency" then
       for _, frame in ipairs(allButtonFrames) do
         UpdateButtonFrameVisuals(frame)
       end
