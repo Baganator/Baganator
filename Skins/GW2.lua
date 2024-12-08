@@ -314,6 +314,7 @@ local skinners = {
   end,
   Dropdown = function(button)
     button:GwHandleDropDownBox()
+    button:OnEnter()
   end,
 }
 
