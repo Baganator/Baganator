@@ -233,7 +233,7 @@
       </Frame>
       <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
         <Anchors>
-          <Anchor point="TOPRIGHT" y="-25" x="-10"/>
+          <Anchor point="TOPRIGHT" y="-25" x="-8"/>
           <Anchor point="BOTTOMRIGHT" y="10"/>
         </Anchors>
       </EventFrame>
@@ -260,7 +260,7 @@
       </Frame>
       <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
         <Anchors>
-          <Anchor point="TOPRIGHT" y="-25" x="-10"/>
+          <Anchor point="TOPRIGHT" y="-25" x="-8"/>
           <Anchor point="BOTTOMRIGHT" y="40"/>
         </Anchors>
       </EventFrame>
