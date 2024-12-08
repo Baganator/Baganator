@@ -18,6 +18,10 @@ function addonTable.CustomiseDialog.Initialize()
         dialog:Hide()
         customiseDialog[currentSkin]:Hide()
         customiseDialog[currentSkin]:SetIndex(customiseDialog[key].lastIndex)
+        customiseDialog[currentSkin]:ClearAllPoints()
+        for i = 1, dialog:GetNumPoints() do
+          customiseDialog[currentSkin]:SetPoint(dialog:GetPoint(i))
+        end
       end
     end
 
