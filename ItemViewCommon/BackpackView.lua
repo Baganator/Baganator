@@ -68,7 +68,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
         end
       end
       self:OnFinished()
-    elseif settingName == addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
+    elseif settingName == addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS and self:IsVisible() then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
       self:OnFinished()
     end

@@ -44,7 +44,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
-    elseif settingName == addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS then
+    elseif settingName == addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS and self:IsVisible() then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
       self:OnFinished()
       self:GetParent():OnTabFinished()
