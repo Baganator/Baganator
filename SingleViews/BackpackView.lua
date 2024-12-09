@@ -164,6 +164,11 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
     end
   end
 
+  buttonsWidth = buttonsWidth + addonTable.Utilities.AddButtons(self.AllButtons,
+    lastButton, 5, addonTable.API.buttons["backpack"]["bottom_left"]
+  )
+  addonTable.Utilities.AddButtons(self.AllButtons, self.TopButtons[#self.TopButtons], 0, addonTable.API.buttons["backpack"]["top_left"])
+
   -- Necessary extra call as collapsing bag region buttons get updated
   -- out-of-sync with everything else
   self.ButtonVisibility:Update()

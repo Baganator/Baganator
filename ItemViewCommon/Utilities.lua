@@ -345,3 +345,20 @@ if LibStub then
     end
   end
 end
+
+function addonTable.Utilities.AddButtons(allButtons, lastButton, spacing, buttonGetters)
+  local buttonsWidth = 0
+  for _, getter in ipairs(buttonGetters) do
+    local button = getter()
+    if button then
+      button:SetParent(lastButton:GetParent())
+      button:ClearAllPoints()
+      buttonsWidth = buttonsWidth + spacing + button:GetWidth()
+      button:SetPoint("LEFT", lastButton, "RIGHT", spacing, 0)
+      lastButton = button
+      table.insert(allButtons, button)
+    end
+  end
+
+  return buttonsWidth
+end

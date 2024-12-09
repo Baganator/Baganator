@@ -292,3 +292,23 @@ for _, skin in ipairs(blockedSkins) do
     C_AddOns.DisableAddOn(skin)
   end
 end
+
+local validFrames = {"backpack"--[[, "guild", "character_bank", "warband_bank"]]}
+local validPositions = {"top_left", "bottom_left"}
+addonTable.API.buttons = {
+}
+for _, frameType in ipairs(validFrames) do
+  addonTable.API.buttons[frameType] = {}
+  for _, position in ipairs(validPositions) do
+    addonTable.API.buttons[frameType][position] = {}
+  end
+end
+
+-- Supported positions, "bottom_left" and "top_left"
+-- Supported frames, "backpack", "guild", "character_bank", "warband_bank"
+-- Getter will return a frame to be positioned appropriately
+function Baganator.API.RegisterButton(frameType, position, getter)
+  assert(tIndexOf(validFrames, frameType) and tIndexOf(validPositions, position) and type(getter) == "function")
+
+  table.insert(addonTable.API.buttons[frameType][position], getter)
+end
