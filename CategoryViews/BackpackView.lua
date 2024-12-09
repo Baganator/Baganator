@@ -68,11 +68,6 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
     end
   end)
 
-  self.AllButtons = {}
-  tAppendAll(self.AllButtons, self.TopButtons)
-  tAppendAll(self.AllButtons, self.AllFixedButtons)
-  table.insert(self.AllButtons, self.CurrencyButton)
-
   addonTable.AddBagTransferActivationCallback(function()
     self:UpdateTransferButton()
     local oldState = self.splitStacksDueToTransfer
@@ -178,12 +173,23 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
       maxHeight
     )
 
+    self.AllButtons = {}
+    tAppendAll(self.AllButtons, self.TopButtons)
+    tAppendAll(self.AllButtons, self.AllFixedButtons)
+    table.insert(self.AllButtons, self.CurrencyButton)
+
     local lastButton = self.CurrencyButton
     lastButton:ClearAllPoints()
     lastButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
     lastButton:SetPoint("LEFT", self.Container, -2, 0)
 
-    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - lastButton:GetWidth() - 10)
+    local buttonsWidth = lastButton:GetWidth() + addonTable.Utilities.AddButtons(
+      self.AllButtons, lastButton, self, 5, addonTable.API.customRegions["backpack"]["bottom_left"]
+    )
+
+    addonTable.Utilities.AddButtons(self.AllButtons, self.TopButtons[#self.TopButtons], self, 0, addonTable.API.customRegions["backpack"]["top_left"])
+
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 10)
 
     self:OnFinished()
 

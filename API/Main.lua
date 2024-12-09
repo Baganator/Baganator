@@ -292,3 +292,42 @@ for _, skin in ipairs(blockedSkins) do
     C_AddOns.DisableAddOn(skin)
   end
 end
+
+local validViews = {"backpack"--[[, "guild", "character_bank", "warband_bank"]]}
+local validPositions = {"top_left", "bottom_left"}
+addonTable.API.customRegions = {
+}
+for _, viewType in ipairs(validViews) do
+  addonTable.API.customRegions[viewType] = {}
+  for _, position in ipairs(validPositions) do
+    addonTable.API.customRegions[viewType][position] = {}
+  end
+end
+
+-- label: User facing label for the widget's owner
+-- id: Internal id for the widget's owner
+-- viewType, "backpack"
+-- position: "bottom_left" and "top_left"
+-- frame: The region to position (note: frame:GetWidth() should return an
+-- accurate value)
+function Baganator.API.RegisterRegion(label, id, viewType, position, frame)
+  assert(type(label) == "string" and type(id) == "string" and tIndexOf(validViews, viewType) and tIndexOf(validPositions, position) and frame.SetParent and frame.ClearAllPoints and frame.SetPoint and frame.GetWidth)
+
+  table.insert(addonTable.API.customRegions[viewType][position], {
+    label = label,
+    id = id,
+    frame = frame
+  })
+end
+
+local queuedLayoutUpdate = false
+-- Used by regions registered to indicate their width has changed.
+function Baganator.API.RequestLayoutUpdate()
+  if not queuedLayoutUpdate then
+    queuedLayoutUpdate = true
+    C_Timer.After(0, function()
+      addonTable.CallbackRegistry:TriggerEvent("LayoutUpdateRequired")
+      queuedLayoutUpdate = false
+    end)
+  end
+end

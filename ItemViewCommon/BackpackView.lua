@@ -88,7 +88,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     end
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+  addonTable.CallbackRegistry:RegisterCallback("LayoutUpdateRequired", function()
     if self:IsVisible() and self.lastCharacter ~= nil then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end

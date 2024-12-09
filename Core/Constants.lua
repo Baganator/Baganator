@@ -66,6 +66,7 @@ addonTable.Constants.Events = {
   "ClearHighlightBag",
 
   "ContentRefreshRequired",
+  "LayoutUpdateRequired",
   "PluginsUpdated",
 
   "TransferCancel",
