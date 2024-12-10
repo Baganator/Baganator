@@ -40,8 +40,6 @@ function BaganatorSplitViewBagMixin:NotifyBagUpdate(updatedBags)
 end
 
 function BaganatorSplitViewBagMixin:UpdateForCharacter(character, isLive)
-  addonTable.Utilities.ApplyVisuals(self)
-
   self.isLive = isLive
 
   self.BagLive:SetShown(isLive)

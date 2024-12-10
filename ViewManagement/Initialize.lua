@@ -27,16 +27,6 @@ function addonTable.ViewManagement.GetBackpackFrame()
   return backpackView
 end
 
-local function SetupBackpackView()
-  local backpackView
-  local allBackpackViews = {
-    single = CreateFrame("Frame", "Baganator_SingleViewBackpackViewFrame", UIParent, "BaganatorSingleViewBackpackViewTemplate"),
-    category = CreateFrame("Frame", "Baganator_CategoryViewBackpackViewFrame", UIParent, "BaganatorCategoryViewBackpackViewTemplate"),
-    split = CreateFrame("Frame", "Baganator_SplitViewBackpackViewFrame", UIParent, "BaganatorSplitViewBackpackViewTemplate"),
-  }
-
-  backpackView = allBackpackViews[GetViewType("bag")]
-
 local function SetupBackpackHooks()
   local bagButtons = {}
 
@@ -133,6 +123,7 @@ local function SetupBackpackView(frameGroup)
   local allBackpackViews = {
     single = CreateFrame("Frame", "Baganator_SingleViewBackpackViewFrame" .. frameGroup, UIParent, "BaganatorSingleViewBackpackViewTemplate"),
     category = CreateFrame("Frame", "Baganator_CategoryViewBackpackViewFrame" .. frameGroup, UIParent, "BaganatorCategoryViewBackpackViewTemplate"),
+    split = CreateFrame("Frame", "Baganator_SplitViewBackpackViewFrame" .. frameGroup, UIParent, "BaganatorSplitViewBackpackViewTemplate"),
   }
 
   backpackView = allBackpackViews[GetViewType("bag")]
