@@ -59,7 +59,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == addonTable.Config.Options.SHOW_RECENTS_TABS then
+    elseif settingName == addonTable.Config.Options.SHOW_RECENTS_TABS and self.Tabs ~= nil then
       local isShown = addonTable.Config.Get(addonTable.Config.Options.SHOW_RECENTS_TABS)
       for index, tab in ipairs(self.Tabs) do
         tab:SetShown(isShown)
