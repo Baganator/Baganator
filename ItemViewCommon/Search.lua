@@ -69,6 +69,7 @@ end)
 BaganatorSearchWidgetMixin = {}
 
 function BaganatorSearchWidgetMixin:OnLoad()
+  self.SearchBox.Instructions:SetWordWrap(false)
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then
       local text = self.SearchBox:GetText()

@@ -409,7 +409,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
     end
 
     self:SetSize(
-      math.max(minWidth, addonTable.CategoryViews.Constants.MinWidth),
+      math.max(minWidth, 400),
       maxHeight + 75 + topSpacing / 2
     )
 

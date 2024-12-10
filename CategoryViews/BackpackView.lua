@@ -169,7 +169,7 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
 
   self.LayoutManager:Layout(characterData.bags, bagWidth, bagTypes, Syndicator.Constants.AllBagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self.Container:SetSize(
-      math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth),
+      math.max(addonTable.CategoryViews.Utilities.GetMinWidth(bagWidth), maxWidth),
       maxHeight
     )
 

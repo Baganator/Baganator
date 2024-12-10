@@ -10,7 +10,6 @@ addonTable.CategoryViews.Constants = {
   DividerName = "----",
   DividerLabel = "——————",
   SectionEnd = "__end",
-  MinWidth = 400,
 
   GroupingState = {
     SplitStack = 1,

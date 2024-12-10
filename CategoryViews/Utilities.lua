@@ -46,3 +46,8 @@ function addonTable.CategoryViews.Utilities.GetAddButtonsState()
     addonTable.Config.Get(addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS) == "drag+alt" and IsAltKeyDown()
   )
 end
+
+function addonTable.CategoryViews.Utilities.GetMinWidth(rowWidth)
+  local iconPadding, iconSize = addonTable.ItemButtonUtil.GetPaddingAndSize()
+  return rowWidth * (iconSize + iconPadding) - iconPadding
+end
