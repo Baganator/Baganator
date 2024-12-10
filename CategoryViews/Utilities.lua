@@ -49,5 +49,5 @@ end
 
 function addonTable.CategoryViews.Utilities.GetMinWidth(rowWidth)
   local iconPadding, iconSize = addonTable.ItemButtonUtil.GetPaddingAndSize()
-  return rowWidth * (iconSize + iconPadding) - iconPadding
+  return math.min(350, rowWidth * (iconSize + iconPadding) - iconPadding)
 end
