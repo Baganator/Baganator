@@ -132,14 +132,14 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     ArrangeRow()
   end
 
+  if prevLayout and prevLayout.type == "category" then
+    NewLine()
+  end
+
   for _, layout in ipairs(activeLayouts) do -- Ensure dividers don't overflow when width is reduced
     if layout.type == "divider" or layout.type == "section" then
       layout:SetPoint("RIGHT", layout:GetParent(), "LEFT", baseOffsetX + math.max(pixelMinWidth, maxWidth), 0)
     end
-  end
-
-  if prevLayout and prevLayout.type == "category" then
-    NewLine()
   end
 
   for _, details in ipairs(endOfLineLabels) do
