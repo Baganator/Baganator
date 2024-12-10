@@ -156,15 +156,9 @@ local function SetConstants()
 end
 
 local function LoadSkin()
-  -- Resolve LibStrataFix breaking some tab buttons
-  local FakeLibStrataFix = LibStub:NewLibrary("LibStrataFix", 1) or LibStub("LibStrataFix")
-  FakeLibStrataFix.CreateFrameHook = nil
-  FakeLibStrataFix.SetParentHook = nil
-  setmetatable(FakeLibStrataFix, {
-    __newindex = {},
-    __index = {CreateFrameHook = function() end, SetParentHook = function() end},
-  })
-
+  if (select(4, C_AddOns.GetAddOnInfo("Paste"))) then
+    addonTable.Utilities.Message("You have Paste installed, this will cause glitches in the ElvUI skin.")
+  end
   E, L, V, P, G = unpack(ElvUI)
   S = E:GetModule("Skins")
   B = E:GetModule('Bags')
