@@ -268,11 +268,14 @@ local function LoadSkin()
     local Masque = LibStub("Masque", true)
     local masqueGroup = Masque:Group("Baganator", "Bag")
     if not masqueGroup.db.Disabled then
-      skinners.ItemButton = function() end
+      skinners.ItemButton = nil
     end
-  elseif addonTable.Config.Get("skins.dark.square_icons") then
-    skinners.ItemButton = function() end
-  else
+  end
+  if not addonTable.Config.Get("skins.dark.square_icons") then
+    skinners.ItemButton = nil
+  end
+
+  if skinners.ItemButton then
     hooksecurefunc("SetItemButtonQuality", ItemButtonQualityHook)
     hooksecurefunc("SetItemButtonTexture", ItemButtonTextureHook)
   end
