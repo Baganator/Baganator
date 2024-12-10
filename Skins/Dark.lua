@@ -264,7 +264,13 @@ local function SetConstants()
 end
 
 local function LoadSkin()
-  if C_AddOns.IsAddOnLoaded("Masque") or not addonTable.Config.Get("skins.dark.square_icons") then
+  if C_AddOns.IsAddOnLoaded("Masque") then
+    local Masque = LibStub("Masque", true)
+    local masqueGroup = Masque:Group("Baganator", "Bag")
+    if not masqueGroup.db.Disabled then
+      skinners.ItemButton = function() end
+    end
+  elseif addonTable.Config.Get("skins.dark.square_icons") then
     skinners.ItemButton = function() end
   else
     hooksecurefunc("SetItemButtonQuality", ItemButtonQualityHook)
