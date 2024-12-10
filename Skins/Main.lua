@@ -2,6 +2,7 @@ local _, addonTable = ...
 
 addonTable.Skins.availableSkins = {}
 addonTable.Skins.skinListeners = {}
+addonTable.Skins.allFrames = {}
 
 local currentSkinner = function() end
 
@@ -66,6 +67,7 @@ end
 function addonTable.Skins.AddFrame(regionType, region, tags)
   if not region.added then
     local details = {regionType = regionType, region = region, tags = tags}
+    table.insert(addonTable.Skins.allFrames, details)
     xpcall(currentSkinner, CallErrorHandler, details)
     if addonTable.Skins.skinListeners then
       for _, listener in ipairs(addonTable.Skins.skinListeners) do

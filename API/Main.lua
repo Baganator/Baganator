@@ -276,6 +276,10 @@ function Baganator.API.Skins.GetCurrentSkin()
   return addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
 end
 
+function Baganator.API.Skins.GetAllFrames()
+  return addonTable.Skins.allFrames
+end
+
 function Baganator.API.Skins.RegisterListener(callback)
   table.insert(addonTable.Skins.skinListeners, callback)
   if addonTable.WagoAnalytics then
