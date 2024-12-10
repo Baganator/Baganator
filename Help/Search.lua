@@ -70,6 +70,7 @@ function addonTable.Help.ShowSearchDialog()
   frame.ScrollBar = CreateFrame("EventFrame", nil, frame, "MinimalScrollBar")
   frame.ScrollBar:SetPoint("TOPRIGHT", -10, -30)
   frame.ScrollBar:SetPoint("BOTTOMRIGHT", -10, 10)
+  addonTable.Skins.AddFrame("TrimScrollBar", frame.ScrollBar)
   frame.ScrollBox:SetPoint("RIGHT", frame.ScrollBar, "LEFT", -10, 0)
   frame.ScrollBox:SetPoint("BOTTOM", 0, 5)
 
