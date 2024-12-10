@@ -38,11 +38,7 @@ function BaganatorSplitViewBackpackViewMixin:OnLoad()
     if not self.lastCharacter then
       return
     end
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    elseif tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+    if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, b in ipairs(self.bags) do
         for _, layout in ipairs(b.Layouts) do
           layout:InformSettingChanged(settingName)

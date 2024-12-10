@@ -20,6 +20,8 @@ function BaganatorSplitViewBagMixin:OnLoad()
   -- player logs in or first opens their bags when in combat
   -- 6 is bags + reagent bag (retail) or bags + keyring (wrath)
   addonTable.Utilities.PreallocateItemButtons(self.liveItemButtonPool, Syndicator.Constants.MaxBagSize)
+
+  addonTable.Skins.AddFrame("ButtonFrame", self)
 end
 
 function BaganatorSplitViewBagMixin:ApplySearch(text)

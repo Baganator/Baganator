@@ -40,8 +40,6 @@ function BaganatorSplitViewHotbarMixin:OnLoad()
     table.remove(self.AllButtons, index)
     self.ToggleGuildBankButton:Hide()
   end
-
-  addonTable.Skins.AddFrame("ButtonFrame", self)
 end
 
 function BaganatorSplitViewHotbarMixin:OnShow()
