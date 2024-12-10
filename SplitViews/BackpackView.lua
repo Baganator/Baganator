@@ -121,7 +121,7 @@ function BaganatorSplitViewBackpackViewMixin:UpdateForCharacter(character, isLiv
         end
         maxY = math.max(maxY, b:GetTop())
       else
-        b:SetPoint("BOTTOMRIGHT", UIParent, -100, 90)
+        b:SetPoint("BOTTOMRIGHT", UIParent, -150, 90)
         maxY = b:GetTop()
         minY = b:GetBottom()
         maxX = b:GetRight()
