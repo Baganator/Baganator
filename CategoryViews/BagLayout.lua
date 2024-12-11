@@ -273,22 +273,19 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     end
     if not anyNew and not container.addToCategoryMode then
       local typeMap = {}
-      for index, bagType in ipairs(bagTypes) do
-        typeMap[bagIndexes[index]] = bagType
-      end
       for index, old in ipairs(oldComposed.details) do
         if old.results then
           local current = composed.details[index]
           current.oldLength = #current.results
           if #old.results > #current.results and not old.emptySlots and (#current.results > 0 or current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory) then
-            for index, info in ipairs(old.results) do
+            for index2, info in ipairs(old.results) do
               if #current.results >= #old.results then
                 break
               end
-              if info.bagID and info.slotID then
-                if not current.results[index] or current.results[index].key ~= info.key then
-                  table.insert(current.results, index, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty"})
-                end
+              local currentInfo = current.results[index2]
+              -- Check for missing items, and persist slot location/holes in the list
+              if info.bagID and info.slotID and (not currentInfo or (currentInfo.key ~= info.key or (info.slotID ~= currentInfo.slotID or info.bagID ~= currentInfo.bagID))) then
+                table.insert(current.results, index2, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty"})
               end
             end
           end
