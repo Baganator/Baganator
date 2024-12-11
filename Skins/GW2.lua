@@ -371,8 +371,12 @@ end
 local function LoadSkin()
   GW = GW2_ADDON
 
-  if C_AddOns.IsAddOnLoaded("Masque") then
-    skinners.ItemButton = function() end
+  if addonTable.Utilities.IsMasqueApplying() then
+    skinners.ItemButton = function(frame, tags)
+      if not tags.containerbag then
+        frame.SlotBackground:SetParent(hidden)
+      end
+    end
   else
     hooksecurefunc("SetItemButtonQuality", function(button, ...)
       if button.bgrGW2SkinHooked then

@@ -346,6 +346,15 @@ if LibStub then
   end
 end
 
+function addonTable.Utilities.IsMasqueApplying()
+  if C_AddOns.IsAddOnLoaded("Masque") then
+    local Masque = LibStub("Masque", true)
+    local masqueGroup = Masque:Group("Baganator", "Bag")
+    return not masqueGroup.db.Disabled
+  end
+  return false
+end
+
 function addonTable.Utilities.AddButtons(allButtons, lastButton, parent, spacing, regionDetails)
   local buttonsWidth = 0
   for _, details in ipairs(regionDetails) do

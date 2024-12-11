@@ -164,11 +164,11 @@ local function LoadSkin()
   B = E:GetModule('Bags')
   LSM = E.Libs.LSM
 
-  if C_AddOns.IsAddOnLoaded("Masque") then
-    local Masque = LibStub("Masque", true)
-    local masqueGroup = Masque:Group("Baganator", "Bag")
-    if not masqueGroup.db.Disabled then
-      skinners.ItemButton = function() end
+  if addonTable.Utilities.IsMasqueApplying() then
+    skinners.ItemButton = function(frame, tags)
+      if not tags.containerbag then
+        frame.SlotBackground:SetParent(hidden)
+      end
     end
   else
     hooksecurefunc("SetItemButtonTexture", function(frame)
