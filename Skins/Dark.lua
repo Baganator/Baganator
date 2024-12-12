@@ -111,6 +111,7 @@ local function RemoveFrameTextures(frame)
     if frame[key] then
       frame[key]:Hide()
       frame[key]:SetTexture()
+      frame[key] = nil -- Necessary as classic NineSlice pieces have names which clash
     end
   end
   if frame.NineSlice then
