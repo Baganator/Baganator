@@ -179,7 +179,7 @@ local function LoadSkin()
   end
 end
 
-if (select(4, C_AddOns.GetAddOnInfo("ElvUI"))) then
+if addonTable.Skins.IsAddOnLoading("ElvUI") then
   addonTable.Skins.RegisterSkin(BAGANATOR_L_ELVUI, "elvui", LoadSkin, SkinFrame, SetConstants, {
     {
       type = "checkbox",

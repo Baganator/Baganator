@@ -141,6 +141,6 @@ local function LoadSkin()
   B, C, L, DB = unpack(NDui)
 end
 
-if (select(4, C_AddOns.GetAddOnInfo("NDui"))) then
+if addonTable.Skins.IsAddOnLoading("NDui") then
   addonTable.Skins.RegisterSkin(BAGANATOR_L_NDUI, "ndui", LoadSkin, SkinFrame, SetConstants, {}, true)
 end

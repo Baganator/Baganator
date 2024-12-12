@@ -25,6 +25,7 @@ Core\Welcome.lua
 Core\Analytics.lua
 Core\Main.lua
 
+Skins\Utilities.lua
 Skins\Main.lua
 Skins\Blizzard.lua
 Skins\Dark.lua
