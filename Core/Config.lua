@@ -87,6 +87,8 @@ addonTable.Config.Options = {
   RECENT_TIMEOUT = "recent_timeout",
   ADD_TO_CATEGORY_BUTTONS = "add_to_category_buttons_2",
 
+  SAVED_SEARCHES = "saved_searches",
+
   SKINS = "skins",
   DISABLED_SKINS = "disabled_skins",
   CURRENT_SKIN = "current_skin",
@@ -194,6 +196,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.SKINS] = {},
   [addonTable.Config.Options.DISABLED_SKINS] = {},
   [addonTable.Config.Options.CURRENT_SKIN] = "blizzard",
+  [addonTable.Config.Options.SAVED_SEARCHES] = {},
 }
 
 addonTable.Config.IsCharacterSpecific = {

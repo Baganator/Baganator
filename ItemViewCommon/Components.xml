@@ -312,4 +312,25 @@
       </Layer>
     </Layers>
   </Button>
+
+  <Button name="BaganatorSavedSearchesButtonTemplate" inherits="BaganatorTooltipIconButtonTemplate" virtual="true" motionScriptsWhileDisabled="true">
+    <KeyValues>
+      <KeyValue key="tooltipHeader" value="BAGANATOR_L_SAVED_SEARCHES" type="global"/>
+    </KeyValues>
+    <Scripts>
+      <OnLoad>
+        Baganator.Skins.AddFrame("IconButton", self, {"savedsearches"})
+      </OnLoad>
+    </Scripts>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\SavedSearches.png">
+          <Size x="14" y="14"/>
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+  </Button>
 </Ui>

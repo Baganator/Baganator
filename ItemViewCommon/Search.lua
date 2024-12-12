@@ -122,10 +122,83 @@ end
 
 function BaganatorSearchWidgetMixin:SetSpacing(sideSpacing)
   self.SearchBox:ClearAllPoints()
-  self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing - 71, 0)
+  self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing - 106, 0)
   self.SearchBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset + 5, - 28)
+  self.SavedSearchesButton:ClearAllPoints()
+  self.SavedSearchesButton:SetPoint("LEFT", self.SearchBox, "RIGHT", 3, 0)
   self.GlobalSearchButton:ClearAllPoints()
-  self.GlobalSearchButton:SetPoint("LEFT", self.SearchBox, "RIGHT", 3, 0)
+  self.GlobalSearchButton:SetPoint("LEFT", self.SavedSearchesButton, "RIGHT", 3, 0)
   self.HelpButton:ClearAllPoints()
   self.HelpButton:SetPoint("LEFT", self.GlobalSearchButton, "RIGHT", 3, 0)
+end
+
+local function SaveSearch(label, search)
+  local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
+  local oldIndex = FindInTableIf(list, function(a) return a.label == label end)
+  if oldIndex then
+    list[oldIndex].search = search
+  else
+    table.insert(list, {label = label, search = search})
+    table.sort(list, function(a, b)
+      if a.label == b.label then
+        return a.search < b.search
+      else
+        return a.label < b.label
+      end
+    end)
+  end
+end
+
+local saveDialog = "Baganator_Save_Search_Dialog"
+StaticPopupDialogs[saveDialog] = {
+  text = BAGANATOR_L_CHOOSE_A_LABEL_FOR_THIS_SEARCH,
+  button1 = ACCEPT,
+  button2 = CANCEL,
+  hasEditBox = 1,
+  OnAccept = function(self)
+    SaveSearch(self.editBox:GetText(), self.data)
+  end,
+  EditBoxOnEnterPressed = function(self)
+    SaveSearch(self:GetText(), self:GetParent().data)
+    self:GetParent():Hide()
+  end,
+  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
+  editBoxWidth = 230,
+  maxLetters = 0,
+  timeout = 0,
+  hideOnEscape = 1,
+}
+
+function BaganatorSearchWidgetMixin:OpenSavedSearches()
+  MenuUtil.CreateContextMenu(self.SavedSearchesButton, function(menu, rootDescription)
+    local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
+    for _, details in ipairs(list) do
+      local button = rootDescription:CreateButton(details.label, function()
+        addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", details.search)
+      end)
+      button:AddInitializer(function(button, description, menu)
+        local delete = MenuTemplates.AttachAutoHideButton(button, "transmog-icon-remove")
+        delete:SetPoint("RIGHT")
+        delete:SetSize(16, 16)
+        delete.Texture:SetAtlas("transmog-icon-remove")
+        delete:SetScript("OnClick", function()
+          local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
+          local oldIndex = FindInTableIf(list, function(a) return a.label == details.label end)
+          if oldIndex then
+            table.remove(list, oldIndex)
+          end
+          menu:Close()
+        end)
+        MenuUtil.HookTooltipScripts(delete, function(tooltip)
+          GameTooltip_SetTitle(tooltip, DELETE);
+        end);
+      end)
+    end
+    if #list > 0 then
+      rootDescription:CreateDivider()
+    end
+    local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SAVE_SEARCH), function()
+      StaticPopup_Show(saveDialog, nil, nil, self.SearchBox:GetText())
+    end)
+  end)
 end
