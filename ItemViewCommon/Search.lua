@@ -197,8 +197,15 @@ function BaganatorSearchWidgetMixin:OpenSavedSearches()
     if #list > 0 then
       rootDescription:CreateDivider()
     end
-    local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SAVE_SEARCH), function()
-      StaticPopup_Show(saveDialog, nil, nil, self.SearchBox:GetText())
-    end)
+    if self.SearchBox:GetText() == "" then
+      local text = rootDescription:CreateTitle(GRAY_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SAVE_SEARCH))
+      text:SetTooltip(function(tooltip)
+        tooltip:AddLine(BAGANATOR_L_NOTHING_TO_SAVE)
+      end)
+    else
+      local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SAVE_SEARCH), function()
+        StaticPopup_Show(saveDialog, nil, nil, self.SearchBox:GetText())
+      end)
+    end
   end)
 end

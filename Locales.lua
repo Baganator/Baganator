@@ -365,6 +365,7 @@ L["THEME"] = "Theme"
 L["SAVED_SEARCHES"] = "Saved Searches"
 L["SAVE_SEARCH"] = "Save Search"
 L["CHOOSE_A_LABEL_FOR_THIS_SEARCH"] = "Choose a label for this search"
+L["NOTHING_TO_SAVE"] = "Nothing to save"
 
 L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
 L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
