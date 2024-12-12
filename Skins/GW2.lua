@@ -389,6 +389,6 @@ local function LoadSkin()
   HideBagButtons()
 end
 
-if (select(4, C_AddOns.GetAddOnInfo("GW2_UI"))) then
+if (C_AddOns.IsAddOnLoaded("GW2_UI")) then
   addonTable.Skins.RegisterSkin(BAGANATOR_L_GW2_UI, "gw2_ui", LoadSkin, SkinFrame, SetConstants, {}, true)
 end
