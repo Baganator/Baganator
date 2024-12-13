@@ -44,6 +44,20 @@ local allSortKeys = {
     "invertedItemCount",
     "itemLink",
   },
+  ["name"] = {
+    "priority",
+    "sortedClassID",
+    "sortedInvSlotID",
+    "sortedSubClassID",
+    "invertedExpansion", -- table.remove removes this on classic
+    "itemName",
+    "invertedItemLevelRaw",
+    "invertedQuality",
+    "invertedCraftingQuality",
+    "invertedItemID",
+    "invertedItemCount",
+    "itemLink",
+  },
   ["item-level"] = {
     "priority",
     "invertedItemLevelEquipment",
@@ -78,6 +92,7 @@ local allSortKeys = {
 -- content to sort among
 if addonTable.Constants.IsClassic then
   table.remove(allSortKeys["quality"], tIndexOf(allSortKeys["quality"], "invertedExpansion"))
+  table.remove(allSortKeys["name"], tIndexOf(allSortKeys["type"], "invertedExpansion"))
   table.remove(allSortKeys["type"], tIndexOf(allSortKeys["type"], "invertedExpansion"))
   table.remove(allSortKeys["item-level"], tIndexOf(allSortKeys["item-level"], "invertedExpansion"))
 end

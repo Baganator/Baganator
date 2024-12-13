@@ -806,6 +806,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   do
     local allModes = {
       {"type", BAGANATOR_L_ITEM_TYPE},
+      {"name", BAGANATOR_L_ITEM_NAME},
       {"quality", BAGANATOR_L_ITEM_QUALITY},
       {"item-level", BAGANATOR_L_ITEM_LEVEL},
       {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
