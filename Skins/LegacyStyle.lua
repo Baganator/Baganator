@@ -39,6 +39,8 @@ local function GenerateButton(parent)
   return button
 end
 
+local allButtonFrames = {}
+
 local hidden = CreateFrame("Frame")
 hidden:Hide()
 local skinners = {
@@ -49,9 +51,11 @@ local skinners = {
   Button = function(button)
   end,
   ButtonFrame = function(frame, tags)
+    table.insert(allButtonFrames, frame)
     RemoveFrameTextures(frame)
     NineSliceUtil.ApplyLayoutByName(frame.NineSlice or frame, "TooltipDefaultDarkLayout")
     frame.NineSlice:SetFrameLevel(frame:GetFrameLevel() - 1)
+    frame.NineSlice.Center:SetAlpha(1 - addonTable.Config.Get("skins.legacystyle.view_transparency"))
 
     if tags.backpack then
       for _, b in ipairs(frame.AllFixedButtons) do
@@ -145,17 +149,12 @@ local skinners = {
         end)
         table.insert(frame.AllFixedButtons, button)
       end
-
       do
         local text = frame:GetTitleText()
-        text:SetPoint("LEFT", frame.TopButtons[#frame.TopButtons], "RIGHT")
-        text:SetPoint("RIGHT", frame.AllFixedButtons[#frame.AllFixedButtons], "LEFT")
-        local texture = frame:CreateTexture(nil, "ARTWORK")
-        texture:SetPoint("LEFT", text)
-        texture:SetPoint("RIGHT", text)
-        texture:SetPoint("BOTTOM", text, 0, -2)
-        texture:SetHeight(10)
-        texture:SetAtlas("QuestLog-header-glow-yellow")
+        text:SetHeight(16)
+        text:SetJustifyH("LEFT")
+        text:SetPoint("LEFT", frame.TopButtons[#frame.TopButtons], "RIGHT", 10, 0)
+        text:SetPoint("RIGHT", frame.AllFixedButtons[#frame.AllFixedButtons], "LEFT", -10, 0)
       end
     end
   end,
@@ -208,6 +207,26 @@ local function SetConstants()
 end
 
 local function LoadSkin()
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
+    if settingName == "skins.legacystyle.view_transparency" then
+      for _, frame in ipairs(allButtonFrames) do
+        frame.NineSlice.Center:SetAlpha(1 - addonTable.Config.Get("skins.legacystyle.view_transparency"))
+      end
+    end
+  end)
 end
 
-addonTable.Skins.RegisterSkin(BAGANATOR_L_LEGACY_STYLE, "legacystyle", LoadSkin, SkinFrame, SetConstants, {})
+addonTable.Skins.RegisterSkin(BAGANATOR_L_LEGACY_STYLE, "legacystyle", LoadSkin, SkinFrame, SetConstants, {
+  {
+    type = "slider",
+    min = 0,
+    max = 100,
+    lowText = "0%",
+    highText = "100%",
+    scale = 100,
+    text = BAGANATOR_L_TRANSPARENCY,
+    valuePattern = BAGANATOR_L_PERCENTAGE_PATTERN,
+    option = "view_transparency",
+    default = 0.4,
+  },
+})
