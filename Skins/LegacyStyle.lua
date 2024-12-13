@@ -75,8 +75,8 @@ local skinners = {
       hooksecurefunc(frame, "OnFinished", function(self)
         local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
         self.ScrollBox:ClearAllPoints()
-        self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -28 - topSpacing / 4 + 2)
-        self:SetHeight(self:GetHeight() - 23)
+        self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -32 - topSpacing / 4 + 2)
+        self:SetHeight(self:GetHeight() - 15)
       end)
 
       for _, b in ipairs(frame.AllFixedButtons) do
@@ -90,7 +90,7 @@ local skinners = {
 
       do
         local button = GenerateButton(frame)
-        button:SetPoint("TOPLEFT", 4, -4)
+        button:SetPoint("TOPLEFT", 8, -8)
         button:SetScript("OnShow", function()
           SetPortraitTexture(button.tex, "player", true)
         end)
@@ -170,7 +170,7 @@ local skinners = {
         local button = GenerateButton(frame)
         button.tooltipText = BAGANATOR_L_CUSTOMISE_BAGANATOR
         button:SetPoint("RIGHT", frame.CloseButton, "LEFT", -3, 0)
-        button:SetPoint("TOP", frame, 0, -4)
+        button:SetPoint("TOP", frame, 0, -8)
         button.tex:SetTexture("interface/icons/trade_engineering.blp")
         button:SetScript("OnClick", function()
           frame.CustomiseButton:Click()
@@ -179,7 +179,7 @@ local skinners = {
       end
       do
         local text = frame:GetTitleText()
-        text:SetHeight(16)
+        text:SetHeight(24)
         text:SetJustifyH("LEFT")
         text:SetPoint("LEFT", frame.TopButtons[#frame.TopButtons], "RIGHT", 10, 0)
         text:SetPoint("RIGHT", frame.AllFixedButtons[#frame.AllFixedButtons], "LEFT", -10, 0)
