@@ -58,6 +58,13 @@ local skinners = {
     frame.NineSlice.Center:SetAlpha(1 - addonTable.Config.Get("skins.legacystyle.view_transparency"))
 
     if tags.backpack then
+      hooksecurefunc(frame, "OnFinished", function(self)
+        local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+        self.ScrollBox:ClearAllPoints()
+        self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -28 - topSpacing / 4 + 2)
+        self:SetHeight(self:GetHeight() - 28)
+      end)
+
       for _, b in ipairs(frame.AllFixedButtons) do
         b:SetParent(hidden)
       end
@@ -134,9 +141,16 @@ local skinners = {
         button.tex:SetTexture("interface/icons/inv_misc_spyglass_03")
         button:SetScript("OnClick", function()
           frame.SearchWidget:SetShown(not frame.SearchWidget:IsShown())
+          frame:GetTitleText():SetShown(not frame.SearchWidget:IsShown())
+          frame:OnFinished()
         end)
         frame.SearchWidget:Hide()
         table.insert(frame.TopButtons, button)
+        hooksecurefunc(frame.SearchWidget, "SetSpacing", function(self, sideSpacing)
+          self.SearchBox:ClearAllPoints()
+          self.SearchBox:SetPoint("TOPLEFT", button, "TOPRIGHT", sideSpacing, 1)
+          self.SearchBox:SetPoint("RIGHT", self:GetParent(), "RIGHT", -sideSpacing - 150, 0)
+        end)
       end
       do
         local button = GenerateButton(frame)
@@ -198,12 +212,7 @@ local function SkinFrame(details)
 end
 
 local function SetConstants()
-  if addonTable.Constants.IsRetail then
-    addonTable.Constants.ButtonFrameOffset = 6
-  end
-  if addonTable.Constants.IsClassic then
-    addonTable.Constants.ButtonFrameOffset = 0
-  end
+  addonTable.Constants.ButtonFrameOffset = 0
 end
 
 local function LoadSkin()
