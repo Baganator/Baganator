@@ -39,6 +39,20 @@ local function GenerateButton(parent)
   return button
 end
 
+local function RestyleButton(button)
+  button.Left:Hide()
+  button.Right:Hide()
+  button.Middle:Hide()
+  button:SetSize(20, 20)
+  button:SetHighlightAtlas("bags-glow-blue")
+
+  button.tex = button:CreateTexture(nil, "BACKGROUND")
+  button.tex:SetAllPoints()
+  button.border = button:CreateTexture(nil, "BORDER")
+  button.border:SetTexture("Interface/SpellBook/guildspellbooktabiconframe")
+  button.border:SetAllPoints()
+end
+
 local allButtonFrames = {}
 
 local hidden = CreateFrame("Frame")
@@ -62,7 +76,7 @@ local skinners = {
         local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
         self.ScrollBox:ClearAllPoints()
         self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -28 - topSpacing / 4 + 2)
-        self:SetHeight(self:GetHeight() - 28)
+        self:SetHeight(self:GetHeight() - 23)
       end)
 
       for _, b in ipairs(frame.AllFixedButtons) do
@@ -149,7 +163,7 @@ local skinners = {
         hooksecurefunc(frame.SearchWidget, "SetSpacing", function(self, sideSpacing)
           self.SearchBox:ClearAllPoints()
           self.SearchBox:SetPoint("TOPLEFT", button, "TOPRIGHT", sideSpacing, 1)
-          self.SearchBox:SetPoint("RIGHT", self:GetParent(), "RIGHT", -sideSpacing - 150, 0)
+          self.SearchBox:SetPoint("RIGHT", frame.CustomiseButton, "LEFT", -sideSpacing - 60, 0)
         end)
       end
       do
@@ -171,6 +185,10 @@ local skinners = {
         text:SetPoint("RIGHT", frame.AllFixedButtons[#frame.AllFixedButtons], "LEFT", -10, 0)
       end
     end
+  end,
+  IconButton = function(button)
+    button:SetSize(20, 20)
+    RestyleButton(button)
   end,
   SearchBox = function(frame)
   end,
