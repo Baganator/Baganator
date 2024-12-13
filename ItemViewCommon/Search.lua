@@ -179,6 +179,9 @@ StaticPopupDialogs[saveDialog] = {
   button1 = ACCEPT,
   button2 = CANCEL,
   hasEditBox = 1,
+  OnShow = function(self)
+    self.editBox:SetFocus()
+  end,
   OnAccept = function(self)
     SaveSearch(self.editBox:GetText(), self.data)
   end,
