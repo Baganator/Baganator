@@ -33,7 +33,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
   local function Update(_, character)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
-      self:UpdateCurrencyTextPositions(self.allowedWidth)
+      self:UpdateCurrencyTextPositions(self.allowedWidth, self.nextRowWidth)
     end
   end
   Syndicator.CallbackRegistry:RegisterCallback("CurrencyCacheUpdate", Update)
@@ -44,7 +44,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
     if settingName == addonTable.Config.Options.CURRENCIES_TRACKED then
       if self.lastCharacter then
         self:UpdateCurrencies(self.lastCharacter)
-        self:UpdateCurrencyTextPositions(self.allowedWidth)
+        self:UpdateCurrencyTextPositions(self.allowedWidth, self.nextRowWidth)
       end
     end
   end)
@@ -73,7 +73,7 @@ function BaganatorCurrencyWidgetMixin:OnShow()
   addonTable.ItemViewCommon.SyncCurrenciesTrackedWithBlizzard()
   if self.currencyUpdateNeeded and self.lastCharacter then
     self:UpdateCurrencies(self.lastCharacter)
-    self:UpdateCurrencyTextPositions(self.allowedWidth)
+    self:UpdateCurrencyTextPositions(self.allowedWidth, self.nextRowWidth)
   end
 end
 
@@ -152,21 +152,33 @@ local function ShowCurrencies(self, character)
   end
 end
 
-function BaganatorCurrencyWidgetMixin:UpdateCurrencyTextPositions(allowedWidth)
+function BaganatorCurrencyWidgetMixin:UpdateCurrencyTextPositions(allowedWidth, nextRowWidth)
   if not allowedWidth then
     return
   end
+  nextRowWidth = nextRowWidth or allowedWidth
 
   self.allowedWidth = allowedWidth
+  self.nextRowWidth = nextRowWidth
 
   local baseX, baseY = -10, 10
   local xDiff, yDiff = -15, 20
   local root = self:GetParent()
   local offsetX, offsetY = -self.Money:GetWidth() + xDiff, 0
+
+  if self.allowedWidth < self.Money:GetWidth() then
+    offsetY = offsetY + yDiff
+    allowedWidth = nextRowWidth
+    self.Money:SetPoint("BOTTOMRIGHT", root, 0 + baseX, offsetY + baseY)
+  else
+    self.Money:SetPoint("BOTTOMRIGHT", root, -10, 10)
+  end
+
   for _, fs in ipairs(self.activeCurrencyTexts) do
     if math.abs(offsetX - fs:GetWidth()) > allowedWidth then
       offsetY = offsetY + yDiff
       offsetX = 0
+      allowedWidth = nextRowWidth
     end
     fs:SetPoint("BOTTOMRIGHT", root, offsetX + baseX, offsetY + baseY)
     offsetX = offsetX + xDiff - fs:GetWidth()

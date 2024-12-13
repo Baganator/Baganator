@@ -173,7 +173,7 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
   -- out-of-sync with everything else
   self.ButtonVisibility:Update()
 
-  self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 10)
+  self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 10, self.Container:GetWidth())
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 

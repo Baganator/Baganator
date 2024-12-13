@@ -184,7 +184,7 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   self:OnFinished()
 
-  self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 5)
+  self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 5, self.Container:GetWidth())
 
   self:GetParent():OnTabFinished()
 end

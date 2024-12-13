@@ -170,7 +170,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
     self:OnFinished()
 
-    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - (lastButton and lastButton:GetWidth() + 10 or 0))
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - (lastButton and lastButton:GetWidth() + 10 or 0), self.Container:GetWidth())
 
     local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
     if self.searchToApply then
