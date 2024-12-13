@@ -254,6 +254,6 @@ addonTable.Skins.RegisterSkin(BAGANATOR_L_LEGACY_STYLE, "legacystyle", LoadSkin,
     text = BAGANATOR_L_TRANSPARENCY,
     valuePattern = BAGANATOR_L_PERCENTAGE_PATTERN,
     option = "view_transparency",
-    default = 0.4,
+    default = 0.5,
   },
 })
