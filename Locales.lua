@@ -353,6 +353,7 @@ L["DARK"] = "Dark"
 L["GW2_UI"] = "GW2 UI"
 L["ELVUI"] = "ElvUI"
 L["NDUI"] = "NDui"
+L["LEGACY_STYLE"] = "Legacy Style"
 
 L["REMOVE_BORDERS"] = "Remove borders"
 L["HIDE_ICON_BACKGROUNDS"] = "Hide icon backgrounds"

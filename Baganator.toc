@@ -32,6 +32,7 @@ Skins\Dark.lua
 Skins\ElvUI.lua
 Skins\GW2.lua
 Skins\NDui.lua
+Skins\LegacyStyle.lua
 
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
