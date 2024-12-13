@@ -107,6 +107,14 @@ function BaganatorSearchWidgetMixin:OnLoad()
   end)
 
   addonTable.Skins.AddFrame("SearchBox", self.SearchBox)
+
+  addonTable.CallbackRegistry:RegisterCallback("SetButtonsShown", function(_, shown)
+    self.showButtons = shown
+    if self:IsVisible() and self.sideSpacing then
+      self:SetSpacing(self.sideSpacing)
+    end
+  end, self)
+  self.showButtons = true
 end
 
 function BaganatorSearchWidgetMixin:OnShow()
@@ -121,15 +129,31 @@ function BaganatorSearchWidgetMixin:OnHide()
 end
 
 function BaganatorSearchWidgetMixin:SetSpacing(sideSpacing)
-  self.SearchBox:ClearAllPoints()
-  self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing - 106, 0)
-  self.SearchBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset + 5, - 28)
-  self.SavedSearchesButton:ClearAllPoints()
-  self.SavedSearchesButton:SetPoint("LEFT", self.SearchBox, "RIGHT", 3, 0)
-  self.GlobalSearchButton:ClearAllPoints()
-  self.GlobalSearchButton:SetPoint("LEFT", self.SavedSearchesButton, "RIGHT", 3, 0)
-  self.HelpButton:ClearAllPoints()
-  self.HelpButton:SetPoint("LEFT", self.GlobalSearchButton, "RIGHT", 3, 0)
+  self.sideSpacing = sideSpacing
+
+  if self.showButtons then
+    self.SearchBox:ClearAllPoints()
+    self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing - 106, 0)
+    self.SearchBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset + 5, - 28)
+    self.SavedSearchesButton:ClearAllPoints()
+    self.SavedSearchesButton:SetPoint("LEFT", self.SearchBox, "RIGHT", 3, 0)
+    self.GlobalSearchButton:ClearAllPoints()
+    self.GlobalSearchButton:SetPoint("LEFT", self.SavedSearchesButton, "RIGHT", 3, 0)
+    self.HelpButton:ClearAllPoints()
+    self.HelpButton:SetPoint("LEFT", self.GlobalSearchButton, "RIGHT", 3, 0)
+
+    self.SavedSearchesButton:Show()
+    self.GlobalSearchButton:Show()
+    self.HelpButton:Show()
+  else
+    self.SearchBox:ClearAllPoints()
+    self.SearchBox:SetPoint("RIGHT", self:GetParent(), -sideSpacing, 0)
+    self.SearchBox:SetPoint("TOPLEFT", self:GetParent(), "TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset + 5, - 28)
+
+    self.SavedSearchesButton:Hide()
+    self.GlobalSearchButton:Hide()
+    self.HelpButton:Hide()
+  end
 end
 
 local function SaveSearch(label, search)

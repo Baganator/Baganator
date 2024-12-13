@@ -72,6 +72,7 @@ addonTable.Constants.Events = {
   "TransferCancel",
 
   "PropagateAlt",
+  "SetButtonsShown",
 
   "FrameGroupSwapped",
 }
