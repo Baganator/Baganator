@@ -42,17 +42,17 @@ local groupingsToLabels = {}
 local groupingGetters = {}
 do
   groupings["expansion"] = {
-    "The War Within",
-    "Dragonflight",
-    "Shadowlands",
-    "Battle for Azeroth",
-    "Legion",
-    "Warlords of Draenor",
-    "Mists of Pandaria",
-    "Cataclysm",
-    "Wrath of the Lich King",
-    "The Burning Crusade",
-    "Classic",
+    BAGANATOR_L_EXPANSION_TWW,
+    BAGANATOR_L_EXPANSION_DF,
+    BAGANATOR_L_EXPANSION_SL,
+    BAGANATOR_L_EXPANSION_BFA,
+    BAGANATOR_L_EXPANSION_LEG,
+    BAGANATOR_L_EXPANSION_WOD,
+    BAGANATOR_L_EXPANSION_MOP,
+    BAGANATOR_L_EXPANSION_CTM,
+    BAGANATOR_L_EXPANSION_WLK,
+    BAGANATOR_L_EXPANSION_TBC,
+    BAGANATOR_L_EXPANSION_CLASSIC,
   }
   groupingsToLabels["expansion"] = {}
   for index, label in ipairs(groupings["expansion"]) do
