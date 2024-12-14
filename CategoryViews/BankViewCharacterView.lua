@@ -36,7 +36,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
-    elseif settingName == addonTable.Config.Options.SORT_METHOD then
+    elseif settingName == addonTable.Config.Options.SORT_METHOD or settingName == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end

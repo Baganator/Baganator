@@ -43,7 +43,7 @@ function BaganatorCategoryViewBackpackViewMixin:OnLoad()
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == addonTable.Config.Options.SORT_METHOD then
+    elseif settingName == addonTable.Config.Options.SORT_METHOD or settingName == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
       self.LayoutManager:SettingChanged(settingName)
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)

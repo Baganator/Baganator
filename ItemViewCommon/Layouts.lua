@@ -677,7 +677,7 @@ function BaganatorLiveCategoryLayoutMixin:OnHide()
 end
 
 function BaganatorLiveCategoryLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD then
+  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD or setting == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
     self.reflow = true
   end
   if tIndexOf(UpdateTextureSettings, setting) ~= nil then
@@ -1023,7 +1023,7 @@ function BaganatorCachedCategoryLayoutMixin:OnHide()
 end
 
 function BaganatorCachedCategoryLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD then
+  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD or setting == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
     self.reflow = true
   end
   if tIndexOf(UpdateTextureSettings, setting) ~= nil then
