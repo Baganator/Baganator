@@ -147,3 +147,4 @@ API\Sorting.lua
 API\Pawn.lua
 
 Compatibility\VanillaEngraving.lua
+Compatibility\Lockpicking.lua

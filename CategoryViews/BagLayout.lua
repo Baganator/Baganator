@@ -63,6 +63,13 @@ local function Prearrange(isLive, bagID, bag, bagType)
         if info.setInfo then
           info.guid = C_Item.GetItemGUID(location)
         end
+        if info.hasLoot and not info.isBound then
+          -- Ungroup lockboxes always
+          local classID, subClassID = select(6, C_Item.GetItemInfoInstant(info.itemID))
+          if classID == Enum.ItemClass.Miscellaneous and subClassID == 0 then
+            info.guid = C_Item.GetItemGUID(location)
+          end
+        end
       end
       info.bagID = bagID
       info.slotID = slotIndex
@@ -80,7 +87,7 @@ local function Prearrange(isLive, bagID, bag, bagType)
         end
         linkMap[info.itemLink] = info.keyLink
       end
-      info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. tostring(info.guid)
+      info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. info.guid
       table.insert(everything, info)
     else
       table.insert(emptySlots, {bagID = bagID, itemCount = 1, slotID = slotIndex, key = bagType, bagType = bagType, keyLink = bagType})
