@@ -188,7 +188,7 @@ local skinners = {
   ItemButton = function(frame, tags)
     frame.bgrSimpleHooked = true
     local r, g, b = Lighten(color.r, color.g, color.b, -0.2)
-    if not tags.containerbag then
+    if not tags.containerBag then
       frame.SlotBackground:SetColorTexture(r, g, b, 0.3)
       frame.SlotBackground:SetPoint("CENTER")
       frame.SlotBackground:SetSize(35, 35)

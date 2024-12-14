@@ -33,7 +33,7 @@ hidden:Hide()
 local skinners = {
   ItemButton = function(frame, tags)
     frame.bgrElvUISkin = true
-    if not tags.containerbag then
+    if not tags.containerBag then
       frame.SlotBackground:SetParent(hidden)
     end
     frame.SlotBackground:SetTexCoord(unpack(E.TexCoords))

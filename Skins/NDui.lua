@@ -28,7 +28,7 @@ local hidden = CreateFrame("Frame")
 hidden:Hide()
 local skinners = {
   ItemButton = function(button, tags)
-    if not tags.containerbag then
+    if not tags.containerBag then
       button.SlotBackground:SetParent(hidden)
     end
     button:SetNormalTexture(0)

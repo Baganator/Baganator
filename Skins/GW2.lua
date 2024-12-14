@@ -132,7 +132,7 @@ local function SkinContainerFrame(frame, topButtons, topRightButtons)
   end)
 end
 
-local function SetupIconButton(button, texture)
+local function SetupIconButton(button, atlasOrTexture)
   if button.Icon2 then
     button.Icon2:Hide()
   end
@@ -142,9 +142,15 @@ local function SetupIconButton(button, texture)
   button.Right:Hide()
   button.Middle:Hide()
   button:ClearHighlightTexture()
-  button:SetHighlightTexture(texture)
+  if C_Texture.GetAtlasInfo(atlasOrTexture) then
+    button:SetHighlightAtlas(texture)
+    button.Icon:SetAtlas(texture)
+  else
+    button:SetHighlightTexture(texture)
+    button.Icon:SetTexture(texture)
+  end
+
   button:GetHighlightTexture():SetTexCoord(0,1,0,1)
-  button.Icon:SetTexture(texture)
   button.Icon:SetTexCoord(0,1,0,1)
 end
 
@@ -186,6 +192,8 @@ local skinners = {
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/MainMenuMicroButton-Up")
     elseif tags.bagSlots then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/BagMicroButton-Up")
+    elseif tags.topLeft then
+      SetupIconButton(button, button:GetAtlas() or button:GetTexture())
     else
       button.Icon:SetDrawLayer("OVERLAY")
       if button.Icon2 then
@@ -373,7 +381,7 @@ local function LoadSkin()
 
   if addonTable.Utilities.IsMasqueApplying() then
     skinners.ItemButton = function(frame, tags)
-      if not tags.containerbag then
+      if not tags.containerBag then
         frame.SlotBackground:SetParent(hidden)
       end
     end

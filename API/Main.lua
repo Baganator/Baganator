@@ -310,17 +310,62 @@ end
 
 -- label: User facing label for the widget's owner
 -- id: Internal id for the widget's owner
--- viewType, "backpack"
+-- viewType, "backpack", "character_bank", "warband_bank"
 -- position: "bottom_left" and "top_left"
 -- frame: The region to position (note: frame:GetWidth() should return an
 -- accurate value)
+-- callback: Function returning the frame
 function Baganator.API.RegisterRegion(label, id, viewType, position, frame)
-  assert(type(label) == "string" and type(id) == "string" and tIndexOf(validViews, viewType) and tIndexOf(validPositions, position) and frame.SetParent and frame.ClearAllPoints and frame.SetPoint and frame.GetWidth)
+  assert(type(label) == "string" and type(id) == "string" and tIndexOf(validViews, viewType) and tIndexOf(validPositions, position) and frame.SetParent and frame.ClearAllPoints and frame.SetPoint and frame.GetWidth and FindInTableIf(addonTable.API.customRegions[viewType][position], function(a) return a.id == id end) == nil)
 
   table.insert(addonTable.API.customRegions[viewType][position], {
     label = label,
     id = id,
-    frame = frame
+    callback = function() return frame end,
+  })
+end
+
+local generators = {}
+local buttons = {}
+local skin
+addonTable.CallbackRegistry:RegisterCallback("FrameGroupSwapped", function()
+  skin = Baganator.API.Skins.GetCurrentSkin()
+
+  for id, bySkin in pairs(buttons) do
+    if not bySkin[skin] then
+      bySkin[skin] = generators[id]()
+    end
+  end
+end)
+
+function Baganator.API.RegisterIconButton(label, id, viewType, position, atlasOrTexture, OnClick)
+  assert(type(label) == "string" and type(id) == "string" and tIndexOf(validViews, viewType) and tIndexOf(validPositions, position) and type(OnClick) == "function" and FindInTableIf(addonTable.API.customRegions[viewType][position], function(a) return a.id == id end) == nil)
+  generators[id] = function()
+    local b = CreateFrame("Button", nil, UIParent, "BaganatorTooltipIconButtonTemplate")
+    b.Icon = b:CreateTexture()
+    b.Icon:SetSize(14, 14)
+    b.Icon:SetPoint("CENTER")
+    if C_Texture.GetAtlasInfo(atlasOrTexture) then
+      b.Icon:SetAtlas(atlasOrTexture)
+    else
+      b.Icon:SetTexture(atlasOrTexture)
+    end
+    if position == "top_left" then
+      addonTable.Skins.AddFrame("IconButton", b, {"topLeft"})
+    end
+
+    return b
+  end
+
+  buttons[id] = {}
+  if skin then
+    buttons[id][skin] = generators[id]()
+  end
+
+  table.insert(addonTable.API.customRegions[viewType][position], {
+    label = label,
+    id = id,
+    callback = function() return buttons[id][skin] end,
   })
 end
 
