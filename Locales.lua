@@ -371,6 +371,8 @@ L["NOTHING_TO_SAVE"] = "Nothing to save"
 L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
 L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
 
+L["NO_PASTE_MESSAGE"] = "You have the Paste addon installed, this will cause search and visual issues with Baganator. Use PasteNG instead."
+
 
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
