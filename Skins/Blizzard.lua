@@ -46,7 +46,7 @@ local allButtonFrames = {}
 
 local skinners = {
   ItemButton = function(frame, tags)
-    if not tags.containerbag then
+    if not tags.containerBag then
       frame.SlotBackground:SetShown(showSlots)
       table.insert(allItemButtons, frame)
     end

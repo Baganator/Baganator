@@ -28,7 +28,7 @@ local hidden = CreateFrame("Frame")
 hidden:Hide()
 local skinners = {
   ItemButton = function(button, tags)
-    if not tags.containerbag then
+    if not tags.containerBag then
       button.SlotBackground:SetParent(hidden)
     end
     button:SetNormalTexture(0)
@@ -132,7 +132,7 @@ end
 local function LoadSkin()
   if addonTable.Utilities.IsMasqueApplying() then
     skinners.ItemButton = function(frame, tags)
-      if not tags.containerbag then
+      if not tags.containerBag then
         frame.SlotBackground:SetParent(hidden)
       end
     end

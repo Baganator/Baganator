@@ -151,7 +151,7 @@ end
 local skinners = {
   ItemButton = function(frame, tags)
     frame.bgrGW2SkinHooked = true
-    if not tags.containerbag then
+    if not tags.containerBag then
       frame.SlotBackground:SetParent(GW.HiddenFrame)
     end
     frame.SlotBackground:SetTexCoord(0.07, 0.93, 0.07, 0.93)
@@ -373,7 +373,7 @@ local function LoadSkin()
 
   if addonTable.Utilities.IsMasqueApplying() then
     skinners.ItemButton = function(frame, tags)
-      if not tags.containerbag then
+      if not tags.containerBag then
         frame.SlotBackground:SetParent(hidden)
       end
     end

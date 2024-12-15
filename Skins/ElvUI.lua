@@ -33,7 +33,7 @@ hidden:Hide()
 local skinners = {
   ItemButton = function(frame, tags)
     frame.bgrElvUISkin = true
-    if not tags.containerbag then
+    if not tags.containerBag then
       frame.SlotBackground:SetParent(hidden)
     end
     frame.SlotBackground:SetTexCoord(unpack(E.TexCoords))
@@ -192,7 +192,7 @@ local function LoadSkin()
 
   if addonTable.Utilities.IsMasqueApplying() then
     skinners.ItemButton = function(frame, tags)
-      if not tags.containerbag then
+      if not tags.containerBag then
         frame.SlotBackground:SetParent(hidden)
       end
     end
