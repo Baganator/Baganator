@@ -399,6 +399,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   self:SetupBlizzardFramesForTab()
   self:HighlightCurrentTab()
 
+  for _, tab in ipairs(self.Tabs) do
+    tab:SetShown(not self.BankMissingHint:IsShown())
+  end
+
   if self.BankMissingHint:IsShown() then
     -- Ensure bank missing hint has enough space to display
     local minWidth = self.BankMissingHint:GetWidth() + 40
