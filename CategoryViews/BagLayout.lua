@@ -72,9 +72,9 @@ local function Prearrange(isLive, bagID, bag, bagType)
           end
         end
       end
-      info.bagID = bagID
-      info.slotID = slotIndex
     end
+    info.bagID = bagID
+    info.slotID = slotIndex
     if info.itemID then
       info.guid = info.guid or ""
       info.isUpgradeGetter = upgradePlugin and function() local _, result = pcall(upgradePlugin, info.itemLink); return result == true end
@@ -204,7 +204,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
   local emptyDetails = FindValueInTableIf(composed.details, function(a) return a.emptySlots end)
   local splitEmpty = nil
   if emptyDetails then
-    local slots = {}
+    local slots = emptyDetails.results
     if not addonTable.Config.Get(addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS) then
       splitEmpty = slots
       for _, bagType in ipairs(emptySlotsOrder) do
@@ -214,6 +214,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
           table.insert(slots, emptySlotsByType[bagType][1])
         end
       end
+      table.sort(splitEmpty, function(a, b) return a.indexE < b.indexE end)
     else
       for _, bagType in ipairs(emptySlotsOrder) do
         local entry = CopyTable(emptySlotsByType[bagType][1])
@@ -457,6 +458,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
     local s1 = debugprofilestop()
 
     local emptySlotsByType, emptySlotsOrder, everything = {}, {}, {}
+    local startIndex = 0
     for index, bagID in ipairs(bagIndexes) do
       if allBags[index] then
         local result = Prearrange(container.isLive, bagID, allBags[index], bagTypes[index])
@@ -464,6 +466,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
         local everythingIndex = #everything + 1
         for _, item in ipairs(result.everything) do
           everything[everythingIndex] = item
+          item.indexE = startIndex + item.slotID
           everythingIndex = everythingIndex + 1
         end
         if #result.emptySlots > 0 then
@@ -475,10 +478,12 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
           local emptySlotsTyped = emptySlotsByType[bagTypes[index]]
           local emptySlotIndex = #emptySlotsTyped + 1
           for _, item in ipairs(result.emptySlots) do
+            item.indexE = startIndex + item.slotID
             emptySlotsTyped[emptySlotIndex] = item
             emptySlotIndex = emptySlotIndex + 1
           end
         end
+        startIndex = startIndex + #result.everything + #result.emptySlots
       end
     end
     self.updatedBags = {}
