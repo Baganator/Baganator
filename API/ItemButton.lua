@@ -37,6 +37,7 @@ local expansionIDToText = {
   [7] = "BfA",
   [8] = "SL",
   [9] = "DF",
+  [10] = "TWW",
 }
 
 local function CacheSettings()
