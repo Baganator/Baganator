@@ -120,7 +120,6 @@ function addonTable.CategoryViews.ComposeCategories(everything)
   local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
   local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
   local categoryKeys = {}
-  local emptySlots = {index = -1, section = ""}
   local currentSection = ""
   local prevSection = ""
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
@@ -188,11 +187,11 @@ function addonTable.CategoryViews.ComposeCategories(everything)
           source = source,
           index = #allDetails + 1,
           section = currentSection,
-          search = "________" .. (#allDetails + 1),
-          priority = 0,
+          search = category.search or "________" .. (#allDetails + 1),
+          priority = category.priorityOffset + priority,
           auto = true,
           emptySlots = true,
-          label = BAGANATOR_L_EMPTY,
+          label = category.name,
         }
       else
         allDetails[#allDetails + 1] = {
