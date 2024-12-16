@@ -301,6 +301,13 @@ tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
     name = BAGANATOR_L_EMPTY,
     emptySlots = true,
   },
+  {
+    key = "remaining_slots",
+    name = BAGANATOR_L_CATEGORY_REMAINING_SLOTS,
+    search = "",
+    priorityOffset = -90,
+    emptySlots = true,
+  },
 })
 
 addonTable.CategoryViews.Constants.SourceToCategory = {}
