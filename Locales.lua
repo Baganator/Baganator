@@ -112,6 +112,7 @@ L["DISCORD_DESCRIPTION"] = "Updates, feature suggestions and support"
 L["BY_PLUSMOUSE"] = "by plusmouse"
 L["CONSIDER_SUPPORTING_DEVELOPMENT"] = "|cff04cca4Consider Supporting Development|r"
 L["DONATE"] = "Donate"
+L["LINK"] = "Link"
 
 L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
 L["BUY_REAGENT_BANK"] = "Buy Reagent Bank"

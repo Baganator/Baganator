@@ -695,7 +695,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     }
 
     local button = CreateFrame("Button", nil, donateFrame, "UIPanelDynamicResizeButtonTemplate")
-    button:SetText("Buy Me A Coffee")
+    button:SetText(BAGANATOR_L_LINK)
     DynamicResizeButton_Resize(button)
     button:SetPoint("LEFT", donateFrame, "CENTER", -35, 0)
     button:SetScript("OnClick", function()
