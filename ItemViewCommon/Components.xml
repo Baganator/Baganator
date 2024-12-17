@@ -253,7 +253,7 @@
     </KeyValues>
     <Scripts>
       <OnLoad>
-        Baganator.Skins.AddFrame("IconButton", self, {"searchEverywhere"})
+        Baganator.Skins.AddFrame("IconButton", self, {"search"})
       </OnLoad>
     </Scripts>
     <Layers>
@@ -319,7 +319,7 @@
     </KeyValues>
     <Scripts>
       <OnLoad>
-        Baganator.Skins.AddFrame("IconButton", self, {"savedsearches"})
+        Baganator.Skins.AddFrame("IconButton", self, {"savedSearches"})
       </OnLoad>
     </Scripts>
     <Layers>
