@@ -136,8 +136,6 @@ local function SetupIconButton(button, texture)
   if button.Icon2 then
     button.Icon2:Hide()
   end
-  button:SetSize(30, 30)
-  button.Icon:SetSize(30, 30)
   button.Left:Hide()
   button.Right:Hide()
   button.Middle:Hide()
@@ -146,6 +144,19 @@ local function SetupIconButton(button, texture)
   button:GetHighlightTexture():SetTexCoord(0,1,0,1)
   button.Icon:SetTexture(texture)
   button.Icon:SetTexCoord(0,1,0,1)
+end
+
+local function SetLargeIconButtonSize(button)
+  button:SetSize(30, 30)
+  button.Icon:SetSize(30, 30)
+end
+
+local function SetLargeIconButtonBGRSize(button)
+  button.Icon:SetAlpha(0.5)
+  button.Icon:SetSize(25, 25)
+  button:GetHighlightTexture():ClearAllPoints()
+  button:GetHighlightTexture():SetPoint("CENTER")
+  button:GetHighlightTexture():SetSize(25, 25)
 end
 
 local skinners = {
@@ -176,16 +187,25 @@ local skinners = {
   IconButton = function(button, tags)
     if tags.sort then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/BagMicroButton-Up")
+      SetLargeIconButtonSize(button)
     elseif tags.bank then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/CollectionsMicroButton-Up")
+      SetLargeIconButtonSize(button)
     elseif tags.guildBank then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/GuildMicroButton-Up")
+      SetLargeIconButtonSize(button)
     elseif tags.allCharacters then
       SetupIconButton(button, addonTable.Constants.IsEra and "Interface/AddOns/Baganator/Assets/All_Characters.png" or "Interface/AddOns/GW2_UI/textures/icons/microicons/LFDMicroButton-Up")
+      SetLargeIconButtonSize(button)
     elseif tags.customise then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/MainMenuMicroButton-Up")
+      SetLargeIconButtonSize(button)
     elseif tags.bagSlots then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/BagMicroButton-Up")
+      SetLargeIconButtonSize(button)
+    elseif tags.transfer then
+      SetupIconButton(button, "Interface/AddOns/Baganator/Assets/Transfer_White.png")
+      SetLargeIconButtonBGRSize(button)
     else
       button.Icon:SetDrawLayer("OVERLAY")
       if button.Icon2 then
