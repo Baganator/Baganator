@@ -682,7 +682,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       button1 = DONE,
       hasEditBox = 1,
       OnShow = function(self)
-        self.editBox:SetText("https://buymeacoffee.com/plusmouse")
+        self.editBox:SetText("https://linktr.ee/plusmouse")
         self.editBox:HighlightText()
       end,
       EditBoxOnEnterPressed = function(self)
