@@ -1,51 +1,5 @@
 local _, addonTable = ...
 
-local function ToHSL(r, g, b)
-  local M = math.max(r, g, b)
-  local m = math.min(r, g, b)
-
-  local c = M - m
-
-  local h_dash
-  if c == 0 then
-    h_dash = 0
-  elseif M == r then
-    h_dash = ((g - b) / c) % 6
-  elseif M == g then
-    h_dash = (b - r) / c + 2
-  elseif M == b then
-    h_dash = (r - g) / c + 4
-  end
-  local h = h_dash * 60
-
-  local l = 1/2 * (M + m)
-
-  local s
-  if l == 1 or l == 0 then
-    s = 0
-  else
-    s = c / (1 - math.abs(2 * l - 1))
-  end
-
-  return h, s, l
-end
-
-local function FromHSL(h, s, l)
-  local function f(n)
-    local k = (n + h/30) % 12
-    local a = s * math.min(l, 1-l)
-    return l - a * math.max(-1, math.min(k - 3, 9 - k, 1))
-  end
-  return f(0), f(8), f(4)
-end
-
-local function Lighten(r, g, b, shift)
-  local h, s, l = ToHSL(r, g, b)
-  l = math.max(0, math.min(1, l + shift))
-
-  return FromHSL(h, s, l)
-end
-
 local function ConvertTags(tags)
   local res = {}
   for _, tag in ipairs(tags) do
@@ -130,27 +84,27 @@ local function StyleButton(button)
 
   Mixin(button, BackdropTemplateMixin)
   button:SetBackdrop(backdropInfo)
-  local color = CreateColor(Lighten(color.r, color.g, color.b, -0.20))
+  local color = CreateColor(addonTable.Skins.Lighten(color.r, color.g, color.b, -0.20))
   button:SetBackdropColor(color.r, color.g, color.b, 0.5)
   button:SetBackdropBorderColor(color.r, color.g, color.b, 1)
   table.insert(toColor.backdrops, {backdrop = button, bgAlpha = 0.5, borderAlpha = 1, lightened = -0.20})
   button:HookScript("OnEnter", function()
     if button:IsEnabled() then
-      local r, g, b = Lighten(color.r, color.g, color.b, 0.3)
+      local r, g, b = addonTable.Skins.Lighten(color.r, color.g, color.b, 0.3)
       button:SetBackdropColor(r, g, b, 0.8)
       button:SetBackdropBorderColor(r, g, b, 1)
     end
   end)
   button:HookScript("OnMouseDown", function()
     if button:IsEnabled() then
-      local r, g, b = Lighten(color.r, color.g, color.b, 0.2)
+      local r, g, b = addonTable.Skins.Lighten(color.r, color.g, color.b, 0.2)
       button:SetBackdropColor(r, g, b, 0.8)
       button:SetBackdropBorderColor(r, g, b, 1)
     end
   end)
   button:HookScript("OnMouseUp", function()
     if button:IsEnabled() and button:IsMouseOver() then
-      local r, g, b = Lighten(color.r, color.g, color.b, 0.3)
+      local r, g, b = addonTable.Skins.Lighten(color.r, color.g, color.b, 0.3)
       button:SetBackdropColor(r, g, b, 0.8)
       button:SetBackdropBorderColor(r, g, b, 1)
     end
@@ -173,7 +127,7 @@ local allItemButtons = {}
 local skinners = {
   ItemButton = function(frame, tags)
     frame.bgrSimpleHooked = true
-    local r, g, b = Lighten(color.r, color.g, color.b, -0.2)
+    local r, g, b = addonTable.Skins.Lighten(color.r, color.g, color.b, -0.2)
     if not tags.containerBag then
       table.insert(allItemButtons, frame)
       frame.SlotBackground:SetColorTexture(r, g, b, 0.3)
@@ -189,12 +143,6 @@ local skinners = {
       hooksecurefunc(frame, "SetItemButtonTexture", ItemButtonTextureHook)
     end
   end,
-  IconButton = function(button)
-    StyleButton(button)
-  end,
-  Button = function(button)
-    StyleButton(button)
-  end,
   ButtonFrame = function(frame, tags)
     RemoveFrameTextures(frame)
     Mixin(frame, BackdropTemplateMixin)
@@ -205,7 +153,7 @@ local skinners = {
         frame:SetBackdropColor(color.r, color.g, color.b, 1 - addonTable.Config.Get("skins.dark.view_transparency"))
       end
     end, frame)
-    local r, g, b = Lighten(color.r, color.g, color.b, 0.3)
+    local r, g, b = addonTable.Skins.Lighten(color.r, color.g, color.b, 0.3)
     frame:SetBackdropBorderColor(r, g, b, 1)
     table.insert(toColor.backdrops, {backdrop = frame, bgAlpha = 0.7, borderAlpha = 1, borderLightened = 0.3})
 
@@ -216,28 +164,6 @@ local skinners = {
     elseif tags.guild then
       frame.ToggleTabTextButton:SetPoint("TOPLEFT", 1.5, -1)
     end
-  end,
-  SearchBox = function(frame)
-  end,
-  EditBox = function(frame)
-  end,
-  TabButton = function(frame)
-  end,
-  TopTabButton = function(frame)
-  end,
-  SideTabButton = function(frame)
-  end,
-  TrimScrollBar = function(frame)
-  end,
-  CheckBox = function(frame)
-  end,
-  Slider = function(frame)
-  end,
-  InsetFrame = function(frame)
-  end,
-  CornerWidget = function(frame, tags)
-  end,
-  Dropdown = function(button)
   end,
 }
 
