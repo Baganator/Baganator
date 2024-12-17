@@ -57,8 +57,62 @@ local skinners = {
     button.bg:SetIgnoreParentScale(true)
     button.bg:SetScale(UIParent:GetScale())
   end,
-  IconButton = function(frame)
+  IconButton = function(frame, tags)
     B.Reskin(frame)
+    frame.__bg:SetParent(hidden)
+    frame:ClearNormalTexture()
+    frame:ClearPushedTexture()
+    frame:ClearDisabledTexture()
+    frame:ClearHighlightTexture()
+    frame.Icon:SetAlpha(0.9)
+    if tags.sort then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Sorting_White.png")
+    elseif tags.bank then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Chest_White.png")
+    elseif tags.guildBank then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Guild_White.png")
+    elseif tags.allCharacters then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/All_Characters_White.png")
+    elseif tags.customise then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Cog_White.png")
+    elseif tags.bagSlots then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Bags_White.png")
+    elseif tags.search then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Search_White.png")
+    elseif tags.transfer then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Transfer_White.png")
+    elseif tags.savedSearches then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/SavedSearches_White.png")
+    elseif tags.currency then
+      frame.Icon:SetTexture("Interface/AddOns/Baganator/Assets/Currency_White.png")
+    else
+      frame.Icon:SetDesaturated(true)
+      frame.Icon:SetAlpha(1)
+    end
+    local highlight = frame:CreateTexture(nil, "OVERLAY")
+    local atlas = frame.Icon:GetAtlas()
+    if atlas then
+      highlight:SetAtlas(atlas)
+    else
+      highlight:SetTexture(frame.Icon:GetTexture(), "BLEND")
+    end
+    highlight:SetParent(frame)
+    highlight:SetDesaturated(true)
+    highlight:SetVertexColor(21/255, 121/255, 190/255)
+    highlight:SetSize(frame.Icon:GetSize())
+    highlight:SetPoint(frame.Icon:GetPoint(1))
+    highlight:Hide()
+    frame:HookScript("OnEnter", function()
+      if frame:IsEnabled() then
+        highlight:Show()
+      end
+    end)
+    frame:HookScript("OnLeave", function()
+      highlight:Hide()
+    end)
+    frame:HookScript("OnDisable", function()
+      highlight:Hide()
+    end)
   end,
   Button = function(frame)
     B.Reskin(frame)
@@ -115,7 +169,14 @@ local skinners = {
   end,
   Dropdown = function(button)
     B.ReskinDropDown(button)
-  end
+  end,
+  Divider = function(tex)
+    tex:SetTexture("Interface\\Common\\UI-TooltipDivider-Transparent")
+    tex:SetPoint("TOPLEFT", 0, 0)
+    tex:SetPoint("TOPRIGHT", 0, 0)
+    tex:SetHeight(1)
+    tex:SetColorTexture(0.93, 0.93, 0.93, 0.45)
+  end,
 }
 
 local function SetConstants()
