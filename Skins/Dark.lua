@@ -30,26 +30,6 @@ local function ToHSL(r, g, b)
   return h, s, l
 end
 
-local function FromHSL_Prev(h, s, l)
-  c = (1 - math.abs(2 * l - 1)) * s
-  h_dash = h / 60
-  x = c * ( 1 - math.abs(h_dash % 2 - 1))
-  m = l - c / 2
-  if h < 1 then
-    return c + m, x + m, 0 + m
-  elseif h < 2 then
-    return x + m, c + m, 0 + m
-  elseif h < 3 then
-    return 0 + m, c + m, x + m
-  elseif h < 4 then
-    return 0 + m, x + m, c + m
-  elseif h < 5 then
-    return x + m, 0 + m, c + m
-  else
-    return c + m, 0 + m, x + m
-  end
-end
-
 local function FromHSL(h, s, l)
   local function f(n)
     local k = (n + h/30) % 12
