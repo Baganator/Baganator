@@ -62,4 +62,25 @@ function addonTable.ShowWelcome()
   chooseSingle:SetPoint("BOTTOM", 0, 25)
   chooseCategories:SetPoint("CENTER", categoryGroupsHeader)
   chooseCategories:SetPoint("BOTTOM", 0, 25)
+
+  addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "category")
+  local categoryBag = addonTable.ViewManagement.GetBackpackFrame()
+  addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "single")
+  local singleBag = addonTable.ViewManagement.GetBackpackFrame()
+
+  categoryBag:ClearAllPoints()
+  categoryBag:SetPoint("LEFT", frame, "RIGHT", 20, 0)
+  categoryBag:Show()
+  singleBag:ClearAllPoints()
+  singleBag:SetPoint("RIGHT", frame, "LEFT", -20, 0)
+  singleBag:Show()
+
+  frame:Raise()
+
+  frame:SetScript("OnHide", function()
+    singleBag:Hide()
+    categoryBag:Hide()
+    addonTable.CallbackRegistry:TriggerEvent("ResetFramePositions")
+    addonTable.CallbackRegistry:TriggerEvent("BagShow")
+  end)
 end
