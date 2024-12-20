@@ -53,6 +53,7 @@ function addonTable.ShowWelcome()
       addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, value)
       frame:Hide()
     end)
+    addonTable.Skins.AddFrame("Button", button)
     return button
   end
   local chooseSingle = MakeChooseButton("single")
