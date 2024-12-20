@@ -53,8 +53,8 @@ addonTable.Config.Options = {
   UPGRADE_PLUGIN = "upgrade_plugin",
   UPGRADE_PLUGINS_IGNORED = "upgrade_plugin_ignored",
 
-  MAIN_VIEW_POSITION = "backpack_view_position",
-  MAIN_VIEW_SHOW_BAG_SLOTS = "backpack_view_show_bag_slots",
+  MAIN_VIEW_POSITION = "bag_view_position",
+  MAIN_VIEW_SHOW_BAG_SLOTS = "bag_view_show_bag_slots",
   BANK_ONLY_VIEW_POSITION = "bank_view_position",
   BANK_ONLY_VIEW_SHOW_BAG_SLOTS = "bank_view_show_bag_slots",
   GUILD_VIEW_POSITION = "guild_view_position_2",
