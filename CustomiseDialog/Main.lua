@@ -762,8 +762,9 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
   else
     itemButton = CreateFrame("Button", nil, frame, "ItemButtonTemplate")
   end
+  itemButton.SlotBackground = itemButton:CreateTexture(nil, "BACKGROUND")
   itemButton:SetPoint("CENTER", cornersEditor, 0, 0)
-  --addonTable.Skins.AddFrame("ItemButton", itemButton)
+  addonTable.Skins.AddFrame("ItemButton", itemButton)
 
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
