@@ -68,6 +68,13 @@ function addonTable.ShowWelcome()
   addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "single")
   local singleBag = addonTable.ViewManagement.GetBackpackFrame()
 
+  frame:SetScript("OnHide", function()
+    singleBag:Hide()
+    categoryBag:Hide()
+    addonTable.CallbackRegistry:TriggerEvent("ResetFramePositions")
+    addonTable.CallbackRegistry:TriggerEvent("BagShow")
+  end)
+
   categoryBag:ClearAllPoints()
   categoryBag:SetPoint("LEFT", frame, "RIGHT", 20, 0)
   categoryBag:Show()
@@ -76,11 +83,4 @@ function addonTable.ShowWelcome()
   singleBag:Show()
 
   frame:Raise()
-
-  frame:SetScript("OnHide", function()
-    singleBag:Hide()
-    categoryBag:Hide()
-    addonTable.CallbackRegistry:TriggerEvent("ResetFramePositions")
-    addonTable.CallbackRegistry:TriggerEvent("BagShow")
-  end)
 end
