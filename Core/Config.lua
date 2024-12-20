@@ -53,11 +53,11 @@ addonTable.Config.Options = {
   UPGRADE_PLUGIN = "upgrade_plugin",
   UPGRADE_PLUGINS_IGNORED = "upgrade_plugin_ignored",
 
-  MAIN_VIEW_POSITION = "main_view_position",
-  MAIN_VIEW_SHOW_BAG_SLOTS = "main_view_show_bag_slots",
-  BANK_ONLY_VIEW_POSITION = "bank_only_view_position",
-  BANK_ONLY_VIEW_SHOW_BAG_SLOTS = "bank_only_view_show_bag_slots",
-  GUILD_VIEW_POSITION = "guild_view_position",
+  MAIN_VIEW_POSITION = "backpack_view_position",
+  MAIN_VIEW_SHOW_BAG_SLOTS = "backpack_view_show_bag_slots",
+  BANK_ONLY_VIEW_POSITION = "bank_view_position",
+  BANK_ONLY_VIEW_SHOW_BAG_SLOTS = "bank_view_show_bag_slots",
+  GUILD_VIEW_POSITION = "guild_view_position_2",
   GUILD_VIEW_DIALOG_POSITION = "guild_view_dialog_position",
   SHOW_BUTTONS_ON_ALT = "show_buttons_on_alt",
   CHARACTER_SELECT_POSITION = "character_select_position",
@@ -70,8 +70,6 @@ addonTable.Config.Options = {
   DEBUG_CATEGORIES_SEARCH = "debug_categories_search",
 
   AUTO_OPEN = "auto_open",
-
-  GUILD_BANK_SORT_METHOD = "guild_bank_sort_method",
 
   CUSTOM_CATEGORIES = "custom_categories",
   CATEGORY_MODIFICATIONS = "category_modifications",
@@ -115,9 +113,9 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.HIDE_BOE_ON_COMMON] = false,
   [addonTable.Config.Options.SHOW_RECENTS_TABS] = false,
   [addonTable.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
-  [addonTable.Config.Options.MAIN_VIEW_POSITION] = {"RIGHT", -20, 0},
-  [addonTable.Config.Options.BANK_ONLY_VIEW_POSITION] = {"LEFT", 20, 0},
-  [addonTable.Config.Options.GUILD_VIEW_POSITION] = {"LEFT", 20, 0},
+  [addonTable.Config.Options.MAIN_VIEW_POSITION] = {"BOTTOMRIGHT", -115, 85},
+  [addonTable.Config.Options.BANK_ONLY_VIEW_POSITION] = {"BOTTOMLEFT", 30, addonTable.Constants.IsRetail and 75 or 85},
+  [addonTable.Config.Options.GUILD_VIEW_POSITION] = {"TOPLEFT", 40, -235},
   [addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION] = {"BOTTOM", "Baganator_GuildViewFrame", "TOP", 0, 0},
   [addonTable.Config.Options.CHARACTER_SELECT_POSITION] = {"RIGHT", "Baganator_BackpackViewFrame", "LEFT", 0, 0},
   [addonTable.Config.Options.CURRENCY_PANEL_POSITION] = {"RIGHT", "Baganator_BackpackViewFrame", "LEFT", 0, 0},
@@ -130,8 +128,8 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.ICON_GREY_JUNK] = false,
   [addonTable.Config.Options.ICON_EQUIPMENT_SET_BORDER] = true,
   [addonTable.Config.Options.AUTO_OPEN] = {},
-  [addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = true,
-  [addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = true,
+  [addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS] = false,
+  [addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS] = false,
   [addonTable.Config.Options.SHOW_BUTTONS_ON_ALT] = false,
   [addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = false,
   [addonTable.Config.Options.REDUCE_SPACING] = false,
@@ -158,8 +156,6 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.DEBUG_KEYWORDS] = false,
   [addonTable.Config.Options.DEBUG_CATEGORIES] = false,
   [addonTable.Config.Options.DEBUG_CATEGORIES_SEARCH] = false,
-
-  [addonTable.Config.Options.GUILD_BANK_SORT_METHOD] = "unset",
 
   [addonTable.Config.Options.CUSTOM_CATEGORIES] = {
     --[[
