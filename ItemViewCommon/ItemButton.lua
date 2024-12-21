@@ -634,11 +634,8 @@ end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateQuests()
   local questInfo = C_Container.GetContainerItemQuestInfo(self:GetBagID(), self:GetID());
-  local isQuestItem = questInfo.isQuestItem;
-  self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questID
-  local questID = questInfo.questID;
-  local isActive = questInfo.isActive;
-  self:UpdateQuestItem(isQuestItem, questID, isActive);
+  self.BGR.isQuestItem = self.BGR.itemID and (questInfo.isQuestItem or questInfo.questID)
+  self:UpdateQuestItem(questInfo.isQuestItem, questInfo.questID, questInfo.isActive);
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:SetItemFiltered(text)
@@ -946,7 +943,7 @@ end
 
 function BaganatorClassicLiveContainerItemButtonMixin:BGRUpdateQuests()
   local questInfo = C_Container.GetContainerItemQuestInfo(self:GetParent():GetID(), self:GetID());
-  self.BGR.isQuestItem = questInfo.isQuestItem or questInfo.questID
+  self.BGR.isQuestItem = self.BGR.itemID and (questInfo.isQuestItem or questInfo.questID)
 
   local questTexture = _G[self:GetName().."IconQuestTexture"];
 
