@@ -249,21 +249,23 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
   local lastTab = nil
   local tabs = {}
 
-  local tabButton = self.tabsPool:Acquire()
-  addonTable.Skins.AddFrame("SideTabButton", tabButton)
-  tabButton:RegisterForClicks("LeftButtonUp")
-  tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\Everything.png")
-  tabButton:SetScript("OnClick", function(_, button)
-    self:SetCurrentTab(0)
-    self:GetParent():UpdateView()
-  end)
-  tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
-  tabButton.SelectedTexture:Hide()
-  tabButton:SetScale(tabScale)
-  tabButton:Show()
-  tabButton.tabName = BAGANATOR_L_EVERYTHING
-  lastTab = tabButton
-  table.insert(tabs, tabButton)
+  if #warbandData.bank ~= 0 then
+    local tabButton = self.tabsPool:Acquire()
+    addonTable.Skins.AddFrame("SideTabButton", tabButton)
+    tabButton:RegisterForClicks("LeftButtonUp")
+    tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\Everything.png")
+    tabButton:SetScript("OnClick", function(_, button)
+      self:SetCurrentTab(0)
+      self:GetParent():UpdateView()
+    end)
+    tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
+    tabButton.SelectedTexture:Hide()
+    tabButton:SetScale(tabScale)
+    tabButton:Show()
+    tabButton.tabName = BAGANATOR_L_EVERYTHING
+    lastTab = tabButton
+    table.insert(tabs, tabButton)
+  end
 
   for index, tabInfo in ipairs(warbandData.bank) do
     local tabButton = self.tabsPool:Acquire()
@@ -400,7 +402,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   self:HighlightCurrentTab()
 
   for _, tab in ipairs(self.Tabs) do
-    tab:SetShown(not self.BankMissingHint:IsShown())
+    tab:SetShown(C_PlayerInfo.HasAccountInventoryLock())
   end
 
   if self.BankMissingHint:IsShown() then
