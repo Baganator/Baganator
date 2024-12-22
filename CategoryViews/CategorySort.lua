@@ -32,11 +32,20 @@ function BaganatorCategoryViewsCategorySortMixin:ApplySorts(composed, callback)
 end
 
 function BaganatorCategoryViewsCategorySortMixin:SortResults()
+  if GetTimePreciseSec() - addonTable.lastFrameTime > 0.1 then
+    self:SetScript("OnUpdate", self.SortResults)
+    return
+  end
+
   local incomplete
   for index in pairs(self.sortPending) do
     self.composedDetails[index].results, incomplete = addonTable.Sorting.OrderOneListOffline(self.composedDetails[index].results, self.sortMethod)
     if not incomplete then
       self.sortPending[index] = nil
+    end
+    if GetTimePreciseSec() - addonTable.lastFrameTime > 0.1 then
+      self:SetScript("OnUpdate", self.SortResults)
+      return
     end
   end
 

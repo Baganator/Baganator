@@ -95,6 +95,25 @@ function addonTable.ItemButtonUtil.UpdateSettings()
       local function Callback(itemButton)
         local toShow = nil
         local queued = false
+        if GetTimePreciseSec() - addonTable.lastFrameTime > 0.1 then
+          local BGR = itemButton.BGR
+          QueueWidget(function()
+            if itemButton.BGR == BGR then
+              -- Hide any widgets shown immediately because the widget
+              -- wasn't available
+              for i = 1, #callbacks do
+                local widget = itemButton.cornerPlugins[plugins[i]]
+                if widget then
+                  widget:Hide()
+                end
+              end
+              Callback(itemButton)
+            end
+          end)
+          queued = true
+          return
+        end
+
         for index = 1, #callbacks do
           local cb = callbacks[index]
           local widget = itemButton.cornerPlugins[plugins[index]]

@@ -148,6 +148,11 @@ function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
     end
   end
 
+  if GetTimePreciseSec() - addonTable.lastFrameTime > 0.1 then
+    self:SetScript("OnUpdate", self.DoSearch)
+    return
+  end
+
   local search = self.searches[self.searchIndex]
 
   local results = self.results[search]
