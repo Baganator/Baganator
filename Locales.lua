@@ -137,6 +137,7 @@ L["JUNK"] = "Junk"
 L["ENGRAVED_RUNE"] = "Engraved Rune"
 L["KEYSTONE_LEVEL"] = "Keystone Level"
 L["ADD_ITEM"] = "Add item"
+L["BAG_TYPE_CATEGORIES"] = "Bag Type (Categories)"
 
 L["SORT"] = "Sort"
 L["USING_X"] = "Using %s"

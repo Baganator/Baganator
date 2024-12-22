@@ -436,3 +436,24 @@ if addonTable.Constants.IsRetail then
     return false
   end, textInit)
 end
+
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_BAG_TYPE_CATEGORIES, "bag_type", function(Type, details)
+  local info = addonTable.Constants.ContainerKeyToInfo[details.bagType]
+  if info then
+    Type:SetDesaturated(true)
+    if info.type == "file" then
+      Type:SetSize(15, 15)
+      Type:SetTexture(info.value)
+    else
+      local size = info.size or 64
+      Type:SetSize(size/64 * 15, size/64 * 15)
+      Type:SetAtlas(info.value)
+    end
+    return true
+  end
+  return false
+end, function(itemButton)
+  local Type = itemButton:CreateTexture(nil, "ARTWORK")
+  Type.padding = -1
+  return Type
+end, {corner = "bottom_left", priority = 1})

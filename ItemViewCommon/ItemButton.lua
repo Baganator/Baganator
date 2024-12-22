@@ -190,6 +190,8 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
   self.BGR.earlyCallback = earlyCallback or function() end
   self.BGR.finalCallback = finalCallback or function() end
 
+  self.BGR.bagType = cacheData.bagType
+
   self.BGR.earlyCallback()
 
   WidgetsOnly(self)
@@ -423,6 +425,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
 
   GetInfo(self, details, nil, function()
     self:SetItemButtonQuality(details.quality, details.itemLink, false, details.isBound)
+
     ReparentOverlays(self)
   end)
 end
@@ -624,6 +627,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self.BGR.itemLocation = itemLocation
 
     self.BGR.hasNoValue = noValue
+
     self:BGRUpdateQuests()
     ApplyNewItemAnimation(self, quality);
   end, function()
