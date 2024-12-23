@@ -402,7 +402,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   self:HighlightCurrentTab()
 
   for _, tab in ipairs(self.Tabs) do
-    tab:SetShown(C_PlayerInfo.HasAccountInventoryLock())
+    tab:SetShown(not self.isLive or C_PlayerInfo.HasAccountInventoryLock())
   end
 
   if self.BankMissingHint:IsShown() then
