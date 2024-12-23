@@ -183,7 +183,7 @@ L["TRANSFER_BANK_VIEW_TOOLTIP_TEXT"] = "Move searched for items out from the ban
 L["TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT"] = "Move searched for items out from the bags into the bank."
 L["TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT"] = "Attach the searched for items to a mail for sending."
 L["TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT"] = "Place scrappable items into the scrapping machine."
-L["TRANSFER_MAIN_VIEW_MERCHANT_TOOLTIP_TEXT_2"] = "Sell searched for items to the merchant (max 6)."
+L["TRANSFER_MAIN_VIEW_VENDOR_TOOLTIP_TEXT"] = "Sell searched for items to the vendor;\nLimit of 6, hold shift to bypass limit."
 L["TRANSFER_MAIN_VIEW_TRADE_TOOLTIP_TEXT"] = "Add searched for items to the trade window (up to 6 items)."
 L["TRANSFER_MAIN_VIEW_GUILD_TOOLTIP_TEXT"] = "Move searched for items out from the bags into the guild bank.\n\nTransfers are slow due to the underlying guild bank being slow."
 L["TRANSFER_GUILD_VIEW_TOOLTIP_TEXT"] = "Move searched for items out from the guild bank into the bags.\n\nTransfers are slow due to the underlying guild bank being slow."
@@ -338,6 +338,8 @@ L["CATEGORY_GROUPS_DESCRIPTION"] = "Group items by type, with features to add ne
 
 L["CATEGORIES_FAILED_WARNING"] = "Something went wrong when displaying the categories.\n\nFailed search was \"%s\". The following items failed:\n%s\n\nScreenshot this and visit the discord:"
 L["RIGHT_CLICK_TO_TRANSFER"] = "<Right-click to transfer>"
+L["RIGHT_CLICK_TO_VENDOR_6"] = "<Right-click to vendor (limit of 6 items)>"
+L["SHIFT_CLICK_TO_VENDOR_ALL"] = "<Use Shift to ignore limit>"
 L["CLICK_TO_CLEAR_RECENT"] = "<Click to clear recent>"
 
 L["BINDING_TOGGLE_BANK"] = "Toggle Bank"
