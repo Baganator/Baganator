@@ -376,7 +376,10 @@ end
 
 function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
   if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
-    self:SetScript("OnUpdate", self.GroupingResults)
+    self:SetScript("OnUpdate", function()
+      addonTable.lastEntryTime = GetTimePreciseSec()
+      self:GroupingResults()
+    end)
     return
   end
 
@@ -428,6 +431,9 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
     end
     self.callback()
   else
-    self:SetScript("OnUpdate", self.GroupingResults)
+    self:SetScript("OnUpdate", function()
+      addonTable.lastEntryTime = GetTimePreciseSec()
+      self:GroupingResults()
+    end)
   end
 end

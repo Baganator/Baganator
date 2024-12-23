@@ -33,7 +33,10 @@ end
 
 function BaganatorCategoryViewsCategorySortMixin:SortResults()
   if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
-    self:SetScript("OnUpdate", self.SortResults)
+    self:SetScript("OnUpdate", function()
+      addonTable.lastEntryTime = GetTimePreciseSec()
+      self:SortResults()
+    end)
     return
   end
 
@@ -56,6 +59,9 @@ function BaganatorCategoryViewsCategorySortMixin:SortResults()
     end
     self.callback()
   else
-    self:SetScript("OnUpdate", self.SortResults)
+    self:SetScript("OnUpdate", function()
+      addonTable.lastEntryTime = GetTimePreciseSec()
+      self:SortResults()
+    end)
   end
 end
