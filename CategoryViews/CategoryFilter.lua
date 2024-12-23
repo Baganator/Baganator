@@ -182,11 +182,10 @@ function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
 
   if next(self.searchPending) == nil then
     self.searchPending = nil
+    self:DoSearch()
+  else
     self:SetScript("OnUpdate", function()
       addonTable.lastEntryTime = GetTimePreciseSec()
-      self:DoSearch()
     end)
-  else
-    self:SetScript("OnUpdate", self.DoSearch)
   end
 end
