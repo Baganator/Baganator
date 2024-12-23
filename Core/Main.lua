@@ -77,3 +77,11 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
 
   addonTable.Core.RunAnalytics()
 end)
+
+function addonTable.ReportEntry()
+  addonTable.lastEntryTime = GetTimePreciseSec()
+end
+
+function addonTable.CheckTimeout()
+  return GetTimePreciseSec() - addonTable.lastEntryTime > 0.1
+end

@@ -148,9 +148,9 @@ function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
     end
   end
 
-  if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
+  if addonTable.CheckTimeout() then
     self:SetScript("OnUpdate", function()
-      addonTable.lastEntryTime = GetTimePreciseSec()
+      addonTable.ReportEntry()
       self:DoSearch()
     end)
     return
@@ -185,7 +185,8 @@ function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
     self:DoSearch()
   else
     self:SetScript("OnUpdate", function()
-      addonTable.lastEntryTime = GetTimePreciseSec()
+      addonTable.ReportEntry()
+      self:DoSearch()
     end)
   end
 end

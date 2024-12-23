@@ -32,9 +32,9 @@ function BaganatorCategoryViewsCategorySortMixin:ApplySorts(composed, callback)
 end
 
 function BaganatorCategoryViewsCategorySortMixin:SortResults()
-  if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
+  if addonTable.CheckTimeout() then
     self:SetScript("OnUpdate", function()
-      addonTable.lastEntryTime = GetTimePreciseSec()
+      addonTable.ReportEntry()
       self:SortResults()
     end)
     return
@@ -46,8 +46,11 @@ function BaganatorCategoryViewsCategorySortMixin:SortResults()
     if not incomplete then
       self.sortPending[index] = nil
     end
-    if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
-      self:SetScript("OnUpdate", self.SortResults)
+    if addonTable.CheckTimeout() then
+      self:SetScript("OnUpdate", function()
+        addonTable.ReportEntry()
+        self:SortResults()
+      end)
       return
     end
   end
@@ -60,7 +63,7 @@ function BaganatorCategoryViewsCategorySortMixin:SortResults()
     self.callback()
   else
     self:SetScript("OnUpdate", function()
-      addonTable.lastEntryTime = GetTimePreciseSec()
+      addonTable.ReportEntry()
       self:SortResults()
     end)
   end

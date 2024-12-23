@@ -15,7 +15,7 @@ do
     table.insert(widgetsQueued, callback)
     if RetryWidgets:GetScript("OnUpdate") == nil then
       RetryWidgets:SetScript("OnUpdate", function()
-        addonTable.lastEntryTime = GetTimePreciseSec()
+        addonTable.ReportEntry()
         local queue = widgetsQueued
         widgetsQueued = {}
         for _, callback in ipairs(queue) do
@@ -96,7 +96,7 @@ function addonTable.ItemButtonUtil.UpdateSettings()
       local function Callback(itemButton)
         local toShow = nil
         local queued = false
-        if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
+        if addonTable.CheckTimeout() then
           local BGR = itemButton.BGR
           QueueWidget(function()
             if itemButton.BGR == BGR then

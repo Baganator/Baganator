@@ -299,7 +299,7 @@ function BaganatorItemViewCommonBackpackViewMixin:HideExtraTabs()
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, isLive)
-  addonTable.lastEntryTime = GetTimePreciseSec()
+  addonTable.ReportEntry()
 
   local start = debugprofilestop()
 

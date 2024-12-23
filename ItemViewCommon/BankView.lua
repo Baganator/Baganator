@@ -183,7 +183,7 @@ function BaganatorItemViewCommonBankViewMixin:UpdateViewToWarband(warbandIndex, 
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateView()
-  addonTable.lastEntryTime = GetTimePreciseSec()
+  addonTable.ReportEntry()
 
   self.start = debugprofilestop()
 

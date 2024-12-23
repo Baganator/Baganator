@@ -286,7 +286,7 @@ function BaganatorSingleViewGuildViewMixin:OpenTabEditor()
 end
 
 function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
-  addonTable.lastEntryTime = GetTimePreciseSec()
+  addonTable.ReportEntry()
 
   local tabScaleFactor = 37
   if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then

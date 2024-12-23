@@ -30,6 +30,7 @@ function BaganatorCategoryViewsItemsPreparationMixin:PrepareItems(everything, ca
             if C_Item.GetItemInfoInstant(item.itemID) ~= nil then
               waiting = waiting + 1
               addonTable.Utilities.LoadItemData(item.itemID, function()
+                addonTable.ReportEntry()
                 waiting = waiting - 1
                 item.isJunk = item.isJunkGetter and item.isJunkGetter()
                 item.isUpgrade = item.isUpgradeGetter and item.isUpgradeGetter()
