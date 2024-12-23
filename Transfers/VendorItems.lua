@@ -6,22 +6,13 @@ local lastTime = 0
 -- Persist Shift down status across successive vendoring for the same set of
 -- items
 local shiftLock = false
-
-local frame = CreateFrame("Frame")
-frame:SetScript("OnEvent", function(_, eventName)
-  if eventName == "MERCHANT_CONFIRM_TRADE_TIMER_REMOVAL" then
-    -- Avoid confirmation dialogs for sales to vendors
-    SellCursorItem()
-  elseif eventName == "PLAYER_MONEY" then
-    waitingOnMoney = waitingOnMoney - 1
-  end
-end)
+local shiftTime = 0
 
 function addonTable.Transfers.VendorItems(toSell)
-  local timeout = GetTimePreciseSec() - lastTime >= 1
-  if waitingOnMoney > 0 and not timeout then
+  if GetTimePreciseSec() - lastTime < 1 then
+    shiftTime = GetTimePreciseSec()
     return addonTable.Constants.SortStatus.WaitingUnlock
-  elseif timeout then
+  elseif GetTimePreciseSec() - shiftTime >= 1 then
     shiftLock = false
   end
 
@@ -46,8 +37,9 @@ function addonTable.Transfers.VendorItems(toSell)
 
   waitingOnMoney = sold
   lastTime = GetTimePreciseSec()
+  shiftTime = GetTimePreciseSec()
 
-  if (IsShiftKeyDown() or shiftLock) and breakIndex ~= nil and breakIndex ~= #toSell then
+  if (shiftLock or IsShiftKeyDown()) and breakIndex ~= nil and breakIndex ~= #toSell then
     shiftLock = true
     return addonTable.Constants.SortStatus.WaitingUnlock
   else
