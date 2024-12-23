@@ -85,10 +85,12 @@ function addonTable.ItemButtonUtil.UpdateSettings()
   for _, key in ipairs(positions) do
     local array = CopyTable(addonTable.Config.Get(key))
     local callbacks = {}
+    local fastStatus = {}
     local plugins = {}
     for _, plugin in ipairs(array) do
       if addonTable.API.IconCornerPlugins[plugin] then
         table.insert(callbacks, addonTable.API.IconCornerPlugins[plugin].onUpdate)
+        table.insert(fastStatus, addonTable.API.IconCornerPlugins[plugin].isFast)
         table.insert(plugins, plugin)
       end
     end
@@ -96,30 +98,16 @@ function addonTable.ItemButtonUtil.UpdateSettings()
       local function Callback(itemButton)
         local toShow = nil
         local queued = false
-        if addonTable.CheckTimeout() then
-          local BGR = itemButton.BGR
-          QueueWidget(function()
-            if itemButton.BGR == BGR then
-              -- Hide any widgets shown immediately because the widget
-              -- wasn't available
-              for i = 1, #callbacks do
-                local widget = itemButton.cornerPlugins[plugins[i]]
-                if widget then
-                  widget:Hide()
-                end
-              end
-              Callback(itemButton)
-            end
-          end)
-          queued = true
-          return
-        end
+        local timeoutStatus = not addonTable.CheckTimeout()
 
         for index = 1, #callbacks do
           local cb = callbacks[index]
           local widget = itemButton.cornerPlugins[plugins[index]]
           if widget then
-            local show = cb(widget, itemButton.BGR)
+            local show
+            if timeoutStatus or fastStatus[index] then
+              show = cb(widget, itemButton.BGR)
+            end
             if show == nil then
               local BGR = itemButton.BGR
               if not queued then

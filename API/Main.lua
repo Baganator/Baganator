@@ -211,9 +211,9 @@ do
   --  corner: string (top_left, top_right, bottom_left, bottom_right)
   --  priority: number (priority for the corner to be placed at in the corner sort
   --    order)
-  function Baganator.API.RegisterCornerWidget(label, id, onUpdate, onInit, defaultPosition)
+  function Baganator.API.RegisterCornerWidget(label, id, onUpdate, onInit, defaultPosition, isFast)
     assert(id and label and onUpdate and onInit and not addonTable.API.IconCornerPlugins[id])
-    addonTable.API.IconCornerPlugins[id] = {label = label, onUpdate = onUpdate, onInit = onInit}
+    addonTable.API.IconCornerPlugins[id] = {label = label, onUpdate = onUpdate, onInit = onInit, isFast = isFast or false}
 
     if defaultPosition and cornersMap[defaultPosition.corner] and type(defaultPosition.priority) == "number" then
       if not addonLoaded then
