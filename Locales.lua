@@ -339,7 +339,7 @@ L["CATEGORY_GROUPS_DESCRIPTION"] = "Group items by type, with features to add ne
 L["CATEGORIES_FAILED_WARNING"] = "Something went wrong when displaying the categories.\n\nFailed search was \"%s\". The following items failed:\n%s\n\nScreenshot this and visit the discord:"
 L["RIGHT_CLICK_TO_TRANSFER"] = "<Right-click to transfer>"
 L["RIGHT_CLICK_TO_VENDOR_6"] = "<Right-click to vendor (limit of 6 items)>"
-L["SHIFT_CLICK_TO_VENDOR_ALL"] = "<Use Shift to ignore limit>"
+L["SHIFT_CLICK_TO_VENDOR_ALL"] = "<Use Shift to bypass limit>"
 L["CLICK_TO_CLEAR_RECENT"] = "<Click to clear recent>"
 
 L["BINDING_TOGGLE_BANK"] = "Toggle Bank"
