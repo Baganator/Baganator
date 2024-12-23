@@ -8,6 +8,12 @@ local lastTime = 0
 local shiftLock = false
 local shiftTime = 0
 
+-- Avoid confirmation dialogs for sales to vendors
+local frame = CreateFrame("Frame")
+frame:SetScript("OnEvent", function(_, eventName)
+  SellCursorItem()
+end)
+
 function addonTable.Transfers.VendorItems(toSell)
   if GetTimePreciseSec() - lastTime < 1 then
     shiftTime = GetTimePreciseSec()
