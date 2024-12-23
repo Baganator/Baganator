@@ -375,7 +375,7 @@ function BaganatorCategoryViewsCategoryGroupingMixin:ApplyGroupings(composed, ca
 end
 
 function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
-  if GetTimePreciseSec() - addonTable.lastFrameTime > 0.1 then
+  if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
     self:SetScript("OnUpdate", self.GroupingResults)
     return
   end

@@ -183,6 +183,8 @@ function BaganatorItemViewCommonBankViewMixin:UpdateViewToWarband(warbandIndex, 
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateView()
+  addonTable.lastEntryTime = GetTimePreciseSec()
+
   self.start = debugprofilestop()
 
   if Syndicator.Constants.WarbandBankActive and not C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.AccountBanker) then

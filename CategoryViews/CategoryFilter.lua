@@ -148,7 +148,7 @@ function BaganatorCategoryViewsCategoryFilterMixin:DoSearch()
     end
   end
 
-  if GetTimePreciseSec() - addonTable.lastFrameTime > 0.1 then
+  if GetTimePreciseSec() - addonTable.lastEntryTime > 0.1 then
     self:SetScript("OnUpdate", self.DoSearch)
     return
   end
