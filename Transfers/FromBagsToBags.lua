@@ -33,6 +33,9 @@ function addonTable.Transfers.FromBagsToBags(toMove, bagIDs, targets)
   if InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
     return addonTable.Constants.SortStatus.Complete
   end
+  if Syndicator.API.IsBagEventPending() then
+    return addonTable.Constants.SortStatus.WaitingMove
+  end
 
   local bagChecks = addonTable.Sorting.GetBagUsageChecks(bagIDs)
 
