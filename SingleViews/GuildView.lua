@@ -454,6 +454,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   if self.isLive then
     if self.currentTab ~= 0 and self.currentTab ~= GetCurrentGuildBankTab() then
       self.currentTab = GetCurrentGuildBankTab()
+      addonTable.Config.Set(addonTable.Config.Options.GUILD_CURRENT_TAB, self.currentTab)
       if GuildBankPopupFrame:IsShown() then
         self:OpenTabEditor()
       end
