@@ -119,6 +119,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.ExportButton:Enable()
+      self.ItemsEditor:SetupItems({})
       Save()
       return
     end
