@@ -152,7 +152,11 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
+  local oldIsGrouping = self.isGrouping
   self.isGrouping = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING) and (not self.splitStacksDueToTransfer or not self.isLive)
+  if self.isGrouping ~= oldIsGrouping then
+    self.searchToApply = true
+  end
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = false
