@@ -343,6 +343,55 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
 
   container.ItemsScrollBox:SetPoint("TOPLEFT", 0, -25)
 
+  local dropRegion = CreateFrame("Button", nil, container)
+  local dropTexture=  dropRegion:CreateTexture(nil, "ARTWORK")
+  dropTexture:SetAtlas("Garr_Building-AddFollowerPlus")
+  dropTexture:SetSize(100, 100)
+  dropTexture:SetPoint("CENTER", dropRegion)
+  dropRegion:SetAllPoints(container.ItemsScrollBox)
+  dropRegion:Hide()
+  local function DropCursor()
+    local t, itemID, itemLink = GetCursorInfo()
+    if t ~= "item" then
+      return
+    end
+    ClearCursor()
+    local details = addonTable.CategoryViews.Utilities.GetAddedItemData(itemID, itemLink)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    for _, mods in pairs(categoryMods) do
+      if mods.addedItems and mods.addedItems[details] then
+        mods.addedItems[details] = nil
+        if next(mods.addedItems) == nil then
+          mods.addedItems = nil
+        end
+        break
+      end
+    end
+
+    if not categoryMods[self.currentCategory] then
+      categoryMods[self.currentCategory] = {}
+    end
+
+    categoryMods[self.currentCategory].addedItems = categoryMods[self.currentCategory].addedItems or {}
+
+    categoryMods[self.currentCategory].addedItems[details] = true
+
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+  end
+  dropRegion:SetScript("OnReceiveDrag", DropCursor)
+  dropRegion:SetScript("OnClick", DropCursor)
+
+  container:SetScript("OnShow", function()
+    container:RegisterEvent("CURSOR_CHANGED")
+  end)
+  container:SetScript("OnHide", function()
+    container:UnregisterEvent("CURSOR_CHANGED")
+  end)
+  container:SetScript("OnEvent", function()
+    local t, itemID, itemLink = GetCursorInfo()
+    dropRegion:SetShown(t == "item")
+  end)
+
   local addItemsEditBox = CreateFrame("EditBox", nil, container, "InputBoxTemplate")
   addItemsEditBox:SetSize(70, 22)
   addItemsEditBox:SetPoint("BOTTOMLEFT", 3, 0)
