@@ -357,6 +357,8 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     activeLayouts = container.CachedLayouts
   end
 
+  container.layoutsBySourceKey = {}
+
   local layoutsShown, activeLabels = {}, {}
   local inactiveSections = {}
   for index, details in ipairs(composed.details) do
@@ -414,9 +416,10 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         local label = self.labelsPool:Acquire()
         addonTable.Skins.AddFrame("CategoryLabel", label)
         label:SetText(details.label)
-        label.categorySearch = index
+        label.index = index
         label.source = details.source
-        label.groupLabel = details.groupLabel
+        label.sourceKey = details.sourceKey
+        container.layoutsBySourceKey[details.sourceKey] = layout
         activeLabels[index] = label
         layout.type = details.type
       else

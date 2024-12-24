@@ -82,12 +82,12 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(index, source, groupLabel)
+function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(sourceKey)
   if not self.isLive then
     return
   end
 
-  self:RemoveSearchMatches(function() return addonTable.CategoryViews.Utilities.GetItemsFromComposed(self.LayoutManager.composed, index, source, groupLabel) end)
+  self:RemoveSearchMatches(function() return self.layoutsBySourceKey[sourceKey] and self.layoutsBySourceKey[sourceKey].SearchMonitor:GetMatches() or {} end)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)

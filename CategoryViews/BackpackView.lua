@@ -129,12 +129,12 @@ function BaganatorCategoryViewBackpackViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBackpackViewMixin:TransferCategory(index, source, groupLabel)
+function BaganatorCategoryViewBackpackViewMixin:TransferCategory(sourceKey)
   if not self.isLive then
     return
   end
 
-  self:Transfer(true, function() return addonTable.CategoryViews.Utilities.GetItemsFromComposed(self.LayoutManager.composed, index, source, groupLabel) end)
+  self:Transfer(true, function() return self.layoutsBySourceKey[sourceKey] and self.layoutsBySourceKey[sourceKey].SearchMonitor:GetMatches() or {} end)
 end
 
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)

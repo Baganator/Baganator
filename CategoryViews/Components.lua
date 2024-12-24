@@ -14,8 +14,8 @@ function BaganatorCategoryViewsCategoryButtonMixin:Resize()
 end
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnClick(button)
-  if button == "RightButton" and self.categorySearch then
-    CallMethodOnNearestAncestor(self, "TransferCategory", self.categorySearch, self.source, self.groupLabel)
+  if button == "RightButton" and self.sourceKey then
+    CallMethodOnNearestAncestor(self, "TransferCategory", self.sourceKey)
   elseif button == "LeftButton" and self.source == addonTable.CategoryViews.Constants.RecentItemsCategory then
     addonTable.NewItems:ForceClearNewItemsForTimeout()
   end
