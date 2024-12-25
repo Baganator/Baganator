@@ -43,10 +43,6 @@ function addonTable.Help.ShowSearchDialog()
   frame:SetToplevel(true)
   table.insert(UISpecialFrames, frame:GetName())
 
-  if TSM_API then
-    frame:SetFrameStrata("HIGH")
-  end
-
   frame:RegisterForDrag("LeftButton")
   frame:SetMovable(true)
   frame:SetClampedToScreen(true)

@@ -446,10 +446,6 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
   self:SetClampedToScreen(true)
-
-  if TSM_API then
-    self:SetFrameStrata("HIGH")
-  end
 end
 
 function BaganatorCustomiseDialogMixin:OnDragStart()
