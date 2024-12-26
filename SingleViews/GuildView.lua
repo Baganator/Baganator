@@ -384,7 +384,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   self.Tabs = tabs
 
   if self.currentTab > #guildData.bank then
-    self:SetCurrentTab(#guildData.bank)
+    self:SetCurrentTab(math.max(1, #guildData.bank))
   end
 end
 
