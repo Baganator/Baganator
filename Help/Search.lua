@@ -74,7 +74,7 @@ function addonTable.Help.ShowSearchDialog()
     { type = "header", text = BAGANATOR_L_HELP_SEARCH_OPERATORS},
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_OPERATORS_LINE_1_V2},
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_OPERATORS_LINE_2_V2},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_OPERATORS_LINE_3_V2},
+    { type = "content", text = BAGANATOR_L_HELP_SEARCH_OPERATORS_LINE_3},
     { type = "header", text = BAGANATOR_L_HELP_SEARCH_ITEM_LEVEL},
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_ITEM_LEVEL_LINE_1},
     { type = "content", text = BAGANATOR_L_HELP_SEARCH_ITEM_LEVEL_LINE_2},
