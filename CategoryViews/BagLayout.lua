@@ -371,25 +371,25 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       end
     elseif details.type == "section" then
       -- Check whether the section has any non-empty items in it
-      local any = false
+      local itemCount = 0
       if index < #composed.details then
         for i = index + 1, #composed.details do
           local d = composed.details[i]
           if d.section ~= details.label then
             break
           elseif d.type == "category" and #d.results > 0 and not hidden[d.source] then
-            any = true
-            break
+            itemCount = itemCount + (d.oldLength or #d.results)
           end
         end
       end
-      inactiveSections[details.label] = not any -- saved to hide any inside dividers
-      if any then
+      inactiveSections[details.label] = itemCount == 0 -- saved to hide any inside dividers
+      if itemCount > 0 then
         local button = self.sectionButtonPool:Acquire()
-        button:SetText(details.label)
         if sectionToggled[details.label] then
+          button:SetText(details.label .. " " .. LIGHTGRAY_FONT_COLOR:WrapTextInColorCode("(" .. itemCount .. ")"))
           button:SetCollapsed()
         else
+          button:SetText(details.label)
           button:SetExpanded()
         end
         button:SetScript("OnClick", function()
