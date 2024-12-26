@@ -78,9 +78,11 @@ function addonTable.ShowWelcome()
   categoryBag:ClearAllPoints()
   categoryBag:SetPoint("LEFT", frame, "RIGHT", 20, 0)
   categoryBag:Show()
+  categoryBag:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
   singleBag:ClearAllPoints()
   singleBag:SetPoint("RIGHT", frame, "LEFT", -20, 0)
   singleBag:Show()
+  singleBag:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
 
   frame:Raise()
 end

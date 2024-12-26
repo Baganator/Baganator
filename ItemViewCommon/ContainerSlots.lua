@@ -407,6 +407,7 @@ BaganatorBagSlotsContainerMixin = {}
 
 function BaganatorBagSlotsContainerMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+    addonTable.ReportEntry()
     if updatedBags.containerBags == nil or updatedBags.containerBags[self.mode] or next(updatedBags[self.mode]) then
       self.updateBagSlotsNeeded = true
       if self:IsVisible() then
