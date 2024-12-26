@@ -55,6 +55,8 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
     if self:IsVisible() and character ~= self.lastCharacter then
       self.lastCharacter = character
       self:GetParent():UpdateView()
+    else
+      self.lastCharacter = character
     end
   end)
 
@@ -201,9 +203,30 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
 
   self:SetupBlizzardFramesForTab()
+
+  if self.BankMissingHint:IsShown() then
+    local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+    self:SetSize(
+      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
+      80 + topSpacing / 2
+    )
+
+    for _, layout in ipairs(self.Container.Layouts) do
+      layout:Hide()
+    end
+
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.BankMissingHint:GetWidth())
+
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
+
+    self:GetParent():OnTabFinished()
+  end
 end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character, isLive)
+  if self.BankMissingHint:IsShown() then
+    return
+  end
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   local buttonPadding = 5

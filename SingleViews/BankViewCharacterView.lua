@@ -88,6 +88,17 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
     return
   end
 
+  self:GetParent().AllButtons = {}
+  tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
+  tAppendAll(self:GetParent().AllButtons, self.TopButtons)
+
+  if self.BankMissingHint:IsShown() then
+    for _, details in ipairs(self.CollapsingBankBags) do
+      details.button:Hide()
+    end
+    return
+  end
+
   self:AllocateBankBags(character)
 
   self.Container.BankLive:SetShown(self.isLive)
@@ -132,10 +143,6 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   -- Copied from SingleViews/BagView.lua
   bankHeight = bankHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
-
-  self:GetParent().AllButtons = {}
-  tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
-  tAppendAll(self:GetParent().AllButtons, self.TopButtons)
 
   local buttonsWidth = 0
   local lastButton = nil

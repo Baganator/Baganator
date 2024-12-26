@@ -115,18 +115,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   if self.BankMissingHint:IsShown() then
-    self:SetSize(
-      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
-      80 + topSpacing / 2
-    )
-    self.CurrencyWidget:UpdateCurrencyTextPositions(self.BankMissingHint:GetWidth())
-    for _, l in ipairs(self.Container.Layouts) do
-      l:Hide()
-    end
     self.LayoutManager:ClearVisuals()
-
-    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
-    self:GetParent():OnTabFinished()
     return
   end
 

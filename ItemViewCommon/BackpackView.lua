@@ -307,7 +307,7 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
 
   if not characterData then
     self:SetTitle("")
-    return true
+    return
   else
     self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
   end
