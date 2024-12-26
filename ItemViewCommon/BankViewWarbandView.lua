@@ -414,9 +414,9 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
       layout:Hide()
     end
 
-    self.Container:SetSize(
-      math.max(minWidth, 400),
-      maxHeight + 75 + topSpacing / 2
+    self:SetSize(
+      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
+      80 + topSpacing / 2
     )
 
     addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
