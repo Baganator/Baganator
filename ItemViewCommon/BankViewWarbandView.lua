@@ -376,11 +376,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
 
+  local showLive = isWarbandData and self.isLive
   for _, button in ipairs(self.LiveButtons) do
-    button:SetShown(self.isLive)
+    button:SetShown(showLive)
   end
-  self.DepositItemsButton:SetShown(isWarbandData and self.isLive)
-  self.IncludeReagentsCheckbox:SetShown(isWarbandData and self.isLive)
 
   self:UpdateCurrencies()
 

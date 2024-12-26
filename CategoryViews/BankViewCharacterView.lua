@@ -106,9 +106,11 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:NotifyBagUpdate(updated
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
-  if character ~= self.lastCharacter then
+  if self.lastRenderedCharacter ~= character then
     self.LayoutManager:NewCharacter()
   end
+
+  self.lastRenderedCharacter = character
 
   BaganatorItemViewCommonBankViewCharacterViewMixin.UpdateForCharacter(self, character, isLive)
 
