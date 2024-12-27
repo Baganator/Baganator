@@ -122,9 +122,9 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   addonTable.Skins.AddFrame("ButtonFrame", self, {"guild"})
   addonTable.Skins.AddFrame("Button", self.DepositButton)
   addonTable.Skins.AddFrame("Button", self.WithdrawButton)
-  addonTable.Skins.AddFrame("IconButton", self.ToggleTabTextButton)
-  addonTable.Skins.AddFrame("IconButton", self.ToggleTabLogsButton)
-  addonTable.Skins.AddFrame("IconButton", self.ToggleGoldLogsButton)
+  addonTable.Skins.AddFrame("IconButton", self.ToggleTabTextButton, {"guildTabText"})
+  addonTable.Skins.AddFrame("IconButton", self.ToggleTabLogsButton, {"guildTabLogs"})
+  addonTable.Skins.AddFrame("IconButton", self.ToggleGoldLogsButton, {"guildGoldLogs"})
 end
 
 function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)

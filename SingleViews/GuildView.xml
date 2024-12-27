@@ -38,8 +38,8 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture parentKey="Icon" atlas="poi-workorders">
-              <Size x="17" y="17"/>
+            <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\GuildTabText.png">
+              <Size x="14" y="14"/>
               <Anchors>
                 <Anchor point="CENTER"/>
               </Anchors>
@@ -62,8 +62,8 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture parentKey="Icon" atlas="GarrMission_CurrencyIcon-Salvage">
-              <Size x="17" y="17"/>
+            <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\GuildTabLogs.png">
+              <Size x="14" y="14"/>
               <Anchors>
                 <Anchor point="CENTER"/>
               </Anchors>
@@ -86,8 +86,8 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture parentKey="Icon" atlas="Auctioneer">
-              <Size x="17" y="17"/>
+            <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\Currency.png">
+              <Size x="14" y="14"/>
               <Anchors>
                 <Anchor point="CENTER"/>
               </Anchors>
