@@ -680,13 +680,15 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
 
   addonTable.Skins.AddFrame("ButtonFrame", self)
   addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
+
+  self.parentName = self:GetParent():GetName() -- as the parent changes
 end
 
 function BaganatorGuildLogsTemplateMixin:OnShow()
   self:ClearAllPoints()
   local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
-    anchor[2] = self:GetParent():GetName()
+    anchor[2] = self.parentName
   end
   self:SetPoint(unpack(anchor))
 end
@@ -817,13 +819,15 @@ function BaganatorGuildTabTextTemplateMixin:OnLoad()
 
   addonTable.Skins.AddFrame("EditBox", self.TextContainer:GetEditBox())
   addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
+
+  self.parentName = self:GetParent():GetName() -- as the parent changes
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnShow()
   self:ClearAllPoints()
   local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
-    anchor[2] = self:GetParent():GetName()
+    anchor[2] = self.parentName
   end
   self:SetPoint(unpack(anchor))
 end
