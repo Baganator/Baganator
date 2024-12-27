@@ -315,21 +315,23 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   local lastTab
   local tabs = {}
 
-  local tabButton = self.tabsPool:Acquire()
-  addonTable.Skins.AddFrame("SideTabButton", tabButton)
-  tabButton:RegisterForClicks("LeftButtonUp")
-  tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\Everything.png")
-  tabButton:SetScript("OnClick", function(_, button)
-    self:SetCurrentTab(0)
-    self:UpdateForGuild(self.lastGuild, self.isLive)
-  end)
-  tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
-  tabButton.SelectedTexture:Hide()
-  tabButton:SetScale(tabScale)
-  tabButton:Show()
-  tabButton.tabName = BAGANATOR_L_EVERYTHING
-  lastTab = tabButton
-  table.insert(tabs, tabButton)
+  if #guildData.bank > 0 then
+    local tabButton = self.tabsPool:Acquire()
+    addonTable.Skins.AddFrame("SideTabButton", tabButton)
+    tabButton:RegisterForClicks("LeftButtonUp")
+    tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\Everything.png")
+    tabButton:SetScript("OnClick", function(_, button)
+      self:SetCurrentTab(0)
+      self:UpdateForGuild(self.lastGuild, self.isLive)
+    end)
+    tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
+    tabButton.SelectedTexture:Hide()
+    tabButton:SetScale(tabScale)
+    tabButton:Show()
+    tabButton.tabName = BAGANATOR_L_EVERYTHING
+    lastTab = tabButton
+    table.insert(tabs, tabButton)
+  end
 
   self.lastTabData = {}
   for index, tabInfo in ipairs(guildData.bank) do
