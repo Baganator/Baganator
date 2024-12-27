@@ -176,6 +176,10 @@ function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)
 end
 
 function BaganatorSingleViewGuildViewMixin:OnShow()
+  -- Parent change to avoid ugly overlapping elements with main frame
+  self.LogsFrame:SetParent(UIParent)
+  self.TabTextFrame:SetParent(UIParent)
+
   self:UpdateForGuild(self.lastGuild, self.isLive)
 end
 
@@ -184,6 +188,12 @@ function BaganatorSingleViewGuildViewMixin:OnHide()
   if GuildBankPopupFrame and GuildBankPopupFrame:IsShown() then
     GuildBankPopupFrame:Hide()
   end
+
+  self.LogsFrame:SetParent(self)
+  self.TabTextFrame:SetParent(self)
+
+  self.LogsFrame:Hide()
+  self.TabTextFrame:Hide()
   CloseGuildBankFrame()
 end
 

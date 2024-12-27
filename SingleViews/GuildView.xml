@@ -179,12 +179,12 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Frame name="$parentLogsFrame" parentKey="LogsFrame" inherits="BaganatorGuildLogsTemplate" frameStrata="DIALOG" hidden="true">
+      <Frame name="$parentLogsFrame" parentKey="LogsFrame" inherits="BaganatorGuildLogsTemplate" frameStrata="DIALOG" hidden="true" topLevel="true">
         <Anchors>
           <Anchor point="CENTER"/>
         </Anchors>
       </Frame>
-      <Frame name="$parentTabTextFrame" parentKey="TabTextFrame" inherits="BaganatorGuildTabTextTemplate" frameStrata="DIALOG" hidden="true">
+      <Frame name="$parentTabTextFrame" parentKey="TabTextFrame" inherits="BaganatorGuildTabTextTemplate" frameStrata="DIALOG" hidden="true" topLevel="true">
         <Anchors>
           <Anchor point="CENTER"/>
         </Anchors>
