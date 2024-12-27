@@ -567,11 +567,19 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   self.DepositButton:SetPoint("BOTTOMRIGHT", self, -sideSpacing + 1, 6)
 
   self.Container:SetSize(active:GetWidth(), active:GetHeight())
-  self:SetSize(
-    self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    math.min(self.Container:GetHeight() + 6 + 63 + detailsHeight, UIParent:GetHeight() / self:GetScale())
-  )
-  self:UpdateScroll(6 + 63 + detailsHeight, self:GetScale())
+
+  if self.NotVisitedText:IsShown() then
+    self:SetSize(
+      math.max(400, self.NotVisitedText:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
+      80 + topSpacing / 2
+    )
+  else
+    self:SetSize(
+      self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
+      math.min(self.Container:GetHeight() + 69 + detailsHeight, UIParent:GetHeight() / self:GetScale())
+    )
+    self:UpdateScroll(69 + detailsHeight, self:GetScale())
+  end
 
   self.ButtonVisibility:Update()
 
