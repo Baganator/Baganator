@@ -207,7 +207,7 @@
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" y="-25" x="15"/>
-          <Anchor point="BOTTOMRIGHT" y="10" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="10" x="-18"/>
         </Anchors>
         <Frames>
           <Frame parentKey="ScrollBox" setAllPoints="true" inherits="WowScrollBox">
@@ -255,7 +255,7 @@
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" y="-25" x="15"/>
-          <Anchor point="BOTTOMRIGHT" y="40" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="40" x="-18"/>
         </Anchors>
       </Frame>
       <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
