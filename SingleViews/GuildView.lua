@@ -568,9 +568,10 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
 
   self.Container:SetSize(active:GetWidth(), active:GetHeight())
 
-  if self.NotVisitedText:IsShown() then
+  if self.NotVisitedText:IsShown() or self.NoTabsText:IsShown() then
+    local width = self.NotVisitedText:IsShown() and self.NotVisitedText:GetWidth() or self.NoTabsText:GetWidth()
     self:SetSize(
-      math.max(400, self.NotVisitedText:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
+      math.max(400, width) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
       80 + topSpacing / 2
     )
   else
