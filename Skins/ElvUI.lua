@@ -156,35 +156,6 @@ local function SetConstants()
 end
 
 local function LoadSkin()
-  if (select(4, C_AddOns.GetAddOnInfo("Paste"))) then
-
-    local elvUINoPaste = "BaganatorElvUINoPaste"
-    StaticPopupDialogs[elvUINoPaste] = {
-      text = BAGANATOR_L_NO_PASTE_MESSAGE,
-      button1 = DISABLE,
-      hasEditBox = 1,
-      OnButton1 = function()
-        C_AddOns.DisableAddOn("Paste")
-        ReloadUI()
-      end,
-      OnShow = function(self)
-        self.editBox:SetText("https://www.curseforge.com/wow/addons/pasteng")
-        C_Timer.After(0, function()
-          self.editBox:HighlightText()
-        end)
-      end,
-      EditBoxOnEnterPressed = function(self)
-        self:GetParent():Hide()
-      end,
-      EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-      editBoxWidth = 230,
-      maxLetters = 0,
-      timeout = 0,
-      hideOnEscape = 1,
-    }
-    StaticPopup_Show(elvUINoPaste)
-    addonTable.Utilities.Message(BAGANATOR_L_NO_PASTE_MESSAGE)
-  end
   E, L, V, P, G = unpack(ElvUI)
   S = E:GetModule("Skins")
   B = E:GetModule('Bags')
