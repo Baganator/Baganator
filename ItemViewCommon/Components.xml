@@ -140,7 +140,7 @@
       <OnEnter>
         if not self:IsEnabled() then
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-          GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_YOU_ARE_IN_COMBAT))
+          GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CANNOT_YOU_ARE_IN_COMBAT))
           GameTooltip:Show()
         else
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -182,7 +182,7 @@
       <OnEnter>
         if not self:IsEnabled() then
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-          GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_YOU_ARE_IN_COMBAT))
+          GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CANNOT_YOU_ARE_IN_COMBAT))
           GameTooltip:Show()
         else
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
