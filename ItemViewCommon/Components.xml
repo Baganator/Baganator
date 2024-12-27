@@ -137,10 +137,17 @@
       <OnEvent>
         self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
       </OnEvent>
-      <OnEnter inherits="prepend">
+      <OnEnter>
         if not self:IsEnabled() then
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
           GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_YOU_ARE_IN_COMBAT))
+          GameTooltip:Show()
+        else
+          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+          GameTooltip:SetText(self.tooltipHeader)
+          if self.tooltipText then
+            GameTooltip:AddLine(self.tooltipText, 1, 1, 1, true)
+          end
           GameTooltip:Show()
         end
       </OnEnter>
@@ -172,10 +179,17 @@
       <OnEvent>
         self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
       </OnEvent>
-      <OnEnter inherits="prepend">
+      <OnEnter>
         if not self:IsEnabled() then
           GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
           GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_YOU_ARE_IN_COMBAT))
+          GameTooltip:Show()
+        else
+          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+          GameTooltip:SetText(self.tooltipHeader)
+          if self.tooltipText then
+            GameTooltip:AddLine(self.tooltipText, 1, 1, 1, true)
+          end
           GameTooltip:Show()
         end
       </OnEnter>
