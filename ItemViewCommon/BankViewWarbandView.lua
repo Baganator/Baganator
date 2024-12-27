@@ -376,10 +376,11 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
 
-  local showLive = isWarbandData and self.isLive
-  for _, button in ipairs(self.LiveButtons) do
-    button:SetShown(showLive)
-  end
+  self.IncludeReagentsCheckbox:SetShown(isWarbandData and self.isLive)
+  self.DepositItemsButton:SetShown(isWarbandData and self.isLive)
+
+  self.DepositMoneyButton:SetShown(self.isLive and C_PlayerInfo.HasAccountInventoryLock())
+  self.WithdrawMoneyButton:SetShown(self.isLive and C_PlayerInfo.HasAccountInventoryLock())
 
   self:UpdateCurrencies()
 
@@ -393,7 +394,14 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
     self.IncludeReagentsCheckbox:SetPoint("LEFT", self, "LEFT", addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
     self.DepositItemsButton:SetPoint("LEFT", self, "LEFT", addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
 
-    self.DepositMoneyButton:SetPoint("RIGHT", self, "RIGHT", -sideSpacing, 0)
+    self.DepositMoneyButton:ClearAllPoints()
+    if isWarbandData then
+      self.DepositMoneyButton:SetPoint("BOTTOM", 0, 29)
+      self.DepositMoneyButton:SetPoint("RIGHT", -sideSpacing, 0)
+    else
+      self.DepositMoneyButton:SetPoint("BOTTOM", 0, 5)
+      self.DepositMoneyButton:SetPoint("RIGHT", self.Money, "LEFT", -sideSpacing, 0)
+    end
   end
 
   self:UpdateTabs()

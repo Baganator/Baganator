@@ -65,7 +65,7 @@
       <Layer level="BACKGROUND">
         <FontString parentKey="BankMissingHint" inherits="GameFontHighlight" text="BAGANATOR_L_BANK_DATA_MISSING_HINT">
           <Anchors>
-            <Anchor point="LEFT" x="20" y="5"/>
+            <Anchor point="LEFT" x="20"/>
           </Anchors>
         </FontString>
         <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true">
