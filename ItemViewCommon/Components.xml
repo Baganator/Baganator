@@ -122,7 +122,7 @@
     </Layers>
   </Button>
 
-  <Button name="BaganatorSortButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
+  <Button name="BaganatorSortButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate" motionScriptsWhileDisabled="true">
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_SORT" type="global"/>
     </KeyValues>
@@ -137,6 +137,13 @@
       <OnEvent>
         self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
       </OnEvent>
+      <OnEnter inherits="prepend">
+        if not self:IsEnabled() then
+          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+          GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_YOU_ARE_IN_COMBAT))
+          GameTooltip:Show()
+        end
+      </OnEnter>
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
@@ -150,7 +157,7 @@
     </Layers>
   </Button>
 
-  <Button name="BaganatorTransferButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate">
+  <Button name="BaganatorTransferButtonTemplate" virtual="true" inherits="BaganatorTooltipIconButtonTemplate" motionScriptsWhileDisabled="true">
     <KeyValues>
       <KeyValue key="tooltipHeader" value="BAGANATOR_L_TRANSFER" type="global"/>
     </KeyValues>
@@ -165,6 +172,13 @@
       <OnEvent>
         self:SetEnabled(event ~= "PLAYER_REGEN_DISABLED")
       </OnEvent>
+      <OnEnter inherits="prepend">
+        if not self:IsEnabled() then
+          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+          GameTooltip:SetText(RED_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_YOU_ARE_IN_COMBAT))
+          GameTooltip:Show()
+        end
+      </OnEnter>
     </Scripts>
     <Layers>
       <Layer level="ARTWORK">
