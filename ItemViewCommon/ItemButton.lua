@@ -68,7 +68,7 @@ function addonTable.ItemButtonUtil.UpdateSettings()
   if upgradePlugin and upgradePluginID ~= "poor_quality" then
     iconSettings.usingUpgradePlugin = true
     table.insert(itemCallbacks, function(self)
-      if self:GetID() ~= 0 then
+      if self.BGR.itemLink then
         local _, upgradeStatus = pcall(upgradePlugin.callback, self.BGR.itemLink)
         self.BGR.isUpgrade = upgradeStatus == true
       end
