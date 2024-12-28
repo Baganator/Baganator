@@ -73,9 +73,22 @@ local function GetAuto(category, everything)
     table.insert(searches, "")
     table.insert(searchLabels, BAGANATOR_L_CATEGORY_RECENT)
     local newItems = {}
+    local newByKey = {}
     for _, item in ipairs(everything) do
       if newItems[item.key] ~= false and item.bagID ~= nil then
-        newItems[item.key] = addonTable.NewItems:IsNewItemTimeout(item.bagID, item.slotID) and addonTable.CategoryViews.Utilities.GetAddedItemData(item.itemID, item.itemLink)
+        newItems[item.key] = addonTable.NewItems:IsNewItemTimeout(item.bagID, item.slotID)
+        if newItems[item.key] and newByKey[item.key] then
+          for _, prevItem in ipairs(newByKey[item.key]) do
+            addonTable.NewItems:ClearNewItem(item.bagID, item.slotID)
+            addonTable.NewItems:ClearNewItemTimeout(prevItem.bagID, prevItem.slotID)
+          end
+        else
+          newByKey[item.key] = newByKey[item.key] or {}
+          table.insert(newByKey[item.key], item)
+        end
+      elseif newItems[item.key] == false then
+        addonTable.NewItems:ClearNewItem(item.bagID, item.slotID)
+        addonTable.NewItems:ClearNewItemTimeout(item.bagID, item.slotID)
       end
     end
     attachedItems[1] = newItems
@@ -120,7 +133,6 @@ function addonTable.CategoryViews.ComposeCategories(everything)
   local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
   local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
   local categoryKeys = {}
-  local emptySlots = {index = -1, section = ""}
   local currentSection = ""
   local prevSection = ""
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do

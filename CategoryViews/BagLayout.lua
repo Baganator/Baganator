@@ -13,6 +13,7 @@ local function CheckStackable(allBags, callback)
         else
           waiting = waiting + 1
           addonTable.Utilities.LoadItemData(slot.itemID, function()
+            addonTable.ReportEntry()
             stackable[slot.itemID] = C_Item.GetItemMaxStackSizeByID(slot.itemID) > 1
             waiting = waiting - 1
             if waiting == 0 and loopComplete then
@@ -29,7 +30,7 @@ local function CheckStackable(allBags, callback)
   end
 end
 
-local function Prearrange(isLive, bagID, bag, bagType)
+local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
   local junkPluginID = addonTable.Config.Get("junk_plugin")
   local junkPlugin = addonTable.API.JunkPlugins[junkPluginID] and addonTable.API.JunkPlugins[junkPluginID].callback
   if junkPluginID == "poor_quality" then
@@ -61,7 +62,7 @@ local function Prearrange(isLive, bagID, bag, bagType)
       if info.itemID ~= nil then
         local location = {bagID = bagID, slotIndex = slotIndex}
         info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
-        if info.setInfo then
+        if info.setInfo or not isGrouping then -- force ungrouping when appropriate
           info.guid = C_Item.GetItemGUID(location)
         end
         if info.hasLoot and not info.isBound then
@@ -178,7 +179,6 @@ function addonTable.CategoryViews.BagLayoutMixin:NotifyBagUpdate(updatedBags)
 end
 
 function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, bagTypes, composed, emptySlotsOrder, emptySlotsByType, bagWidth, sideSpacing, topSpacing)
-
   local container = self:GetParent()
 
   local layoutCount = 0
@@ -232,7 +232,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
   for _, details in pairs(composed.details) do
     if details.results then
       local entries = {}
-      if container.isGrouping and not details.emptySlots then
+      if not details.emptySlots then
         local entriesByKey = {}
         for _, item in ipairs(details.results) do
           local groupingKey = item.key
@@ -250,8 +250,6 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
             table.insert(entries, item)
           end
         end
-      else
-        entries = details.results
       end
       if container.isLive and self.showAddButtons and not details.auto then
         if container.addToCategoryMode ~= details.source then
@@ -459,7 +457,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
     local emptySlotsByType, emptySlotsOrder, everything = {}, {}, {}
     for index, bagID in ipairs(bagIndexes) do
       if allBags[index] then
-        local result = Prearrange(container.isLive, bagID, allBags[index], bagTypes[index])
+        local result = Prearrange(container.isLive, bagID, allBags[index], bagTypes[index], container.isGrouping)
         -- Optimisations
         local everythingIndex = #everything + 1
         for _, item in ipairs(result.everything) do
