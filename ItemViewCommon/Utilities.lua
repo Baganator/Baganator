@@ -224,6 +224,9 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   for _, child in ipairs({parent.backgroundButton:GetRegions()}) do
     child:Hide()
   end
+  for _, child in ipairs({parent.backgroundButton:GetChildren()}) do
+    child:Hide()
+  end
 
   UpdateVisibility()
   parent.backgroundButton:RegisterEvent("CURSOR_CHANGED")
