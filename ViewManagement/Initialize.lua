@@ -97,7 +97,7 @@ local function SetupBackpackHooks()
     b:HookScript("OnClick", ToggleBackpackView)
   end
 
-  hooksecurefunc("ToggleBackpack", function()
+  local function DirectToggleOnly()
     local stack = debugstack()
     -- Check to ensure we're not opening when OpenClose.lua will handle the
     -- auto-open and auto-close
@@ -105,7 +105,11 @@ local function SetupBackpackHooks()
       return
     end
     ToggleBackpackView()
-  end)
+  end
+
+  hooksecurefunc("ToggleBackpack", DirectToggleOnly)
+
+  hooksecurefunc("ToggleBag", DirectToggleOnly)
 
   ToggleAllBags = ToggleBackpackView
 
