@@ -250,6 +250,8 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
             table.insert(entries, item)
           end
         end
+      else
+        entries = details.results
       end
       if container.isLive and self.showAddButtons and not details.auto then
         if container.addToCategoryMode ~= details.source then
