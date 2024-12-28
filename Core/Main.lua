@@ -62,6 +62,7 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
     local frame = CreateFrame("Frame")
     frame:RegisterEvent("PLAYER_ENTERING_WORLD")
     frame:SetScript("OnEvent", function()
+      frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
       -- Show after Syndicator has started
       C_Timer.After(0, function()
         C_Timer.After(0, function()
