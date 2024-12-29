@@ -130,32 +130,36 @@ function addonTable.CategoryViews.ComposeCategories(everything)
   local allDetails = {}
 
   local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
-  local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
   local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
   local categoryKeys = {}
-  local currentSection = ""
-  local prevSection = ""
+  local currentSection = {}
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
-    local section = source:match("^_(.*)")
-    if source == addonTable.CategoryViews.Constants.DividerName and not sectionToggled[currentSection] then
+    local sectionName = source:match("^_(.*)")
+    local section = CopyTable(currentSection)
+    if source == addonTable.CategoryViews.Constants.DividerName then
       table.insert(allDetails, {
         type = "divider",
+        section = section,
       })
     end
     if source == addonTable.CategoryViews.Constants.SectionEnd then
+      table.remove(currentSection)
+      table.remove(section)
       table.insert(allDetails, {
         type = "divider",
+        section = section,
       })
-      prevSection = currentSection
-      currentSection = ""
-    elseif section then
+    elseif sectionName then
       table.insert(allDetails, {
         type = "divider",
+        section = section,
       })
-      currentSection = _G["BAGANATOR_L_SECTION_" .. section] or section
+      local label = _G["BAGANATOR_L_SECTION_" .. sectionName] or sectionName
+      table.insert(currentSection, label)
       table.insert(allDetails, {
         type = "section",
-        label = currentSection,
+        label = label,
+        section = section,
       })
     end
 
@@ -191,7 +195,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
             group = group,
             groupPrefix = groupPrefix,
             auto = true,
-            section = currentSection,
+            section = section,
           }
         end
       elseif category.emptySlots then
@@ -199,7 +203,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
           type = "category",
           source = source,
           index = #allDetails + 1,
-          section = currentSection,
+          section = section,
           search = "________" .. (#allDetails + 1),
           priority = 0,
           auto = true,
@@ -217,7 +221,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
           attachedItems = attachedItems,
           group = group,
           groupPrefix = groupPrefix,
-          section = currentSection,
+          section = section,
         }
       end
     end
@@ -238,7 +242,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         attachedItems = attachedItems,
         group = group,
         groupPrefix = groupPrefix,
-        section = currentSection,
+        section = section,
       }
     end
   end
@@ -264,6 +268,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
 
   local result = {
     details = allDetails,
+    start = 1,
     searches = {},
     section = {},
     categoryKeys = {},
@@ -274,6 +279,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
     if details.search then
       details.results = {}
     end
+    details.next = index + 1
     details.index = nil
     details.priority = nil
     if details.type == "category" then
@@ -282,6 +288,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       result.categoryKeys[details.search] = details.source
     end
   end
+  allDetails[#allDetails].next = nil
 
   return result
 end

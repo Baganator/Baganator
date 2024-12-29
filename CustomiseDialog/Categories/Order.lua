@@ -54,8 +54,9 @@ local function PopulateCategoryOrder(container)
   local elements = {}
   local dataProviderElements = {}
   local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
-  local indent = ""
+  local indentLevel = 0
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
+    local indent = string.rep("      ", indentLevel)
     local color = WHITE_FONT_COLOR
     if hidden[source] then
       color = GRAY_FONT_COLOR
@@ -78,12 +79,12 @@ local function PopulateCategoryOrder(container)
     if source:match("^_") then
       local name
       if source == addonTable.CategoryViews.Constants.SectionEnd then
-        indent = ""
+        indentLevel = indentLevel - 1
         name = " "
       else
-        indent = "      "
+        indentLevel = indentLevel + 1
         local section = source:match("^_(.*)")
-        name = CreateAtlasMarkup(folderMarker) .. " " .. (_G["BAGANATOR_L_SECTION_" .. section] or section)
+        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. (_G["BAGANATOR_L_SECTION_" .. section] or section)
       end
       table.insert(dataProviderElements, {value = source, label = name})
       table.insert(elements, source)
@@ -291,18 +292,6 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
         end
       end
 
-      if draggable.value:match("^_") or draggable.value == addonTable.CategoryViews.Constants.DividerName then
-        for i = insertIndex, #categoryOrder.elements do
-          local element = categoryOrder.elements[i]
-          if element == addonTable.CategoryViews.Constants.SectionEnd then
-            insertIndex = i + 1
-            break
-          elseif element:match("^_") then
-            break
-          end
-        end
-      end
-
       if draggable.value:match("^_") then
         table.insert(categoryOrder.elements, insertIndex, draggable.value)
         for _, value in ipairs(draggable.sectionValues) do
@@ -342,11 +331,16 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
     if index ~= nil then
       table.remove(categoryOrder.elements, index)
       if value:match("^_") then -- section
-        local tmp
-        while tmp ~= addonTable.CategoryViews.Constants.SectionEnd do
-          tmp = categoryOrder.elements[index]
+        local level = 1
+        while level ~= 0 do
+          local tmp = categoryOrder.elements[index]
           table.insert(draggable.sectionValues, tmp)
           table.remove(categoryOrder.elements, index)
+          if tmp == addonTable.CategoryViews.Constants.SectionEnd then
+            level = level - 1
+          elseif tmp:match("^_") then
+            level = level + 1
+          end
         end
       end
       addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, categoryOrder.elements)
