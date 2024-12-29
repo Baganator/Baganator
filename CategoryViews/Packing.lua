@@ -45,9 +45,6 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
       layout:Show()
       label:Resize()
       label:Show()
-      if label:GetText() == "Tradeskill" then
-        print(offsetX)
-      end
       label:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY)
       label:SetWidth(math.min(layout:GetWidth() + categorySpacing, targetPixelWidth - offsetX))
       layout:SetPoint("TOPLEFT", offsetX + baseOffsetX, offsetY + baseOffsetY - label:GetHeight() - headerPadding / 2)
