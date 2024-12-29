@@ -54,7 +54,7 @@
 
       <Button parentKey="DeleteButton" text="DELETE" inherits="UIPanelDynamicResizeButtonTemplate" parentArray="ChangeAlpha">
         <Anchors>
-          <Anchor point="BOTTOMRIGHT" x="-15" y="0"/>
+          <Anchor point="BOTTOMRIGHT" x="-10" y="0"/>
         </Anchors>
       </Button>
     </Frames>

@@ -331,7 +331,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
     end
   end)
 
-  local dropdown = CreateFrame("DropdownButton", nil, parent, "WowStyle1DropdownTemplate")
+  local dropdown = CreateFrame("DropdownButton", nil, container, "WowStyle1DropdownTemplate")
   addonTable.Skins.AddFrame("Dropdown", dropdown)
   dropdown.disableSelectionText = true
   SetCategoriesToDropDown(dropdown, GetInsertedCategories())
@@ -384,7 +384,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
     end
   end)
   dropdown:SetPoint("BOTTOMLEFT", categoryOrder, "TOPLEFT", 0, 8)
-  dropdown:SetPoint("RIGHT", categoryOrder)
+  dropdown:SetPoint("RIGHT", -17, 0)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER or settingName == addonTable.Config.Options.CATEGORY_HIDDEN or settingName == addonTable.Config.Options.CUSTOM_CATEGORIES then
@@ -394,7 +394,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   end)
 
   local exportButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-  exportButton:SetPoint("RIGHT", categoryOrder, 0, 0)
+  exportButton:SetPoint("RIGHT", container, -17, 0)
   exportButton:SetPoint("BOTTOM", container)
   exportButton:SetText(BAGANATOR_L_EXPORT)
   DynamicResizeButton_Resize(exportButton)
