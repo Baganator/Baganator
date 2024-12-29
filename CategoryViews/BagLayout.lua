@@ -62,10 +62,11 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
       if info.itemID ~= nil then
         local location = {bagID = bagID, slotIndex = slotIndex}
         info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
-        if info.setInfo or not isGrouping then -- force ungrouping when appropriate
+        if info.setInfo then
           info.guid = C_Item.GetItemGUID(location)
-        end
-        if info.hasLoot and not info.isBound then
+        elseif not isGrouping and C_Item.DoesItemExist(location) then
+          info.guid = C_Item.GetItemGUID(location)
+        elseif info.hasLoot and not info.isBound then
           -- Ungroup lockboxes always
           local classID, subClassID = select(6, C_Item.GetItemInfoInstant(info.itemID))
           if classID == Enum.ItemClass.Miscellaneous and subClassID == 0 then
