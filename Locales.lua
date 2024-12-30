@@ -194,7 +194,8 @@ L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK"] = "Do you want to transfer ALL items f
 L["CONFIRM_TRANSFER_ALL_ITEMS_FROM_GUILD_BANK"] = "Do you want to transfer ALL items from the guild bank?"
 L["THE_MERCHANT_DOESNT_WANT_ANY_OF_THOSE_ITEMS"] = "The merchant doesn't want any of those items"
 L["CANNOT_ADD_ANY_MORE_ITEMS_TO_THIS_TRADE"] = "Cannot add any more items to this trade"
-L["CANNOT_WITHDRAW_ANY_MORE_ITEMS_FROM_THE_GUILD_BANK"] = "Cannot withdrawl any more items from the guild bank"
+L["CANNOT_WITHDRAW_ANY_MORE_ITEMS_FROM_THE_GUILD_BANK"] = "Cannot withdraw any more items from the guild bank"
+L["CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT"] = "Cannot move items as no space left"
 
 L["UNLIMITED"] = "Unlimited"
 L["GUILD_WITHDRAW_DEPOSIT_X_X"] = "Items - Withdraw: %s | Deposit: %s"

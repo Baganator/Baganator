@@ -78,6 +78,9 @@ function addonTable.Transfers.FromBagsToBags(toMove, bagIDs, targets)
   elseif infoPending then
     return addonTable.Constants.SortStatus.WaitingItemData
   else
+    if #toMove > 0 then
+      UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
+    end
     return addonTable.Constants.SortStatus.Complete
   end
 end
