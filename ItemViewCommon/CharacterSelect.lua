@@ -123,6 +123,9 @@ function BaganatorCharacterSelectMixin:UpdateList()
 end
 
 function BaganatorCharacterSelectMixin:OnShow()
+  if not self.selectedCharacter then
+    self.selectedCharacter = Syndicator.API.GetCurrentCharacter()
+  end
   self:UpdateList()
 end
 
