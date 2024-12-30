@@ -64,7 +64,7 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
         info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
         if info.setInfo then
           info.guid = C_Item.GetItemGUID(location)
-        elseif not isGrouping and C_Item.DoesItemExist(location) then
+        elseif not isGrouping then
           info.guid = C_Item.GetItemGUID(location)
         elseif info.hasLoot and not info.isBound then
           -- Ungroup lockboxes always
@@ -90,7 +90,8 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
         end
         linkMap[info.itemLink] = info.keyLink
       end
-      info.key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info) .. info.guid
+      info.keyNoGUID = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info)
+      info.key = info.keyNoGUID .. info.guid
       table.insert(everything, info)
     else
       table.insert(emptySlots, {bagID = bagID, itemCount = 1, slotID = slotIndex, key = bagType, bagType = bagType, keyLink = bagType})
@@ -275,8 +276,19 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       if current.source ~= old.source or
         (current.source and (current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory)
           and not old.emptySlots and old.oldLength and old.oldLength < #current.results) then
-        anyNew = true
-        break
+        for _, item in ipairs(current.results) do -- Put returning items back where they were before
+          -- Check if the exact item existed before, or at least a similar one
+          -- (for warband transfers)
+          if not old.keys or (not old.keys[item.key] and (not old.keysNoGUID[item.keyNoGUID] or old.keysNoGUID[item.keyNoGUID] <= 0)) then
+            anyNew = true
+            break
+          elseif old.keysNoGUID and old.keysNoGUID[item.keyNoGUID] then
+            old.keysNoGUID[item.keyNoGUID] = old.keysNoGUID[item.keyNoGUID] - 1
+          end
+        end
+        if anyNew then
+          break
+        end
       end
     end
     if not anyNew and not container.addToCategoryMode then
@@ -292,9 +304,34 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
               end
               local currentInfo = current.results[index2]
               -- Check for missing items, and persist slot location/holes in the list
-              if info.bagID and info.slotID and (not currentInfo or (currentInfo.key ~= info.key or (info.slotID ~= currentInfo.slotID or info.bagID ~= currentInfo.bagID))) then
-                table.insert(current.results, index2, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty"})
+              if info.bagID and info.slotID and (
+                  not currentInfo or
+                  (
+                  -- Admittedly if the keyNoGUID is the only thing that matches
+                  -- (warband bank) the position may not be exact, but it'll be
+                  -- close enough
+                    (currentInfo.key ~= info.key and currentInfo.key ~= info.oldKey and currentInfo.keyNoGUID ~= info.keyNoGUID and currentInfo.keyNoGUID ~= info.oldKeyNoGUID) and
+                    (info.slotID ~= currentInfo.slotID or info.bagID ~= currentInfo.bagID))
+                  )
+                then
+                table.insert(current.results, index2, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty", oldKey = info.key or info.oldKey, oldKeyNoGUID = info.keyNoGUID or info.oldKeyNoGUID})
               end
+            end
+          end
+        end
+      end
+    end
+    if container.splitStacksDueToTransfer then
+      for _, current in ipairs(composed.details) do
+        if current.results then
+          current.keys = {}
+          -- We use keyNoGUID as a backup because the guid shifts when moving items
+          -- in-and-out of the warband bank
+          current.keysNoGUID = {}
+          for _, item in ipairs(current.results) do
+            if item.bagID and item.slotID and (item.key or item.oldKey) and (item.keyNoGUID or item.oldKeyNoGUID) then
+              current.keys[item.key or item.oldKey] = true
+              current.keysNoGUID[item.keyNoGUID or item.oldKeyNoGUID] = (current.keysNoGUID[item.keyNoGUID or item.oldKeyNoGUID] or 0) + 1
             end
           end
         end
@@ -461,7 +498,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("stackables", debugprofilestop() - s0)
     end
-    if state ~= self.state then
+    if state ~= self.state or Syndicator.API.IsBagEventPending() then
       return
     end
 
