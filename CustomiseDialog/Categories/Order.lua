@@ -124,7 +124,7 @@ local function GetCategoryContainer(parent, pickupCallback)
       frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
       frame:SetScript("OnClick", function(self, button)
         if self.value:match("^_") then
-          addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", self.value)
+          addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", self.value, self.indexValue)
         elseif self.value == "default_auto_recents" then
           addonTable.CallbackRegistry:TriggerEvent("EditCategoryRecent")
         elseif self.value == addonTable.CategoryViews.Constants.EmptySlotsCategory then

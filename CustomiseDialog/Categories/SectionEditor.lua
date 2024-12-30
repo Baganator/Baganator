@@ -5,13 +5,19 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
   local function RemoveSection(name)
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
 
-    local existingIndex = tIndexOf(displayOrder, name)
-    if existingIndex then
-      table.remove(displayOrder, existingIndex)
+    if self.currentSectionIndex then
+      table.remove(displayOrder, self.currentSectionIndex)
+      local level = 0
       for i = 1, #displayOrder do
         if displayOrder[i] == addonTable.CategoryViews.Constants.SectionEnd then
-          table.remove(displayOrder, i)
-          break
+          if level == 0 then
+            table.remove(displayOrder, i)
+            break
+          else
+            level = level - 1
+          end
+        elseif displayOrder[i]:match("^_") then
+          level = level + 1
         end
       end
     end
@@ -26,17 +32,13 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
 
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
 
-    if self.currentSection ~= newValue then
-      RemoveSection(newValue)
-    end
-
-    local oldIndex = tIndexOf(displayOrder, self.currentSection)
-    if oldIndex then
+    if self.currentSectionIndex then
       self.currentSection = newValue
-      displayOrder[oldIndex] = newValue
+      displayOrder[self.currentSectionIndex] = newValue
     else
-      table.insert(displayOrder, 1, newValue)
-      table.insert(displayOrder, 2, addonTable.CategoryViews.Constants.SectionEnd)
+      self.currentSectionIndex = 1
+      table.insert(displayOrder, self.currentSectionIndex, newValue)
+      table.insert(displayOrder, self.currentSectionIndex + 1, addonTable.CategoryViews.Constants.SectionEnd)
     end
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
   end
@@ -49,13 +51,15 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("EditCategorySection", function(_, value)
+  addonTable.CallbackRegistry:RegisterCallback("EditCategorySection", function(_, value, index)
     if value == "_" then
       self.currentSection = "_" .. BAGANATOR_L_NEW_SECTION
+      self.currentSectionIndex = nil
       self.SectionName:SetText(BAGANATOR_L_NEW_SECTION)
       Save()
     else
       self.currentSection = value
+      self.currentSectionIndex = index
       local section = value:match("^_(.*)")
       self.SectionName:SetText(_G["BAGANATOR_L_SECTION_" .. section] or section)
     end
@@ -68,7 +72,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
 
     if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER then
       local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
-      if not tIndexOf(displayOrder, self.currentSection) then
+      if displayOrder[self.currentSectionIndex] ~= self.currentSection then
         self:Return()
       end
     end
