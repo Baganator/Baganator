@@ -670,7 +670,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
       table.insert(items, lastGroup)
     end
     scrollBox:SetDataProvider(CreateDataProvider(items), true)
-    scrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately);
   end
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
