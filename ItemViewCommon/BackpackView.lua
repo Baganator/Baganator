@@ -84,9 +84,9 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
       self:AddNewRecent(character)
       if self:IsVisible() then
         self:UpdateForCharacter(character, self.liveCharacter == character)
+      else
+        self.lastCharacter = character
       end
-    else
-      self.lastCharacter = character
     end
   end)
 
