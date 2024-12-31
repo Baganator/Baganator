@@ -310,9 +310,14 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
                   -- Admittedly if the keyNoGUID is the only thing that matches
                   -- (warband bank) the position may not be exact, but it'll be
                   -- close enough
-                    (currentInfo.key ~= info.key and currentInfo.key ~= info.oldKey and currentInfo.keyNoGUID ~= info.keyNoGUID and currentInfo.keyNoGUID ~= info.oldKeyNoGUID) and
-                    (info.slotID ~= currentInfo.slotID or info.bagID ~= currentInfo.bagID))
+                    (currentInfo.key ~= info.key and currentInfo.key ~= info.oldKey and
+                      (
+                        (currentInfo.keyNoGUID ~= info.keyNoGUID and currentInfo.keyNoGUID ~= info.oldKeyNoGUID) or -- not the same item/binding
+                        (old.keys and old.keys[currentInfo.key]) -- doesn't appear later
+                      )
+                    )
                   )
+                )
                 then
                 table.insert(current.results, index2, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty", oldKey = info.key or info.oldKey, oldKeyNoGUID = info.keyNoGUID or info.oldKeyNoGUID})
               end
