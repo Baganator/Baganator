@@ -181,10 +181,6 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:RemoveSearchMatches(get
   end)
 end
 
-function BaganatorItemViewCommonBankViewWarbandViewMixin:ResetToLive()
-  self.lastCharacter = self.liveCharacter
-end
-
 function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForTab()
   if self.isLive then
 

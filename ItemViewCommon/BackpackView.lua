@@ -146,9 +146,6 @@ end
 
 function BaganatorItemViewCommonBackpackViewMixin:SetLiveCharacter(character)
   self.liveCharacter = character
-  if self.lastCharacter == nil then
-    self.lastCharacter = self.liveCharacter
-  end
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnDragStart()

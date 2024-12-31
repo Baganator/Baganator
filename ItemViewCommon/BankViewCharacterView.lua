@@ -72,9 +72,6 @@ end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:SetLiveCharacter(character)
   self.liveCharacter = character
-  if self.lastCharacter == nil then
-    self.lastCharacter = self.liveCharacter
-  end
 end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:DoSort(isReverse)
