@@ -291,6 +291,9 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
           insertIndex = index + 1
         end
       end
+      if insertIndex == 0 then
+        insertIndex = 1
+      end
 
       if draggable.value:match("^_") then
         table.insert(categoryOrder.elements, insertIndex, draggable.value)

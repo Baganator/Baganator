@@ -288,7 +288,9 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       result.categoryKeys[details.search] = details.source
     end
   end
-  allDetails[#allDetails].next = nil
+  if next(allDetails) then
+    allDetails[#allDetails].next = nil
+  end
 
   return result
 end

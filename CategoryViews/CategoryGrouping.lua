@@ -437,7 +437,9 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
       entry = self.composed.details[entry.next]
       prev.next = #newDetails + 1
     end
-    newDetails[#newDetails].next = nil
+    if next(newDetails) then
+      newDetails[#newDetails].next = nil
+    end
     self.composed.details = newDetails
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("grouping took", debugprofilestop() - self.start)
