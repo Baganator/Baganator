@@ -276,7 +276,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   local categoryOrder
   local highlightContainer = CreateFrame("Frame", nil, container)
   local highlight = highlightContainer:CreateTexture(nil, "OVERLAY", nil, 7)
-  highlight:SetSize(200, 20)
+  highlight:SetSize(235, 20)
   highlight:SetAtlas("128-RedButton-Highlight")
   highlight:Hide()
   local draggable
@@ -317,8 +317,10 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
         highlight:SetPoint("BOTTOMLEFT", f, "TOPLEFT", 0, -10)
       elseif f then
         highlight:SetPoint("TOPLEFT", f, "BOTTOMLEFT", 0, 10)
-      else
+      elseif #categoryOrder.elements > 0 then
         highlight:SetPoint("BOTTOMLEFT", categoryOrder, 0, 0)
+      else
+        highlight:SetPoint("TOPLEFT", categoryOrder, 0, 0)
       end
     end
   end)
