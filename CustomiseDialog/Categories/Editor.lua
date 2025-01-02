@@ -243,6 +243,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.Blocker:SetScript("OnMouseWheel", function() end)
   self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
   self.Blocker:SetFrameStrata("DIALOG")
+  self.Blocker:SetFrameLevel(10000)
 
   self.CategoryName:SetScript("OnEditFocusLost", Save)
   self.CategorySearch:SetScript("OnEditFocusLost", Save)
