@@ -1070,6 +1070,15 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     end
   end)
 
+  local prevTooltips = {}
+  frame:SetScript("OnHide", function()
+    addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, prevTooltips.keywords)
+    frame:UnregisterEvent("PLAYER_LOGOUT")
+  end)
+  -- Ensure the setting resets if the player does /reload  or /logout
+  frame:SetScript("OnEvent", function()
+    addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, prevTooltips.keywords)
+  end)
   frame:SetScript("OnShow", function()
     for index, frame in ipairs(allFrames) do
       if frame.SetValue then
@@ -1077,6 +1086,12 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
       end
     end
     ShowEditor("EditCategory")
+
+    prevTooltips = {
+      keywords = addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS),
+    }
+    addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, true)
+    frame:RegisterEvent("PLAYER_LOGOUT")
   end)
 
   table.insert(self.lowestFrames, allFrames[#allFrames])
