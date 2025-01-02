@@ -1047,11 +1047,15 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
   self.buttons = {}
   for _, cacheData in ipairs(cacheList) do
     local button = self.buttonPool:Acquire()
-    addonTable.Skins.AddFrame("ItemButton", button)
-    if not button.texturesSetup then
-      button.texturesSetup = true
+    if not button.setup then
+      button.setup = true
+      addonTable.Skins.AddFrame("ItemButton", button)
       MasqueRegistration(button)
       button:UpdateTextures()
+      hooksecurefunc(button, "UpdateTooltip", function(...)
+        AddKeywords(...)
+        AddCategories(...)
+      end)
     elseif self.updateTextures then
       button:UpdateTextures()
     end
