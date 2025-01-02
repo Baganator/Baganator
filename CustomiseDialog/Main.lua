@@ -423,7 +423,6 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   ButtonFrameTemplate_HideButtonBar(self)
   self.Inset:Hide()
-  addonTable.Skins.AddFrame("ButtonFrame", self)
   self:SetScript("OnMouseWheel", function() end)
 
   self:SetTitle(BAGANATOR_L_CUSTOMISE_BAGANATOR)
@@ -446,6 +445,8 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self:RegisterForDrag("LeftButton")
   self:SetMovable(true)
   self:SetClampedToScreen(true)
+
+  addonTable.Skins.AddFrame("ButtonFrame", self, {"customise"})
 end
 
 function BaganatorCustomiseDialogMixin:OnDragStart()
