@@ -554,6 +554,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
   local scrollBar = CreateFrame("EventFrame", nil, container, "MinimalScrollBar")
   scrollBar:SetPoint("TOPLEFT", scrollBox, "TOPRIGHT", 8, 0)
   scrollBar:SetPoint("BOTTOMLEFT", scrollBox, "BOTTOMRIGHT", 8, 0)
+  addonTable.Skins.AddFrame("TrimScrollBar", scrollBar)
   local view = CreateScrollBoxListLinearView()
 
   local inset =  CreateFrame("Frame", nil, container, "InsetFrameTemplate")
