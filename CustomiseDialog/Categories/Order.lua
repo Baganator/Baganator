@@ -364,7 +364,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
       table.remove(categoryOrder.elements, index)
       if value:match("^_") then -- section
         local level = 1
-        while level ~= 0 do
+        while level ~= 0 and #categoryOrder.elements > 0 do
           local tmp = categoryOrder.elements[index]
           table.insert(draggable.sectionValues, tmp)
           table.remove(categoryOrder.elements, index)

@@ -260,6 +260,8 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)
+
+    addonTable.CategoryViews.FixAnyBrokenSections()
   else
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
     for key in pairs(customCategories) do
