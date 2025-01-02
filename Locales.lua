@@ -378,6 +378,22 @@ L["NOTHING_TO_SAVE"] = "Nothing to save"
 L["SYNDICATOR_ENABLE_MESSAGE"] = "|cffd1b219Syndicator|r is required to use Baganator."
 L["SYNDICATOR_INSTALL_MESSAGE"] = "Use your addon website/client to install |cffd1b219Syndicator|r in order to use Baganator."
 
+L["SLASH_RESET"] = "reset"
+L["SLASH_RESET_HELP"] = "Reset all Baganator settings, then reload."
+L["SLASH_RESETCATEGORIES"] = "resetcategories"
+L["SLASH_RESETCATEGORIES_HELP"] = "Reset category settings to the default, then reload."
+L["SLASH_REMOVEUNUSEDCATEGORIES"] = "removeunusedcategories"
+L["SLASH_REMOVEUNUSEDCATEGORIES_HELP"] = "Remove any categories not currently in use."
+L["SLASH_HELP"] = "Open the Baganator settings."
+L["SLASH_SEARCH"] = "search"
+L["SLASH_SEARCH_EXTENDED"] = "search [text]"
+L["SLASH_SEARCH_HELP"] = "Open and then search the bags."
+L["SLASH_KEYWORDS"] = "keywords"
+L["SLASH_KEYWORDS_HELP"] = "Show keywords matching bag items in their tooltips."
+L["SLASH_CATEGORIES"] = "categories"
+L["SLASH_CATEGORIES_HELP"] = "Show categories matching or not matching items in their tooltips."
+L["SLASH_UNKNOWN_COMMAND"] = "Unknown command '%s'"
+
 local L = Locales.frFR
 --@localization(locale="frFR", format="lua_additive_table")@
 
