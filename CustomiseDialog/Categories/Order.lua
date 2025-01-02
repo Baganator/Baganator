@@ -135,6 +135,8 @@ local function GetCategoryContainer(parent, pickupCallback)
           addonTable.CallbackRegistry:TriggerEvent("EditCategory", self.value)
         end
       end)
+      frame:SetText(" ")
+      frame:GetFontString():SetWordWrap(false)
       local button = CreateFrame("Button", nil, frame)
       button:SetSize(28, 22)
       local tex = button:CreateTexture(nil, "ARTWORK")
