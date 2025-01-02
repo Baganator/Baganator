@@ -52,6 +52,9 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("EditCategorySection", function(_, value, index)
+    if not self:GetParent():IsVisible() then
+      return
+    end
     if value == "_" then
       self.currentSection = "_" .. BAGANATOR_L_NEW_SECTION
       self.currentSectionIndex = nil

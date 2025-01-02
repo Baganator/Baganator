@@ -168,6 +168,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   end
 
   addonTable.CallbackRegistry:RegisterCallback("EditCategory", function(_, value)
+    if not self:GetParent():IsVisible() then
+      return
+    end
     SetState(value)
   end)
 

@@ -1031,6 +1031,9 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   end
   for event, editor in pairs(editors) do
     addonTable.CallbackRegistry:RegisterCallback(event, function()
+      if not self:IsVisible() then
+        return
+      end
       ShowEditor(event)
     end)
     editor.Return = function()

@@ -52,9 +52,5 @@ function addonTable.CustomiseDialog.GetCategoriesEmptyEditor(parent)
     holder.GroupCheckBox:SetChecked(addonTable.Config.Get("category_group_empty_slots"))
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("EditCategoryEmpty", function()
-    holder:Show()
-  end)
-
   return holder
 end
