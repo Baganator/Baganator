@@ -9,7 +9,7 @@ local function ConvertTags(tags)
   return res
 end
 
-local function SkinContainerFrame(frame, topButtons, topRightButtons)
+local function AddHeader(frame)
   (frame.GwStripTextures or frame.StripTextures)(frame)
   GW.CreateFrameHeaderWithBody(frame, frame:GetTitleText(), "Interface/AddOns/GW2_UI/textures/bag/bagicon", {})
   frame.gwHeader:ClearAllPoints()
@@ -24,6 +24,10 @@ local function SkinContainerFrame(frame, topButtons, topRightButtons)
 
   frame:GetTitleText():ClearAllPoints()
   frame:GetTitleText():SetPoint("BOTTOMLEFT", frame.gwHeader, "BOTTOMLEFT", 35, 10)
+end
+
+local function SkinContainerFrame(frame, topButtons, topRightButtons)
+  AddHeader(frame)
 
   frame.footer = frame:CreateTexture(nil, "BACKGROUND", nil, 7)
   frame.footer:SetTexture("Interface/AddOns/GW2_UI/textures/bag/bagfooter")
@@ -104,8 +108,8 @@ local function SkinContainerFrame(frame, topButtons, topRightButtons)
     SetupRightButtons()
   end)
 
-  if frame.UpdateTransferButton then
-    hooksecurefunc(frame, "UpdateTransferButton", SetupRightButtons)
+  if frame.ButtonVisibility then
+    hooksecurefunc(frame.ButtonVisibility, "Update", SetupRightButtons)
   end
 
   frame.backgroundMask = UIParent:CreateMaskTexture()
