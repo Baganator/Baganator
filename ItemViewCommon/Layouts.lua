@@ -28,6 +28,17 @@ local function RegisterHighlightSimilarItems(self)
   end, self)
 end
 
+-- Supplied by Syndicator
+local LibBattlePetTooltipLine = LibStub("LibBattlePetTooltipLine-1-0")
+-- Used to ease adding to battle pet tooltip which doesn't have AddDoubleLine
+local function AddDoubleLine(tooltip, left, right, ...)
+  if tooltip.AddDoubleLine then
+    tooltip:AddDoubleLine(left, right, ...)
+  elseif tooltip.PetType then
+    LibBattlePetTooltipLine:AddDoubleLine(tooltip, left, right)
+  end
+end
+
 local function AddKeywords(self)
   if not addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS) then
     return
@@ -37,8 +48,10 @@ local function AddKeywords(self)
     return
   end
 
-  GameTooltip:AddLine(" ")
-  GameTooltip:AddLine(BAGANATOR_L_HELP_SEARCH_KEYWORDS)
+  local tooltip = self.BGR.itemLink:match("battlepet:") and BattlePetTooltip or GameTooltip
+
+  tooltip:AddLine(" ")
+  tooltip:AddLine(BAGANATOR_L_HELP_SEARCH_KEYWORDS)
 
   local groups = addonTable.Help.GetKeywordGroups()
 
@@ -52,11 +65,11 @@ local function AddKeywords(self)
         end
       end
       if #matching > 0 then
-        GameTooltip:AddDoubleLine(key, table.concat(matching, ", "), BLUE_FONT_COLOR.r, BLUE_FONT_COLOR.g, BLUE_FONT_COLOR.b, 1, 1, 1)
+        AddDoubleLine(tooltip, BLUE_FONT_COLOR:WrapTextInColorCode(key), WHITE_FONT_COLOR:WrapTextInColorCode(table.concat(matching, ", ")))
       end
     end
   end
-  GameTooltip:Show()
+  tooltip:Show()
 end
 
 local function AddCategories(self)
@@ -68,8 +81,10 @@ local function AddCategories(self)
     return
   end
 
-  GameTooltip:AddLine(" ")
-  GameTooltip:AddLine(BAGANATOR_L_CATEGORIES)
+  local tooltip = self.BGR.itemLink:match("battlepet:") and BattlePetTooltip or GameTooltip
+
+  tooltip:AddLine(" ")
+  tooltip:AddLine(BAGANATOR_L_CATEGORIES)
 
   local composed = addonTable.CategoryViews.ComposeCategories({self.BGR})
 
@@ -77,10 +92,10 @@ local function AddCategories(self)
   local searchToLabel = {}
   for _, details in ipairs(composed.details) do
     if details.attachedItems and details.attachedItems[itemKey] then
-      GameTooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(
+      tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(
         BAGANATOR_L_ATTACHED_DIRECTLY_TO_X:format(GREEN_FONT_COLOR:WrapTextInColorCode("**" .. details.label .. "**"))
       ))
-      GameTooltip:Show()
+      tooltip:Show()
       return
     end
     if details.search then
@@ -109,8 +124,8 @@ local function AddCategories(self)
       table.insert(entries, text)
     end
   end
-  GameTooltip:AddLine(table.concat(entries, ", "), nil, nil, nil, true)
-  GameTooltip:Show()
+  tooltip:AddLine(table.concat(entries, ", "), nil, nil, nil, true)
+  tooltip:Show()
 end
 
 local UpdateTextureSettings = {
