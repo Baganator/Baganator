@@ -415,6 +415,8 @@ local function SetItemContextMatch(self, callback)
       self.BGR.contextMatch = not self.BGR.isBound or C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
     elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Merchant) then
       self.BGR.contextMatch = not self.BGR.hasNoValue or C_Item.CanBeRefunded(self.BGR.itemLocation)
+    elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
+      self.BGR.contextMatch = not self.BGR.isBound and (not addonTable.Constants.IsRetail or not C_Item.IsBoundToAccountUntilEquip(self.BGR.itemLocation))
     end
 
     if not show then -- Missing item/spell data
