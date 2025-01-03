@@ -75,6 +75,8 @@ addonTable.Constants.Events = {
   "SetButtonsShown",
 
   "FrameGroupSwapped",
+
+  "ItemContextChanged", -- Baganator specific context highlighting
 }
 
 addonTable.Constants.SortStatus = {

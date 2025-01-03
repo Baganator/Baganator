@@ -199,6 +199,8 @@ function BaganatorItemViewCommonBankViewMixin:UpdateView()
 
   self.SearchWidget:SetSpacing(sideSpacing)
 
+  addonTable.CallbackRegistry:TriggerEvent("ItemContextChanged")
+
   self.currentTab:UpdateView()
 end
 

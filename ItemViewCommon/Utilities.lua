@@ -380,3 +380,73 @@ function addonTable.Utilities.AddButtons(allButtons, lastButton, parent, spacing
 
   return buttonsWidth
 end
+
+if addonTable.Constants.IsRetail then
+  function addonTable.Utilities.IsAuctionable(details)
+    if not C_Item.IsItemDataCachedByID(details.itemID) then
+      C_Item.RequestLoadItemData(details.itemID)
+      return nil
+    end
+    return C_AuctionHouse.IsSellItemValid(details.itemLocation, false)
+  end
+else
+  local cachedCharges = {}
+  local fontString = UIParent:CreateFontString(nil, nil, "GameFontNormal")
+  local function DetermineCharges(tooltipInfo)
+    for _, line in ipairs(tooltipInfo.lines) do
+      local num = line.leftText:match("%d+")
+      if num then
+        local start = debugprofilestop()
+        fontString:SetText(ITEM_SPELL_CHARGES:format(num))
+        if fontString:GetText() == line.leftText then
+          return fontString:GetText()
+        end
+      end
+    end
+    return ""
+  end
+
+  function addonTable.Utilities.IsAuctionable(details)
+    local result = false
+
+    local currentDurability, maxDurability
+    if details.itemLocation:IsBagAndSlot() then
+      currentDurability, maxDurability = C_Container.GetContainerItemDurability(details.itemLocation:GetBagAndSlot())
+    else
+      local slot = details.itemLocation:GetEquipmentSlot()
+      currentDurability, maxDurability = GetInventoryItemDurability(slot)
+    end
+
+    result = not C_Item.IsBound(details.itemLocation) and currentDurability == maxDurability
+
+    -- Determine if the item is at max charges (if it has charges)
+    if result and select(6, C_Item.GetItemInfoInstant(details.itemID)) == Enum.ItemClass.Consumable and C_Item.GetItemSpell(details.itemID) and details.itemLocation.bagID ~= nil then
+      local _, spellID = C_Item.GetItemSpell(details.itemID)
+      if not C_Spell.IsSpellDataCached(spellID) then
+        C_Spell.RequestLoadSpellData(spellID)
+        return nil
+      end
+
+      if not details.tooltipInfoSpell then
+        details.tooltipInfoSpell = details.tooltipGetter()
+      end
+
+      if not cachedCharges[details.itemID] then
+        cachedCharges[details.itemID] = DetermineCharges(Syndicator.Search.DumpClassicTooltip(function(t) t:SetItemByID(details.itemID) end))
+      end
+
+      local cached = cachedCharges[details.itemID]
+      if cached ~= "" then
+        result = false
+        for _, line in ipairs(details.tooltipInfoSpell) do
+          if line.leftText == cached then
+            result = true
+            break
+          end
+        end
+      end
+    end
+
+    return result
+  end
+end

@@ -22,9 +22,14 @@ local function RegisterForScaling(frame)
 end
 
 local backpackView, UpdateBackpackButtons
+local bankView
 
 function addonTable.ViewManagement.GetBackpackFrame()
   return backpackView
+end
+
+function addonTable.ViewManagement.GetBankFrame()
+  return bankView
 end
 
 local function SetupBackpackHooks()
@@ -198,7 +203,6 @@ local function SetupBackpackView(frameGroup)
 end
 
 local function SetupBankView(frameGroup)
-  local bankView
   local allBankViews = {
     single = CreateFrame("Frame", "Baganator_SingleViewBankViewFrame" .. frameGroup, UIParent, "BaganatorSingleViewBankViewTemplate"),
     category = CreateFrame("Frame", "Baganator_CategoryViewBankViewFrame" .. frameGroup, UIParent, "BaganatorCategoryViewBankViewTemplate"),
@@ -550,6 +554,20 @@ local function SetupCurrencyPanel(frameGroup)
   end)
 end
 
+local function SetupContextMatching()
+  local frame = CreateFrame("Frame")
+  local contexts = {
+    [Enum.PlayerInteractionType.Auctioneer] = true
+  }
+  frame:SetScript("OnEvent", function(_, eventName, details)
+    if contexts[details] then
+      addonTable.CallbackRegistry:TriggerEvent("ItemContextChanged")
+    end
+  end)
+  frame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
+  frame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
+end
+
 function addonTable.ViewManagement.Initialize()
   -- Use xpcall to so that if Blizzard reworks a component the rest of the
   -- other component initialisations won't fail
@@ -568,6 +586,8 @@ function addonTable.ViewManagement.Initialize()
     local tokenWidth = info and info.width or 50
     BackpackTokenFrame:SetWidth(tokenWidth * 7 + 1)
   end, CallErrorHandler)
+
+  SetupContextMatching()
 end
 
 local generatedGroups = {}
