@@ -590,7 +590,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatchin
       return
     end
 
-    print(self.BGR.contextMatch)
     if self.BGR.contextMatch then
       self:PostUpdateItemContextOverlay()
     end
