@@ -573,7 +573,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatchin
     local show = true
 
     local bankFrame = addonTable.ViewManagement.GetBankFrame()
-    if bankFrame and bankFrame.Warband:IsVisible() then
+    if bankFrame and bankFrame.currentTab.isLive and bankFrame.Warband:IsVisible() then
       self.BGR.contextMatch = C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
     elseif AuctionHouseFrame and AuctionHouseFrame:IsShown() then
       local auctionable = addonTable.Utilities.IsAuctionable(self.BGR)
