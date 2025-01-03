@@ -62,9 +62,8 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
       if info.itemID ~= nil then
         local location = {bagID = bagID, slotIndex = slotIndex}
         info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
-        if info.setInfo then
-          info.guid = C_Item.GetItemGUID(location)
-        elseif not isGrouping then
+        info.refundable = C_Item.CanBeRefunded(location)
+        if info.setInfo or not isGrouping or info.refundable then
           info.guid = C_Item.GetItemGUID(location)
         elseif info.hasLoot and not info.isBound then
           -- Ungroup lockboxes always

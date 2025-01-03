@@ -114,6 +114,7 @@ end
 -- are new
 function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems(timeout)
   local newSeenGUIDs = {}
+  local newItemLocations = {}
   for bagID, containerGuids in pairs(self.guidsByContainer) do
     for slotID, guid in ipairs(containerGuids) do
       if self.recentByContainer[bagID] then
@@ -125,6 +126,7 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems(timeout)
             self.recentByContainerTimeout[bagID][slotID] = nil
           end
         elseif not self.seenGUIDs[guid] and self.recentByContainer[bagID] then
+          table.insert(newItemLocations, {bagID = bagID, slotIndex = slotID})
           self.recentByContainer[bagID][slotID] = guid
           if timeout then
             self.recentTimeout[guid] = {time = GetTime(), bagID = bagID, slotID = slotID}
@@ -141,6 +143,8 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ImportNewItems(timeout)
   end
 
   self.seenGUIDs = newSeenGUIDs
+
+  addonTable.CallbackRegistry:TriggerEvent("NewItemsAcquired", newItemLocations)
 end
 
 -- Update any recents on a timeout

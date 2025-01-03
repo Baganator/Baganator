@@ -148,3 +148,4 @@ API\Pawn.lua
 
 Compatibility\VanillaEngraving.lua
 Compatibility\Lockpicking.lua
+Compatibility\Refunds.lua

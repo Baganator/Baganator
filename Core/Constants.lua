@@ -38,6 +38,8 @@ addonTable.Constants.Events = {
   "ViewComplete",
   "BagCacheAfterNewItemsUpdate",
 
+  "NewItemsAcquired",
+
   -- Single view only events
   "SpecialBagToggled",
 
