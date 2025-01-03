@@ -38,6 +38,7 @@ addonTable.Config.Options = {
 
   HIDE_BOE_ON_COMMON = "hide_boe_on_common",
   ICON_TEXT_QUALITY_COLORS = "icon_text_quality_colors",
+  ICON_MARK_UNUSABLE  = "icon_mark_unusable",
   ICON_TEXT_FONT_SIZE = "icon_text_font_size",
   ICON_TOP_LEFT_CORNER_ARRAY = "icon_top_left_corner_array",
   ICON_TOP_RIGHT_CORNER_ARRAY = "icon_top_right_corner_array",
@@ -111,6 +112,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.SHOW_SORT_BUTTON] = true,
   [addonTable.Config.Options.RECENT_CHARACTERS_MAIN_VIEW] = {},
   [addonTable.Config.Options.HIDE_BOE_ON_COMMON] = false,
+  [addonTable.Config.Options.ICON_MARK_UNUSABLE] = false,
   [addonTable.Config.Options.SHOW_RECENTS_TABS] = false,
   [addonTable.Config.Options.ICON_TEXT_QUALITY_COLORS] = false,
   [addonTable.Config.Options.MAIN_VIEW_POSITION] = {"BOTTOMRIGHT", addonTable.Constants.IsRetail and -115 or -30, 85},
@@ -204,13 +206,13 @@ addonTable.Config.IsCharacterSpecific = {
 
 addonTable.Config.ItemButtonsRelayoutSettings = {
   addonTable.Config.Options.BAG_ICON_SIZE,
-  --addonTable.Config.Options.EMPTY_SLOT_BACKGROUND, -- now done by theme
   addonTable.Config.Options.BAG_VIEW_WIDTH,
   addonTable.Config.Options.BANK_VIEW_WIDTH,
   addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH,
   addonTable.Config.Options.GUILD_VIEW_WIDTH,
   addonTable.Config.Options.SHOW_SORT_BUTTON,
   addonTable.Config.Options.HIDE_BOE_ON_COMMON,
+  addonTable.Config.Options.ICON_MARK_UNUSABLE,
   addonTable.Config.Options.ICON_TEXT_QUALITY_COLORS,
   addonTable.Config.Options.ICON_TEXT_FONT_SIZE,
   addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP,

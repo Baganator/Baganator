@@ -167,6 +167,11 @@ local ICON_OPTIONS = {
     text = BAGANATOR_L_HIDE_BOE_STATUS_ON_COMMON_2,
     option = "hide_boe_on_common",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_MARK_UNUSABLE_ITEMS_IN_RED,
+    option = "icon_mark_unusable",
+  },
   { type = "spacing" },
   {
     type = "slider",

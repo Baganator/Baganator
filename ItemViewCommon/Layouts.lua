@@ -138,7 +138,6 @@ local function TooltipAdditions(...)
 end
 
 local UpdateTextureSettings = {
-  addonTable.Config.Options.EMPTY_SLOT_BACKGROUND,
   addonTable.Config.Options.ICON_TEXT_FONT_SIZE,
   addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
   addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
@@ -154,6 +153,7 @@ local ReflowSettings = {
 
 local RefreshContentSettings = {
   addonTable.Config.Options.HIDE_BOE_ON_COMMON,
+  addonTable.Config.Options.ICON_MARK_UNUSABLE,
   addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
   addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
   addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
