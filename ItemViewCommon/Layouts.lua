@@ -574,7 +574,9 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
           MasqueRegistration(button)
           button:UpdateTextures()
           hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
-          hooksecurefunc(button, "OnUpdate", TooltipAdditions)
+          if button.OnUpdate then
+            hooksecurefunc(button, "OnUpdate", TooltipAdditions)
+          end
         end
         button:SetID(slotIndex)
         button:SetParent(indexFrame)
