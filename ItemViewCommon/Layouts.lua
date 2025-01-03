@@ -86,9 +86,13 @@ local function AddCategories(self)
   tooltip:AddLine(" ")
   tooltip:AddLine(BAGANATOR_L_CATEGORIES)
 
-  local composed = addonTable.CategoryViews.ComposeCategories({self.BGR})
-
+  local data = CopyTable(self.BGR, 1)
   local itemKey = addonTable.CategoryViews.Utilities.GetAddedItemData(self.BGR.itemID, self.BGR.itemLink)
+  if not data.key then
+    data.key = itemKey
+  end
+  local composed = addonTable.CategoryViews.ComposeCategories({data})
+
   local searchToLabel = {}
   for _, details in ipairs(composed.details) do
     if details.attachedItems and details.attachedItems[itemKey] then
@@ -126,6 +130,11 @@ local function AddCategories(self)
   end
   tooltip:AddLine(table.concat(entries, ", "), nil, nil, nil, true)
   tooltip:Show()
+end
+
+local function TooltipAdditions(...)
+  AddKeywords(...)
+  AddCategories(...)
 end
 
 local UpdateTextureSettings = {
@@ -328,10 +337,7 @@ function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesTo
           button.setup = true
           MasqueRegistration(button)
           button:UpdateTextures()
-          hooksecurefunc(button, "UpdateTooltip", function(...)
-            AddKeywords(...)
-            AddCategories(...)
-          end)
+          hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
         end
         button:Show()
 
@@ -567,10 +573,8 @@ function BaganatorLiveBagLayoutMixin:RebuildLayout(indexes, indexesToUse, rowWid
           button.setup = true
           MasqueRegistration(button)
           button:UpdateTextures()
-          hooksecurefunc(button, "UpdateTooltip", function(...)
-            AddKeywords(...)
-            AddCategories(...)
-          end)
+          hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
+          hooksecurefunc(button, "OnUpdate", TooltipAdditions)
         end
         button:SetID(slotIndex)
         button:SetParent(indexFrame)
@@ -814,10 +818,10 @@ function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
       addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
     end
   end)
-  hooksecurefunc(button, "UpdateTooltip", function(...)
-    AddKeywords(...)
-    AddCategories(...)
-  end)
+  hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
+  if button.OnUpdate then
+    hooksecurefunc(button, "OnUpdate", TooltipAdditions)
+  end
   button:HookScript("OnDragStart", function(_)
     if C_Cursor.GetCursorItem() ~= nil then
       addonTable.CallbackRegistry:TriggerEvent("CategoryAddItemStart", button.BGR.category, button.BGR.itemID, button.BGR.itemLink, button.addedDirectly)
@@ -1074,10 +1078,7 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
       addonTable.Skins.AddFrame("ItemButton", button)
       MasqueRegistration(button)
       button:UpdateTextures()
-      hooksecurefunc(button, "UpdateTooltip", function(...)
-        AddKeywords(...)
-        AddCategories(...)
-      end)
+      hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
     elseif self.updateTextures then
       button:UpdateTextures()
     end
@@ -1147,10 +1148,7 @@ function BaganatorGeneralGuildLayoutMixin:RebuildLayout(rowWidth)
       button.setup = true
       MasqueRegistration(button)
       button:UpdateTextures()
-      hooksecurefunc(button, "UpdateTooltip", function(...)
-        AddKeywords(...)
-        AddCategories(...)
-      end)
+      hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
     end
     button:Show()
     button:SetID(index)
@@ -1282,10 +1280,7 @@ function BaganatorUnifiedGuildLayoutMixin:RebuildLayout(tabCount, rowWidth)
         button.setup = true
         MasqueRegistration(button)
         button:UpdateTextures()
-        hooksecurefunc(button, "UpdateTooltip", function(...)
-          AddKeywords(...)
-          AddCategories(...)
-        end)
+        hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
       end
       button:Show()
       button:SetID(index)
@@ -1437,10 +1432,7 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
       button.setup = true
       MasqueRegistration(button)
       button:UpdateTextures()
-      hooksecurefunc(button, "UpdateTooltip", function(...)
-        AddKeywords(...)
-        AddCategories(...)
-      end)
+      hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
     end
     button:SetID(slotIndex)
     button:SetParent(self.indexFrame)
@@ -1560,10 +1552,7 @@ function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
       button.setup = true
       MasqueRegistration(button)
       button:UpdateTextures()
-      hooksecurefunc(button, "UpdateTooltip", function(...)
-        AddKeywords(...)
-        AddCategories(...)
-      end)
+      hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
     end
     button:Show()
     table.insert(self.buttons, button)
