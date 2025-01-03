@@ -567,8 +567,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:OnHideHook()
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatching()
-  self:UpdateItemContextOverlay()
-
   if self.BGR and self.BGR.itemID and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
     self.BGR.contextMatch = true
 
@@ -595,6 +593,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatchin
       return
     end
 
+    self:UpdateItemContextOverlay()
     self:PostUpdateItemContextOverlay()
   end
 end
