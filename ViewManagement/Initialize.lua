@@ -560,6 +560,7 @@ local function SetupContextMatching()
     [Enum.PlayerInteractionType.Auctioneer] = true,
     [Enum.PlayerInteractionType.Merchant] = true,
     [Enum.PlayerInteractionType.MailInfo] = true,
+    [Enum.PlayerInteractionType.GuildBanker] = true,
   }
   frame:SetScript("OnEvent", function(_, eventName, details)
     if contexts[details] then
