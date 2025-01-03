@@ -1435,6 +1435,7 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
       MasqueRegistration(button)
       button:UpdateTextures()
       hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
+      hooksecurefunc(button, "OnUpdate", TooltipAdditions)
     end
     button:SetID(slotIndex)
     button:SetParent(self.indexFrame)
