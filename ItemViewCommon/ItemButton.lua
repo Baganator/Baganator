@@ -569,7 +569,7 @@ end
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatching()
   self:UpdateItemContextOverlay()
 
-  if self.BGR and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
+  if self.BGR and self.BGR.itemID and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
     self.BGR.contextMatch = true
 
     local show = true
@@ -595,14 +595,12 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatchin
       return
     end
 
-    if self.BGR.contextMatch then
-      self:PostUpdateItemContextOverlay()
-    end
+    self:PostUpdateItemContextOverlay()
   end
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:PostUpdateItemContextOverlay()
-  if self.BGR ~= nil and not self.BGR.contextMatch then
+  if self.BGR ~= nil and self.BGR.contextMatch == false then
     self:UpdateItemContextOverlayTextures(ItemButtonConstants.ContextMatch.Standard)
     self.ItemContextOverlay:Show()
   end
@@ -1010,7 +1008,7 @@ end
 function BaganatorClassicLiveContainerItemButtonMixin:BGRUpdateItemContextMatching()
   self.ItemContextOverlay:Hide()
 
-  if self.BGR and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
+  if self.BGR and self.BGR.itemID and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
     local show = false
 
     if AuctionFrame and AuctionFrame:IsShown() then
