@@ -395,6 +395,38 @@ local function ApplyNewItemAnimation(self, quality)
   end
 end
 
+local function SetItemContextMatch(self, callback)
+  if self.BGR and self.BGR.itemID and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
+    self.BGR.contextMatch = true
+
+    local show = true
+
+    local bankFrame = addonTable.ViewManagement.GetBankFrame()
+    if addonTable.Constants.IsRetail and bankFrame and bankFrame.currentTab.isLive and bankFrame.Warband:IsVisible() then
+      self.BGR.contextMatch = C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
+    elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Auctioneer) then
+      local auctionable = addonTable.Utilities.IsAuctionable(self.BGR)
+      if auctionable == nil then
+        show = false
+      else
+        self.BGR.contextMatch = auctionable
+      end
+    elseif addonTable.Constants.IsRetail and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and addonTable.Compatibility.SendMailShowing then
+      self.BGR.contextMatch = not self.BGR.isBound or C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
+    elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Merchant) then
+      self.BGR.contextMatch = not self.BGR.hasNoValue or C_Item.CanBeRefunded(self.BGR.itemLocation)
+    end
+
+    if not show then -- Missing item/spell data
+      QueueWidget(function()
+        self:BGRUpdateItemContextMatching()
+      end)
+      return
+    end
+    callback()
+  end
+end
+
 BaganatorRetailCachedItemButtonMixin = {}
 
 function BaganatorRetailCachedItemButtonMixin:OnLoad()
@@ -567,35 +599,10 @@ function BaganatorRetailLiveContainerItemButtonMixin:OnHideHook()
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatching()
-  if self.BGR and self.BGR.itemID and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
-    self.BGR.contextMatch = true
-
-    local show = true
-
-    local bankFrame = addonTable.ViewManagement.GetBankFrame()
-    if bankFrame and bankFrame.currentTab.isLive and bankFrame.Warband:IsVisible() then
-      self.BGR.contextMatch = C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
-    elseif AuctionHouseFrame and AuctionHouseFrame:IsShown() then
-      local auctionable = addonTable.Utilities.IsAuctionable(self.BGR)
-      if auctionable == nil then
-        show = false
-      else
-        self.BGR.contextMatch = auctionable
-      end
-    elseif MerchantFrame and MerchantFrame:IsShown() then
-      self.BGR.contextMatch = not self.BGR.hasNoValue or C_Item.CanBeRefunded(self.BGR.itemLocation)
-    end
-
-    if not show then -- Missing item/spell data
-      QueueWidget(function()
-        self:BGRUpdateItemContextMatching()
-      end)
-      return
-    end
-
+  SetItemContextMatch(self, function()
     self:UpdateItemContextOverlay()
     self:PostUpdateItemContextOverlay()
-  end
+  end)
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:PostUpdateItemContextOverlay()
@@ -1007,39 +1014,16 @@ end
 
 function BaganatorClassicLiveContainerItemButtonMixin:BGRUpdateItemContextMatching()
   self.ItemContextOverlay:Hide()
-
-  if self.BGR and self.BGR.itemID and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
-    local show = false
-
-    if AuctionFrame and AuctionFrame:IsShown() then
-      local auctionable = addonTable.Utilities.IsAuctionable(self.BGR)
-      if auctionable == nil then
-        show = nil
+  SetItemContextMatch(self, function()
+    self.ItemContextOverlay:SetShown(not self.BGR.contextMatch)
+    if self.widgetContainer then
+      if self.ItemContextOverlay:IsShown() then
+        SetWidgetsAlpha(self, false)
       else
-        show = not auctionable
+        SetWidgetsAlpha(self, self.BGR == nil or self.BGR.matchesSearch ~= false)
       end
-    elseif MerchantFrame and MerchantFrame:IsShown() then
-      show = self.BGR.hasNoValue and not C_Item.CanBeRefunded(self.BGR.itemLocation)
     end
-
-    if show == nil then -- Missing item/spell data
-      QueueWidget(function()
-        self:BGRUpdateItemContextMatching()
-      end)
-      return
-    end
-
-    if show then
-      self.ItemContextOverlay:Show()
-    end
-  end
-  if self.widgetContainer then
-    if self.ItemContextOverlay:IsShown() then
-      SetWidgetsAlpha(self, false)
-    else
-      SetWidgetsAlpha(self, self.BGR == nil or self.BGR.matchesSearch ~= false)
-    end
-  end
+  end)
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:GetInventorySlot()
