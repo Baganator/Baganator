@@ -557,7 +557,8 @@ end
 local function SetupContextMatching()
   local frame = CreateFrame("Frame")
   local contexts = {
-    [Enum.PlayerInteractionType.Auctioneer] = true
+    [Enum.PlayerInteractionType.Auctioneer] = true,
+    [Enum.PlayerInteractionType.Merchant] = true,
   }
   frame:SetScript("OnEvent", function(_, eventName, details)
     if contexts[details] then

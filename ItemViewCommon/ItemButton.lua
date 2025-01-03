@@ -559,6 +559,7 @@ end
 
 function BaganatorRetailLiveContainerItemButtonMixin:OnShowHook()
   addonTable.CallbackRegistry:RegisterCallback("ItemContextChanged", self.BGRUpdateItemContextMatching, self)
+  self:BGRUpdateItemContextMatching()
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:OnHideHook()
@@ -569,21 +570,25 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatchin
   self:UpdateItemContextOverlay()
 
   if self.BGR and self.BGR.itemLocation and C_Item.DoesItemExist(self.BGR.itemLocation) then
-    self.BGR.contextMatch = false
+    self.BGR.contextMatch = true
+
+    local show = true
 
     local bankFrame = addonTable.ViewManagement.GetBankFrame()
     if bankFrame and bankFrame.Warband:IsVisible() then
-      self.BGR.contextMatch = not C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
+      self.BGR.contextMatch = C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
     elseif AuctionHouseFrame and AuctionHouseFrame:IsShown() then
       local auctionable = addonTable.Utilities.IsAuctionable(self.BGR)
       if auctionable == nil then
-        show = nil
+        show = false
       else
-        self.BGR.contextMatch = not auctionable
+        self.BGR.contextMatch = auctionable
       end
+    elseif MerchantFrame and MerchantFrame:IsShown() then
+      self.BGR.contextMatch = not self.BGR.hasNoValue or C_Item.CanBeRefunded(self.BGR.itemLocation)
     end
 
-    if show == nil then -- Missing item/spell data
+    if not show then -- Missing item/spell data
       QueueWidget(function()
         self:BGRUpdateItemContextMatching()
       end)
@@ -597,7 +602,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateItemContextMatchin
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:PostUpdateItemContextOverlay()
-  if self.BGR ~= nil and self.BGR.contextMatch then
+  if self.BGR ~= nil and not self.BGR.contextMatch then
     self:UpdateItemContextOverlayTextures(ItemButtonConstants.ContextMatch.Standard)
     self.ItemContextOverlay:Show()
   end
@@ -995,6 +1000,7 @@ end
 
 function BaganatorClassicLiveContainerItemButtonMixin:OnShowHook()
   addonTable.CallbackRegistry:RegisterCallback("ItemContextChanged", self.BGRUpdateItemContextMatching, self)
+  self:BGRUpdateItemContextMatching()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:OnHideHook()
@@ -1014,6 +1020,8 @@ function BaganatorClassicLiveContainerItemButtonMixin:BGRUpdateItemContextMatchi
       else
         show = not auctionable
       end
+    elseif MerchantFrame and MerchantFrame:IsShown() then
+      show = self.BGR.hasNoValue and not C_Item.CanBeRefunded(self.BGR.itemLocation)
     end
 
     if show == nil then -- Missing item/spell data
@@ -1167,8 +1175,8 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
     self.BGR.hasNoValue = noValue
   end, function()
-    self:BGRUpdateItemContextMatching();
     self:BGRUpdateQuests()
+    self:BGRUpdateItemContextMatching();
   end)
 end
 
@@ -1199,7 +1207,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemFiltered(text)
     self.BGR.matchesSearch = result
   end
   self.searchOverlay:SetShown(not result)
-  SetWidgetsAlpha(self, result)
+  SetWidgetsAlpha(self, result and not self.ItemContextOverlay:IsShown())
 end
 
 BaganatorClassicLiveGuildItemButtonMixin = {}
