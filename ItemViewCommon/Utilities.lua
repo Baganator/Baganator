@@ -384,7 +384,7 @@ end
 if addonTable.Constants.IsRetail then
   function addonTable.Utilities.IsAuctionable(details)
     if not C_Item.IsItemDataCachedByID(details.itemID) then
-      C_Item.RequestLoadItemData(details.itemID)
+      C_Item.RequestLoadItemDataByID(details.itemID)
       return nil
     end
     return C_AuctionHouse.IsSellItemValid(details.itemLocation, false)
