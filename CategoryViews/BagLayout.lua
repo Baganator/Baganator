@@ -63,7 +63,7 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
         local location = {bagID = bagID, slotIndex = slotIndex}
         info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
         info.refundable = C_Item.CanBeRefunded(location)
-        if info.setInfo or not isGrouping or info.refundable then
+        if info.setInfo or not isGrouping then
           info.guid = C_Item.GetItemGUID(location)
         elseif info.hasLoot and not info.isBound then
           -- Ungroup lockboxes always
@@ -90,7 +90,7 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
         linkMap[info.itemLink] = info.keyLink
       end
       info.keyNoGUID = addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(info)
-      info.key = info.keyNoGUID .. info.guid
+      info.key = info.keyNoGUID .. info.guid .. "_" .. tostring(info.refundable)
       table.insert(everything, info)
     else
       table.insert(emptySlots, {bagID = bagID, itemCount = 1, slotID = slotIndex, key = bagType, bagType = bagType, keyLink = bagType})
