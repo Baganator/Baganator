@@ -27,14 +27,6 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
     self.hasCharacter = true
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsShown() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
-
   self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
     text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK,
@@ -170,6 +162,7 @@ function BaganatorItemViewCommonBankViewMixin:OnHide(eventName)
   end
 
   addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  addonTable.CallbackRegistry:TriggerEvent("ItemContextChanged")
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateViewToCharacter(characterName)
@@ -191,13 +184,13 @@ function BaganatorItemViewCommonBankViewMixin:UpdateViewToWarband(warbandIndex, 
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateView()
+  addonTable.ReportEntry()
+
   self.start = debugprofilestop()
 
   if Syndicator.Constants.WarbandBankActive and not C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.AccountBanker) then
     self.Tabs[1]:Show()
   end
-
-  addonTable.Utilities.ApplyVisuals(self)
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
@@ -208,6 +201,8 @@ function BaganatorItemViewCommonBankViewMixin:UpdateView()
   self.SearchWidget:SetSpacing(sideSpacing)
 
   self.currentTab:UpdateView()
+
+  addonTable.CallbackRegistry:TriggerEvent("ItemContextChanged")
 end
 
 

@@ -2,6 +2,8 @@
   <ItemButton name="BaganatorRetailBagSlotButtonTemplate" virtual="true" mixin="BaganatorRetailBagSlotButtonMixin">
     <Size x="37" y="37"/>
     <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnClick method="OnClick"/>
       <OnClick method="OnClick"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
@@ -13,6 +15,7 @@
   <Button name="BaganatorClassicBagSlotButtonTemplate" virtual="true" mixin="BaganatorClassicBagSlotButtonMixin" inherits="ItemButtonTemplate">
     <Size x="37" y="37"/>
     <Scripts>
+      <OnLoad method="OnLoad"/>
       <OnClick method="OnClick"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
@@ -24,6 +27,7 @@
   <ItemButton name="BaganatorRetailBankButtonTemplate" virtual="true" mixin="BaganatorRetailBankButtonMixin">
     <Size x="37" y="37"/>
     <Scripts>
+      <OnLoad method="OnLoad"/>
       <OnClick method="OnClick"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>
@@ -35,6 +39,7 @@
   <Button name="BaganatorClassicBankButtonTemplate" virtual="true" mixin="BaganatorClassicBankButtonMixin" inherits="ItemButtonTemplate">
     <Size x="37" y="37"/>
     <Scripts>
+      <OnLoad method="OnLoad"/>
       <OnClick method="OnClick"/>
       <OnEnter method="OnEnter"/>
       <OnLeave method="OnLeave"/>

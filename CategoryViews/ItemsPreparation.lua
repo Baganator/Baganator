@@ -16,11 +16,12 @@ function BaganatorCategoryViewsItemsPreparationMixin:PrepareItems(everything, ca
   local loopComplete = false
   local processedKey = {}
 
-  for _, item in ipairs(everything) do
+  for index, item in ipairs(everything) do
     local key = item.key
     -- Needs to be set here as the later code will ensure fields are shared,
     -- when invertedItemCount shouldn't be
     item.invertedItemCount = -item.itemCount
+    item.index = index
     local seen = self.seenData[key]
     if not processedKey[key] then
       if not seen then
@@ -29,6 +30,7 @@ function BaganatorCategoryViewsItemsPreparationMixin:PrepareItems(everything, ca
             if C_Item.GetItemInfoInstant(item.itemID) ~= nil then
               waiting = waiting + 1
               addonTable.Utilities.LoadItemData(item.itemID, function()
+                addonTable.ReportEntry()
                 waiting = waiting - 1
                 item.isJunk = item.isJunkGetter and item.isJunkGetter()
                 item.isUpgrade = item.isUpgradeGetter and item.isUpgradeGetter()

@@ -36,7 +36,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
-    elseif settingName == addonTable.Config.Options.SORT_METHOD then
+    elseif settingName == addonTable.Config.Options.SORT_METHOD or settingName == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -73,12 +73,12 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnEvent(eventName, ...)
   end
 end
 
-function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(index, source, groupLabel)
+function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(sourceKey)
   if not self.isLive then
     return
   end
 
-  self:RemoveSearchMatches(function() return addonTable.CategoryViews.Utilities.GetItemsFromComposed(self.LayoutManager.composed, index, source, groupLabel) end)
+  self:RemoveSearchMatches(function() return self.layoutsBySourceKey[sourceKey] and self.layoutsBySourceKey[sourceKey].SearchMonitor:GetMatches() or {} end)
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()
@@ -106,27 +106,18 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:NotifyBagUpdate(updated
 end
 
 function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
-  if character ~= self.lastCharacter then
+  if self.lastRenderedCharacter ~= character then
     self.LayoutManager:NewCharacter()
   end
+
+  self.lastRenderedCharacter = character
 
   BaganatorItemViewCommonBankViewCharacterViewMixin.UpdateForCharacter(self, character, isLive)
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   if self.BankMissingHint:IsShown() then
-    self:SetSize(
-      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
-      80 + topSpacing / 2
-    )
-    self.CurrencyWidget:UpdateCurrencyTextPositions(self.BankMissingHint:GetWidth())
-    for _, l in ipairs(self.Container.Layouts) do
-      l:Hide()
-    end
     self.LayoutManager:ClearVisuals()
-
-    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
-    self:GetParent():OnTabFinished()
     return
   end
 
@@ -166,11 +157,11 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
   local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bank", Syndicator.Constants.AllBankIndexes)
   local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
   self.LayoutManager:Layout(characterData.bank, bagWidth, bagTypes, Syndicator.Constants.AllBankIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
-    self.Container:SetSize(math.max(addonTable.CategoryViews.Constants.MinWidth, maxWidth), maxHeight)
+    self.Container:SetSize(math.max(addonTable.CategoryViews.Utilities.GetMinWidth(bagWidth), maxWidth), maxHeight)
 
     self:OnFinished()
 
-    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - (lastButton and lastButton:GetWidth() + 10 or 0))
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - (lastButton and lastButton:GetWidth() + 10 or 0), self.Container:GetWidth())
 
     local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
     if self.searchToApply then

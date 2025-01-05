@@ -16,13 +16,6 @@ Baganator.Constants = {
   IsClassic = addonTable.Constants.IsClassic,
 }
 
-if addonTable.Constants.IsRetail then
-  addonTable.Constants.ButtonFrameOffset = 6
-end
-if addonTable.Constants.IsClassic then
-  addonTable.Constants.ButtonFrameOffset = 0
-end
-
 addonTable.Constants.Events = {
   "SettingChangedEarly",
   "SettingChanged",
@@ -44,6 +37,8 @@ addonTable.Constants.Events = {
 
   "ViewComplete",
   "BagCacheAfterNewItemsUpdate",
+
+  "NewItemsAcquired",
 
   -- Single view only events
   "SpecialBagToggled",
@@ -73,11 +68,17 @@ addonTable.Constants.Events = {
   "ClearHighlightBag",
 
   "ContentRefreshRequired",
+  "LayoutUpdateRequired",
   "PluginsUpdated",
 
   "TransferCancel",
 
   "PropagateAlt",
+  "SetButtonsShown",
+
+  "FrameGroupSwapped",
+
+  "ItemContextChanged", -- Baganator specific context highlighting
 }
 
 addonTable.Constants.SortStatus = {
@@ -168,6 +169,7 @@ end
 addonTable.Constants.KeyItemFamily = 256
 
 addonTable.Constants.ContainerKeyToInfo = {
+  ["?"] = {type = "atlas", value="QuestTurnin", tooltipHeader=AMMOSLOT},
   quiver = {type = "atlas", value="Ammunition", tooltipHeader=AMMOSLOT},
   reagentBag = {type = "atlas", value="Professions_Tracking_Herb", tooltipHeader = BAGANATOR_L_REAGENTS},
   keyring = {type = "file", value="interface\\addons\\baganator\\assets\\bag_keys", tooltipHeader = BAGANATOR_L_KEYS},

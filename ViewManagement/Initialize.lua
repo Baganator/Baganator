@@ -21,38 +21,120 @@ local function RegisterForScaling(frame)
   end)
 end
 
-local hidden = CreateFrame("Frame")
-hidden:Hide()
+local backpackView, UpdateBackpackButtons
+local bankView
 
-local function SetupBackpackView()
-  local backpackView
-  local allBackpackViews = {
-    single = CreateFrame("Frame", "Baganator_SingleViewBackpackViewFrame", UIParent, "BaganatorSingleViewBackpackViewTemplate"),
-    category = CreateFrame("Frame", "Baganator_CategoryViewBackpackViewFrame", UIParent, "BaganatorCategoryViewBackpackViewTemplate"),
-  }
+function addonTable.ViewManagement.GetBackpackFrame()
+  return backpackView
+end
 
-  function addonTable.ViewManagement.GetBackpackFrame()
-    return backpackView
-  end
+function addonTable.ViewManagement.GetBankFrame()
+  return bankView
+end
 
-  backpackView = allBackpackViews[GetViewType("bag")]
-
+local function SetupBackpackHooks()
   local bagButtons = {}
 
-  local UpdateButtons
   if addonTable.Constants.IsClassic then
-    UpdateButtons = function()
+    UpdateBackpackButtons = function()
       for _, b in ipairs(bagButtons) do
         b:SetChecked(backpackView:IsVisible())
       end
     end
   else
-    UpdateButtons = function()
+    UpdateBackpackButtons = function()
       for _, b in ipairs(bagButtons) do
         b.SlotHighlightTexture:SetShown(backpackView:IsVisible())
       end
     end
   end
+
+  local lastToggleTime = 0
+  local function ToggleBackpackView()
+    if GetTime() == lastToggleTime or not Syndicator.API.GetCurrentCharacter() then
+      return
+    end
+    backpackView:SetShown(not backpackView:IsShown())
+    if backpackView:IsVisible() then
+      backpackView:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
+    end
+    lastToggleTime = GetTime()
+    UpdateBackpackButtons()
+  end
+
+  addonTable.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName, isLive)
+    characterName = characterName or Syndicator.API.GetCurrentCharacter()
+    if not characterName then
+      return
+    end
+    backpackView:Show()
+    backpackView:UpdateForCharacter(characterName, characterName == Syndicator.API.GetCurrentCharacter())
+    UpdateBackpackButtons()
+  end)
+
+  addonTable.CallbackRegistry:RegisterCallback("BagHide",  function(_)
+    backpackView:Hide()
+    UpdateBackpackButtons()
+  end)
+
+  addonTable.CallbackRegistry:RegisterCallback("QuickSearch",  function(_)
+    if not backpackView:IsShown() then
+      addonTable.CallbackRegistry:TriggerEvent("BagShow")
+    end
+    backpackView.SearchWidget.SearchBox:SetFocus()
+  end)
+
+  -- Backpack button
+  table.insert(bagButtons, MainMenuBarBackpackButton)
+  -- Bags 1-4, hookscript so that changing bags remains
+  for i = 0, 3 do
+    table.insert(bagButtons, _G["CharacterBag" .. i .. "Slot"])
+  end
+  -- Reagent bag
+  if CharacterReagentBag0Slot then
+    table.insert(bagButtons, CharacterReagentBag0Slot)
+  end
+  -- Keyring bag
+  if KeyRingButton then
+    table.insert(bagButtons, KeyRingButton)
+  end
+  for _, b in ipairs(bagButtons) do
+    b:HookScript("OnClick", ToggleBackpackView)
+  end
+
+  local function DirectToggleOnly()
+    local stack = debugstack()
+    -- Check to ensure we're not opening when OpenClose.lua will handle the
+    -- auto-open and auto-close
+    if stack:match("OpenAllBags") or stack:match("CloseAllBags") then
+      return
+    end
+    ToggleBackpackView()
+  end
+
+  hooksecurefunc("ToggleBackpack", DirectToggleOnly)
+
+  hooksecurefunc("ToggleBag", DirectToggleOnly)
+
+  ToggleAllBags = ToggleBackpackView
+
+  -- Used to open the bags when a loot toast is clicked
+  hooksecurefunc("OpenBag", function()
+    local stack = debugstack()
+    -- This hook is only for toasts
+    if stack:match("AlertFrameSystems.lua") then
+      addonTable.CallbackRegistry:TriggerEvent("BagShow")
+    end
+  end)
+end
+
+local function SetupBackpackView(frameGroup)
+  local allBackpackViews = {
+    single = CreateFrame("Frame", "Baganator_SingleViewBackpackViewFrame" .. frameGroup, UIParent, "BaganatorSingleViewBackpackViewTemplate"),
+    category = CreateFrame("Frame", "Baganator_CategoryViewBackpackViewFrame" .. frameGroup, UIParent, "BaganatorCategoryViewBackpackViewTemplate"),
+  }
+
+  backpackView = allBackpackViews[GetViewType("bag")]
 
   local function SetPositions()
     for _, backpackView in pairs(allBackpackViews) do
@@ -76,7 +158,7 @@ local function SetupBackpackView()
     table.insert(UISpecialFrames, backpackView:GetName())
 
     backpackView:HookScript("OnHide", function()
-      UpdateButtons()
+      UpdateBackpackButtons()
     end)
   end
 
@@ -84,52 +166,28 @@ local function SetupBackpackView()
     ResetPositions()
   end)
 
-  local lastToggleTime = 0
-  local function ToggleBackpackView()
-    if GetTime() == lastToggleTime or not Syndicator.API.GetCurrentCharacter() then
-      return
-    end
-    backpackView:SetShown(not backpackView:IsShown())
-    if backpackView:IsVisible() then
-      backpackView:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
-    end
-    lastToggleTime = GetTime()
-    UpdateButtons()
-  end
-
-  addonTable.CallbackRegistry:RegisterCallback("BagShow",  function(_, characterName)
-    characterName = characterName or Syndicator.API.GetCurrentCharacter()
-    if not characterName then
-      return
-    end
-    backpackView:Show()
-    backpackView:UpdateForCharacter(characterName, characterName == backpackView.liveCharacter)
-    UpdateButtons()
-  end)
-
-  addonTable.CallbackRegistry:RegisterCallback("BagHide",  function(_)
-    backpackView:Hide()
-    UpdateButtons()
-  end)
-
-  addonTable.CallbackRegistry:RegisterCallback("QuickSearch",  function(_)
-    if not backpackView:IsShown() then
-      addonTable.CallbackRegistry:TriggerEvent("BagShow")
-    end
-    backpackView.SearchWidget.SearchBox:SetFocus()
-  end)
-
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.BAG_VIEW_TYPE then
-      local isShown = backpackView:IsShown()
-      backpackView:Hide()
-      backpackView = allBackpackViews[GetViewType("bag")] or backpackView
-      if isShown then
-        addonTable.CallbackRegistry:TriggerEvent("BagShow")
+      if currentFrameGroup == frameGroup then
+        local isShown = backpackView:IsShown()
+        backpackView:Hide()
+        backpackView = allBackpackViews[GetViewType("bag")] or backpackView
+        if isShown and frameGroup == currentFrameGroup then
+          addonTable.CallbackRegistry:TriggerEvent("BagShow")
+        end
+        addonTable.CallbackRegistry:TriggerEvent("BackpackFrameChanged", backpackView)
       end
-      addonTable.CallbackRegistry:TriggerEvent("BackpackFrameChanged", backpackView)
     elseif settingName == addonTable.Config.Options.MAIN_VIEW_POSITION then
       SetPositions()
+    end
+  end)
+
+  addonTable.CallbackRegistry:RegisterCallback("FrameGroupSwapped", function()
+    if currentFrameGroup == frameGroup then
+      backpackView = allBackpackViews[GetViewType("bag")]
+      addonTable.CallbackRegistry:TriggerEvent("BackpackFrameChanged", backpackView)
+    else
+      allBackpackViews[GetViewType("bag")]:Hide()
     end
   end)
 
@@ -142,59 +200,15 @@ local function SetupBackpackView()
   hooksecurefunc("CloseAllBags", function()
     backpackView:Hide()
   end)]]
-
-  -- Backpack button
-  table.insert(bagButtons, MainMenuBarBackpackButton)
-  -- Bags 1-4, hookscript so that changing bags remains
-  for i = 0, 3 do
-    table.insert(bagButtons, _G["CharacterBag" .. i .. "Slot"])
-  end
-  -- Reagent bag
-  if CharacterReagentBag0Slot then
-    table.insert(bagButtons, CharacterReagentBag0Slot)
-  end
-  -- Keyring bag
-  if KeyRingButton then
-    table.insert(bagButtons, KeyRingButton)
-  end
-  for _, b in ipairs(bagButtons) do
-    b:HookScript("OnClick", ToggleBackpackView)
-  end
-
-  hooksecurefunc("ToggleBackpack", function()
-    local stack = debugstack()
-    -- Check to ensure we're not opening when OpenClose.lua will handle the
-    -- auto-open and auto-close
-    if stack:match("OpenAllBags") or stack:match("CloseAllBags") then
-      return
-    end
-    ToggleBackpackView()
-  end)
-
-  ToggleAllBags = ToggleBackpackView
-
-  -- Used to open the bags when a loot toast is clicked
-  hooksecurefunc("OpenBag", function()
-    local stack = debugstack()
-    -- This hook is only for toasts
-    if stack:match("AlertFrameSystems.lua") then
-      addonTable.CallbackRegistry:TriggerEvent("BagShow")
-    end
-  end)
 end
 
-local function SetupBankView()
-  local bankView
+local function SetupBankView(frameGroup)
   local allBankViews = {
-    single = CreateFrame("Frame", "Baganator_SingleViewBankViewFrame", UIParent, "BaganatorSingleViewBankViewTemplate"),
-    category = CreateFrame("Frame", "Baganator_CategoryViewBankViewFrame", UIParent, "BaganatorCategoryViewBankViewTemplate"),
+    single = CreateFrame("Frame", "Baganator_SingleViewBankViewFrame" .. frameGroup, UIParent, "BaganatorSingleViewBankViewTemplate"),
+    category = CreateFrame("Frame", "Baganator_CategoryViewBankViewFrame" .. frameGroup, UIParent, "BaganatorCategoryViewBankViewTemplate"),
   }
 
   bankView = allBankViews[GetViewType("bank")]
-
-  function addonTable.ViewManagement.GetBankFrame()
-    return bankView
-  end
 
   FrameUtil.RegisterFrameForEvents(bankView, {
     "BANKFRAME_OPENED",
@@ -236,6 +250,10 @@ local function SetupBankView()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("BankToggle", function(_, entity, subView)
+    if frameGroup ~= currentFrameGroup then
+      return
+    end
+
     local selectedTab = GetSelectedBankTab(entity)
     if selectedTab == addonTable.Constants.BankTabType.Character then -- Character bank
       local characterName = entity or Syndicator.API.GetCurrentCharacter()
@@ -249,6 +267,10 @@ local function SetupBankView()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("BankShow", function(_, entity, subView)
+    if frameGroup ~= currentFrameGroup then
+      return
+    end
+
     local selectedTab = GetSelectedBankTab(entity)
     if selectedTab == addonTable.Constants.BankTabType.Character then -- Character bank
       local characterName = entity or Syndicator.API.GetCurrentCharacter()
@@ -262,6 +284,10 @@ local function SetupBankView()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("BankHide", function(_, characterName)
+    if frameGroup ~= currentFrameGroup then
+      return
+    end
+
     bankView:Hide()
   end)
 
@@ -273,18 +299,35 @@ local function SetupBankView()
         "BANKFRAME_CLOSED",
       })
       bankView = allBankViews[GetViewType("bank")] or bankView
-      FrameUtil.RegisterFrameForEvents(bankView, {
-        "BANKFRAME_OPENED",
-        "BANKFRAME_CLOSED",
-      })
+      if frameGroup == currentFrameGroup then
+        FrameUtil.RegisterFrameForEvents(bankView, {
+          "BANKFRAME_OPENED",
+          "BANKFRAME_CLOSED",
+        })
+      end
     elseif settingName == addonTable.Config.Options.BANK_ONLY_VIEW_POSITION then
       SetPositions()
     end
   end)
+
+  addonTable.CallbackRegistry:RegisterCallback("FrameGroupSwapped", function()
+    if currentFrameGroup == frameGroup then
+      FrameUtil.RegisterFrameForEvents(bankView, {
+        "BANKFRAME_OPENED",
+        "BANKFRAME_CLOSED",
+      })
+    else
+      bankView:Hide()
+      FrameUtil.UnregisterFrameForEvents(bankView, {
+        "BANKFRAME_OPENED",
+        "BANKFRAME_CLOSED",
+      })
+    end
+  end)
 end
 
-local function SetupGuildView()
-  local guildView = CreateFrame("Frame", "Baganator_SingleViewGuildViewFrame", UIParent, "BaganatorSingleViewGuildViewTemplate")
+local function SetupGuildView(frameGroup)
+  local guildView = CreateFrame("Frame", "Baganator_SingleViewGuildViewFrame" .. frameGroup, UIParent, "BaganatorSingleViewGuildViewTemplate")
   guildView:SetClampedToScreen(true)
   guildView:SetUserPlaced(false)
   RegisterForScaling(guildView)
@@ -313,12 +356,20 @@ local function SetupGuildView()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("GuildToggle", function(_, guildName)
+    if frameGroup ~= currentFrameGroup then
+      return
+    end
+
     local guildName = guildName or Syndicator.API.GetCurrentGuild()
     guildView:SetShown(guildName ~= guildView.lastGuild or not guildView:IsShown())
     guildView:UpdateForGuild(guildName, Syndicator.API.GetCurrentGuild() == guildName and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker))
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("GuildShow",  function(_, guildName, tabIndex)
+    if frameGroup ~= currentFrameGroup then
+      return
+    end
+
     guildName = guildName or Syndicator.API.GetCurrentGuild()
     guildView:Show()
     if tabIndex ~= nil then
@@ -337,6 +388,21 @@ local function SetupGuildView()
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.GUILD_VIEW_POSITION then
       SetPositions()
+    end
+  end)
+
+  addonTable.CallbackRegistry:RegisterCallback("FrameGroupSwapped", function()
+    if currentFrameGroup == frameGroup then
+      FrameUtil.RegisterFrameForEvents(guildView, {
+        "PLAYER_INTERACTION_MANAGER_FRAME_SHOW",
+        "PLAYER_INTERACTION_MANAGER_FRAME_HIDE",
+      })
+    else
+      guildView:Hide()
+      FrameUtil.UnregisterFrameForEvents(guildView, {
+        "PLAYER_INTERACTION_MANAGER_FRAME_SHOW",
+        "PLAYER_INTERACTION_MANAGER_FRAME_HIDE",
+      })
     end
   end)
 end
@@ -381,8 +447,8 @@ local function HideDefaultBank()
   BankFrame:SetScript("OnEvent", nil)
 end
 
-local function SetupCharacterSelect()
-  local characterSelect = CreateFrame("Frame", "Baganator_CharacterSelectFrame", UIParent, "BaganatorCharacterSelectTemplate")
+local function SetupCharacterSelect(frameGroup)
+  local characterSelect = CreateFrame("Frame", "Baganator_CharacterSelectFrame" .. frameGroup, UIParent, "BaganatorCharacterSelectTemplate")
 
   table.insert(UISpecialFrames, characterSelect:GetName())
 
@@ -422,12 +488,24 @@ local function SetupCharacterSelect()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("CharacterSelectToggle", function()
-    characterSelect:SetShown(not characterSelect:IsShown())
+    if frameGroup ~= currentFrameGroup then
+      return
+    end
+
+    if frameGroup == currentFrameGroup then
+      characterSelect:SetShown(not characterSelect:IsShown())
+    end
+
+  end)
+  addonTable.CallbackRegistry:RegisterCallback("FrameGroupSwapped", function()
+    if currentFrameGroup ~= frameGroup then
+      characterSelect:Hide()
+    end
   end)
 end
 
-local function SetupCurrencyPanel()
-  local currencyPanel = addonTable.ItemViewCommon.GetCurrencyPanel("Baganator_CurrencyPanelFrame")
+local function SetupCurrencyPanel(frameGroup)
+  local currencyPanel = addonTable.ItemViewCommon.GetCurrencyPanel("Baganator_CurrencyPanelFrame" .. frameGroup)
 
   table.insert(UISpecialFrames, currencyPanel:GetName())
 
@@ -464,7 +542,15 @@ local function SetupCurrencyPanel()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("CurrencyPanelToggle", function()
-    currencyPanel:SetShown(not currencyPanel:IsShown())
+    if frameGroup == currentFrameGroup then
+      currencyPanel:SetShown(not currencyPanel:IsShown())
+    end
+  end)
+
+  addonTable.CallbackRegistry:RegisterCallback("FrameGroupSwapped", function()
+    if currentFrameGroup ~= frameGroup then
+      currencyPanel:Hide()
+    end
   end)
 end
 
@@ -473,32 +559,43 @@ function addonTable.ViewManagement.Initialize()
   -- other component initialisations won't fail
 
   xpcall(function()
-    SetupBackpackView()
+    SetupBackpackHooks()
     HideDefaultBackpack()
   end, CallErrorHandler)
 
   xpcall(function()
-    SetupBankView()
     HideDefaultBank()
   end, CallErrorHandler)
 
   xpcall(function()
     local info = C_XMLUtil.GetTemplateInfo("BackpackTokenTemplate")
     local tokenWidth = info and info.width or 50
-    -- Reverts token frame width change after using the character frame to avoid
-    -- unexpected freezes.
-    TokenFramePopup:HookScript("OnShow", function()
-      BackpackTokenFrame:SetWidth(tokenWidth * addonTable.Constants.MaxPinnedCurrencies + 1) -- Support tracking up to 100 currencies
-    end)
-    TokenFramePopup:HookScript("OnHide", function()
-      BackpackTokenFrame:SetWidth(tokenWidth * 3 + 1)
-    end)
+    BackpackTokenFrame:SetWidth(tokenWidth * 7 + 1)
+  end, CallErrorHandler)
+end
+
+local generatedGroups = {}
+
+function addonTable.ViewManagement.GenerateFrameGroup(frameGroup)
+  currentFrameGroup = frameGroup
+  addonTable.CallbackRegistry:TriggerEvent("FrameGroupSwapped")
+  if generatedGroups[frameGroup] then
+    return
+  end
+  generatedGroups[frameGroup] = true
+
+  xpcall(function()
+    SetupBackpackView(frameGroup)
   end, CallErrorHandler)
 
   xpcall(function()
-    SetupGuildView()
+    SetupBankView(frameGroup)
   end, CallErrorHandler)
 
-  SetupCharacterSelect()
-  SetupCurrencyPanel()
+  xpcall(function()
+    SetupGuildView(frameGroup)
+  end, CallErrorHandler)
+
+  SetupCharacterSelect(frameGroup)
+  SetupCurrencyPanel(frameGroup)
 end

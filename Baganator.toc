@@ -1,4 +1,4 @@
-## Interface: 110005
+## Interface: 110007
 ## Interface-Cata: 40401
 ## Interface-Wrath: 30403
 ## Interface-Vanilla: 11505
@@ -25,7 +25,13 @@ Core\Welcome.lua
 Core\Analytics.lua
 Core\Main.lua
 
-Skins.lua
+Skins\Utilities.lua
+Skins\Main.lua
+Skins\Blizzard.lua
+Skins\Dark.lua
+Skins\ElvUI.lua
+Skins\GW2.lua
+Skins\NDui.lua
 
 Sorting\BagUsageChecks.lua
 Sorting\ItemFields.lua
@@ -141,3 +147,6 @@ API\Sorting.lua
 API\Pawn.lua
 
 Compatibility\VanillaEngraving.lua
+Compatibility\Lockpicking.lua
+Compatibility\Refunds.lua
+Compatibility\Contexts.lua

@@ -40,14 +40,6 @@ function addonTable.ItemViewCommon.GetLiveGuildItemButtonPool(parent)
   end
 end
 
-function addonTable.ItemViewCommon.GetLiveWarbandItemButtonPool(self)
-  if addonTable.Constants.IsRetail then
-    return CreateFramePool("ItemButton", self, "BaganatorRetailLiveWarbandItemButtonTemplate", nil, false, function(b) b:UpdateTextures() end)
-  else
-    error("no warbands here")
-  end
-end
-
 function addonTable.ItemViewCommon.GetTabButtonPool(parent)
   if addonTable.Constants.IsRetail then
     return CreateFramePool("Button", parent, "BaganatorRetailTabButtonTemplate")

@@ -99,15 +99,18 @@ local function HideBagSlotTooltip(self)
   GameTooltip:Hide()
 end
 
+function BaganatorRetailBagSlotButtonMixin:OnLoad()
+  self.SlotBackground = self:CreateTexture(nil, "BACKGROUND", nil, -1)
+  self.SlotBackground:SetAllPoints(self.icon)
+  self.SlotBackground:SetTexture((select(2, GetInventorySlotInfo("Bag1"))))
+end
+
 function BaganatorRetailBagSlotButtonMixin:Init()
+
   self.isBag = true -- Passed into item button code to force slot count display
   self:RegisterForDrag("LeftButton")
   local inventorySlot = GetBagInventorySlot(self)
   local texture = GetInventoryItemTexture("player", inventorySlot)
-
-  if texture == nil and not addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND) then
-    texture = select(2, GetInventorySlotInfo("Bag1"))
-  end
 
   self:SetItemButtonTexture(texture)
   local itemID = GetInventoryItemID("player", inventorySlot)
@@ -158,6 +161,12 @@ end
 
 BaganatorClassicBagSlotButtonMixin = {}
 
+function BaganatorClassicBagSlotButtonMixin:OnLoad()
+  self.SlotBackground = self:CreateTexture(nil, "BACKGROUND", nil, -1)
+  self.SlotBackground:SetAllPoints(self.icon)
+  self.SlotBackground:SetTexture((select(2, GetInventorySlotInfo("Bag1"))))
+end
+
 function BaganatorClassicBagSlotButtonMixin:Init()
   self.isBag = true -- Passed into item button code to force slot count display
   self:RegisterForDrag("LeftButton")
@@ -167,10 +176,6 @@ function BaganatorClassicBagSlotButtonMixin:Init()
   local inventorySlot = GetBagInventorySlot(self)
 
   local texture = GetInventoryItemTexture("player", inventorySlot)
-
-  if texture == nil and not addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND) then
-    texture = select(2, GetInventorySlotInfo("Bag1"))
-  end
 
   SetItemButtonTexture(self, texture)
   local itemID = GetInventoryItemID("player", inventorySlot)
@@ -275,21 +280,26 @@ end
 
 BaganatorRetailBankButtonMixin = {}
 
+function BaganatorRetailBankButtonMixin:OnLoad()
+  self.SlotBackground = self:CreateTexture(nil, "BACKGROUND", nil, -1)
+  self.SlotBackground:SetAllPoints(self.icon)
+  self.SlotBackground:SetTexture((select(2, GetInventorySlotInfo("Bag1"))))
+end
+
 function BaganatorRetailBankButtonMixin:Init()
   self.isBag = true
   self:RegisterForDrag("LeftButton")
   self:SetItemButtonCount(C_Container.GetContainerNumFreeSlots(Syndicator.Constants.AllBankIndexes[self:GetID() + 1]))
   self.needPurchase = true
 
-  local _, texture = GetInventorySlotInfo("Bag1")
-  self:SetItemButtonTexture(texture)
+  self:SetItemButtonTexture(nil)
   self:SetItemButtonQuality(nil)
   if self:GetID() > GetNumBankSlots() then
-    SetItemButtonTextureVertexColor(self, 1.0,0.1,0.1)
+    self.SlotBackground:SetVertexColor(1.0, 0.1, 0.1)
     return
   end
   self.needPurchase = false
-  SetItemButtonTextureVertexColor(self, 1.0,1.0,1.0)
+  self.SlotBackground:SetVertexColor(1.0, 1.0, 1.0)
   local itemID, texture, quality = GetBankBagInfo(self:GetID())
   if itemID == nil then
     self.icon:SetAlpha(1)
@@ -332,6 +342,12 @@ end
 
 BaganatorClassicBankButtonMixin = {}
 
+function BaganatorClassicBankButtonMixin:OnLoad()
+  self.SlotBackground = self:CreateTexture(nil, "BACKGROUND", nil, -1)
+  self.SlotBackground:SetAllPoints(self.icon)
+  self.SlotBackground:SetTexture((select(2, GetInventorySlotInfo("Bag1"))))
+end
+
 function BaganatorClassicBankButtonMixin:Init()
   self.isBag = true
   self:RegisterForDrag("LeftButton")
@@ -339,14 +355,13 @@ function BaganatorClassicBankButtonMixin:Init()
 
   SetItemButtonCount(self, C_Container.GetContainerNumFreeSlots(Syndicator.Constants.AllBankIndexes[self:GetID() + 1]))
 
-  local _, texture = GetInventorySlotInfo("Bag1")
-  SetItemButtonTexture(self, texture)
+  SetItemButtonTexture(self, nil)
   SetItemButtonQuality(self, nil)
   if self:GetID() > GetNumBankSlots() then
-    SetItemButtonTextureVertexColor(self, 1.0,0.1,0.1)
+    self.SlotBackground:SetVertexColor(1.0, 0.1, 0.1)
     return
   end
-  SetItemButtonTextureVertexColor(self, 1.0,1.0,1.0)
+  self.SlotBackground:SetVertexColor(1.0, 1.0, 1.0)
   self.needPurchase = false
   local itemID, texture, quality = GetBankBagInfo(self:GetID())
   if itemID == nil then
@@ -392,6 +407,7 @@ BaganatorBagSlotsContainerMixin = {}
 
 function BaganatorBagSlotsContainerMixin:OnLoad()
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+    addonTable.ReportEntry()
     if updatedBags.containerBags == nil or updatedBags.containerBags[self.mode] or next(updatedBags[self.mode]) then
       self.updateBagSlotsNeeded = true
       if self:IsVisible() then
@@ -444,7 +460,7 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
       bb:SetPoint("TOPLEFT", self.liveBagSlots[#self.liveBagSlots - 1], "TOPRIGHT")
     end
     addonTable.Utilities.MasqueRegistration(bb)
-    addonTable.Skins.AddFrame("ItemButton", bb)
+    addonTable.Skins.AddFrame("ItemButton", bb, {"containerBag"})
   end
 
   local cachedBagSlotCounter = 0
@@ -461,8 +477,9 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
   self.cachedBagSlots = {}
   for index = 1, bagSlotsCount do
     local bb = GetCachedBagSlotButton()
+    bb.SlotBackground:SetTexture((select(2, GetInventorySlotInfo("Bag1"))))
     addonTable.Utilities.MasqueRegistration(bb)
-    addonTable.Skins.AddFrame("ItemButton", bb)
+    addonTable.Skins.AddFrame("ItemButton", bb, {"containerBag"})
     bb:UpdateTextures()
     bb.isBag = true
     table.insert(self.cachedBagSlots, bb)
@@ -508,10 +525,6 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
       local details = CopyTable(containerInfo[self.mode][index] or {})
       details.itemCount = addonTable.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(character)[self.mode][index + 1])
       bb:SetItemDetails(details)
-      if not details.iconTexture and not addonTable.Config.Get(addonTable.Config.Options.EMPTY_SLOT_BACKGROUND) then
-        local _, texture = GetInventorySlotInfo("Bag1")
-        SetItemButtonTexture(bb, texture)
-      end
       bb:SetShown(show)
     end
   else

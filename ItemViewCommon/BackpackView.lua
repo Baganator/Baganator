@@ -5,15 +5,12 @@ local classicTabObjectCounter = 0
 BaganatorItemViewCommonBackpackViewMixin = {}
 
 local function PreallocateItemButtons(pool, buttonCount)
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LOGIN")
-  frame:SetScript("OnEvent", function()
-    for i = 1, buttonCount do
-      local button = pool:Acquire()
-      addonTable.Skins.AddFrame("ItemButton", button)
-    end
-    pool:ReleaseAll()
-  end)
+  assert(not InCombatLockdown())
+  for i = 1, buttonCount do
+    local button = pool:Acquire()
+    addonTable.Skins.AddFrame("ItemButton", button)
+  end
+  pool:ReleaseAll()
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
@@ -55,18 +52,14 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
     if not self.lastCharacter then
       return
     end
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    elseif tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+    if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
-    elseif settingName == addonTable.Config.Options.SHOW_RECENTS_TABS then
+    elseif settingName == addonTable.Config.Options.SHOW_RECENTS_TABS and self.Tabs ~= nil then
       local isShown = addonTable.Config.Get(addonTable.Config.Options.SHOW_RECENTS_TABS)
       for index, tab in ipairs(self.Tabs) do
         tab:SetShown(isShown)
@@ -75,7 +68,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
         end
       end
       self:OnFinished()
-    elseif settingName == addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS then
+    elseif settingName == addonTable.Config.Options.MAIN_VIEW_SHOW_BAG_SLOTS and self:IsVisible() then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
       self:OnFinished()
     end
@@ -91,11 +84,13 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
       self:AddNewRecent(character)
       if self:IsVisible() then
         self:UpdateForCharacter(character, self.liveCharacter == character)
+      else
+        self.lastCharacter = character
       end
     end
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+  addonTable.CallbackRegistry:RegisterCallback("LayoutUpdateRequired", function()
     if self:IsVisible() and self.lastCharacter ~= nil then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
@@ -133,9 +128,9 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
   self.TopButtons[1]:ClearAllPoints()
   self.TopButtons[1]:SetPoint("TOPLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset + 2, -1)
 
-  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
-
   addonTable.Skins.AddFrame("ButtonFrame", self, {"backpack"})
+
+  self:SetLiveCharacter(Syndicator.API.GetCurrentCharacter())
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnShow()
@@ -303,14 +298,15 @@ function BaganatorItemViewCommonBackpackViewMixin:HideExtraTabs()
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, isLive)
+  addonTable.ReportEntry()
+
   local start = debugprofilestop()
-  addonTable.Utilities.ApplyVisuals(self)
 
   local characterData = Syndicator.API.GetCharacter(character)
 
   if not characterData then
     self:SetTitle("")
-    return true
+    return
   else
     self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
   end
@@ -342,6 +338,8 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
   if self.tabsSetup then -- Not ready immediately on PLAYER_ENTERING_WORLD
     self.Tabs[1]:SetPoint("LEFT", self, "LEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 0)
   end
+
+  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
 
   self.SearchWidget:SetSpacing(sideSpacing)
 

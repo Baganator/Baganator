@@ -18,4 +18,5 @@ Mixin(addonTable, {
   Transfers = {},
   Help = {},
   Skins = {},
+  Compatibility = {},
 })

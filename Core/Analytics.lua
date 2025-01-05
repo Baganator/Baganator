@@ -11,7 +11,7 @@ function addonTable.Core.RunAnalytics()
   local WagoAnalytics = WagoAnalytics:Register("kGr09M6y")
   addonTable.WagoAnalytics = WagoAnalytics
 
-  WagoAnalytics:Switch("UsingSkin", false)
+  WagoAnalytics:Switch("UsingSkinRaw", false)
   WagoAnalytics:Switch("UsingCategories", addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE) == "category" or addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE) == "category")
   WagoAnalytics:Switch("DifferentViews", addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE) ~= addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE))
 
@@ -99,6 +99,8 @@ function addonTable.Core.RunAnalytics()
     [addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS] = true,
     [addonTable.Config.Options.ADD_TO_CATEGORY_BUTTONS] = true,
     [addonTable.Config.Options.RECENT_TIMEOUT] = true,
+
+    [addonTable.Config.Options.CURRENT_SKIN] = true,
   }
 
   local frame = CreateFrame("Frame")
@@ -129,7 +131,7 @@ function addonTable.Core.RunAnalytics()
   end)
 
   do
-    local sortMethod = addonTable.Config.Get(addonTable.Config.SORT_METHOD)
+    local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
     local possibleSortMethods = {
       "type",
       "quality",

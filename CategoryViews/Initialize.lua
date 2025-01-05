@@ -61,6 +61,44 @@ local function MigrateFormat()
   end
 end
 
+-- Somehow on older versions a few users have missing SectionEnds for their
+-- sections, or the SectionEnd is in the wrong place, this fixes that.
+function addonTable.CategoryViews.FixAnyBrokenSections()
+  local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
+
+  local level = 0
+  local index = 0
+  local currentSection = {}
+  while index < # displayOrder do
+    index = index + 1
+    local source = displayOrder[index]
+    if source == addonTable.CategoryViews.Constants.SectionEnd and level == 0 then
+      table.remove(displayOrder, index)
+      index = index - 1
+    elseif source == addonTable.CategoryViews.Constants.SectionEnd then
+      level = level - 1
+      table.remove(currentSection)
+    elseif source:match("^_") then
+      level = level + 1
+      table.insert(currentSection, index)
+    end
+  end
+
+  if #currentSection > 0 then
+    for i = #currentSection, 1, -1 do
+      local insertIndex = #displayOrder + 1
+      for j = currentSection[i] + 1, #displayOrder do
+        if displayOrder[j]:match("^_") then
+          insertIndex = j
+          break
+        end
+      end
+      table.insert(displayOrder, insertIndex, addonTable.CategoryViews.Constants.SectionEnd)
+    end
+  end
+  addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+end
+
 local function CompareCurrent()
   local current = addonTable.CustomiseDialog.CategoriesExport()
   local toMod = addonTable.json.decode(current)
@@ -102,6 +140,8 @@ local function SetupCategories()
     end
     addonTable.Config.Set(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED, newAdded)
   end
+
+  addonTable.CategoryViews.FixAnyBrokenSections()
 
   for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
     if tIndexOf(displayOrder, source) == nil then

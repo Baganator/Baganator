@@ -107,6 +107,7 @@ if not addonTable.Constants.IsRetail then
   addonTable.Utilities.OnAddonLoaded("ItemRack", function()
     local equipmentSetInfo = {}
     local equipmentSetNames = {}
+    local bankOpen, updatePending = false, false
     local function ItemRackUpdated()
       equipmentSetInfo = {}
       equipmentSetNames = {}
@@ -115,13 +116,17 @@ if not addonTable.Constants.IsRetail then
           table.insert(equipmentSetNames, name)
           local setInfo = {name = name, iconTexture = details.icon}
           for _, itemRef in pairs(details.equip) do
-            if not equipmentSetInfo[itemRef] then
-              equipmentSetInfo[itemRef] = {}
+            if itemRef ~= 0 then
+              if not equipmentSetInfo[itemRef] then
+                equipmentSetInfo[itemRef] = {}
+              end
+              table.insert(equipmentSetInfo[itemRef], setInfo)
             end
-            table.insert(equipmentSetInfo[itemRef], setInfo)
           end
         end
       end
+      table.sort(equipmentSetNames)
+      updatePending = true
 
       Baganator.API.RequestItemButtonsRefresh()
     end
@@ -130,42 +135,109 @@ if not addonTable.Constants.IsRetail then
     ItemRack:RegisterExternalEventListener("ITEMRACK_SET_SAVED", ItemRackUpdated)
     ItemRack:RegisterExternalEventListener("ITEMRACK_SET_DELETED", ItemRackUpdated)
 
-    Baganator.API.RegisterItemSetSource("ItemRack", "item_rack_classic", function(itemLocation, guid, itemLink)
-      if not guid or not itemLink then
-        return
-      end
-
-      if not Syndicator.Utilities.IsEquipment(itemLink) then
-        return
-      end
-
-      local id = ItemRack.GetIRString(itemLink)
-      -- Workaround for ItemRack classic not getting the run id correctly for
-      -- bag items
-      if ItemRack.AppendRuneID then
-        local bagID, slotID = itemLocation.bagID, itemLocation.slotIndex
-        local isEngravable = false
-        local runeInfo = nil
-        if bagID == Enum.BagIndex.Bank then
-          local invID = BankButtonIDToInvSlotID(slotID)
-          isEngravable = C_Engraving.IsEquipmentSlotEngravable(invID)
-          if isEngravable then
-            runeInfo = C_Engraving.GetRuneForEquipmentSlot(invID)
-          end
-        elseif bagID >= 0 and C_Engraving.IsInventorySlotEngravable(bagID, slotID) then
-          isEngravable = true
-          runeInfo = C_Engraving.GetRuneForInventorySlot(bagID, slotID)
+    local monitor = CreateFrame("Frame")
+    local firstBankOpen = true
+    monitor:RegisterEvent("BANKFRAME_OPENED")
+    monitor:RegisterEvent("BANKFRAME_CLOSED")
+    monitor:RegisterEvent("BAG_UPDATE")
+    monitor:SetScript("OnEvent", function(_, eventName)
+      if eventName == "BAG_UPDATE" then
+        updatePending = true
+      else
+        bankOpen = eventName == "BANKFRAME_OPENED"
+        updatePending = true
+        if bankOpen and firstBankOpen then
+          firstBankOpen = false
+          Baganator.API.RequestItemButtonsRefresh()
         end
+      end
+    end)
 
-        if isEngravable then
-          if runeInfo then
-            id = id .. ":runeid:" .. tostring(runeInfo.skillLineAbilityID)
+    local guidToItemRef = {}
+    -- Elaborate routine to mimic ItemRack's selection of items that match the
+    -- set. Checks exact matches first, then inexact by item ID.
+    local function RefreshSetItems()
+      local start = debugprofilestop()
+      local oldConversion = guidToItemRef
+      guidToItemRef = {}
+      local missing = {}
+      local itemIDToGUID = {}
+      for key in pairs(equipmentSetInfo) do
+        missing[key] = true
+      end
+      local characterData = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter())
+      local function DoLocation(location, slotInfo)
+        if slotInfo.itemLink and Syndicator.Utilities.IsEquipment(slotInfo.itemLink) and C_Item.DoesItemExist(location) then
+          local runeSuffix = ""
+          if ItemRack.AppendRuneID then
+            local info
+            if location.equipmentSlotIndex then
+              info = C_Engraving.GetRuneForEquipmentSlot(location.equipmentSlotIndex)
+            elseif location.bagID >= 0 then
+              info = C_Engraving.GetRuneForInventorySlot(location.bagID, location.slotIndex)
+            end
+            if info then
+              runeSuffix = ":runeid:"..tostring(info.skillLineAbilityID)
+            else
+              runeSuffix = ":runeid:0"
+            end
+          end
+          local itemRackID = ItemRack.GetIRString(slotInfo.itemLink) .. runeSuffix
+          local guid = C_Item.GetItemGUID(location)
+          if missing[itemRackID] then
+            missing[itemRackID] = nil
+            guidToItemRef[guid] = itemRackID
           else
-            id = id .. ":runeid:0"
+          end
+          if itemIDToGUID[slotInfo.itemID] == nil then
+            itemIDToGUID[slotInfo.itemID] = guid
           end
         end
       end
-      return equipmentSetInfo[id]
+      local function DoBag(bagID, bagData)
+        for slotID, slotInfo in ipairs(bagData) do
+          local location = {bagID = bagID, slotIndex = slotID}
+          DoLocation(location, slotInfo)
+        end
+      end
+      for index, slotInfo in ipairs(characterData.equipped) do
+        local location = {equipmentSlotIndex = index - Syndicator.Constants.EquippedInventorySlotOffset}
+        DoLocation(location, slotInfo)
+      end
+      for index, bagData in ipairs(characterData.bags) do
+        local bagID = Syndicator.Constants.AllBagIndexes[index]
+        DoBag(bagID, bagData)
+      end
+      if bankOpen then
+        for index, bagData in ipairs(characterData.bank) do
+          local bagID = Syndicator.Constants.AllBankIndexes[index]
+          DoBag(bagID, bagData)
+        end
+      end
+      if next(missing) then
+        for key in pairs(missing) do
+          local itemID = tonumber(key:match("^%-?%d+"))
+          local guid = itemIDToGUID[itemID]
+          if guid then
+            guidToItemRef[guid] = key
+          end
+        end
+      end
+      if not tCompare(guidToItemRef, oldConversion, 2) then
+        Baganator.API.RequestItemButtonsRefresh()
+      end
+      if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+        print("item rack refresh took", debugprofilestop() - start)
+      end
+    end
+
+    Baganator.API.RegisterItemSetSource("ItemRack", "item_rack_classic", function(itemLocation, guid, itemLink)
+      if updatePending then
+        updatePending = false
+        RefreshSetItems()
+      end
+
+      return equipmentSetInfo[guidToItemRef[guid]]
     end, function()
       return equipmentSetNames
     end)

@@ -37,7 +37,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
-    elseif settingName == addonTable.Config.Options.SORT_METHOD then
+    elseif settingName == addonTable.Config.Options.SORT_METHOD or settingName == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -82,12 +82,12 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(index, source, groupLabel)
+function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(sourceKey)
   if not self.isLive then
     return
   end
 
-  self:RemoveSearchMatches(function() return addonTable.CategoryViews.Utilities.GetItemsFromComposed(self.LayoutManager.composed, index, source, groupLabel) end)
+  self:RemoveSearchMatches(function() return self.layoutsBySourceKey[sourceKey] and self.layoutsBySourceKey[sourceKey].SearchMonitor:GetMatches() or {} end)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ApplySearch(text)
@@ -144,7 +144,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   end
   self.LayoutManager:Layout(bagData, bagWidth, bagTypes, bagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self.Container:SetSize(
-      math.max(addonTable.CategoryViews.Constants.MinWidth, self:GetButtonsWidth(sideSpacing), maxWidth),
+      math.max(addonTable.CategoryViews.Utilities.GetMinWidth(bagWidth), self:GetButtonsWidth(sideSpacing), maxWidth),
       maxHeight
     )
     self:OnFinished()

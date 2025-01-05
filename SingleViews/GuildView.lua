@@ -66,11 +66,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     if not self.lastGuild then
       return
     end
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    elseif tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
+    if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
@@ -126,9 +122,9 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
   addonTable.Skins.AddFrame("ButtonFrame", self, {"guild"})
   addonTable.Skins.AddFrame("Button", self.DepositButton)
   addonTable.Skins.AddFrame("Button", self.WithdrawButton)
-  addonTable.Skins.AddFrame("IconButton", self.ToggleTabTextButton)
-  addonTable.Skins.AddFrame("IconButton", self.ToggleTabLogsButton)
-  addonTable.Skins.AddFrame("IconButton", self.ToggleGoldLogsButton)
+  addonTable.Skins.AddFrame("IconButton", self.ToggleTabTextButton, {"guildTabText"})
+  addonTable.Skins.AddFrame("IconButton", self.ToggleTabLogsButton, {"guildTabLogs"})
+  addonTable.Skins.AddFrame("IconButton", self.ToggleGoldLogsButton, {"guildGoldLogs"})
 end
 
 function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)
@@ -180,6 +176,10 @@ function BaganatorSingleViewGuildViewMixin:OnEvent(eventName, ...)
 end
 
 function BaganatorSingleViewGuildViewMixin:OnShow()
+  -- Parent change to avoid ugly overlapping elements with main frame
+  self.LogsFrame:SetParent(UIParent)
+  self.TabTextFrame:SetParent(UIParent)
+
   self:UpdateForGuild(self.lastGuild, self.isLive)
 end
 
@@ -188,6 +188,12 @@ function BaganatorSingleViewGuildViewMixin:OnHide()
   if GuildBankPopupFrame and GuildBankPopupFrame:IsShown() then
     GuildBankPopupFrame:Hide()
   end
+
+  self.LogsFrame:SetParent(self)
+  self.TabTextFrame:SetParent(self)
+
+  self.LogsFrame:Hide()
+  self.TabTextFrame:Hide()
   CloseGuildBankFrame()
 end
 
@@ -290,6 +296,8 @@ function BaganatorSingleViewGuildViewMixin:OpenTabEditor()
 end
 
 function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
+  addonTable.ReportEntry()
+
   local tabScaleFactor = 37
   if addonTable.Config.Get(addonTable.Config.Options.REDUCE_SPACING) then
     tabScaleFactor = 40
@@ -317,21 +325,23 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   local lastTab
   local tabs = {}
 
-  local tabButton = self.tabsPool:Acquire()
-  addonTable.Skins.AddFrame("SideTabButton", tabButton)
-  tabButton:RegisterForClicks("LeftButtonUp")
-  tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\Everything.png")
-  tabButton:SetScript("OnClick", function(_, button)
-    self:SetCurrentTab(0)
-    self:UpdateForGuild(self.lastGuild, self.isLive)
-  end)
-  tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
-  tabButton.SelectedTexture:Hide()
-  tabButton:SetScale(tabScale)
-  tabButton:Show()
-  tabButton.tabName = BAGANATOR_L_EVERYTHING
-  lastTab = tabButton
-  table.insert(tabs, tabButton)
+  if #guildData.bank > 0 then
+    local tabButton = self.tabsPool:Acquire()
+    addonTable.Skins.AddFrame("SideTabButton", tabButton)
+    tabButton:RegisterForClicks("LeftButtonUp")
+    tabButton.Icon:SetTexture("Interface\\AddOns\\Baganator\\Assets\\Everything.png")
+    tabButton:SetScript("OnClick", function(_, button)
+      self:SetCurrentTab(0)
+      self:UpdateForGuild(self.lastGuild, self.isLive)
+    end)
+    tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
+    tabButton.SelectedTexture:Hide()
+    tabButton:SetScale(tabScale)
+    tabButton:Show()
+    tabButton.tabName = BAGANATOR_L_EVERYTHING
+    lastTab = tabButton
+    table.insert(tabs, tabButton)
+  end
 
   self.lastTabData = {}
   for index, tabInfo in ipairs(guildData.bank) do
@@ -386,7 +396,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
   self.Tabs = tabs
 
   if self.currentTab > #guildData.bank then
-    self:SetCurrentTab(#guildData.bank)
+    self:SetCurrentTab(math.max(1, #guildData.bank))
   end
 end
 
@@ -435,7 +445,6 @@ end
 
 function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   guild = guild or ""
-  addonTable.Utilities.ApplyVisuals(self)
 
   local guildWidth = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_WIDTH)
 
@@ -457,6 +466,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   if self.isLive then
     if self.currentTab ~= 0 and self.currentTab ~= GetCurrentGuildBankTab() then
       self.currentTab = GetCurrentGuildBankTab()
+      addonTable.Config.Set(addonTable.Config.Options.GUILD_CURRENT_TAB, self.currentTab)
       if GuildBankPopupFrame:IsShown() then
         self:OpenTabEditor()
       end
@@ -567,11 +577,20 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   self.DepositButton:SetPoint("BOTTOMRIGHT", self, -sideSpacing + 1, 6)
 
   self.Container:SetSize(active:GetWidth(), active:GetHeight())
-  self:SetSize(
-    self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    math.min(self.Container:GetHeight() + 6 + 63 + detailsHeight, UIParent:GetHeight() / self:GetScale())
-  )
-  self:UpdateScroll(6 + 63 + detailsHeight, self:GetScale())
+
+  if self.NotVisitedText:IsShown() or self.NoTabsText:IsShown() then
+    local width = self.NotVisitedText:IsShown() and self.NotVisitedText:GetWidth() or self.NoTabsText:GetWidth()
+    self:SetSize(
+      math.max(400, width) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
+      80 + topSpacing / 2
+    )
+  else
+    self:SetSize(
+      self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
+      math.min(self.Container:GetHeight() + 69 + detailsHeight, UIParent:GetHeight() / self:GetScale())
+    )
+    self:UpdateScroll(69 + detailsHeight, self:GetScale())
+  end
 
   self.ButtonVisibility:Update()
 
@@ -662,21 +681,14 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
   addonTable.Skins.AddFrame("ButtonFrame", self)
   addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
 
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
+  self.parentName = self:GetParent():GetName() -- as the parent changes
 end
 
 function BaganatorGuildLogsTemplateMixin:OnShow()
-  addonTable.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
   local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
-    anchor[2] = self:GetParent():GetName()
+    anchor[2] = self.parentName
   end
   self:SetPoint(unpack(anchor))
 end
@@ -808,21 +820,14 @@ function BaganatorGuildTabTextTemplateMixin:OnLoad()
   addonTable.Skins.AddFrame("EditBox", self.TextContainer:GetEditBox())
   addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
 
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
+  self.parentName = self:GetParent():GetName() -- as the parent changes
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnShow()
-  addonTable.Utilities.ApplyVisuals(self)
   self:ClearAllPoints()
   local anchor = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_DIALOG_POSITION)
   if anchor[2] ~= "UIParent" then
-    anchor[2] = self:GetParent():GetName()
+    anchor[2] = self.parentName
   end
   self:SetPoint(unpack(anchor))
 end

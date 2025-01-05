@@ -1,49 +1,5 @@
 local _, addonTable = ...
 
-local classicBorderFrames = {
-  "BotLeftCorner", "BotRightCorner", "BottomBorder", "LeftBorder", "RightBorder",
-  "TopRightCorner", "TopLeftCorner", "TopBorder"
-}
-
-function addonTable.Utilities.ApplyVisuals(frame)
-  if TSM_API then
-    frame:SetFrameStrata("HIGH")
-  end
-
-  local alpha = addonTable.Config.Get(addonTable.Config.Options.VIEW_ALPHA)
-  local noFrameBorders = addonTable.Config.Get(addonTable.Config.Options.NO_FRAME_BORDERS)
-
-  frame.Bg:SetAlpha(alpha)
-  frame.TopTileStreaks:SetAlpha(alpha)
-
-  if frame.NineSlice then -- retail
-    frame.NineSlice:SetAlpha(alpha)
-    frame.NineSlice:SetShown(not noFrameBorders)
-    if noFrameBorders then
-      frame.Bg:SetPoint("TOPLEFT", 6, 0)
-      frame.TopTileStreaks:SetPoint("TOPLEFT", 6, 0)
-    else
-      frame.Bg:SetPoint("TOPLEFT", 6, -21)
-      frame.TopTileStreaks:SetPoint("TOPLEFT", 6, -21)
-    end
-  elseif frame.TitleBg then -- classic
-    frame.TitleBg:SetAlpha(alpha)
-    for _, key in ipairs(classicBorderFrames) do
-      frame[key]:SetAlpha(alpha)
-      frame[key]:SetShown(not noFrameBorders)
-    end
-    if noFrameBorders then
-      frame.Bg:SetPoint("TOPLEFT", 2, 0)
-      frame.TopTileStreaks:SetPoint("TOPLEFT", 2, 0)
-      frame.Bg:SetPoint("BOTTOMRIGHT", -2, 0)
-    else
-      frame.Bg:SetPoint("TOPLEFT", 2, -21)
-      frame.Bg:SetPoint("BOTTOMRIGHT", -2, 2)
-      frame.TopTileStreaks:SetPoint("TOPLEFT", 2, -21)
-    end
-  end
-end
-
 function addonTable.Utilities.GetAllCharacters(searchText)
   searchText = searchText and searchText:lower() or ""
   local characters = {}
@@ -205,7 +161,13 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
     if cursorType == "item" then
       local usageChecks = addonTable.Sorting.GetBagUsageChecks(bagIndexes)
       local sortedBagIDs = CopyTable(bagIndexes)
-      table.sort(sortedBagIDs, function(a, b) return usageChecks.sortOrder[a] < usageChecks.sortOrder[b] end)
+      table.sort(sortedBagIDs, function(a, b)
+        if usageChecks.sortOrder[a] == usageChecks.sortOrder[b] then
+          return a < b
+        else
+          return usageChecks.sortOrder[a] < usageChecks.sortOrder[b]
+        end
+      end)
       local currentCharacterBags = getData()
       local backupBagID = nil
       for _, bagID in ipairs(sortedBagIDs) do
@@ -258,7 +220,11 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   parent.backgroundButton:ClearNormalTexture()
   parent.backgroundButton:ClearDisabledTexture()
   parent.backgroundButton:ClearPushedTexture()
+  parent.backgroundButton.SlotBackground:Hide()
   for _, child in ipairs({parent.backgroundButton:GetRegions()}) do
+    child:Hide()
+  end
+  for _, child in ipairs({parent.backgroundButton:GetChildren()}) do
     child:Hide()
   end
 
@@ -386,5 +352,101 @@ if LibStub then
         masqueGroup:AddButton(button, nil, "Item")
       end
     end
+  end
+end
+
+function addonTable.Utilities.IsMasqueApplying()
+  if C_AddOns.IsAddOnLoaded("Masque") then
+    local Masque = LibStub("Masque", true)
+    local masqueGroup = Masque:Group("Baganator", "Bag")
+    return not masqueGroup.db.Disabled
+  end
+  return false
+end
+
+function addonTable.Utilities.AddButtons(allButtons, lastButton, parent, spacing, regionDetails)
+  local buttonsWidth = 0
+  for _, details in ipairs(regionDetails) do
+    local button = details.frame
+    button:ClearAllPoints()
+    if button:IsShown() then
+      button:SetParent(parent)
+      buttonsWidth = buttonsWidth + spacing + button:GetWidth()
+      button:SetPoint("LEFT", lastButton, "RIGHT", spacing, 0)
+      lastButton = button
+      table.insert(allButtons, button)
+    end
+  end
+
+  return buttonsWidth
+end
+
+if addonTable.Constants.IsRetail then
+  function addonTable.Utilities.IsAuctionable(details)
+    if not C_Item.IsItemDataCachedByID(details.itemID) then
+      C_Item.RequestLoadItemDataByID(details.itemID)
+      return nil
+    end
+    return C_Item.DoesItemExist(details.itemLocation) and C_AuctionHouse.IsSellItemValid(details.itemLocation, false)
+  end
+else
+  local cachedCharges = {}
+  local fontString = UIParent:CreateFontString(nil, nil, "GameFontNormal")
+  local function DetermineCharges(tooltipInfo)
+    for _, line in ipairs(tooltipInfo.lines) do
+      local num = line.leftText:match("%d+")
+      if num then
+        local start = debugprofilestop()
+        fontString:SetText(ITEM_SPELL_CHARGES:format(num))
+        if fontString:GetText() == line.leftText then
+          return fontString:GetText()
+        end
+      end
+    end
+    return ""
+  end
+
+  function addonTable.Utilities.IsAuctionable(details)
+    local result = false
+
+    local currentDurability, maxDurability
+    if details.itemLocation:IsBagAndSlot() then
+      currentDurability, maxDurability = C_Container.GetContainerItemDurability(details.itemLocation:GetBagAndSlot())
+    else
+      local slot = details.itemLocation:GetEquipmentSlot()
+      currentDurability, maxDurability = GetInventoryItemDurability(slot)
+    end
+
+    result = not C_Item.IsBound(details.itemLocation) and currentDurability == maxDurability
+
+    -- Determine if the item is at max charges (if it has charges)
+    if result and select(6, C_Item.GetItemInfoInstant(details.itemID)) == Enum.ItemClass.Consumable and C_Item.GetItemSpell(details.itemID) and details.itemLocation.bagID ~= nil then
+      local _, spellID = C_Item.GetItemSpell(details.itemID)
+      if not C_Spell.IsSpellDataCached(spellID) then
+        C_Spell.RequestLoadSpellData(spellID)
+        return nil
+      end
+
+      if not details.tooltipInfoSpell then
+        details.tooltipInfoSpell = details.tooltipGetter()
+      end
+
+      if not cachedCharges[details.itemID] then
+        cachedCharges[details.itemID] = DetermineCharges(Syndicator.Search.DumpClassicTooltip(function(t) t:SetItemByID(details.itemID) end))
+      end
+
+      local cached = cachedCharges[details.itemID]
+      if cached ~= "" then
+        result = false
+        for _, line in ipairs(details.tooltipInfoSpell) do
+          if line.leftText == cached then
+            result = true
+            break
+          end
+        end
+      end
+    end
+
+    return result
   end
 end

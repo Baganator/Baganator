@@ -6,11 +6,7 @@
     </Scripts>
     <Layers>
       <Layer level="BACKGROUND">
-        <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true">
-          <Anchors>
-            <Anchor point="BOTTOMRIGHT" relativeKey="$parent.$parent" x="-10" y="10"/>
-          </Anchors>
-        </FontString>
+        <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true"/>
       </Layer>
     </Layers>
   </Frame>

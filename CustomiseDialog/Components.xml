@@ -44,45 +44,6 @@
     </Scripts>
   </Frame>
 
-  <Frame name="BaganatorDropDownTemplate" virtual="true" mixin="BaganatorDropDownMixin">
-    <Size y="40"/>
-    <Layers>
-      <Layer level="OVERLAY">
-        <FontString parentKey="Label" inherits="GameFontHighlight" justifyH="RIGHT" text="XX">
-          <Anchors>
-            <Anchor point="LEFT" x="20"/>
-            <Anchor point="RIGHT" relativePoint="CENTER" x="-50"/>
-          </Anchors>
-        </FontString>
-      </Layer>
-    </Layers>
-    <Frames>
-      <EventButton parentKey="DropDown" inherits="SelectionPopoutButtonTemplate">
-        <Size x="250" y="38"/>
-        <Anchors>
-          <Anchor point="LEFT" relativePoint="CENTER" x="-45"/>
-        </Anchors>
-        <KeyValues>
-          <KeyValue key="selectionEntryTemplates" value="SettingsSelectionPopoutEntryTemplate" type="string"/>
-        </KeyValues>
-        <Frames>
-          <Frame parentKey="SelectionDetails" setAllPoints="true" mixin="SettingsSelectionPopoutDetailsMixin">
-            <Size x="250" y="20"/>
-            <Layers>
-              <Layer level="OVERLAY" textureSubLevel="1">
-                <FontString parentKey="SelectionName" font="GameFontNormal" justifyH="CENTER" maxLines="1" hidden="true"/>
-              </Layer>
-            </Layers>
-          </Frame>
-        </Frames>
-      </EventButton>
-    </Frames>
-    <Anchors>
-      <Anchor point="RIGHT" x="-30"/>
-      <Anchor point="LEFT" x="30"/>
-    </Anchors>
-  </Frame>
-
   <Frame name="BaganatorHeaderTemplate" virtual="true" inherits="SettingsCategoryListHeaderTemplate" mixin="BaganatorHeaderMixin">
     <Size y="40"/>
     <Layers>

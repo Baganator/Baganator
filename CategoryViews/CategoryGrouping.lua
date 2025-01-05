@@ -375,6 +375,14 @@ function BaganatorCategoryViewsCategoryGroupingMixin:ApplyGroupings(composed, ca
 end
 
 function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
+  if addonTable.CheckTimeout() then
+    self:SetScript("OnUpdate", function()
+      addonTable.ReportEntry()
+      self:GroupingResults()
+    end)
+    return
+  end
+
   for index, details in pairs(self.pending) do
     local complete = true
     for _, item in ipairs(details.items) do
@@ -382,26 +390,29 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
     end
     if complete then
       self.pending[index] = nil
-      local insertPoint = tIndexOf(self.composed.details, details.details)
       local nonResults = {}
       local groups = {}
-      self.composed.details[insertPoint].results = nonResults
+      details.details.results = nonResults
+      local prefix = ""
+      if details.details.groupPrefix ~= false then
+        prefix = details.details.label .. ": "
+      end
+      local prevEntry = details.details
       for _, label in ipairs(groupings[details.grouping]) do
-        local prefix = ""
-        if details.details.groupPrefix ~= false then
-          prefix = details.details.label .. ": "
-        end
-        insertPoint = insertPoint + 1
-        table.insert(self.composed.details, insertPoint, {
+        local nextEntry = {
           type = "category",
           label = prefix .. label,
           section = details.details.section,
           source = details.details.source,
           groupLabel = label,
           auto = true,
-          results = {}
-        })
-        groups[label] = self.composed.details[insertPoint].results
+          results = {},
+          next = prevEntry.next,
+        }
+        groups[label] = nextEntry.results
+        table.insert(self.composed.details, nextEntry)
+        prevEntry.next = #self.composed.details
+        prevEntry = nextEntry
       end
       local map = groupingsToLabels[details.grouping]
       local key = details.grouping
@@ -418,11 +429,26 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
 
   if next(self.pending) == nil then
     self:SetScript("OnUpdate", nil)
+    local newDetails = {}
+    local entry = self.composed.details[self.composed.start]
+    while entry do
+      table.insert(newDetails, entry)
+      local prev = entry
+      entry = self.composed.details[entry.next]
+      prev.next = #newDetails + 1
+    end
+    if next(newDetails) then
+      newDetails[#newDetails].next = nil
+    end
+    self.composed.details = newDetails
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("grouping took", debugprofilestop() - self.start)
     end
     self.callback()
   else
-    self:SetScript("OnUpdate", self.GroupingResults)
+    self:SetScript("OnUpdate", function()
+      addonTable.ReportEntry()
+      self:GroupingResults()
+    end)
   end
 end

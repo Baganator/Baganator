@@ -86,30 +86,57 @@ function addonTable.SlashCmd.RemoveUnusedCategories()
   addonTable.Utilities.Message(BAGANATOR_L_REMOVED_UNUSED_CATEGORIES)
 end
 
+function addonTable.SlashCmd.Search(text)
+  addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", text)
+  addonTable.CallbackRegistry:TriggerEvent("BagShow")
+end
+
+function addonTable.SlashCmd.Keywords()
+  addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS))
+  addonTable.Utilities.Message(BAGANATOR_L_KEYWORDS_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS) and BAGANATOR_L_ENABLED or BAGANATOR_L_DISABLED))
+end
+
+function addonTable.SlashCmd.Categories()
+  addonTable.Config.Set(addonTable.Config.Options.DEBUG_CATEGORIES, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES))
+  addonTable.Utilities.Message(BAGANATOR_L_CATEGORIES_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES) and BAGANATOR_L_ENABLED or BAGANATOR_L_DISABLED))
+end
+
 function addonTable.SlashCmd.CustomiseUI()
   addonTable.CallbackRegistry:TriggerEvent("ShowCustomise")
+end
+
+function addonTable.SlashCmd.Timers()
+  addonTable.Config.Set(addonTable.Config.Options.DEBUG_TIMERS, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS))
 end
 
 local COMMANDS = {
   ["c"] = addonTable.SlashCmd.Config,
   ["config"] = addonTable.SlashCmd.Config,
+  ["timers"] = addonTable.SlashCmd.Timers,
   ["reset"] = addonTable.SlashCmd.Reset,
+  [BAGANATOR_L_SLASH_RESET] = addonTable.SlashCmd.Reset,
   ["resetcategories"] = addonTable.SlashCmd.ResetCategories,
+  [BAGANATOR_L_SLASH_RESETCATEGORIES] = addonTable.SlashCmd.ResetCategories,
   ["removeunusedcategories"] = addonTable.SlashCmd.RemoveUnusedCategories,
+  [BAGANATOR_L_SLASH_REMOVEUNUSEDCATEGORIES] = addonTable.SlashCmd.RemoveUnusedCategories,
   [""] = addonTable.SlashCmd.CustomiseUI,
-  ["search"] = function(text)
-    addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", text)
-    addonTable.CallbackRegistry:TriggerEvent("BagShow")
-  end,
-  ["keywords"] = function()
-    addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS))
-    addonTable.Utilities.Message(BAGANATOR_L_KEYWORDS_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS) and BAGANATOR_L_ENABLED or BAGANATOR_L_DISABLED))
-  end,
-  ["categories"] = function()
-    addonTable.Config.Set(addonTable.Config.Options.DEBUG_CATEGORIES, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES))
-    addonTable.Utilities.Message(BAGANATOR_L_CATEGORIES_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES) and BAGANATOR_L_ENABLED or BAGANATOR_L_DISABLED))
-  end,
+  ["search"] = addonTable.SlashCmd.Search,
+  [BAGANATOR_L_SLASH_SEARCH] = addonTable.SlashCmd.Search,
+  ["keywords"] = addonTable.SlashCmd.Keywords,
+  [BAGANATOR_L_SLASH_KEYWORDS] = addonTable.SlashCmd.Keywords,
+  ["categories"] = addonTable.SlashCmd.Categories,
+  [BAGANATOR_L_SLASH_CATEGORIES] = addonTable.SlashCmd.Categories,
 }
+local HELP = {
+  {"", BAGANATOR_L_SLASH_HELP},
+  {BAGANATOR_L_SLASH_KEYWORDS, BAGANATOR_L_SLASH_KEYWORDS_HELP},
+  {BAGANATOR_L_SLASH_CATEGORIES, BAGANATOR_L_SLASH_CATEGORIES_HELP},
+  {BAGANATOR_L_SLASH_SEARCH_EXTENDED, BAGANATOR_L_SLASH_SEARCH_HELP},
+  {BAGANATOR_L_SLASH_REMOVEUNUSEDCATEGORIES, BAGANATOR_L_SLASH_REMOVEUNUSEDCATEGORIES_HELP},
+  {BAGANATOR_L_SLASH_RESET, BAGANATOR_L_SLASH_RESET_HELP},
+  {BAGANATOR_L_SLASH_RESETCATEGORIES, BAGANATOR_L_SLASH_RESETCATEGORIES_HELP},
+}
+
 function addonTable.SlashCmd.Handler(input)
   local split = {strsplit("\a", (input:gsub("%s+","\a")))}
 
@@ -118,6 +145,16 @@ function addonTable.SlashCmd.Handler(input)
     table.remove(split, 1)
     COMMANDS[root](unpack(split))
   else
-    addonTable.Utilities.Message("Unknown command '" .. root .. "'")
+    if root ~= "help" and root ~= "h" then
+      addonTable.Utilities.Message(BAGANATOR_L_SLASH_UNKNOWN_COMMAND:format(root))
+    end
+
+    for _, entry in ipairs(HELP) do
+      if entry[1] == "" then
+        addonTable.Utilities.Message("/bgr - " .. entry[2])
+      else
+        addonTable.Utilities.Message("/bgr " .. entry[1] .. " - " .. entry[2])
+      end
+    end
   end
 end

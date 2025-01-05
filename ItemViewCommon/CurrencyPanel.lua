@@ -49,14 +49,6 @@ function BaganatorCurrencyPanelMixin:OnLoad()
   self.isWarbandOnly = false
   self.categories = {}
 
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.VisualsFrameOnlySettings, settingName) ~= nil then
-      if self:IsVisible() then
-        addonTable.Utilities.ApplyVisuals(self)
-      end
-    end
-  end)
-
   self.dropRegion = CreateFrame("Button", nil, self)
   self.dropRegion:SetAllPoints()
   self.dropRegion:Hide()
@@ -174,7 +166,6 @@ function BaganatorCurrencyPanelMixin:OnEvent(eventName)
 end
 
 function BaganatorCurrencyPanelMixin:OnShow()
-  addonTable.Utilities.ApplyVisuals(self)
   addonTable.ItemViewCommon.SyncCurrenciesTrackedWithBlizzard()
   self:UpdateCurrencies()
   self:UpdateForCursor()

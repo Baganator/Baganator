@@ -43,6 +43,8 @@ function addonTable.CustomiseDialog.GetCategoriesRecentEditor(parent)
     end
   end)
 
+  addonTable.Skins.AddFrame("Button", deleteButton)
+
   holder:SetScript("OnShow", function()
     slider:SetValue(tIndexOf(valueMapping, addonTable.Config.Get("recent_timeout")) or 2)
   end)

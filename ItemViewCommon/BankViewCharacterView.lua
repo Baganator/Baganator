@@ -44,7 +44,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
       if self:IsVisible() then
         self:GetParent():UpdateView()
       end
-    elseif settingName == addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS then
+    elseif settingName == addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS and self:IsVisible() then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
       self:OnFinished()
       self:GetParent():OnTabFinished()
@@ -55,13 +55,15 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
     if self:IsVisible() and character ~= self.lastCharacter then
       self.lastCharacter = character
       self:GetParent():UpdateView()
+    else
+      self.lastCharacter = character
     end
   end)
 
   addonTable.Skins.AddFrame("Button", self.DepositIntoReagentsBankButton)
   addonTable.Skins.AddFrame("Button", self.BuyReagentBankButton)
 
-  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
+  self:SetLiveCharacter(Syndicator.API.GetCurrentCharacter())
 end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:ToggleBagSlots()
@@ -195,10 +197,33 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
     self.CurrencyWidget:UpdateCurrencies(character)
   end
 
+  self.BagSlots:SetPoint("BOTTOMLEFT", self, "TOPLEFT", addonTable.Constants.ButtonFrameOffset, 0)
+
   self:SetupBlizzardFramesForTab()
+
+  if self.BankMissingHint:IsShown() then
+    local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+    self:SetSize(
+      math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,
+      80 + topSpacing / 2
+    )
+
+    for _, layout in ipairs(self.Container.Layouts) do
+      layout:Hide()
+    end
+
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.BankMissingHint:GetWidth())
+
+    addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
+
+    self:GetParent():OnTabFinished()
+  end
 end
 
 function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character, isLive)
+  if self.BankMissingHint:IsShown() then
+    return
+  end
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   local buttonPadding = 5

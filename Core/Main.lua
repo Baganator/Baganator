@@ -2,6 +2,7 @@ local _, addonTable = ...
 addonTable.CallbackRegistry = CreateFromMixins(CallbackRegistryMixin)
 addonTable.CallbackRegistry:OnLoad()
 addonTable.CallbackRegistry:GenerateCallbackEvents(addonTable.Constants.Events)
+
 Baganator.CallbackRegistry = addonTable.CallbackRegistry
 
 local syndicatorEnableDialog = "BaganatorSyndicatorRequiredInstalledDialog"
@@ -54,9 +55,21 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
 
   addonTable.CustomiseDialog.Initialize()
 
+  addonTable.Skins.Initialize()
+
   if addonTable.Config.Get(addonTable.Config.Options.SEEN_WELCOME) < 1 then
     addonTable.Config.Set(addonTable.Config.Options.SEEN_WELCOME, 1)
-    addonTable.ShowWelcome()
+    local frame = CreateFrame("Frame")
+    frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    frame:SetScript("OnEvent", function()
+      frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+      -- Show after Syndicator has started
+      C_Timer.After(0, function()
+        C_Timer.After(0, function()
+          addonTable.ShowWelcome()
+        end)
+      end)
+    end)
   end
 
   if addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE) ~= "unset" then
@@ -67,3 +80,11 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
 
   addonTable.Core.RunAnalytics()
 end)
+
+function addonTable.ReportEntry()
+  addonTable.lastEntryTime = GetTimePreciseSec()
+end
+
+function addonTable.CheckTimeout()
+  return GetTimePreciseSec() - addonTable.lastEntryTime > 0.1
+end

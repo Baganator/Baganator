@@ -106,7 +106,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
     self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
     self.Blocker:SetPoint("BOTTOMRIGHT", self.CategorySearch)
-    self.DeleteButton:Enable()
+    self.DeleteButton:SetEnabled(tIndexOf(addonTable.CategoryViews.Constants.ProtectedCategories, value) == nil)
 
     if value == "" then
       self.currentCategory = "-1"
@@ -119,6 +119,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.ExportButton:Enable()
+      self.ItemsEditor:SetupItems({})
       Save()
       return
     end
@@ -167,6 +168,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   end
 
   addonTable.CallbackRegistry:RegisterCallback("EditCategory", function(_, value)
+    if not self:GetParent():IsVisible() then
+      return
+    end
     SetState(value)
   end)
 
@@ -233,8 +237,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
   end)
   self.GroupDropDown:SetPoint("TOP", 0, -120)
-  self.GroupDropDown:SetPoint("LEFT", 5, 0)
-  self.GroupDropDown:SetPoint("RIGHT")
+  self.GroupDropDown:SetPoint("LEFT", 15, 0)
+  self.GroupDropDown:SetPoint("RIGHT", -10, 0)
   table.insert(self.ChangeAlpha, self.GroupDropDown)
 
   self.Blocker = CreateFrame("Frame", nil, self)
@@ -242,6 +246,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.Blocker:SetScript("OnMouseWheel", function() end)
   self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
   self.Blocker:SetFrameStrata("DIALOG")
+  self.Blocker:SetFrameLevel(10000)
 
   self.CategoryName:SetScript("OnEditFocusLost", Save)
   self.CategorySearch:SetScript("OnEditFocusLost", Save)
@@ -342,6 +347,55 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
 
   container.ItemsScrollBox:SetPoint("TOPLEFT", 0, -25)
 
+  local dropRegion = CreateFrame("Button", nil, container)
+  local dropTexture=  dropRegion:CreateTexture(nil, "ARTWORK")
+  dropTexture:SetAtlas("Garr_Building-AddFollowerPlus")
+  dropTexture:SetSize(100, 100)
+  dropTexture:SetPoint("CENTER", dropRegion)
+  dropRegion:SetAllPoints(container.ItemsScrollBox)
+  dropRegion:Hide()
+  local function DropCursor()
+    local t, itemID, itemLink = GetCursorInfo()
+    if t ~= "item" then
+      return
+    end
+    ClearCursor()
+    local details = addonTable.CategoryViews.Utilities.GetAddedItemData(itemID, itemLink)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+    for _, mods in pairs(categoryMods) do
+      if mods.addedItems and mods.addedItems[details] then
+        mods.addedItems[details] = nil
+        if next(mods.addedItems) == nil then
+          mods.addedItems = nil
+        end
+        break
+      end
+    end
+
+    if not categoryMods[self.currentCategory] then
+      categoryMods[self.currentCategory] = {}
+    end
+
+    categoryMods[self.currentCategory].addedItems = categoryMods[self.currentCategory].addedItems or {}
+
+    categoryMods[self.currentCategory].addedItems[details] = true
+
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+  end
+  dropRegion:SetScript("OnReceiveDrag", DropCursor)
+  dropRegion:SetScript("OnClick", DropCursor)
+
+  container:SetScript("OnShow", function()
+    container:RegisterEvent("CURSOR_CHANGED")
+  end)
+  container:SetScript("OnHide", function()
+    container:UnregisterEvent("CURSOR_CHANGED")
+  end)
+  container:SetScript("OnEvent", function()
+    local t, itemID, itemLink = GetCursorInfo()
+    dropRegion:SetShown(t == "item")
+  end)
+
   local addItemsEditBox = CreateFrame("EditBox", nil, container, "InputBoxTemplate")
   addItemsEditBox:SetSize(70, 22)
   addItemsEditBox:SetPoint("BOTTOMLEFT", 3, 0)
@@ -349,7 +403,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
   addonTable.Skins.AddFrame("EditBox", addItemsEditBox)
   local addButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
   addonTable.Skins.AddFrame("Button", addButton)
-  addButton:SetPoint("LEFT", addItemsEditBox, "RIGHT", 1, 0)
+  addButton:SetPoint("LEFT", addItemsEditBox, "RIGHT", 1, 1)
   addButton:SetText(BAGANATOR_L_ADD_IDS)
   DynamicResizeButton_Resize(addButton)
 
@@ -504,6 +558,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
   local scrollBar = CreateFrame("EventFrame", nil, container, "MinimalScrollBar")
   scrollBar:SetPoint("TOPLEFT", scrollBox, "TOPRIGHT", 8, 0)
   scrollBar:SetPoint("BOTTOMLEFT", scrollBox, "BOTTOMRIGHT", 8, 0)
+  addonTable.Skins.AddFrame("TrimScrollBar", scrollBar)
   local view = CreateScrollBoxListLinearView()
 
   local inset =  CreateFrame("Frame", nil, container, "InsetFrameTemplate")
@@ -620,7 +675,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)
       table.insert(items, lastGroup)
     end
     scrollBox:SetDataProvider(CreateDataProvider(items), true)
-    scrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately);
   end
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)

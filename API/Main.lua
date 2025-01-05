@@ -211,9 +211,9 @@ do
   --  corner: string (top_left, top_right, bottom_left, bottom_right)
   --  priority: number (priority for the corner to be placed at in the corner sort
   --    order)
-  function Baganator.API.RegisterCornerWidget(label, id, onUpdate, onInit, defaultPosition)
+  function Baganator.API.RegisterCornerWidget(label, id, onUpdate, onInit, defaultPosition, isFast)
     assert(id and label and onUpdate and onInit and not addonTable.API.IconCornerPlugins[id])
-    addonTable.API.IconCornerPlugins[id] = {label = label, onUpdate = onUpdate, onInit = onInit}
+    addonTable.API.IconCornerPlugins[id] = {label = label, onUpdate = onUpdate, onInit = onInit, isFast = isFast or false}
 
     if defaultPosition and cornersMap[defaultPosition.corner] and type(defaultPosition.priority) == "number" then
       if not addonLoaded then
@@ -272,16 +272,66 @@ end
 
 Baganator.API.Skins = {}
 
+function Baganator.API.Skins.GetCurrentSkin()
+  return addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
+end
+
 function Baganator.API.Skins.GetAllFrames()
   return addonTable.Skins.allFrames
 end
 
 function Baganator.API.Skins.RegisterListener(callback)
-  if not addonTable.Skins.skinListeners then
-    addonTable.Skins.skinListeners = {}
-  end
   table.insert(addonTable.Skins.skinListeners, callback)
   if addonTable.WagoAnalytics then
-    addonTable.WagoAnalytics:Switch("UsingSkin", true)
+    addonTable.WagoAnalytics:Switch("UsingSkinRaw", true)
+  end
+end
+
+local blockedSkins = {
+  "Baganator-ElvUI", "Baganator-GW2UI", "Baganator-NDui", "Baganator-Simple"
+}
+for _, skin in ipairs(blockedSkins) do
+  if C_AddOns.DoesAddOnExist(skin) then
+    addonTable.Utilities.Message("You have a legacy skin. Please remove " .. RED_FONT_COLOR:WrapTextInColorCode(skin) .. " it is no longer needed - the skin is included with the Baganator package")
+    C_AddOns.DisableAddOn(skin)
+  end
+end
+
+local validViews = {"backpack"--[[, "guild", "character_bank", "warband_bank"]]}
+local validPositions = {"top_left", "bottom_left"}
+addonTable.API.customRegions = {
+}
+for _, viewType in ipairs(validViews) do
+  addonTable.API.customRegions[viewType] = {}
+  for _, position in ipairs(validPositions) do
+    addonTable.API.customRegions[viewType][position] = {}
+  end
+end
+
+-- label: User facing label for the widget's owner
+-- id: Internal id for the widget's owner
+-- viewType, "backpack"
+-- position: "bottom_left" and "top_left"
+-- frame: The region to position (note: frame:GetWidth() should return an
+-- accurate value)
+function Baganator.API.RegisterRegion(label, id, viewType, position, frame)
+  assert(type(label) == "string" and type(id) == "string" and tIndexOf(validViews, viewType) and tIndexOf(validPositions, position) and frame.SetParent and frame.ClearAllPoints and frame.SetPoint and frame.GetWidth)
+
+  table.insert(addonTable.API.customRegions[viewType][position], {
+    label = label,
+    id = id,
+    frame = frame
+  })
+end
+
+local queuedLayoutUpdate = false
+-- Used by regions registered to indicate their width has changed.
+function Baganator.API.RequestLayoutUpdate()
+  if not queuedLayoutUpdate then
+    queuedLayoutUpdate = true
+    C_Timer.After(0, function()
+      addonTable.CallbackRegistry:TriggerEvent("LayoutUpdateRequired")
+      queuedLayoutUpdate = false
+    end)
   end
 end

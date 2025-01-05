@@ -38,8 +38,8 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture parentKey="Icon" atlas="poi-workorders">
-              <Size x="17" y="17"/>
+            <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\GuildTabText.png">
+              <Size x="14" y="14"/>
               <Anchors>
                 <Anchor point="CENTER"/>
               </Anchors>
@@ -62,8 +62,8 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture parentKey="Icon" atlas="GarrMission_CurrencyIcon-Salvage">
-              <Size x="17" y="17"/>
+            <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\GuildTabLogs.png">
+              <Size x="14" y="14"/>
               <Anchors>
                 <Anchor point="CENTER"/>
               </Anchors>
@@ -86,8 +86,8 @@
         </Anchors>
         <Layers>
           <Layer level="ARTWORK">
-            <Texture parentKey="Icon" atlas="Auctioneer">
-              <Size x="17" y="17"/>
+            <Texture parentKey="Icon" file="Interface\AddOns\Baganator\Assets\Currency.png">
+              <Size x="14" y="14"/>
               <Anchors>
                 <Anchor point="CENTER"/>
               </Anchors>
@@ -179,12 +179,12 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Frame name="$parentLogsFrame" parentKey="LogsFrame" inherits="BaganatorGuildLogsTemplate" frameStrata="DIALOG" hidden="true">
+      <Frame name="$parentLogsFrame" parentKey="LogsFrame" inherits="BaganatorGuildLogsTemplate" frameStrata="DIALOG" hidden="true" topLevel="true">
         <Anchors>
           <Anchor point="CENTER"/>
         </Anchors>
       </Frame>
-      <Frame name="$parentTabTextFrame" parentKey="TabTextFrame" inherits="BaganatorGuildTabTextTemplate" frameStrata="DIALOG" hidden="true">
+      <Frame name="$parentTabTextFrame" parentKey="TabTextFrame" inherits="BaganatorGuildTabTextTemplate" frameStrata="DIALOG" hidden="true" topLevel="true">
         <Anchors>
           <Anchor point="CENTER"/>
         </Anchors>
@@ -207,7 +207,7 @@
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" y="-25" x="15"/>
-          <Anchor point="BOTTOMRIGHT" y="10" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="10" x="-18"/>
         </Anchors>
         <Frames>
           <Frame parentKey="ScrollBox" setAllPoints="true" inherits="WowScrollBox">
@@ -233,7 +233,7 @@
       </Frame>
       <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
         <Anchors>
-          <Anchor point="TOPRIGHT" y="-25" x="-15"/>
+          <Anchor point="TOPRIGHT" y="-25" x="-8"/>
           <Anchor point="BOTTOMRIGHT" y="10"/>
         </Anchors>
       </EventFrame>
@@ -255,12 +255,12 @@
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" y="-25" x="15"/>
-          <Anchor point="BOTTOMRIGHT" y="40" x="-15"/>
+          <Anchor point="BOTTOMRIGHT" y="40" x="-18"/>
         </Anchors>
       </Frame>
       <EventFrame parentKey="ScrollBar" inherits="MinimalScrollBar">
         <Anchors>
-          <Anchor point="TOPRIGHT" y="-25" x="-15"/>
+          <Anchor point="TOPRIGHT" y="-25" x="-8"/>
           <Anchor point="BOTTOMRIGHT" y="40"/>
         </Anchors>
       </EventFrame>

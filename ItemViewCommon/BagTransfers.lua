@@ -158,7 +158,7 @@ RegisterBagTransfer(
     local status = addonTable.Transfers.VendorItems(matches)
     callback(status)
   end,
-  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_MERCHANT_TOOLTIP_TEXT_2
+  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_VENDOR_TOOLTIP_TEXT
 )
 
 RegisterBagTransfer(

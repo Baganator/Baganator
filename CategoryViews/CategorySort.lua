@@ -32,11 +32,26 @@ function BaganatorCategoryViewsCategorySortMixin:ApplySorts(composed, callback)
 end
 
 function BaganatorCategoryViewsCategorySortMixin:SortResults()
+  if addonTable.CheckTimeout() then
+    self:SetScript("OnUpdate", function()
+      addonTable.ReportEntry()
+      self:SortResults()
+    end)
+    return
+  end
+
   local incomplete
   for index in pairs(self.sortPending) do
     self.composedDetails[index].results, incomplete = addonTable.Sorting.OrderOneListOffline(self.composedDetails[index].results, self.sortMethod)
     if not incomplete then
       self.sortPending[index] = nil
+    end
+    if addonTable.CheckTimeout() then
+      self:SetScript("OnUpdate", function()
+        addonTable.ReportEntry()
+        self:SortResults()
+      end)
+      return
     end
   end
 
@@ -47,6 +62,9 @@ function BaganatorCategoryViewsCategorySortMixin:SortResults()
     end
     self.callback()
   else
-    self:SetScript("OnUpdate", self.SortResults)
+    self:SetScript("OnUpdate", function()
+      addonTable.ReportEntry()
+      self:SortResults()
+    end)
   end
 end

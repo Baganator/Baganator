@@ -3,6 +3,7 @@ local _, addonTable = ...
 local always = {
   "quality",
   "type",
+  "name",
   "item-level",
   "combine_stacks_only",
 }

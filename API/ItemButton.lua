@@ -37,6 +37,7 @@ local expansionIDToText = {
   [7] = "BfA",
   [8] = "SL",
   [9] = "DF",
+  [10] = "TWW",
 }
 
 local function CacheSettings()
@@ -268,7 +269,7 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_QUANTITY, "quantity", function(_,
 end, function(itemButton)
   itemButton.Count.sizeFont = true
   return itemButton.Count
-end)
+end, nil, true)
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_JUNK, "junk", function(JunkIcon, details)
   return details.isJunk == true
@@ -278,7 +279,7 @@ function(itemButton)
     itemButton.JunkIcon.padding = 0
     return itemButton.JunkIcon
   end
-end)
+end, nil, true)
 
 local function RegisterExpansionWidget()
   Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION, "expansion", function(Expansion, details)
@@ -301,7 +302,16 @@ end, function(itemButton)
   EquipmentSet:SetTexture("interface\\addons\\baganator\\assets\\equipment-set-shield")
   EquipmentSet:SetSize(15, 15)
   return EquipmentSet
-end)
+end, nil, true)
+
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_EQUIPMENT_SET_ICON, "equipment_set_icon", function(EquipmentSetIcon, details)
+  EquipmentSetIcon:SetTexture(details.setInfo and details.setInfo[1].iconTexture or nil)
+  return details.setInfo and details.setInfo[1].iconTexture ~= nil
+end, function(itemButton)
+  local EquipmentSetIcon = itemButton:CreateTexture(nil, "ARTWORK")
+  EquipmentSetIcon:SetSize(15, 15)
+  return EquipmentSetIcon
+end, nil, true)
 
 addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
   local function IsPet(itemID)
@@ -362,7 +372,7 @@ addonTable.Utilities.OnAddonLoaded("BattlePetBreedID", function()
     end
     local speciesID, level, rarity, maxHealth, power, speed = BattlePetToolTip_UnpackBattlePetLink(details.itemLink)
     local breednum = BPBID_Internal.CalculateBreedID(speciesID, rarity + 1, level, maxHealth, power, speed, false, false)
-    local name = BPBID_Internal.RetrieveBreedName(breednum):gsub("/", "")
+    local name = tostring(BPBID_Internal.RetrieveBreedName(breednum)):gsub("/", "")
     Breed:SetText(name)
     if iconSettings.useQualityColors then
       local color = qualityColors[details.quality]
@@ -389,7 +399,7 @@ if addonTable.Constants.IsRetail then
     Level:SetText((details.itemLink:match("battlepet:.-:(%d+)")))
     return true
   end,
-  textInit, {corner = "top_left", priority = 2})
+  textInit, {corner = "top_left", priority = 2}, true)
 end
 
 if C_Engraving and C_Engraving.IsEngravingEnabled() then
@@ -454,3 +464,24 @@ if addonTable.Constants.IsRetail then
     return false
   end, textInit)
 end
+
+Baganator.API.RegisterCornerWidget(BAGANATOR_L_BAG_TYPE_CATEGORIES, "bag_type", function(Type, details)
+  local info = addonTable.Constants.ContainerKeyToInfo[details.bagType]
+  if info then
+    Type:SetDesaturated(true)
+    if info.type == "file" then
+      Type:SetSize(15, 15)
+      Type:SetTexture(info.value)
+    else
+      local size = info.size or 64
+      Type:SetSize(size/64 * 15, size/64 * 15)
+      Type:SetAtlas(info.value)
+    end
+    return true
+  end
+  return false
+end, function(itemButton)
+  local Type = itemButton:CreateTexture(nil, "ARTWORK")
+  Type.padding = -1
+  return Type
+end, {corner = "bottom_left", priority = 1}, true)

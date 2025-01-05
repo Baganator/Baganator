@@ -37,6 +37,9 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
   if #toMove == 0 or InCombatLockdown() then -- Transfers breaks during combat due to Blizzard restrictions
     return addonTable.Constants.SortStatus.Complete
   end
+  if Syndicator.API.IsBagEventPending() or Syndicator.API.IsGuildEventPending() then
+    return addonTable.Constants.SortStatus.WaitingMove, modes
+  end
 
   local tabsThatWork = {}
   for i = 1, GetNumGuildBankTabs() do
@@ -85,6 +88,9 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
   elseif infoPending then
     return addonTable.Constants.SortStatus.WaitingItemData, modes
   else
+    if #toMove > 0 then
+      UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
+    end
     return addonTable.Constants.SortStatus.Complete, modes
   end
 end
