@@ -387,7 +387,7 @@ if addonTable.Constants.IsRetail then
       C_Item.RequestLoadItemDataByID(details.itemID)
       return nil
     end
-    return C_AuctionHouse.IsSellItemValid(details.itemLocation, false)
+    return C_Item.DoesItemExist(details.itemLocation) and C_AuctionHouse.IsSellItemValid(details.itemLocation, false)
   end
 else
   local cachedCharges = {}
