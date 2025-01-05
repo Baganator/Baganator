@@ -678,7 +678,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     text:SetText(BAGANATOR_L_DONATE)
     text:SetJustifyH("RIGHT")
 
-    local donateLinkDialog = "Baganator_General_Settings_Discord_Dialog"
+    local donateLinkDialog = "Baganator_General_Settings_Donate_Dialog"
     StaticPopupDialogs[donateLinkDialog] = {
       text = BAGANATOR_L_CTRL_C_TO_COPY,
       button1 = DONE,
