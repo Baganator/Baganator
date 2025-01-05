@@ -162,6 +162,7 @@ function BaganatorItemViewCommonBankViewMixin:OnHide(eventName)
   end
 
   addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", "")
+  addonTable.CallbackRegistry:TriggerEvent("ItemContextChanged")
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateViewToCharacter(characterName)
