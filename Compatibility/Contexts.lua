@@ -31,16 +31,16 @@ frame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_SHOW")
 frame:RegisterEvent("PLAYER_INTERACTION_MANAGER_FRAME_HIDE")
 
 do
-  addonTable.Compatibility.SocketInterfaceOpen = false
+  addonTable.Compatibility.Context.Socket = false
 
   if C_EventUtils.IsEventValid("SOCKET_INFO_UPDATE") then
     local frame = CreateFrame("Frame")
     frame:RegisterEvent("SOCKET_INFO_UPDATE")
     frame:RegisterEvent("SOCKET_INFO_CLOSE")
     frame:SetScript("OnEvent", function(_, eventName)
-      local oldState = addonTable.Compatibility.SocketInterfaceOpen
-      addonTable.Compatibility.SocketInterfaceOpen = eventName == "SOCKET_INFO_UPDATE"
-      if oldState ~= addonTable.Compatibility.SocketInterfaceOpen then
+      local oldState = addonTable.Compatibility.Context.Socket
+      addonTable.Compatibility.Context.Socket = eventName == "SOCKET_INFO_UPDATE"
+      if oldState ~= addonTable.Compatibility.Context.Socket then
         addonTable.CallbackRegistry:TriggerEvent("ItemContextChanged")
       end
     end)
