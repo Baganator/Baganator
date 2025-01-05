@@ -1162,6 +1162,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   end
 
   self.searchOverlay:SetShown(false);
+  self.ItemContextOverlay:Hide()
   SetWidgetsAlpha(self, true)
 
   GetInfo(self, cacheData, function()
