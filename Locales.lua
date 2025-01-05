@@ -111,7 +111,7 @@ L["SEARCH_HELP"] = "Search Help"
 L["JOIN_THE_DISCORD"] = "Join the Discord"
 L["DISCORD_DESCRIPTION"] = "Updates, feature suggestions and support"
 L["BY_PLUSMOUSE"] = "by plusmouse"
-L["CONSIDER_SUPPORTING_DEVELOPMENT"] = "|cff04cca4Consider Supporting Development|r"
+L["DEVELOPMENT_IS_TIME_CONSUMING"] = "|cff04cca4Development takes a huge amount of time|r"
 L["DONATE"] = "Donate"
 L["LINK"] = "Link"
 
