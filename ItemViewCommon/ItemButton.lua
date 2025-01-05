@@ -440,20 +440,20 @@ local function SetItemContextMatch(self, callback)
     local bankFrame = addonTable.ViewManagement.GetBankFrame()
     if addonTable.Constants.IsRetail and bankFrame and bankFrame.currentTab.isLive and bankFrame.Warband:IsVisible() then
       self.BGR.contextMatch = C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
-    elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Auctioneer) then
+    elseif addonTable.Compatibility.Context.Auctioneer then
       local auctionable = addonTable.Utilities.IsAuctionable(self.BGR)
       if auctionable == nil then
         show = false
       else
         self.BGR.contextMatch = auctionable
       end
-    elseif addonTable.Constants.IsRetail and C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and addonTable.Compatibility.SendMailShowing then
+    elseif addonTable.Constants.IsRetail and addonTable.Compatibility.Context.MailInfo and addonTable.Compatibility.Context.SendMail then
       self.BGR.contextMatch = not self.BGR.isBound or C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
-    elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Merchant) then
+    elseif addonTable.Compatibility.Context.Merchant then
       self.BGR.contextMatch = not self.BGR.hasNoValue or (C_Item.DoesItemExist(self.BGR.itemLocation) and C_Item.CanBeRefunded(self.BGR.itemLocation))
-    elseif C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.GuildBanker) then
+    elseif addonTable.Compatibility.Context.GuildBanker then
       self.BGR.contextMatch = not self.BGR.isBound and (not addonTable.Constants.IsRetail or not C_Item.IsBoundToAccountUntilEquip(self.BGR.itemLocation))
-    elseif addonTable.Compatibility.SocketInterfaceOpen then
+    elseif addonTable.Compatibility.Context.Socket then
       self.BGR.contextMatch = (select(6, C_Item.GetItemInfoInstant(self.BGR.itemID)) == Enum.ItemClass.Gem)
     end
 
