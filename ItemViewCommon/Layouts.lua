@@ -154,6 +154,7 @@ local ReflowSettings = {
 local RefreshContentSettings = {
   addonTable.Config.Options.HIDE_BOE_ON_COMMON,
   addonTable.Config.Options.ICON_MARK_UNUSABLE,
+  addonTable.Config.Options.ICON_CONTEXT_FADING,
   addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
   addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
   addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,

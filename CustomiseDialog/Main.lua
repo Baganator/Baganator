@@ -172,6 +172,11 @@ local ICON_OPTIONS = {
     text = BAGANATOR_L_MARK_UNUSABLE_ITEMS_IN_RED,
     option = "icon_mark_unusable",
   },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_FADE_ITEMS_NOT_MATCHING_SITUATION,
+    option = "icon_context_fading",
+  },
   { type = "spacing" },
   {
     type = "slider",

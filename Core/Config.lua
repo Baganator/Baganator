@@ -48,6 +48,7 @@ addonTable.Config.Options = {
   ICON_GREY_JUNK = "icon_grey_junk",
   ICON_EQUIPMENT_SET_BORDER = "icon_equipment_set_border",
   ICON_FLASH_SIMILAR_ALT = "icon_flash_similar_alt",
+  ICON_CONTEXT_FADING = "icon_context_fading",
 
   JUNK_PLUGIN = "junk_plugin",
   JUNK_PLUGINS_IGNORED = "junk_plugin_ignored",
@@ -139,6 +140,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER] = false,
   [addonTable.Config.Options.SORT_START_AT_BOTTOM] = false,
   [addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT] = false,
+  [addonTable.Config.Options.ICON_CONTEXT_FADING] = true,
   [addonTable.Config.Options.SORT_IGNORE_SLOTS_AT_END] = false,
   [addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT] = 0,
   [addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT] = 0,
@@ -213,6 +215,7 @@ addonTable.Config.ItemButtonsRelayoutSettings = {
   addonTable.Config.Options.SHOW_SORT_BUTTON,
   addonTable.Config.Options.HIDE_BOE_ON_COMMON,
   addonTable.Config.Options.ICON_MARK_UNUSABLE,
+  addonTable.Config.Options.ICON_CONTEXT_FADING,
   addonTable.Config.Options.ICON_TEXT_QUALITY_COLORS,
   addonTable.Config.Options.ICON_TEXT_FONT_SIZE,
   addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
