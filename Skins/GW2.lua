@@ -172,7 +172,7 @@ local skinners = {
     if frame.SetItemButtonQuality then
       hooksecurefunc(frame, "SetItemButtonQuality", GW.SetBagItemButtonQualitySkin)
     end
-    if Baganator.Constants.IsEra then
+    if addonTable.Constants.IsEra then
       local questTexture = frame.IconQuestTexture or frame:GetName() and _G[frame:GetName() .. "IconQuestTexture"]
       if questTexture then
         questTexture:SetParent(hidden)
