@@ -153,6 +153,9 @@ local function SetupIconButton(button, texture)
   button.Icon:SetTexCoord(0,1,0,1)
 end
 
+local hidden = CreateFrame("Frame")
+hidden:Hide()
+
 local skinners = {
   ItemButton = function(frame, tags)
     frame.bgrGW2SkinHooked = true
@@ -168,6 +171,12 @@ local skinners = {
     -- Ensure item icon and border is set GW2 style
     if frame.SetItemButtonQuality then
       hooksecurefunc(frame, "SetItemButtonQuality", GW.SetBagItemButtonQualitySkin)
+    end
+    if Baganator.Constants.IsEra then
+      local questTexture = frame.IconQuestTexture or frame:GetName() and _G[frame:GetName() .. "IconQuestTexture"]
+      if questTexture then
+        questTexture:SetParent(hidden)
+      end
     end
     -- Show white border if none is shown, like default GW2
     if Baganator.Constants.IsClassic and frame.SetItemDetails then
@@ -250,34 +259,42 @@ local skinners = {
     GW.SkinTextBox(frame.Middle, frame.Left, frame.Right)
   end,
   TabButton = function(frame)
-    (frame.GwStripTextures or frame.StripTextures)(frame)
-    ;(frame.GwSkinButton or frame.SkinButton)(frame, false, true, false, false, false, false)
-    if Baganator.Constants.IsRetail then
-      -- Work around GW2 bug on retail where the hover texture doesn't hide
-      -- properly
-      frame:HookScript("OnDisable", function()
-        frame.hover:SetAlpha(0)
-      end)
-      frame:HookScript("OnShow", function()
-        frame.hover:SetAlpha(0)
-      end)
-      frame:HookScript("OnEnable", function()
-        frame.hover:SetAlpha(0)
-      end)
+    if GW.HandleTabs then
+      GW.HandleTabs(frame, false)
+    else
+      (frame.GwStripTextures or frame.StripTextures)(frame)
+      ;(frame.GwSkinButton or frame.SkinButton)(frame, false, true, false, false, false, false)
+      if Baganator.Constants.IsRetail then
+        -- Work around GW2 bug on retail where the hover texture doesn't hide
+        -- properly
+        frame:HookScript("OnDisable", function()
+          frame.hover:SetAlpha(0)
+        end)
+        frame:HookScript("OnShow", function()
+          frame.hover:SetAlpha(0)
+        end)
+        frame:HookScript("OnEnable", function()
+          frame.hover:SetAlpha(0)
+        end)
+      end
     end
   end,
   TopTabButton = function(frame)
-    (frame.GwStripTextures or frame.StripTextures)(frame)
-    ;(frame.GwSkinButton or frame.SkinButton)(frame, false, true, false, false, false, false)
-    if Baganator.Constants.IsRetail then
-      -- Work around GW2 bug on retail where the hover texture doesn't hide
-      -- properly
-      frame:HookScript("OnDisable", function()
-        frame.hover:SetAlpha(0)
-      end)
-      frame:HookScript("OnEnable", function()
-        frame.hover:SetAlpha(0)
-      end)
+    if GW.HandleTabs then
+      GW.HandleTabs(frame, true)
+    else
+      (frame.GwStripTextures or frame.StripTextures)(frame)
+      ;(frame.GwSkinButton or frame.SkinButton)(frame, false, true, false, false, false, false)
+      if Baganator.Constants.IsRetail then
+        -- Work around GW2 bug on retail where the hover texture doesn't hide
+        -- properly
+        frame:HookScript("OnDisable", function()
+          frame.hover:SetAlpha(0)
+        end)
+        frame:HookScript("OnEnable", function()
+          frame.hover:SetAlpha(0)
+        end)
+      end
     end
   end,
   SideTabButton = function(frame)
