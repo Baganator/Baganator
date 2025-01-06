@@ -275,7 +275,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       local current = composed.details[index]
       if current.source ~= old.source or
         (current.source and (current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory)
-          and not old.emptySlots and old.oldLength and old.oldLength < #current.results) then
+          and not old.emptySlots and (old.oldLength or #old.results) < #current.results) then
         for _, item in ipairs(current.results) do -- Put returning items back where they were before
           -- Check if the exact item existed before, or at least a similar one
           -- (for warband transfers)
