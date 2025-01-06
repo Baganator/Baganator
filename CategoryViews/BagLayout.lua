@@ -59,8 +59,8 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
         info.tooltipGetter = function() return C_TooltipInfo.GetBagItem(bagID, slotIndex) end
       end
       info.isJunkGetter = junkPlugin and function() local _, result = pcall(junkPlugin, bagID, slotIndex, info.itemID, info.itemLink); return result == true end
-      if info.itemID ~= nil then
-        local location = {bagID = bagID, slotIndex = slotIndex}
+      local location = {bagID = bagID, slotIndex = slotIndex}
+      if info.itemID ~= nil and C_Item.DoesItemExist(location) then
         info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
         info.refundable = C_Item.CanBeRefunded(location)
         if info.setInfo or not isGrouping then
@@ -506,7 +506,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("stackables", debugprofilestop() - s0)
     end
-    if state ~= self.state or Syndicator.API.IsBagEventPending() or not self:IsVisible() then
+    if state ~= self.state then
       return
     end
 

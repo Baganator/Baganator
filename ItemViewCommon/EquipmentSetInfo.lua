@@ -1,7 +1,8 @@
 local _, addonTable = ...
 
+-- Assumes C_Item.DoesItemExist(location) is true
 function addonTable.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)
-  local guid = C_Item.DoesItemExist(location) and C_Item.GetItemGUID(location) or nil
+  local guid = C_Item.GetItemGUID(location)
 
   local results = {}
   for _, source in ipairs(addonTable.API.ItemSetSources) do

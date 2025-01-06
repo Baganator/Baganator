@@ -705,9 +705,11 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
     local itemLocation = ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID())
-    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
-    self.BGR.itemLocation = itemLocation
-    self.BGR.refundable = C_Item.DoesItemExist(itemLocation) and C_Item.CanBeRefunded(itemLocation)
+    if C_Item.DoesItemExist(itemLocation) then
+      self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
+      self.BGR.itemLocation = itemLocation
+      self.BGR.refundable = C_Item.CanBeRefunded(itemLocation)
+    end
 
     self.BGR.hasNoValue = noValue
 
@@ -1159,8 +1161,10 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
       end)
     end
     local itemLocation = ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID())
-    self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
-    self.BGR.itemLocation = itemLocation
+    if C_Item.DoesItemExist(itemLocation) then
+      self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
+      self.BGR.itemLocation = itemLocation
+    end
 
     if C_Engraving and C_Engraving.IsEngravingEnabled() then
       self.BGR.isEngravable = false
