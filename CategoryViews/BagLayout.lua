@@ -506,7 +506,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("stackables", debugprofilestop() - s0)
     end
-    if state ~= self.state or Syndicator.API.IsBagEventPending() then
+    if state ~= self.state or Syndicator.API.IsBagEventPending() or not self:IsVisible() then
       return
     end
 
