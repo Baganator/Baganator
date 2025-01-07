@@ -76,11 +76,6 @@ local frameBackdropInfo = {
 --local color = CreateColor(65/255, 138/255, 180/255) -- blue
 local color = CreateColor(0.05, 0.05, 0.05) -- black
 
-local toColor = {
-  backdrops = {},
-  textures = {},
-}
-
 local possibleVisuals = {
   "BotLeftCorner", "BotRightCorner", "BottomBorder", "LeftBorder", "RightBorder",
   "TopRightCorner", "TopLeftCorner", "TopBorder", "TitleBg", "Bg",
@@ -133,7 +128,6 @@ local function StyleButton(button)
   local color = CreateColor(Lighten(color.r, color.g, color.b, -0.20))
   button:SetBackdropColor(color.r, color.g, color.b, 0.5)
   button:SetBackdropBorderColor(color.r, color.g, color.b, 1)
-  table.insert(toColor.backdrops, {backdrop = button, bgAlpha = 0.5, borderAlpha = 1, lightened = -0.20})
   button:HookScript("OnEnter", function()
     if button:IsEnabled() then
       local r, g, b = Lighten(color.r, color.g, color.b, 0.3)
@@ -167,6 +161,15 @@ local function StyleButton(button)
   end)
 end
 
+local function StyleButtonFrameBorder(frame)
+  if addonTable.Config.Get("skins.dark.no_frame_borders") then
+    frame:SetBackdropBorderColor(1, 1, 1, 0)
+  else
+    local r, g, b = Lighten(color.r, color.g, color.b, 0.3)
+    frame:SetBackdropBorderColor(r, g, b, 1)
+  end
+end
+
 local showSlots = true
 local allItemButtons = {}
 
@@ -179,7 +182,6 @@ local skinners = {
       frame.SlotBackground:SetColorTexture(r, g, b, 0.3)
       frame.SlotBackground:SetPoint("CENTER")
       frame.SlotBackground:SetSize(35, 35)
-      table.insert(toColor.textures, {texture = frame.SlotBackground, alpha = 0.3, lightened = -0.2})
     end
     frame.SlotBackground:SetShown(showSlots)
     if frame.SetItemButtonQuality then
@@ -200,14 +202,14 @@ local skinners = {
     Mixin(frame, BackdropTemplateMixin)
     frame:SetBackdrop(frameBackdropInfo)
     frame:SetBackdropColor(color.r, color.g, color.b, 1 - addonTable.Config.Get("skins.dark.view_transparency"))
+    StyleButtonFrameBorder(frame)
     addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
       if settingName == "skins.dark.view_transparency" then
         frame:SetBackdropColor(color.r, color.g, color.b, 1 - addonTable.Config.Get("skins.dark.view_transparency"))
+      elseif settingName == "skins.dark.no_frame_borders" then
+        StyleButtonFrameBorder(frame)
       end
     end, frame)
-    local r, g, b = Lighten(color.r, color.g, color.b, 0.3)
-    frame:SetBackdropBorderColor(r, g, b, 1)
-    table.insert(toColor.backdrops, {backdrop = frame, bgAlpha = 0.7, borderAlpha = 1, borderLightened = 0.3})
 
     if tags.backpack then
       frame.TopButtons[1]:SetPoint("TOPLEFT", 1.5, -1)
@@ -291,15 +293,21 @@ addonTable.Skins.RegisterSkin(BAGANATOR_L_DARK, "dark", LoadSkin, SkinFrame, Set
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SQUARE_ICONS,
-    rightText = BAGANATOR_L_RELOAD_REQUIRED,
-    option = "square_icons",
+    text = BAGANATOR_L_REMOVE_BORDERS,
+    option = "no_frame_borders",
     default = false,
   },
   {
     type = "checkbox",
     text = BAGANATOR_L_HIDE_ICON_BACKGROUNDS,
     option = "empty_slot_background",
+    default = false,
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_SQUARE_ICONS,
+    rightText = BAGANATOR_L_RELOAD_REQUIRED,
+    option = "square_icons",
     default = false,
   },
 })
