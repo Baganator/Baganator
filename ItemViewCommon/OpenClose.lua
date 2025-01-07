@@ -18,6 +18,7 @@ local interactions = {
   [IT.TradePartner] = {option = "trade_partner", default = false },
   [IT.ScrappingMachine] = {option = "scrapping_machine", default = true },
   [IT.Soulbind] = {option = "forge_of_bonds", default = false },
+  [IT.ItemUpgrade] = {option = "item_upgrade", default = true },
 }
 
 local frames = {
