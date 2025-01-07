@@ -285,6 +285,22 @@ end, function(itemButton)
   return EquipmentSetIcon
 end, nil, true)
 
+Baganator.API.RegisterCornerWidget("Binding Icon", "binding_icon", function(BindingIcon, details)
+  if IsBindOnAccount(details) then
+    BindingIcon:SetVertexColor(5/255, 79/255, 185/255)
+  elseif details.isBound then
+    BindingIcon:SetVertexColor(245/255, 118/255, 0/255)
+  else
+    return false
+  end
+  return true
+end, function(itemButton)
+  local BindingIcon = itemButton:CreateTexture(nil, "ARTWORK")
+  BindingIcon:SetSize(14, 14)
+  BindingIcon:SetTexture("Interface/AddOns/Baganator/Assets/binding-chain.png")
+  return BindingIcon
+end)
+
 addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
   local function IsPet(itemID)
     local classID, subClassID = select(6, C_Item.GetItemInfoInstant(itemID))
