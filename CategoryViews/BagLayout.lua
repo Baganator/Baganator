@@ -326,18 +326,18 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         end
       end
     end
-    if container.splitStacksDueToTransfer then
-      for _, current in ipairs(composed.details) do
-        if current.results then
-          current.keys = {}
-          -- We use keyNoGUID as a backup because the guid shifts when moving items
-          -- in-and-out of the warband bank
-          current.keysNoGUID = {}
-          for _, item in ipairs(current.results) do
-            if item.bagID and item.slotID and (item.key or item.oldKey) and (item.keyNoGUID or item.oldKeyNoGUID) then
-              current.keys[item.key or item.oldKey] = true
-              current.keysNoGUID[item.keyNoGUID or item.oldKeyNoGUID] = (current.keysNoGUID[item.keyNoGUID or item.oldKeyNoGUID] or 0) + 1
-            end
+  end
+  if container.splitStacksDueToTransfer then
+    for _, current in ipairs(composed.details) do
+      if current.results then
+        current.keys = {}
+        -- We use keyNoGUID as a backup because the guid shifts when moving items
+        -- in-and-out of the warband bank
+        current.keysNoGUID = {}
+        for _, item in ipairs(current.results) do
+          if item.bagID and item.slotID and (item.key or item.oldKey) and (item.keyNoGUID or item.oldKeyNoGUID) then
+            current.keys[item.key or item.oldKey] = true
+            current.keysNoGUID[item.keyNoGUID or item.oldKeyNoGUID] = (current.keysNoGUID[item.keyNoGUID or item.oldKeyNoGUID] or 0) + 1
           end
         end
       end
