@@ -1300,6 +1300,7 @@ function BaganatorUnifiedGuildLayoutMixin:RebuildLayout(tabCount, rowWidth)
         button:UpdateTextures()
         hooksecurefunc(button, "UpdateTooltip", TooltipAdditions)
       end
+      button.tabIndex = tabIndex
       button:Show()
       button:SetID(index)
       table.insert(self.buttons, button)
