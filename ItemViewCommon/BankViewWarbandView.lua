@@ -22,6 +22,11 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     if updates.tabInfo then
       self.updateTabs = true
     end
+    if self.tabsSearchCache[index] then
+      for bagID in pairs(updates.bags) do
+        self.tabsSearchCache[index][tIndexOf(Syndicator.Constants.AllWarbandIndexes, bagID)] = nil
+      end
+    end
     if self:IsVisible() then
       self:GetParent():UpdateView()
     end
@@ -43,6 +48,9 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
       end
     end
   end)
+
+  self.searchMonitors = {}
+  self.tabsSearchCache = {}
 
   addonTable.Skins.AddFrame("Button", self.DepositItemsButton)
   addonTable.Skins.AddFrame("Button", self.WithdrawMoneyButton)
@@ -69,6 +77,50 @@ local function GetUnifiedSortData()
   end
 
   return bagData, indexesToUse, sortOrder
+end
+
+function BaganatorItemViewCommonBankViewWarbandViewMixin:ApplySearch(text)
+  if not self:IsVisible() then
+    return
+  end
+
+  self:ApplyTabButtonSearch(text)
+
+  for _, layout in ipairs(self.Container.Layouts) do
+    if layout:IsShown() then
+      layout:ApplySearch(text)
+    end
+  end
+end
+
+function BaganatorItemViewCommonBankViewWarbandViewMixin:ApplyTabButtonSearch(text)
+  if not self:IsShown() then
+    return
+  end
+
+  for _, monitor in ipairs(self.searchMonitors) do
+    monitor:Stop()
+  end
+
+  local warbandData = Syndicator.API.GetWarband(1)
+
+  for index, tab in ipairs(warbandData.bank) do
+    if not self.tabsSearchCache[1] then
+      self.tabsSearchCache[1] = {}
+    end
+
+    if self.tabsSearchCache[1][index] == nil then
+      self.tabsSearchCache[1][index] = Syndicator.Search.GetBaseInfoFromList(tab.slots)
+    end
+
+    self.searchMonitors[index]:StartSearch(self.tabsSearchCache[1][index], text, function(matches)
+      if #matches > 0 then
+        self.Tabs[index + 1].Icon:SetAlpha(1)
+      else
+        self.Tabs[index + 1].Icon:SetAlpha(0.2)
+      end
+    end)
+  end
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
@@ -290,6 +342,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
     tabButton.tabName = tabInfo.name
     lastTab = tabButton
     table.insert(tabs, tabButton)
+  end
+
+  while #self.searchMonitors < #warbandData.bank do
+    table.insert(self.searchMonitors, CreateFrame("Frame", nil, self, "SyndicatorOfflineListSearchTemplate"))
   end
 
   if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) and not C_Bank.HasMaxBankTabs(Enum.BankType.Account) then

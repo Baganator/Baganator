@@ -86,11 +86,3 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   self:GetParent():OnTabFinished()
 end
-
-function BaganatorSingleViewBankViewWarbandViewMixin:ApplySearch(text)
-  for _, layout in ipairs(self.Container.Layouts) do
-    if layout:IsShown() then
-      layout:ApplySearch(text)
-    end
-  end
-end
