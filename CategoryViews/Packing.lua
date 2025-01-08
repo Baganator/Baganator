@@ -69,6 +69,9 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
   for index, layout in ipairs(activeLayouts) do
     if layout.moveOffscreen then
       layout:SetPoint("TOPLEFT", UIParent, "TOPRIGHT", 2000, 0)
+      if layout.type == "category" then
+        layout:Flow(#layout.buttons) -- Anchor buttons in the right place
+      end
     elseif layout.type == "divider" and prevLayout and prevLayout.type ~= "divider" and #prevLayout.section >= #layout.section then
       if prevLayout.type == "category" then
         NewLine()
@@ -148,7 +151,7 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
   end
 
   for _, layout in ipairs(activeLayouts) do -- Ensure dividers don't overflow when width is reduced
-    if layout.type == "divider" or layout.type == "section" then
+    if not layout.moveOffscreen and (layout.type == "divider" or layout.type == "section") then
       layout:SetPoint("RIGHT", layout:GetParent(), "LEFT", baseOffsetX + math.max(pixelMinWidth, maxWidth), 0)
     end
   end

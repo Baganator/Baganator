@@ -393,7 +393,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       if sourceKeysInUse[layout.sourceKey] then
         layoutsBySource[layout.sourceKey] = layout
       else
-        table.insert(ususedLayouts, layout)
+        table.insert(unusedLayouts, layout)
         layout:Hide()
       end
     end
@@ -409,9 +409,10 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
 
   for index, details in ipairs(composed.details) do
     if details.type == "divider" then
-      table.insert(layoutsShown, (self.dividerPool:Acquire()))
-      layoutsShown[#layoutsShown].type = details.type
-      layoutsShown[#layoutsShown].section = details.section
+      local divider = self.dividerPool:Acquire()
+      table.insert(layoutsShown, divider)
+      divider.type = details.type
+      divider.section = details.section
     elseif details.type == "section" then
       -- Check whether the section has any non-empty items in it
       local itemCount = 0

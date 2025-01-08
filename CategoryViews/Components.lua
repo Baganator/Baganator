@@ -96,16 +96,15 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
     end)
     button:SetScript("OnHide", function(self)
       addonTable.CallbackRegistry:UnregisterCallback("SearchMonitorComplete", self)
-      self.motionAnimation:Stop()
     end)
     function button:CheckResults(text)
-      if text == "" or self.moveOffscreen or not self.collapsed then
-        self.motionAnimation:Stop()
+      self.motionAnimation:Stop()
+      if text == "" or not self.collapsed then
         return
       end
       local found, layouts = CallMethodOnNearestAncestor(self, "GetActiveLayouts")
       for _, layout in ipairs(layouts) do
-        if layout.type == "category" and layout.section[#layout.section] == self.label then
+        if layout.type == "category" and layout.section[#self.section + 1] == self.label then
           local rootMatch = true
           for index = 1, #self.section do
             rootMatch = layout.section[index] == self.section[index]
