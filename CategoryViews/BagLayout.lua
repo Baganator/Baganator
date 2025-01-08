@@ -443,6 +443,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
           addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
         end)
         button.assignedLayouts = {}
+        button.label = details.label
         button.section = details.section
         button.moveOffscreen = IsSectionToggled(details.section)
         table.insert(layoutsShown, button)
@@ -482,6 +483,8 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       error("unrecognised layout type")
     end
   end
+
+  container.activeLayouts = layoutsShown
 
   self.wasGrouping = container.isGrouping
 

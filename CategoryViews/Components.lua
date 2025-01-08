@@ -61,11 +61,68 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
     button.arrow:SetSize(14, 14)
     button.arrow:SetAtlas("bag-arrow")
     button.arrow:SetPoint("LEFT")
+    button.motionAnimation = button:CreateAnimationGroup()
+    button.fadeAnimation = button:CreateAnimationGroup()
+    local function GenerateAnimations(region)
+      local motion1 = button.motionAnimation:CreateAnimation("Alpha")
+      motion1:SetFromAlpha(1)
+      motion1:SetToAlpha(0.4)
+      motion1:SetDuration(0.5)
+      motion1:SetTarget(region)
+      motion1:SetOrder(1)
+      motion1:SetSmoothing("IN_OUT")
+      local motion2 = button.motionAnimation:CreateAnimation("Alpha")
+      motion2:SetFromAlpha(0.4)
+      motion2:SetToAlpha(1)
+      motion2:SetDuration(0.5)
+      motion1:SetSmoothing("IN_OUT")
+      motion2:SetTarget(region)
+      motion2:SetOrder(2)
+    end
+    GenerateAnimations(button:GetFontString())
+    GenerateAnimations(button.arrow)
+    button.motionAnimation:SetLooping("REPEAT")
+
     function button:SetExpanded()
       button.arrow:SetRotation(math.pi/2)
+      button.collapsed = false
     end
     function button:SetCollapsed()
       button.arrow:SetRotation(-math.pi)
+      button.collapsed = true
+    end
+    button:SetScript("OnShow", function(self)
+      addonTable.CallbackRegistry:RegisterCallback("SearchMonitorComplete", self.CheckResults, self)
+    end)
+    button:SetScript("OnHide", function(self)
+      addonTable.CallbackRegistry:UnregisterCallback("SearchMonitorComplete", self)
+      self.motionAnimation:Stop()
+    end)
+    function button:CheckResults(text)
+      if text == "" or self.moveOffscreen or not self.collapsed then
+        self.motionAnimation:Stop()
+        return
+      end
+      local found, layouts = CallMethodOnNearestAncestor(self, "GetActiveLayouts")
+      for _, layout in ipairs(layouts) do
+        if layout.type == "category" and layout.section[#layout.section] == self.label then
+          local rootMatch = true
+          for index = 1, #self.section do
+            rootMatch = layout.section[index] == self.section[index]
+            if not rootMatch then
+              break
+            end
+          end
+          if rootMatch then
+            for _, button in ipairs(layout.buttons) do
+              if button.BGR and button.BGR.matchesSearch and (button.BGR.contextMatch == nil or button.BGR.contextMatch) then
+                self.motionAnimation:Play()
+                return -- done
+              end
+            end
+          end
+        end
+      end
     end
     addonTable.Skins.AddFrame("CategorySectionHeader", button)
     return button

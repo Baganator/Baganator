@@ -81,6 +81,10 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:TransferCategory(source
   self:RemoveSearchMatches(function() return self.layoutsBySourceKey[sourceKey] and self.layoutsBySourceKey[sourceKey].SearchMonitor:GetMatches() or {} end)
 end
 
+function BaganatorCategoryViewBankViewCharacterViewMixin:GetActiveLayouts()
+  return self.activeLayouts
+end
+
 function BaganatorCategoryViewBankViewCharacterViewMixin:GetSearchMatches()
   local matches = {}
   for _, layouts in ipairs(self.LiveLayouts) do

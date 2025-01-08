@@ -130,6 +130,10 @@ function BaganatorCategoryViewBackpackViewMixin:GetSearchMatches()
   return matches
 end
 
+function BaganatorCategoryViewBackpackViewMixin:GetActiveLayouts()
+  return self.activeLayouts
+end
+
 function BaganatorCategoryViewBackpackViewMixin:TransferCategory(sourceKey)
   if not self.isLive then
     return

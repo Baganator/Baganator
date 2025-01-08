@@ -450,3 +450,16 @@ else
     return result
   end
 end
+
+do
+  local timer
+  function addonTable.ItemViewCommon.NotifySearchMonitorComplete(text)
+    if timer then
+      return
+    end
+    timer = C_Timer.NewTimer(0, function()
+      addonTable.CallbackRegistry:TriggerEvent("SearchMonitorComplete", text)
+      timer = nil
+    end)
+  end
+end

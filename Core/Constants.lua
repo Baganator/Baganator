@@ -37,6 +37,7 @@ addonTable.Constants.Events = {
 
   "ViewComplete",
   "BagCacheAfterNewItemsUpdate",
+  "SearchMonitorComplete",
 
   "NewItemsAcquired",
 
