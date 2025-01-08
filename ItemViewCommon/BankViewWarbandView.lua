@@ -94,7 +94,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ApplySearch(text)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:ApplyTabButtonSearch(text)
-  if not self:IsShown() then
+  if not self:IsShown() or text == "" then
     return
   end
 
