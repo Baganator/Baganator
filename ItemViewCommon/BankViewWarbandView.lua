@@ -94,7 +94,15 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ApplySearch(text)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:ApplyTabButtonSearch(text)
-  if not self:IsShown() or text == "" then
+  if not self:IsShown() then
+    return
+  end
+
+  for _, tabButton in ipairs(self.Tabs) do
+    tabButton.Icon:SetAlpha(1)
+  end
+
+  if text == "" then
     return
   end
 
