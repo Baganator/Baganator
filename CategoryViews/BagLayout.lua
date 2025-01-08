@@ -259,7 +259,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         end
       end
       details.results = entries
-      if hidden[details.source] or sectionToggled[details.section] then
+      if hidden[details.source] then
         for _, entry in ipairs(details.results) do
           table.insert(self.notShown, entry)
         end
@@ -350,7 +350,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     if details.results then
       details.sourceKey = details.source .. "_" .. details.label .. "_" .. (details.groupLabel or "")
       if #details.results > 0 then
-        sourceKeysInUse[details.sourceKey] = true
+        sourceKeysInUse[details.sourceKey] = details
       end
     end
   end
@@ -366,34 +366,34 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     return false
   end
 
+  local layoutsBySource = {}
+  local unusedLayouts = {}
+
   if container.isLive then
-    for index, details in pairs(composed.details) do
-      if details.results and #details.results > 0 then
-        local layout = FindValueInTableIf(container.LiveLayouts, function(a) return a.sourceKey == details.sourceKey end)
-        if layout then
-          if hidden[details.source] or IsSectionToggled(details.section) then
-            layout:DeallocateUnusedButtons({})
-          else
-            layout:DeallocateUnusedButtons(details.results)
-          end
-        end
-      end
-    end
-    -- Ensure we don't overflow the preallocated buttons by returning all
-    -- buttons no longer needed by a particular group
     for _, layout in ipairs(container.LiveLayouts) do
-      if not sourceKeysInUse[layout.sourceKey] then
+      local existing = sourceKeysInUse[layout.sourceKey]
+      if existing and not hidden[existing.source] then
+        layoutsBySource[layout.sourceKey] = layout
+        layout:DeallocateUnusedButtons(existing.results)
+      else
+        table.insert(unusedLayouts, layout)
+        -- Ensure we don't overflow the preallocated buttons by returning all
+        -- buttons no longer needed by a particular group
         layout:DeallocateUnusedButtons({})
         layout:Hide()
       end
     end
+
     for _, layout in ipairs(container.CachedLayouts) do
       layout:Hide()
     end
     activeLayouts = container.LiveLayouts
   else
     for _, layout in ipairs(container.CachedLayouts) do
-      if not sourceKeysInUse[layout.sourceKey] or IsSectionToggled(layout.section) then
+      if sourceKeysInUse[layout.sourceKey] then
+        layoutsBySource[layout.sourceKey] = layout
+      else
+        table.insert(ususedLayouts, layout)
         layout:Hide()
       end
     end
@@ -413,57 +413,56 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       layoutsShown[#layoutsShown].type = details.type
       layoutsShown[#layoutsShown].section = details.section
     elseif details.type == "section" then
-      if not IsSectionToggled(details.section) then
-        -- Check whether the section has any non-empty items in it
-        local itemCount = 0
-        local any = false
-        local level = #details.section + 1
-        if index < #composed.details then
-          for i = index + 1, #composed.details do
-            local d = composed.details[i]
-            if d.section[level] ~= details.label then
-              break
-            elseif d.type == "category" and #d.results > 0 and not hidden[d.source] then
-              itemCount = itemCount + (d.oldLength or #d.results)
-              any = true -- keep section active if blank slots in it
-            end
+      -- Check whether the section has any non-empty items in it
+      local itemCount = 0
+      local any = false
+      local level = #details.section + 1
+      if index < #composed.details then
+        for i = index + 1, #composed.details do
+          local d = composed.details[i]
+          if d.section[level] ~= details.label then
+            break
+          elseif d.type == "category" and #d.results > 0 and not hidden[d.source] then
+            itemCount = itemCount + (d.oldLength or #d.results)
+            any = true -- keep section active if blank slots in it
           end
         end
-        if itemCount > 0 or any then
-          local button = self.sectionButtonPool:Acquire()
-          if sectionToggled[details.label] then
-            button:SetText(details.label .. " " .. LIGHTGRAY_FONT_COLOR:WrapTextInColorCode("(" .. itemCount .. ")"))
-            button:SetCollapsed()
-          else
-            button:SetText(details.label)
-            button:SetExpanded()
-          end
-          button:SetScript("OnClick", function()
-            local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
-            sectionToggled[details.label] = not sectionToggled[details.label]
-            addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
-          end)
-          button.section = details.section
-          table.insert(layoutsShown, button)
-          button.type = details.type
+      end
+      if itemCount > 0 or any then
+        local button = self.sectionButtonPool:Acquire()
+        if sectionToggled[details.label] then
+          button:SetText(details.label .. " " .. LIGHTGRAY_FONT_COLOR:WrapTextInColorCode("(" .. itemCount .. ")"))
+          button:SetCollapsed()
         else
-          table.insert(layoutsShown, {}) -- {} causes the packing code to ignore this
+          button:SetText(details.label)
+          button:SetExpanded()
         end
+        button:SetScript("OnClick", function()
+          local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
+          sectionToggled[details.label] = not sectionToggled[details.label]
+          addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
+        end)
+        button.assignedLayouts = {}
+        button.section = details.section
+        button.moveOffscreen = IsSectionToggled(details.section)
+        table.insert(layoutsShown, button)
+        button.type = details.type
       else
         table.insert(layoutsShown, {}) -- {} causes the packing code to ignore this
       end
     elseif details.type == "category" then
-      if #details.results > 0 and not hidden[details.source] and not IsSectionToggled(details.section) then
+      if #details.results > 0 and not hidden[details.source] then
         local searchResults = details.results
-        local layout = FindValueInTableIf(activeLayouts, function(a) return a.sourceKey == details.sourceKey end)
+        local layout = layoutsBySource[details.sourceKey]
         if not layout then
-          layout = FindValueInTableIf(activeLayouts, function(a) return not sourceKeysInUse[a.sourceKey] end)
+          layout = table.remove(unusedLayouts)
         end
         if not layout then
           AllocateLayout()
           layout = activeLayouts[#activeLayouts]
         end
         layout:ShowGroup(details.results, math.min(bagWidth, #details.results), details.source)
+        layout.moveOffscreen = IsSectionToggled(details.section)
         table.insert(layoutsShown, layout)
         layout.section = details.section
         layout.sourceKey = details.sourceKey

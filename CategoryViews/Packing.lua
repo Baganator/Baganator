@@ -67,7 +67,9 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
 
   local indentFactor = 0.2
   for index, layout in ipairs(activeLayouts) do
-    if layout.type == "divider" and prevLayout and prevLayout.type ~= "divider" and #prevLayout.section >= #layout.section then
+    if layout.moveOffscreen then
+      layout:SetPoint("TOPLEFT", UIParent, "TOPRIGHT", 2000, 0)
+    elseif layout.type == "divider" and prevLayout and prevLayout.type ~= "divider" and #prevLayout.section >= #layout.section then
       if prevLayout.type == "category" then
         NewLine()
       end
