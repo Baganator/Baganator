@@ -1,7 +1,13 @@
 local _, addonTable = ...
 function addonTable.SingleViews.GetCollapsingBagSectionsPool(self)
   return CreateObjectPool(function(pool)
-    local button = CreateFrame("Button", nil, self, "BaganatorTooltipIconButtonTemplate")
+    local details = {
+      live = CreateFrame("Frame", nil, self, "BaganatorLiveBagLayoutTemplate"),
+      cached = CreateFrame("Frame", nil, self, "BaganatorCachedBagLayoutTemplate"),
+      divider = CreateFrame("Frame", nil, self, "BaganatorBagDividerTemplate"),
+      button = CreateFrame("Button", nil, self, "BaganatorTooltipIconButtonTemplate"),
+    }
+    local button = details.button
     button.Icon = button:CreateTexture(nil, "ARTWORK")
     button:SetPoint("CENTER")
     button.Icon:SetSize(17, 17)
@@ -21,12 +27,47 @@ function addonTable.SingleViews.GetCollapsingBagSectionsPool(self)
 
       GameTooltip:Hide()
     end)
-    return {
-      live = CreateFrame("Frame", nil, self, "BaganatorLiveBagLayoutTemplate"),
-      cached = CreateFrame("Frame", nil, self, "BaganatorCachedBagLayoutTemplate"),
-      divider = CreateFrame("Frame", nil, self, "BaganatorBagDividerTemplate"),
-      button = button,
-    }
+    button:SetScript("OnShow", function(self)
+      addonTable.CallbackRegistry:RegisterCallback("SearchMonitorComplete", self.CheckResults, self)
+      addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", self.CheckResults, self)
+    end)
+    button:SetScript("OnHide", function(self)
+      addonTable.CallbackRegistry:UnregisterCallback("SearchMonitorComplete", self)
+      addonTable.CallbackRegistry:UnregisterCallback("SpecialBagToggled", self)
+    end)
+    button.fadeAnimation = button:CreateAnimationGroup()
+    button.fadeAnimation:SetLooping("REPEAT")
+    do
+      local fade1 = button.fadeAnimation:CreateAnimation("Alpha")
+      fade1:SetFromAlpha(1)
+      fade1:SetToAlpha(0.4)
+      fade1:SetDuration(0.5)
+      fade1:SetTarget(button.Icon)
+      fade1:SetOrder(1)
+      fade1:SetSmoothing("IN_OUT")
+      local fade2 = button.fadeAnimation:CreateAnimation("Alpha")
+      fade2:SetFromAlpha(0.4)
+      fade2:SetToAlpha(1)
+      fade2:SetDuration(0.5)
+      fade1:SetSmoothing("IN_OUT")
+      fade2:SetTarget(button.Icon)
+      fade2:SetOrder(2)
+    end
+    function button:CheckResults(text)
+      self.fadeAnimation:Stop()
+      if text == "" or not addonTable.Config.Get(addonTable.Config.Options.HIDE_SPECIAL_CONTAINER)[details.key] then
+        return
+      end
+      local layout = details.live:IsShown() and details.live or details.cached
+      for _, button in ipairs(layout.buttons) do
+        if button.BGR and button.BGR.matchesSearch and (button.BGR.contextMatch == nil or button.BGR.contextMatch) then
+          self.fadeAnimation:Play()
+          return -- done
+        end
+      end
+    end
+
+    return details
   end,
   function(pool, details)
     details.live:Deallocate()
