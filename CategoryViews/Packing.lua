@@ -69,6 +69,7 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
   for index, layout in ipairs(activeLayouts) do
     if layout.moveOffscreen then
       layout:SetPoint("TOPLEFT", UIParent, "TOPRIGHT", 2000, 0)
+      layout:Show()
       if layout.type == "category" then
         layout:Flow(#layout.buttons) -- Anchor buttons in the right place
       end
