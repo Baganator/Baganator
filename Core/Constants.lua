@@ -68,6 +68,9 @@ addonTable.Constants.Events = {
   "HighlightBagItems",
   "ClearHighlightBag",
 
+  "HighlightGuildTabItems",
+  "ClearHighlightGuildTab",
+
   "ContentRefreshRequired",
   "LayoutUpdateRequired",
   "PluginsUpdated",

@@ -1248,11 +1248,26 @@ end
 
 function BaganatorUnifiedGuildLayoutMixin:OnShow()
   RegisterHighlightSimilarItems(self)
+
+  addonTable.CallbackRegistry:RegisterCallback("HighlightGuildTabItems", function(_, highlightGuildTabIDs)
+    for _, button in ipairs(self.buttons) do
+      button:BGRSetHighlight(highlightGuildTabIDs[button.tabIndex])
+    end
+  end, self)
+
+  addonTable.CallbackRegistry:RegisterCallback("ClearHighlightGuildTab", function(_, itemName)
+    for _, button in ipairs(self.buttons) do
+      button:BGRSetHighlight(false)
+    end
+  end, self)
 end
 
 function BaganatorUnifiedGuildLayoutMixin:OnHide()
   addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
+
+  addonTable.CallbackRegistry:UnregisterCallback("HighlightGuildTabItems", self)
+  addonTable.CallbackRegistry:UnregisterCallback("ClearHighlightGuildTab", self)
 end
 
 function BaganatorUnifiedGuildLayoutMixin:InformSettingChanged(setting)
