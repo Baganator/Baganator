@@ -19,6 +19,7 @@ local interactions = {
   [IT.ScrappingMachine] = {option = "scrapping_machine", default = true },
   [IT.Soulbind] = {option = "forge_of_bonds", default = false },
   [IT.ItemUpgrade] = {option = "item_upgrade", default = true },
+  [IT.ItemInteraction] = {option = "item_interaction", default = true },
 }
 
 local frames = {

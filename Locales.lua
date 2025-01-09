@@ -181,6 +181,7 @@ L["SCRAPPING_MACHINE"] = "Scrapping Machine"
 L["FORGE_OF_BONDS"] = "Forge of Bonds"
 L["CHARACTER_PANEL"] = "Character Panel"
 L["ITEM_UPGRADE"] = "Item Upgrade"
+L["CATALYST"] = "Catalyst"
 
 L["TRANSFER"] = "Transfer"
 L["TRANSFER_BANK_VIEW_TOOLTIP_TEXT"] = "Move searched for items out from the bank into the bags."

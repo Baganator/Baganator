@@ -256,6 +256,12 @@ local OPEN_CLOSE_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_CATALYST,
+    option = "auto_open.item_interaction",
+    check = IsRetailCheck,
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_SOCKET_INTERFACE,
     option = "auto_open.sockets",
     check = NotIsEraCheck,
