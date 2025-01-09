@@ -55,7 +55,7 @@
         </Anchors>
       </Button>
 
-      <Frame parentKey="TabSettingsMenu" inherits="BankPanelTabSettingsMenuTemplate" hidden="true">
+      <Frame parentKey="TabSettingsMenu" inherits="BankPanelTabSettingsMenuTemplate" clampedToScreen="true" hidden="true">
         <Anchors>
           <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPRIGHT" x="40" y="5"/>
         </Anchors>
