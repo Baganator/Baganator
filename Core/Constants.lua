@@ -82,6 +82,8 @@ addonTable.Constants.Events = {
 
   "FrameGroupSwapped",
 
+  "BankViewChanged",
+
   "ItemContextChanged", -- Baganator specific context highlighting
 }
 

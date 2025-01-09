@@ -98,10 +98,20 @@ else
 end
 
 RegisterBagTransfer(
-  function(button) return isBankOpen end,
+  function(button)
+    if not isBankOpen then
+      return false
+    end
+    local bankFrame = addonTable.ViewManagement.GetBankFrame()
+    return bankFrame.Character:IsShown() or (bankFrame.Warband and bankFrame.Warband:IsShown() and not bankFrame.Warband.isLocked)
+  end,
   TransferToBank,
   true, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT
 )
+
+addonTable.CallbackRegistry:RegisterCallback("BankViewChanged", function()
+  CallActivationCallbacks()
+end)
 
 local function TransferToMail(matches, characterName, callback)
   local status = addonTable.Transfers.AddToMail(matches)

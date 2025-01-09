@@ -59,6 +59,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
       self.currentTab:Show()
       PanelTemplates_SetTab(self, 1)
       self:UpdateView()
+      addonTable.CallbackRegistry:TriggerEvent("BankViewChanged")
     end)
 
     local warbandTab = self.tabPool:Acquire()
@@ -70,6 +71,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
       self.currentTab:Show()
       PanelTemplates_SetTab(self, 2)
       self:UpdateView()
+      addonTable.CallbackRegistry:TriggerEvent("BankViewChanged")
     end)
     addonTable.Skins.AddFrame("TabButton", warbandTab)
 
@@ -79,7 +81,7 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateTransferButton()
-  if not self.currentTab.isLive then
+  if not self.currentTab.isLive or self.currentTab.isLocked then
     self.TransferButton:Hide()
     return
   end
@@ -207,7 +209,7 @@ end
 
 
 function BaganatorItemViewCommonBankViewMixin:OnTabFinished()
-  self.SortButton:SetShown(self.currentTab.isLive and addonTable.Utilities.ShouldShowSortButton())
+  self.SortButton:SetShown(self.currentTab.isLive and not self.currentTab.isLocked and addonTable.Utilities.ShouldShowSortButton())
   self:UpdateTransferButton()
 
   self.ButtonVisibility:Update()
