@@ -181,7 +181,10 @@ function addonTable.Help.ShowSearchDialog()
   frame.ScrollBox.Content.OnCleaned = function()
     frame.ScrollBox:FullUpdate(ScrollBoxConstants.UpdateImmediately);
   end
-  frame.ScrollBox.Content:MarkDirty()
+  -- Delay so EditBoxes can size correctly
+  C_Timer.After(0, function()
+    frame.ScrollBox.Content:MarkDirty()
+  end)
 
 
   ScrollUtil.InitScrollBoxWithScrollBar(frame.ScrollBox, frame.ScrollBar, CreateScrollBoxLinearView(0, 20, 0, 0))
