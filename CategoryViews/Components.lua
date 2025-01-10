@@ -61,6 +61,7 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
     button.arrow:SetSize(14, 14)
     button.arrow:SetAtlas("bag-arrow")
     button.arrow:SetPoint("LEFT")
+    button:RegisterForClicks("RightButtonUp", "LeftButtonUp")
     button.fadeAnimation = button:CreateAnimationGroup()
     local function GenerateAnimations(region)
       local fade1 = button.fadeAnimation:CreateAnimation("Alpha")
@@ -90,6 +91,19 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
       button.arrow:SetRotation(-math.pi)
       button.collapsed = true
     end
+    button:SetScript("OnClick", function(self, button)
+      if button == "LeftButton" then
+        local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
+        sectionToggled[self.label] = not sectionToggled[self.label]
+        addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
+      elseif button == "RightButton" then
+        local tree = CopyTable(self.section)
+        table.insert(tree, self.label)
+        CallMethodOnNearestAncestor(self, "TransferSection", tree)
+      end
+    end)
+    button:SetScript("OnEnter", BaganatorCategoryViewsCategoryButtonMixin.OnEnter)
+    button:SetScript("OnLeave", BaganatorCategoryViewsCategoryButtonMixin.OnLeave)
     button:SetScript("OnShow", function(self)
       addonTable.CallbackRegistry:RegisterCallback("SearchMonitorComplete", self.CheckResults, self)
     end)

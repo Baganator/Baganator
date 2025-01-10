@@ -438,11 +438,6 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
           button:SetText(details.label)
           button:SetExpanded()
         end
-        button:SetScript("OnClick", function()
-          local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
-          sectionToggled[details.label] = not sectionToggled[details.label]
-          addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
-        end)
         button.assignedLayouts = {}
         button.label = details.label
         button.section = details.section

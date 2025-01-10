@@ -142,6 +142,32 @@ function BaganatorCategoryViewBackpackViewMixin:TransferCategory(sourceKey)
   self:Transfer(true, function() return self.layoutsBySourceKey[sourceKey] and self.layoutsBySourceKey[sourceKey].SearchMonitor:GetMatches() or {} end)
 end
 
+function BaganatorCategoryViewBackpackViewMixin:TransferSection(tree)
+  if not self.isLive then
+    return
+  end
+
+  self:Transfer(true, function()
+    local matches = {}
+    for _, layout in ipairs(self:GetActiveLayouts()) do
+      if layout.type == "category" then
+        local rootMatch = true
+        for index, label in ipairs(tree) do
+          rootMatch = layout.section[index] == label
+          if not rootMatch then
+            break
+          end
+        end
+        if rootMatch then
+          tAppendAll(matches, layout.SearchMonitor:GetMatches())
+        end
+      end
+    end
+
+    return matches
+  end)
+end
+
 function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, isLive)
   if self.lastCharacter ~= character then
     self.LayoutManager:NewCharacter()
