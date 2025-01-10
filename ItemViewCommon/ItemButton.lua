@@ -439,6 +439,7 @@ local function GetItemContextMatch(self)
     local bankFrame = addonTable.ViewManagement.GetBankFrame()
     if addonTable.Constants.IsRetail and bankFrame and bankFrame.currentTab.isLive and bankFrame.Warband:IsVisible() then
       if not C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+        C_Item.RequestLoadItemDataByID(self.BGR.itemID)
         needsData = true
       else
         return C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
@@ -452,6 +453,7 @@ local function GetItemContextMatch(self)
       end
     elseif addonTable.Constants.IsRetail and addonTable.Compatibility.Context.MailInfo and addonTable.Compatibility.Context.SendMail then
       if not C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+        C_Item.RequestLoadItemDataByID(self.BGR.itemID)
         needsData = true
       else
         return not self.BGR.isBound or C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
@@ -460,6 +462,7 @@ local function GetItemContextMatch(self)
       return not self.BGR.hasNoValue or (C_Item.DoesItemExist(self.BGR.itemLocation) and C_Item.CanBeRefunded(self.BGR.itemLocation))
     elseif addonTable.Compatibility.Context.GuildBanker then
       if not C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+        C_Item.RequestLoadItemDataByID(self.BGR.itemID)
         needsData = true
       else
         return not self.BGR.isBound and (not addonTable.Constants.IsRetail or not C_Item.IsBoundToAccountUntilEquip(self.BGR.itemLocation))
@@ -469,7 +472,6 @@ local function GetItemContextMatch(self)
     end
 
     if needsData then -- Missing item/spell data
-      C_Item.RequestLoadItemDataByID(self.BGR.itemID)
       QueueWidget(function()
         self:UpdateItemContextMatching()
       end)
