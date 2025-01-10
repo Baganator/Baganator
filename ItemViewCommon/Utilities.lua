@@ -28,6 +28,39 @@ function addonTable.Utilities.GetAllCharacters(searchText)
   return characters
 end
 
+function addonTable.Utilities.GetAllGuilds(searchText)
+  searchText = searchText and searchText:lower() or ""
+  local guilds = {}
+
+  local realmNormalizedToRealmMap = {}
+  for _, character in ipairs(Syndicator.API.GetAllCharacters()) do
+    local data = Syndicator.API.GetCharacter(character)
+    realmNormalizedToRealmMap[data.details.realmNormalized] = data.details.realm
+  end
+
+  for _, guild in ipairs(Syndicator.API.GetAllGuilds()) do
+    local info = Syndicator.API.GetGuild(guild)
+    if searchText == "" or guild:lower():find(searchText, nil, true) then
+      table.insert(guilds, {
+        fullName = guild,
+        name = info.details.guild,
+        realmNormalized = info.details.realm,
+        realm = realmNormalizedToRealmMap[info.details.realm] or info.details.realm,
+      })
+    end
+  end
+
+  table.sort(guilds, function(a, b)
+    if a.realm == b.realm then
+      return a.name < b.name
+    else
+      return a.realm < b.realm
+    end
+  end)
+
+  return guilds
+end
+
 function addonTable.Utilities.ShouldShowSortButton()
   return addonTable.Config.Get(addonTable.Config.Options.SHOW_SORT_BUTTON)
 end

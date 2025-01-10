@@ -1,5 +1,13 @@
 local _, addonTable = ...
 
+local function GetShowState(data)
+  if data.details.show then
+    return data.details.show.gold
+  else
+    return not data.details.hidden == false
+  end
+end
+
 function addonTable.ShowGoldSummaryRealm(anchor, point)
   GameTooltip:SetOwner(anchor, point)
 
@@ -12,7 +20,7 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
   local lines = {}
   local total = 0
   for _, characterInfo in ipairs(addonTable.Utilities.GetAllCharacters()) do
-    if realmsToInclude[characterInfo.realmNormalized] and not Syndicator.API.GetCharacter(characterInfo.fullName).details.hidden then
+    if realmsToInclude[characterInfo.realmNormalized] and GetShowState(Syndicator.API.GetCharacter(characterInfo.fullName)) then
       local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
       local characterName = characterInfo.name
       if #connectedRealms > 1 then
@@ -25,6 +33,19 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
         characterName = Syndicator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
       end
       table.insert(lines, {left = characterName, right = addonTable.Utilities.GetMoneyString(money, true)})
+      total = total + money
+    end
+  end
+
+  for _, guildInfo in ipairs(addonTable.Utilities.GetAllGuilds()) do
+    if realmsToInclude[guildInfo.realmNormalized] and GetShowState(Syndicator.API.GetGuild(guildInfo.fullName)) then
+      local money = Syndicator.API.GetGuild(guildInfo.fullName).money
+      local guildName = guildInfo.name
+      if #connectedRealms > 1 then
+        guildName = guildInfo.fullName
+      end
+      guildName = Syndicator.Utilities.GetGuildIcon() .. " " .. guildName
+      table.insert(lines, {left = guildName, right = addonTable.Utilities.GetMoneyString(money, true)})
       total = total + money
     end
   end
@@ -62,17 +83,44 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
   local realmTotal = 0
   local realmCount = 0
   local currentRealm
-  for _, characterInfo in ipairs(addonTable.Utilities.GetAllCharacters()) do
-    if not Syndicator.API.GetCharacter(characterInfo.fullName).details.hidden then
-      if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
+  local characters = addonTable.Utilities.GetAllCharacters()
+  for _, e in ipairs(characters) do
+    e.type = "character"
+  end
+  local guilds = addonTable.Utilities.GetAllGuilds()
+  for _, e in ipairs(guilds) do
+    e.type = "guild"
+  end
+  local entries = characters
+  tAppendAll(entries, guilds)
+
+  -- Sort again to combine properly
+  table.sort(entries, function(a, b)
+    if a.realm == b.realm then
+      return a.name < b.name
+    else
+      return a.realm < b.realm
+    end
+  end)
+
+  for _, info in ipairs(entries) do
+    if (info.type == "character" and GetShowState(Syndicator.API.GetCharacter(info.fullName))) or
+       (info.type == "guild" and GetShowState(Syndicator.API.GetGuild(info.fullName)))
+      then
+      if currentRealm ~= nil and currentRealm ~= info.realm then
         AddRealm(currentRealm, realmCount, realmTotal)
         realmTotal = 0
         realmCount = 0
       end
-      currentRealm = characterInfo.realm
+      currentRealm = info.realm
       realmCount = realmCount + 1
 
-      local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
+      local money = 0
+      if info.type == "character" then
+        money = Syndicator.API.GetCharacter(info.fullName).money
+      elseif info.type == "guild" then
+        money = Syndicator.API.GetGuild(info.fullName).money
+      end
 
       total = total + money
       realmTotal = realmTotal + money
