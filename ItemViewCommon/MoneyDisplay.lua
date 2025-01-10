@@ -76,9 +76,12 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
 
   local total = 0
 
-  local warband = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1).money or 0
-  AddWarband(warband)
-  total = total + warband
+  local warbandData = Syndicator.API.GetWarband and Syndicator.API.GetWarband(1)
+  if warbandData and (warbandData.details == nil or warbandData.details.gold) then
+    local warband = warbandData.money or 0
+    AddWarband(warband)
+    total = total + warband
+  end
 
   local realmTotal = 0
   local realmCount = 0
