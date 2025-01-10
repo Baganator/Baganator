@@ -469,6 +469,7 @@ local function GetItemContextMatch(self)
     end
 
     if needsData then -- Missing item/spell data
+      C_Item.RequestLoadItemDataByID(self.BGR.itemID)
       QueueWidget(function()
         self:UpdateItemContextMatching()
       end)
