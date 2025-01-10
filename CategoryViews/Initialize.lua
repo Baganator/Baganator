@@ -121,7 +121,9 @@ local function SetupCategories()
     if tCompare(displayOrderForCmp, addonTable.CategoryViews.Constants.OldDefaults) or #displayOrder == 0 or CompareCurrent() then
 
       addonTable.CustomiseDialog.CategoriesImport(addonTable.CategoryViews.Constants.DefaultImport[addonTable.CategoryViews.Constants.DefaultImportVersion])
-      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, oldCategoryMods)
+      if next(oldCategoryMods) then
+        addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, oldCategoryMods)
+      end
       local newAdded = {}
       for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
         if addonTable.CategoryViews.Constants.SourceToCategory[source] then
