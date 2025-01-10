@@ -23,14 +23,14 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
     if realmsToInclude[characterInfo.realmNormalized] and GetShowState(Syndicator.API.GetCharacter(characterInfo.fullName)) then
       local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
       local characterName = characterInfo.name
-      if #connectedRealms > 1 then
-        characterName = characterInfo.fullName
-      end
       if characterInfo.className then
         characterName = "|c" .. (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[characterInfo.className].colorStr .. characterName .. "|r"
       end
       if characterInfo.race then
         characterName = Syndicator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
+      end
+      if #connectedRealms > 1 then
+        characterName = characterName .. "-" .. characterInfo.realmNormalized
       end
       table.insert(lines, {left = characterName, right = addonTable.Utilities.GetMoneyString(money, true)})
       total = total + money
@@ -40,12 +40,12 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
   for _, guildInfo in ipairs(addonTable.Utilities.GetAllGuilds()) do
     if realmsToInclude[guildInfo.realmNormalized] and GetShowState(Syndicator.API.GetGuild(guildInfo.fullName)) then
       local money = Syndicator.API.GetGuild(guildInfo.fullName).money
-      local guildName = guildInfo.name
+      local guildName = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guildInfo.name)
       if #connectedRealms > 1 then
-        guildName = guildInfo.fullName
+        guildName = guildName .. "-" .. guildInfo.realmNormalized
       end
       guildName = Syndicator.Utilities.GetGuildIcon() .. " " .. guildName
-      table.insert(lines, {left = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guildName), right = addonTable.Utilities.GetMoneyString(money, true)})
+      table.insert(lines, {left = guildName, right = addonTable.Utilities.GetMoneyString(money, true)})
       total = total + money
     end
   end
@@ -118,7 +118,7 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
         table.insert(lines, {left = " ", right = ""})
         addedGap = true
       end
-      AddGuild(guildData.details.guild, guildData.details.realm, guildData.money)
+      AddGuild(guildInfo.name, guildInfo.realmNormalized, guildData.money)
       total = total + guildData.money
     end
   end
