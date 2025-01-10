@@ -45,7 +45,7 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
         guildName = guildInfo.fullName
       end
       guildName = Syndicator.Utilities.GetGuildIcon() .. " " .. guildName
-      table.insert(lines, {left = guildName, right = addonTable.Utilities.GetMoneyString(money, true)})
+      table.insert(lines, {left = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guildName), right = addonTable.Utilities.GetMoneyString(money, true)})
       total = total + money
     end
   end
@@ -68,9 +68,13 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
   local function AddRealm(realmName, realmCount, realmTotal)
     table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = addonTable.Utilities.GetMoneyString(realmTotal, true)})
   end
+  local function AddGuild(guildName, guildRealmNormalized, guildTotal)
+    table.insert(lines, {left = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guildName) .. "-" .. guildRealmNormalized, right = addonTable.Utilities.GetMoneyString(guildTotal, true)})
+  end
   local function AddWarband(warband)
     if warband > 0 then
       table.insert(lines, {left = PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), right = addonTable.Utilities.GetMoneyString(warband, true)})
+      table.insert(lines, {left = " ", right = ""})
     end
   end
 
@@ -86,44 +90,17 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
   local realmTotal = 0
   local realmCount = 0
   local currentRealm
-  local characters = addonTable.Utilities.GetAllCharacters()
-  for _, e in ipairs(characters) do
-    e.type = "character"
-  end
-  local guilds = addonTable.Utilities.GetAllGuilds()
-  for _, e in ipairs(guilds) do
-    e.type = "guild"
-  end
-  local entries = characters
-  tAppendAll(entries, guilds)
-
-  -- Sort again to combine properly
-  table.sort(entries, function(a, b)
-    if a.realm == b.realm then
-      return a.name < b.name
-    else
-      return a.realm < b.realm
-    end
-  end)
-
-  for _, info in ipairs(entries) do
-    if (info.type == "character" and GetShowState(Syndicator.API.GetCharacter(info.fullName))) or
-       (info.type == "guild" and GetShowState(Syndicator.API.GetGuild(info.fullName)))
-      then
-      if currentRealm ~= nil and currentRealm ~= info.realm then
+  for _, characterInfo in ipairs(addonTable.Utilities.GetAllCharacters()) do
+    if GetShowState(Syndicator.API.GetCharacter(characterInfo.fullName)) then
+      if currentRealm ~= nil and currentRealm ~= characterInfo.realm then
         AddRealm(currentRealm, realmCount, realmTotal)
         realmTotal = 0
         realmCount = 0
       end
-      currentRealm = info.realm
+      currentRealm = characterInfo.realm
       realmCount = realmCount + 1
 
-      local money = 0
-      if info.type == "character" then
-        money = Syndicator.API.GetCharacter(info.fullName).money
-      elseif info.type == "guild" then
-        money = Syndicator.API.GetGuild(info.fullName).money
-      end
+      local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
 
       total = total + money
       realmTotal = realmTotal + money
@@ -131,6 +108,19 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
   end
   if currentRealm ~= nil then
     AddRealm(currentRealm, realmCount, realmTotal)
+  end
+
+  local addedGap = false
+  for _, guildInfo in ipairs(addonTable.Utilities.GetAllGuilds()) do
+    local guildData = Syndicator.API.GetGuild(guildInfo.fullName)
+    if GetShowState(guildData) then
+      if not addedGap then
+        table.insert(lines, {left = " ", right = ""})
+        addedGap = true
+      end
+      AddGuild(guildData.details.guild, guildData.details.realm, guildData.money)
+      total = total + guildData.money
+    end
   end
 
   GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
