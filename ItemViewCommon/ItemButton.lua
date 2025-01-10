@@ -438,7 +438,11 @@ local function GetItemContextMatch(self)
 
     local bankFrame = addonTable.ViewManagement.GetBankFrame()
     if addonTable.Constants.IsRetail and bankFrame and bankFrame.currentTab.isLive and bankFrame.Warband:IsVisible() then
-      return C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
+      if not C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+        needsData = true
+      else
+        return C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
+      end
     elseif addonTable.Compatibility.Context.Auctioneer then
       local auctionable = addonTable.Utilities.IsAuctionable(self.BGR)
       if auctionable == nil then
@@ -447,11 +451,19 @@ local function GetItemContextMatch(self)
         return auctionable
       end
     elseif addonTable.Constants.IsRetail and addonTable.Compatibility.Context.MailInfo and addonTable.Compatibility.Context.SendMail then
-      return not self.BGR.isBound or C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
+      if not C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+        needsData = true
+      else
+        return not self.BGR.isBound or C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, self.BGR.itemLocation)
+      end
     elseif addonTable.Compatibility.Context.Merchant then
       return not self.BGR.hasNoValue or (C_Item.DoesItemExist(self.BGR.itemLocation) and C_Item.CanBeRefunded(self.BGR.itemLocation))
     elseif addonTable.Compatibility.Context.GuildBanker then
-      return not self.BGR.isBound and (not addonTable.Constants.IsRetail or not C_Item.IsBoundToAccountUntilEquip(self.BGR.itemLocation))
+      if not C_Item.IsItemDataCachedByID(self.BGR.itemID) then
+        needsData = true
+      else
+        return not self.BGR.isBound and (not addonTable.Constants.IsRetail or not C_Item.IsBoundToAccountUntilEquip(self.BGR.itemLocation))
+      end
     elseif addonTable.Compatibility.Context.Socket then
       return (select(6, C_Item.GetItemInfoInstant(self.BGR.itemID)) == Enum.ItemClass.Gem)
     end
