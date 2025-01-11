@@ -45,7 +45,7 @@ function addonTable.Utilities.GetAllGuilds(searchText)
         fullName = guild,
         name = info.details.guild,
         realmNormalized = info.details.realm,
-        realm = realmNormalizedToRealmMap[info.details.realm] or info.details.realm,
+        realm = realmNormalizedToRealmMap[info.details.realm or info.details.realms[1]] or info.details.realm or info.details.realms[1],
       })
     end
   end
