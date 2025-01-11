@@ -472,7 +472,11 @@ local function GetItemContextMatch(self)
     end
 
     if needsData then -- Missing item/spell data
+      local BGR = self.BGR
       QueueWidget(function()
+        if self.BGR ~= BGR then
+          return
+        end
         self:UpdateItemContextMatching()
       end)
       return false
