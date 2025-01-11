@@ -62,7 +62,7 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
       local location = {bagID = bagID, slotIndex = slotIndex}
       if info.itemID ~= nil and C_Item.DoesItemExist(location) then
         info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
-        info.refundable = C_Item.CanBeRefunded(location)
+        info.itemLocation = location
         if info.setInfo or not isGrouping then
           info.guid = C_Item.GetItemGUID(location)
         elseif info.hasLoot and not info.isBound then

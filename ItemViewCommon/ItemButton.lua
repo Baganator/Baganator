@@ -723,7 +723,6 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     if C_Item.DoesItemExist(itemLocation) then
       self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
       self.BGR.itemLocation = itemLocation
-      self.BGR.refundable = C_Item.CanBeRefunded(itemLocation)
     end
 
     self.BGR.hasNoValue = noValue
