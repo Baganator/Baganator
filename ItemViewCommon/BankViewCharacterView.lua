@@ -170,6 +170,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   self.lastCharacter = character
   if oldLast ~= self.lastCharacter then
     addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", character)
+    self.searchToApply = true
   end
   self.isLive = isLive
 

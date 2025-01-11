@@ -316,6 +316,10 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
 
   local oldLast = self.lastCharacter
   self.lastCharacter = character
+  if oldLast ~= character then
+    addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", character)
+    self.searchToApply = true
+  end
   self.isLive = isLive
 
   addonTable.Utilities.AddGeneralDropSlot(self, function()
@@ -325,10 +329,6 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
   self.BagSlots:Update(self.lastCharacter, self.isLive)
   local containerInfo = characterData.containerInfo
   self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bags))
-
-  if oldLast ~= character then
-    addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", character)
-  end
 
   self.SortButton:SetShown(addonTable.Utilities.ShouldShowSortButton() and isLive)
   self:UpdateTransferButton()
