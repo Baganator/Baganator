@@ -284,9 +284,9 @@ function addonTable.Utilities.AddScrollBar(self)
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(self.ScrollBox, self.ScrollBar)
 
   function self:UpdateScroll(ySaved, scale)
-    local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+    local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
     self.ScrollBox:ClearAllPoints()
-    self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -50 - topSpacing / 4 + 2)
+    self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -25 - searchSpacing - topSpacing / 4 + 2)
     self.ScrollChild:SetWidth(self.Container:GetWidth() + 4)
     self.ScrollChild:SetHeight(self.Container:GetHeight() + 4)
     self.ScrollBox:SetSize(
@@ -364,8 +364,12 @@ function addonTable.Utilities.GetSpacing()
     sideSpacing = 8
     topSpacing = 7
   end
+  local searchSpacing = 25
+  if not addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX) then
+    searchSpacing = 0
+  end
 
-  return sideSpacing, topSpacing
+  return sideSpacing, topSpacing, searchSpacing
 end
 
 addonTable.Utilities.MasqueRegistration = function() end

@@ -69,6 +69,13 @@ end)
 BaganatorSearchWidgetMixin = {}
 
 function BaganatorSearchWidgetMixin:OnLoad()
+  self:SetShown(addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX))
+  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+    if settingName == addonTable.Config.Options.SHOW_SEARCH_BOX then
+      self:SetShown(addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX))
+    end
+  end)
+
   self.SearchBox.Instructions:SetWordWrap(false)
   self.SearchBox:HookScript("OnTextChanged", function(_, isUserInput)
     if isUserInput and not self.SearchBox:IsInIMECompositionMode() then

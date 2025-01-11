@@ -183,7 +183,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   self.ToggleBagSlotsButton:SetShown(self.isLive or (containerInfo and containerInfo.bank))
 
   self.BankMissingHint:SetShown(characterData.bank[1] == nil or #characterData.bank[1] == 0)
-  self:GetParent().SearchWidget:SetShown(characterData.bank[1] and #characterData.bank[1] ~= 0)
+  self:GetParent().SearchWidget:SetShown(addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX) and characterData.bank[1] and #characterData.bank[1] ~= 0)
 
   if self.BankMissingHint:IsShown() then
     self.BankMissingHint:SetText(BAGANATOR_L_BANK_DATA_MISSING_HINT:format(characterData.details.character))
@@ -225,7 +225,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character,
   if self.BankMissingHint:IsShown() then
     return
   end
-  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+  local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
 
   local buttonPadding = 5
   local additionalPadding = 0
@@ -238,7 +238,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character,
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    math.min(self.Container:GetHeight() + 75 + buttonPadding + self.CurrencyWidget:GetExtraHeight(), UIParent:GetHeight() / self:GetParent():GetScale() - externalVerticalSpacing)
+    math.min(self.Container:GetHeight() + 50 + searchSpacing + buttonPadding + self.CurrencyWidget:GetExtraHeight(), UIParent:GetHeight() / self:GetParent():GetScale() - externalVerticalSpacing)
   )
 
   self:UpdateScroll(73 + buttonPadding + externalVerticalSpacing, self:GetParent():GetScale())

@@ -525,7 +525,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
     self.Tabs[1]:SetPoint("LEFT", active, "LEFT")
   end
 
-  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+  local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
 
   self.SearchWidget:SetSpacing(sideSpacing)
 
@@ -577,7 +577,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   end
   self.TransferButton:SetShown(self.wouldShowTransferButton)
 
-  self.SearchWidget:SetShown(active:IsShown())
+  self.SearchWidget:SetShown(addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX) and active:IsShown())
   self.NotVisitedText:SetShown(not active:IsShown() and (not guildData or not guildData.details.visited))
   self.NoTabsText:SetShown(not active:IsShown() and guildData and guildData.details.visited)
   self.Money:SetShown(active:IsShown() or guildData and guildData.details.visited)
@@ -595,11 +595,12 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
       80 + topSpacing / 2
     )
   else
+    local tabsHeight = #self.Tabs * (self.Tabs[1]:GetHeight() + 12) * self.Tabs[1]:GetScale() + 20 * self.Tabs[1]:GetScale()
     self:SetSize(
       self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-      math.min(self.Container:GetHeight() + 69 + detailsHeight, UIParent:GetHeight() / self:GetScale())
+      math.max(tabsHeight, math.min(self.Container:GetHeight() + 44 + searchSpacing + detailsHeight, UIParent:GetHeight() / self:GetScale()))
     )
-    self:UpdateScroll(69 + detailsHeight, self:GetScale())
+    self:UpdateScroll(44 + searchSpacing + detailsHeight, self:GetScale())
   end
 
   self.ButtonVisibility:Update()

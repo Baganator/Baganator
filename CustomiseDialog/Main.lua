@@ -106,6 +106,11 @@ local LAYOUT_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_SEARCH_BOX,
+    option = "show_search_box",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_RECENT_CHARACTER_TABS,
     option = "show_recents_tabs_main_view",
   },

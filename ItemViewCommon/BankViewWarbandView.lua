@@ -431,7 +431,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   self.isLocked = self.isLive and not C_PlayerInfo.HasAccountInventoryLock()
   local isWarbandData = warbandBank and #warbandBank.slots ~= 0 and not self.isLocked
   self.BankMissingHint:SetShown(not isWarbandData)
-  self:GetParent().SearchWidget:SetShown(isWarbandData)
+  self:GetParent().SearchWidget:SetShown(addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX) and isWarbandData)
 
   if self.BankMissingHint:IsShown() then
     if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) then
@@ -508,7 +508,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnFinished(character, i
     return
   end
 
-  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+  local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
 
   local buttonPadding = 0
   if self.isLive then
@@ -519,14 +519,14 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnFinished(character, i
   local externalVerticalSpacing = self:GetParent().Tabs[1] and self:GetParent().Tabs[1]:IsShown() and (self:GetParent():GetBottom() - self:GetParent().Tabs[1]:GetBottom() + 5) or 0
   local tabHeight = #self.Tabs * (self.Tabs[1]:GetHeight() + 12) * self.Tabs[1]:GetScale() + 20 * self.Tabs[1]:GetScale()
   local screenHeightSpace = UIParent:GetHeight() / self:GetParent():GetScale() - externalVerticalSpacing
-  local spaceOccupied = self.Container:GetHeight() + 75 + topSpacing / 2 + buttonPadding
+  local spaceOccupied = self.Container:GetHeight() + 50 + searchSpacing + topSpacing / 2 + buttonPadding
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
     math.max(tabHeight, math.min(spaceOccupied, screenHeightSpace))
   )
 
-  self:UpdateScroll(75 + topSpacing * 1/4 + buttonPadding + externalVerticalSpacing, self:GetParent():GetScale())
+  self:UpdateScroll(50 + searchSpacing + topSpacing * 1/4 + buttonPadding + externalVerticalSpacing, self:GetParent():GetScale())
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DepositMoney()

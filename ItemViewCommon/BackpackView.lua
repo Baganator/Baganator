@@ -351,7 +351,7 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:OnFinished(character, isLive)
-  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+  local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
 
   local externalVerticalSpacing = (self.BagSlots:GetHeight() > 0 and (self.BagSlots:GetTop() - self:GetTop()) or 0) + (self.Tabs[1] and self.Tabs[1]:IsShown() and (self:GetBottom() - self.Tabs[1]:GetBottom() + 5) or 0)
 
@@ -362,7 +362,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnFinished(character, isLive)
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
-    math.min(self.Container:GetHeight() + 74 + additionalPadding + topSpacing / 2 + self.CurrencyWidget:GetExtraHeight(), UIParent:GetHeight() / self:GetScale() - externalVerticalSpacing)
+    math.min(self.Container:GetHeight() + 49 + searchSpacing + additionalPadding + topSpacing / 2 + self.CurrencyWidget:GetExtraHeight(), UIParent:GetHeight() / self:GetScale() - externalVerticalSpacing)
   )
 
   self:UpdateScroll(74 + additionalPadding + topSpacing / 2 + externalVerticalSpacing, self:GetScale())

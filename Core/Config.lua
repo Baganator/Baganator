@@ -30,6 +30,7 @@ addonTable.Config.Options = {
   CURRENCY_HEADERS_COLLAPSED = "currency_headers_collapsed",
   CURRENCIES_TRACKED = "currencies_tracked",
   CURRENCIES_TRACKED_IMPORTED = "currencies_tracked_imported",
+  SHOW_SEARCH_BOX = "show_search_box",
 
   WARBAND_CURRENT_TAB = "warband_current_tab",
   GUILD_CURRENT_TAB = "guild_current_tab",
@@ -155,6 +156,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.CURRENCY_HEADERS_COLLAPSED] = {},
   [addonTable.Config.Options.CURRENCIES_TRACKED] = {},
   [addonTable.Config.Options.CURRENCIES_TRACKED_IMPORTED] = 0,
+  [addonTable.Config.Options.SHOW_SEARCH_BOX] = true,
 
   [addonTable.Config.Options.DEBUG_TIMERS] = false,
   [addonTable.Config.Options.DEBUG_KEYWORDS] = false,
@@ -213,6 +215,7 @@ addonTable.Config.ItemButtonsRelayoutSettings = {
   addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH,
   addonTable.Config.Options.GUILD_VIEW_WIDTH,
   addonTable.Config.Options.SHOW_SORT_BUTTON,
+  addonTable.Config.Options.SHOW_SEARCH_BOX,
   addonTable.Config.Options.HIDE_BOE_ON_COMMON,
   addonTable.Config.Options.ICON_MARK_UNUSABLE,
   addonTable.Config.Options.ICON_CONTEXT_FADING,
