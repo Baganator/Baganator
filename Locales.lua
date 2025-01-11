@@ -204,7 +204,7 @@ L["CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT"] = "Cannot move items as no space left"
 
 L["UNLIMITED"] = "Unlimited"
 L["GUILD_WITHDRAW_DEPOSIT_X_X"] = "Items - Withdraw: %s | Deposit: %s"
-L["GUILD_MONEY_X_X"] = "Gold - Withdraw: %s | Total: %s"
+L["GUILD_MONEY_WITHDRAW_X"] = "Gold - Withdraw: %s"
 L["GUILD_MONEY_X"] = "Gold - Total: %s"
 L["TAB_INFO"] = "Tab Information"
 L["GUILD_TAB_INFO_TOOLTIP_TEXT"] = "See any stored information about this tab"

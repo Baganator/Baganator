@@ -547,7 +547,7 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
       withdrawText = LIGHTGRAY_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_MULTIPLE_TABS)
       remainingWithdrawals = -2
     end
-    self.WithdrawalsInfo:SetText(BAGANATOR_L_GUILD_WITHDRAW_DEPOSIT_X_X:format(withdrawText, depositText))
+    self.ItemsTransferInfo:SetText(BAGANATOR_L_GUILD_WITHDRAW_DEPOSIT_X_X:format(withdrawText, depositText))
     local guildMoney = GetGuildBankMoney()
     local withdrawMoney = math.min(GetGuildBankWithdrawMoney(), guildMoney)
     if not CanWithdrawGuildBankMoney() or withdrawMoney == 0 then
@@ -558,15 +558,17 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
       self.canWithdraw = true
       self.WithdrawButton:Enable()
     end
-    self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X_X:format(GetMoneyString(withdrawMoney, true), GetMoneyString(guildMoney, true)))
+    self.Money:SetText(CURRENCY_TOTAL:format(GetMoneyString(guildMoney, true), ""))
+    self.GoldTransferInfo:SetText(BAGANATOR_L_GUILD_MONEY_WITHDRAW_X:format(GetMoneyString(withdrawMoney, true)))
     self.NoTabsText:SetPoint("TOP", self, "CENTER", 0, 15)
-    detailsHeight = 30
+    detailsHeight = 50
 
     self.wouldShowTransferButton = remainingWithdrawals == -1 or remainingWithdrawals > 0
     self.LogsFrame:ApplyTabTitle()
   else -- not live
     self.wouldShowTransferButton = false
-    self.WithdrawalsInfo:SetText("")
+    self.ItemsTransferInfo:SetText("")
+    self.GoldTransferInfo:SetText("")
     if guildData then
       self.Money:SetText(BAGANATOR_L_GUILD_MONEY_X:format(GetMoneyString(guildData.money, true)))
     end
@@ -582,7 +584,8 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   self.NoTabsText:SetShown(not active:IsShown() and guildData and guildData.details.visited)
   self.Money:SetShown(active:IsShown() or guildData and guildData.details.visited)
 
-  self.WithdrawalsInfo:SetPoint("BOTTOMLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 30)
+  self.ItemsTransferInfo:SetPoint("BOTTOMLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 50)
+  self.GoldTransferInfo:SetPoint("BOTTOMLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 30)
   self.Money:SetPoint("BOTTOMLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset, 10)
   self.DepositButton:SetPoint("BOTTOMRIGHT", self, -sideSpacing + 1, 6)
 

@@ -139,9 +139,14 @@
             <Anchor point="BOTTOMLEFT" x="15" y="10"/>
           </Anchors>
         </FontString>
-        <FontString parentKey="WithdrawalsInfo" inherits="GameFontHighlight">
+        <FontString parentKey="GoldTransferInfo" inherits="GameFontHighlight">
           <Anchors>
             <Anchor point="BOTTOMLEFT" x="15" y="30"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="ItemsTransferInfo" inherits="GameFontHighlight">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" x="15" y="50"/>
           </Anchors>
         </FontString>
         <FontString parentKey="NotVisitedText" inherits="GameFontHighlight" text="BAGANATOR_L_GUILD_BANK_DATA_MISSING_HINT">
