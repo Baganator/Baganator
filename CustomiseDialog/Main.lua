@@ -163,6 +163,16 @@ local ICON_OPTIONS = {
   },
   {
     type = "checkbox",
+    text = BAGANATOR_L_MARK_UNUSABLE_ITEMS_IN_RED,
+    option = "icon_mark_unusable",
+  },
+  {
+    type = "checkbox",
+    text = BAGANATOR_L_FADE_ITEMS_NOT_MATCHING_SITUATION,
+    option = "icon_context_fading",
+  },
+  {
+    type = "checkbox",
     text = BAGANATOR_L_FLASH_DUPLICATE_ITEMS,
     rightText = BAGANATOR_L_ALT_CLICK,
     option = "icon_flash_similar_alt",
@@ -171,16 +181,6 @@ local ICON_OPTIONS = {
     type = "checkbox",
     text = BAGANATOR_L_HIDE_BOE_STATUS_ON_COMMON_2,
     option = "hide_boe_on_common",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_MARK_UNUSABLE_ITEMS_IN_RED,
-    option = "icon_mark_unusable",
-  },
-  {
-    type = "checkbox",
-    text = BAGANATOR_L_FADE_ITEMS_NOT_MATCHING_SITUATION,
-    option = "icon_context_fading",
   },
   { type = "spacing" },
   {
