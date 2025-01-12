@@ -484,9 +484,15 @@ function BaganatorCurrencyPanelMixin:GetTransferButton(parent)
     end
 
     Mute()
+    local characterParent = CharacterFrame:GetParent()
+    local tokenParent = TokenFrame:GetParent()
     local characterVisible = CharacterFrame:IsVisible()
     local tokenVisible = TokenFrame:IsVisible()
+    HideUIPanel(CharacterFrame)
     HideUIPanel(TokenFrame)
+    -- Weird SetParent to work around UI overhauls no-op-ing it out.
+    self.SetParent(CharacterFrame, UIParent)
+    self.SetParent(TokenFrame, CharacterFrame)
     Unmute()
 
     local function Handler()
@@ -521,12 +527,14 @@ function BaganatorCurrencyPanelMixin:GetTransferButton(parent)
         button:SetAttribute("ctrl-clickbutton-startup", TokenFrame.ScrollBox:GetFrames()[index])
         Mute()
         HideUIPanel(TokenFrame)
+        HideUIPanel(CharacterFrame)
+        self.SetParent(CharacterFrame, characterParent)
+        self.SetParent(TokenFrame, tokenParent)
         if tokenVisible then
-          HideUIPanel(TokenFrame)
           ShowUIPanel(TokenFrame)
         end
-        if not characterVisible then
-          HideUIPanel(CharacterFrame)
+        if characterVisible then
+          ShowUIPanel(CharacterFrame)
         end
         Unmute()
         TokenFrame.ScrollBox:ClearAllPoints()
