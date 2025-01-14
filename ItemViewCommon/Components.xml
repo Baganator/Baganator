@@ -43,16 +43,6 @@
     </Layers>
     <NormalTexture/>
     <HighlightTexture file="Interface\Buttons\ButtonHilight-Square" alphaMode="ADD"/>
-    <Scripts>
-      <OnEnter>
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(self.tabName)
-        GameTooltip:Show()
-      </OnEnter>
-      <OnLeave>
-        GameTooltip:Hide()
-      </OnLeave>
-    </Scripts>
   </Button>
 
   <Button name="BaganatorSecureRightSideTabButtonTemplate" virtual="true" inherits="BaganatorRightSideTabButtonTemplate,InsecureActionButtonTemplate">

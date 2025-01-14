@@ -1,5 +1,24 @@
 local _, addonTable = ...
 
+local function AddBankTabSettingsToTooltip(tooltip, depositFlags)
+  -- Copied Blizzard function
+  if not tooltip or not depositFlags then
+    return;
+  end
+
+  if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionCurrent) then
+    GameTooltip_AddNormalLine(tooltip, BANK_TAB_EXPANSION_ASSIGNMENT:format(BANK_TAB_EXPANSION_FILTER_CURRENT));
+  elseif FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionLegacy) then
+    GameTooltip_AddNormalLine(tooltip, BANK_TAB_EXPANSION_ASSIGNMENT:format(BANK_TAB_EXPANSION_FILTER_LEGACY));
+  end
+
+  local filterList = ContainerFrameUtil_ConvertFilterFlagsToList(depositFlags);
+  if filterList then
+    local wrapText = true;
+    GameTooltip_AddNormalLine(tooltip, BANK_TAB_DEPOSIT_ASSIGNMENTS:format(filterList), wrapText);
+  end
+end
+
 BaganatorItemViewCommonBankViewWarbandViewMixin = {}
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
@@ -63,6 +82,15 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
   end)
   self.purchaseButton:RegisterForClicks("AnyUp", "AnyDown")
+  self.purchaseButton:SetScript("OnEnter", function()
+    GameTooltip:SetOwner(self.purchaseButton, "ANCHOR_RIGHT")
+    GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_BUY_WARBAND_BANK_TAB))
+    GameTooltip:Show()
+  end)
+  self.purchaseButton:SetScript("OnLeave", function()
+    GameTooltip:Hide()
+  end)
+  addonTable.Skins.AddFrame("SideTabButton", self.purchaseButton)
 end
 
 local function GetUnifiedSortData()
@@ -318,8 +346,15 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
     tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 2, -20)
     tabButton.SelectedTexture:Hide()
     tabButton:SetScale(tabScale)
+    tabButton:SetScript("OnEnter", function()
+      GameTooltip:SetOwner(tabButton, "ANCHOR_RIGHT")
+      GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_EVERYTHING))
+      GameTooltip:Show()
+    end)
+    tabButton:SetScript("OnLeave", function()
+      GameTooltip:Hide()
+    end)
     tabButton:Show()
-    tabButton.tabName = BAGANATOR_L_EVERYTHING
     lastTab = tabButton
     table.insert(tabs, tabButton)
   end
@@ -340,16 +375,23 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
       end
     end)
     tabButton:SetScript("OnEnter", function()
+      GameTooltip:SetOwner(tabButton, "ANCHOR_RIGHT")
+      GameTooltip:SetText(tabInfo.name)
+      AddBankTabSettingsToTooltip(GameTooltip, tabInfo.depositFlags)
+      if self.isLive then
+        GameTooltip:AddLine(BAGANATOR_L_RIGHT_CLICK_FOR_SETTINGS, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+      end
+      GameTooltip:Show()
       addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllWarbandIndexes[index]] = true})
     end)
     tabButton:SetScript("OnLeave", function()
+      GameTooltip:Hide()
       addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     end)
     tabButton:SetPoint("TOPLEFT", lastTab, "BOTTOMLEFT", 0, -12)
     tabButton.SelectedTexture:Hide()
     tabButton:SetScale(tabScale)
     tabButton:Show()
-    tabButton.tabName = tabInfo.name
     lastTab = tabButton
     table.insert(tabs, tabButton)
   end
@@ -371,8 +413,6 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
     tabButton.SelectedTexture:Hide()
     tabButton:SetScale(tabScale)
     tabButton:Show()
-    tabButton.tabName = BAGANATOR_L_BUY_WARBAND_BANK_TAB
-    tabButton:SetEnabled(true)
     tabButton.Icon:SetDesaturated(false)
     table.insert(tabs, tabButton)
     self.purchaseTabAdded = true
