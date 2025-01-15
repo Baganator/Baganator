@@ -85,6 +85,12 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   self.purchaseButton:SetScript("OnEnter", function()
     GameTooltip:SetOwner(self.purchaseButton, "ANCHOR_RIGHT")
     GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_BUY_WARBAND_BANK_TAB))
+    local cost = C_Bank.FetchNextPurchasableBankTabCost(Enum.BankType.Account)
+    if cost > GetMoney() then
+      GameTooltip:AddLine(BAGANATOR_L_COST_X:format(RED_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(cost, true))))
+    else
+      GameTooltip:AddLine(BAGANATOR_L_COST_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(cost, true))))
+    end
     GameTooltip:Show()
   end)
   self.purchaseButton:SetScript("OnLeave", function()
