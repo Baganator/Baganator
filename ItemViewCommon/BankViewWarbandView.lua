@@ -572,6 +572,8 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnFinished(character, i
     math.max(tabHeight, math.min(spaceOccupied, screenHeightSpace))
   )
 
+  self.Container:SetHeight(math.max(self.Container:GetHeight(), self:GetHeight() - spaceOccupied + self.Container:GetHeight()))
+
   self:UpdateScroll(50 + searchSpacing + topSpacing * 1/4 + buttonPadding + externalVerticalSpacing, self:GetParent():GetScale())
 end
 

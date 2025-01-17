@@ -82,6 +82,7 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
       layout:SetSize(targetPixelWidth, 1)
       layout:ClearAllPoints()
       layout:SetPoint("TOPLEFT", offsetXRoot + baseOffsetX, offsetY + baseOffsetY)
+      layout:SetPoint("RIGHT", -baseOffsetX, 0)
       offsetY = offsetY - layout:GetHeight() - headerPadding
       prevLayout = layout
     elseif layout.type == "divider" and prevLayout and prevLayout.type == "divider" and #prevLayout.section > #layout.section then
@@ -151,10 +152,8 @@ function addonTable.CategoryViews.PackSimple(activeLayouts, activeLabels, baseOf
     NewLine()
   end
 
-  for _, layout in ipairs(activeLayouts) do -- Ensure dividers don't overflow when width is reduced
-    if not layout.moveOffscreen and layout.type == "divider" then
-      layout:SetPoint("RIGHT", layout:GetParent(), "LEFT", baseOffsetX + math.max(pixelMinWidth, maxWidth), 0)
-    elseif not layout.moveOffscreen and layout.type == "section" then
+  for _, layout in ipairs(activeLayouts) do -- Ensure sections don't overflow when width is reduced
+    if not layout.moveOffscreen and layout.type == "section" then
       layout:SetWidth(math.min(layout:GetWidth(), math.max(pixelMinWidth, maxWidth)))
     end
   end
