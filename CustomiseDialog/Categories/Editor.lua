@@ -119,7 +119,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrioritySlider:Enable()
       self.Blocker:Hide()
       self.ExportButton:Enable()
-      self.ItemsEditor:SetupItems({})
+      self.ItemsEditor:SetupItems()
       Save()
       return
     end
@@ -155,11 +155,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrefixCheckBox:GetParent():Hide()
       self.GroupDropDown:SetText(BAGANATOR_L_NONE)
     end
-    if categoryMods[value] and categoryMods[value].addedItems then
-      self.ItemsEditor:SetupItems()
-    else
-      self.ItemsEditor:SetupItems({})
-    end
+    self.ItemsEditor:SetupItems()
     if categoryMods[value] and categoryMods[value].showGroupPrefix == false then
       self.PrefixCheckBox:SetChecked(false)
     else
