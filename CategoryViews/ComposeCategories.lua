@@ -102,7 +102,7 @@ local function GetAuto(category, everything)
           if not groups[groupPath] then
             groups[groupPath] = {}
           end
-          groups[groupPath][item.key] = true
+          groups[groupPath][item.key] = addonTable.CategoryViews.Utilities.GetAddedItemData(item.itemID, item.itemLink)
         end
       end
     end
