@@ -231,6 +231,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
               group = group,
               groupPrefix = groupPrefix,
               auto = true,
+              autoIndex = index,
               section = section,
             }
           end
