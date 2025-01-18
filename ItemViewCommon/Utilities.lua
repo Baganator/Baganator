@@ -447,11 +447,10 @@ else
     local result = false
 
     local currentDurability, maxDurability
-    if details.itemLocation:IsBagAndSlot() then
-      currentDurability, maxDurability = C_Container.GetContainerItemDurability(details.itemLocation:GetBagAndSlot())
+    if details.itemLocation.bagID then
+      currentDurability, maxDurability = C_Container.GetContainerItemDurability(details.itemLocation.bagID, details.itemLocation.slotIndex)
     else
-      local slot = details.itemLocation:GetEquipmentSlot()
-      currentDurability, maxDurability = GetInventoryItemDurability(slot)
+      currentDurability, maxDurability = GetInventoryItemDurability(details.itemLocation.equipmentSlotIndex)
     end
 
     result = not C_Item.IsBound(details.itemLocation) and currentDurability == maxDurability

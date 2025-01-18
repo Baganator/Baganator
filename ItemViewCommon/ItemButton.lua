@@ -723,7 +723,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
   GetInfo(self, cacheData, function()
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
-    local itemLocation = ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID())
+    local itemLocation = {bagID = self:GetParent():GetID(), slotIndex = self:GetID()}
     if C_Item.DoesItemExist(itemLocation) then
       self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
       self.BGR.itemLocation = itemLocation
@@ -1178,7 +1178,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
         end
       end)
     end
-    local itemLocation = ItemLocation:CreateFromBagAndSlot(self:GetParent():GetID(), self:GetID())
+    local itemLocation = {bagID = self:GetParent():GetID(), slotIndex = self:GetID()}
     if C_Item.DoesItemExist(itemLocation) then
       self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
       self.BGR.itemLocation = itemLocation
