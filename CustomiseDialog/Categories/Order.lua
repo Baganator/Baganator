@@ -324,7 +324,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
       if hoverFrame and ((categoryOrder.elements[hoverIndex] == addonTable.CategoryViews.Constants.SectionEnd and isTop) or (categoryOrder.elements[hoverIndex + 1] == addonTable.CategoryViews.Constants.SectionEnd and not isTop)) then
         local level = 1
         local startIndex = 1
-        for i = hoverIndex - 1, 1, -1 do
+        for i = isTop and hoverIndex - 1 or hoverIndex, 1, -1 do
           local value = categoryOrder.elements[i]
           if value == addonTable.CategoryViews.Constants.SectionEnd then
             level = level + 1
