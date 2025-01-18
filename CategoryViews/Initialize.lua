@@ -204,22 +204,3 @@ function addonTable.CategoryViews.Initialize()
 
   SetupAddRemoveItems()
 end
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGIN", function()
-  if not Syndicator then
-    return
-  end
-
-  local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
-  local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
-  if #displayOrder > 0 then
-    for i = #displayOrder, 1, -1 do
-      local source = displayOrder[i]
-      local category = addonTable.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
-      if not category and source ~= addonTable.CategoryViews.Constants.DividerName and not source:match("^_") then
-        table.remove(displayOrder, i)
-      end
-    end
-  end
-  addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
-end)
