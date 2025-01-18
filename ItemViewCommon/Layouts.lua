@@ -934,7 +934,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
       end
       if self.refreshContent then
         table.insert(toResetCache, {newButton, cacheData})
-      else
+      elseif newButton.BGR then
         newButton.BGR.itemLocation = {bagID = cacheData.bagID, slotIndex = cacheData.slotID}
       end
     else
