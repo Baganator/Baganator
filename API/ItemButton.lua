@@ -81,6 +81,17 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", functio
   return false
 end, textInit)
 
+do
+  -- Level up (as heirlooms may change ilvl)
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("PLAYER_LEVEL_UP")
+  frame:SetScript("OnEvent", function()
+    if Baganator.API.IsCornerWidgetActive("item_level") then
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+  end)
+end
+
 local function IsBindOnEquip(details)
   local classID = select(6, C_Item.GetItemInfoInstant(details.itemLink))
   if (IsEquipment(details.itemLink) or classID == Enum.ItemClass.Container) and not details.isBound and (iconSettings.boe_on_common or details.quality > 1) then
