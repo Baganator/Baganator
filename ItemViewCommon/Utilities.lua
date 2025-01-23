@@ -418,7 +418,7 @@ function addonTable.Utilities.AddButtons(allButtons, lastButton, parent, spacing
   return buttonsWidth
 end
 
-if addonTable.Constants.IsRetail then
+if addonTable.Constants.IsRetail or IsUsingLegacyAuctionClient and not IsUsingLegacyAuctionClient() then
   function addonTable.Utilities.IsAuctionable(details)
     if not C_Item.IsItemDataCachedByID(details.itemID) then
       C_Item.RequestLoadItemDataByID(details.itemID)
