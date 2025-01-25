@@ -93,6 +93,8 @@ addonTable.Config.Options = {
   SKINS = "skins",
   DISABLED_SKINS = "disabled_skins",
   CURRENT_SKIN = "current_skin",
+
+  CATEGORY_EDIT_SEARCH_MODE = "category_edit_search_mode",
 }
 
 addonTable.Config.Defaults = {
@@ -199,6 +201,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.DISABLED_SKINS] = {},
   [addonTable.Config.Options.CURRENT_SKIN] = "blizzard",
   [addonTable.Config.Options.SAVED_SEARCHES] = {},
+  [addonTable.Config.Options.CATEGORY_EDIT_SEARCH_MODE] = "visual",
 }
 
 addonTable.Config.IsCharacterSpecific = {

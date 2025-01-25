@@ -324,6 +324,8 @@ L["ITEM_INFORMATION_MISSING"] = "Item information missing"
 L["RIGHT_CLICK_TO_REMOVE"] = "<Right click to remove>"
 L["ENABLE_CATEGORY_MODE_WARNING"] = "You need to enable category view if you want to use categories"
 L["SHOW_NAME_PREFIX"] = "Show name prefix"
+L["RAW_MODE"] = "Raw Mode"
+L["VISUAL_MODE"] = "Visual Mode"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"
