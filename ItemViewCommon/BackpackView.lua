@@ -56,6 +56,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
       for _, layout in ipairs(self.Container.Layouts) do
         layout:InformSettingChanged(settingName)
       end
+      self.searchToApply = true
       if self:IsVisible() then
         self:UpdateForCharacter(self.lastCharacter, self.isLive)
       end
