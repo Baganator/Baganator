@@ -1318,13 +1318,15 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
   local guildData = Syndicator.API.GetGuild(guild)
 
   local availableTabs = 0
+  local wantedButtonCount = 0
   for _, tabData in ipairs(guildData.bank) do
     if tabData.isViewable then
+      wantedButtonCount = wantedButtonCount + #tabData.slots
       availableTabs = availableTabs + 1
     end
   end
 
-  if #self.buttons ~= availableTabs * #guildData.bank then
+  if #self.buttons ~= wantedButtonCount then
     self.refreshContent = true
     self:RebuildLayout(availableTabs, rowWidth)
   elseif self.reflow or rowWidth ~= self.oldRowWidth then
