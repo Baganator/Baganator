@@ -37,6 +37,9 @@ function addonTable.Transfers.FromBagsToGuild(toMove, guildTargets)
   local oldCount = #toMove
 
   toMove = tFilter(toMove, function(item) return not item.isBound end, true)
+  if C_Item.IsItemBindToAccountUntilEquip then
+    toMove = tFilter(toMove, function(item) return not C_Item.IsItemBindToAccountUntilEquip(item.itemLink) end, true)
+  end
 
   if #toMove ~= oldCount then
     UIErrorsFrame:AddMessage(ERR_GUILD_BANK_BOUND_ITEM, 1.0, 0.1, 0.1, 1.0)

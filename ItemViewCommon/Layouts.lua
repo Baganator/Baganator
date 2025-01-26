@@ -1679,6 +1679,7 @@ function BaganatorBagSearchLayoutMonitorMixin:GetMatches()
         slotID = itemButton:GetID(),
         itemCount = itemButton.BGR.itemCount,
         itemID = itemButton.BGR.itemID,
+        itemLink = itemButton.BGR.itemLink,
         hasNoValue = itemButton.BGR.hasNoValue,
         isBound = itemButton.BGR.isBound,
       })
@@ -1698,6 +1699,7 @@ function BaganatorGuildSearchLayoutMonitorMixin:GetMatches()
         slotID = itemButton:GetID(),
         itemCount = itemButton.BGR.itemCount,
         itemID = itemButton.BGR.itemID,
+        itemLink = itemButton.BGR.itemLink,
       })
     end
   end
