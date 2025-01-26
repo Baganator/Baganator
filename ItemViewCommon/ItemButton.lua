@@ -592,13 +592,17 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   self:HookScript("OnHide", self.OnHideHook)
 
   self.GetItemContextMatchResult = function()
-    return (
+    local result = (
       not iconSettings.contextFading or
 
       ItemButtonUtil.GetItemContextMatchResultForItem({bagID = self:GetBagID(), slotIndex = self:GetID()})
         ~= ItemButtonUtil.ItemContextMatchResult.Mismatch and
       GetItemContextMatch(self)
-    ) and ItemButtonUtil.ItemContextMatchResult.Match or ItemButtonUtil.ItemContextMatchResult.Mismatch
+    )
+    if self.BGR then
+      self.BGR.contextMatch = result
+    end
+    return result and ItemButtonUtil.ItemContextMatchResult.Match or ItemButtonUtil.ItemContextMatchResult.Mismatch
   end
   hooksecurefunc(self, "UpdateItemContextOverlay", self.PostUpdateItemContextOverlay)
 
@@ -1077,9 +1081,8 @@ function BaganatorClassicLiveContainerItemButtonMixin:OnHideHook()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:UpdateItemContextMatching()
-  self.ItemContextOverlay:SetShown(
-    iconSettings.contextFading and not GetItemContextMatch(self)
-  )
+  self.BGR.contextMatch = not iconSettings.contextFading or GetItemContextMatch(self)
+  self.ItemContextOverlay:SetShown(not self.BGR.contextMatch)
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:GetInventorySlot()

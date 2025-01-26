@@ -1673,7 +1673,7 @@ BaganatorBagSearchLayoutMonitorMixin = CreateFromMixins(BaganatorSearchLayoutMon
 function BaganatorBagSearchLayoutMonitorMixin:GetMatches()
   local matches = {}
   for _, itemButton in ipairs(self:GetParent().buttons) do
-    if itemButton.BGR and itemButton.BGR.itemID and itemButton.BGR.matchesSearch then
+    if itemButton.BGR and itemButton.BGR.itemID and itemButton.BGR.matchesSearch and itemButton.BGR.contextMatch ~= false then
       table.insert(matches, {
         bagID = itemButton:GetParent():GetID(),
         slotID = itemButton:GetID(),
@@ -1692,7 +1692,7 @@ BaganatorGuildSearchLayoutMonitorMixin = CreateFromMixins(BaganatorSearchLayoutM
 function BaganatorGuildSearchLayoutMonitorMixin:GetMatches()
   local matches = {}
   for _, itemButton in ipairs(self:GetParent().buttons) do
-    if itemButton.BGR and itemButton.BGR.itemID and itemButton.BGR.matchesSearch then
+    if itemButton.BGR and itemButton.BGR.itemID and itemButton.BGR.matchesSearch and itemButton.BGR.contextMatch ~= false then
       table.insert(matches, {
         tabIndex = self:GetParent().prevState.tabIndex,
         slotID = itemButton:GetID(),
