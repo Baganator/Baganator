@@ -152,10 +152,13 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     addonTable.Help.ShowSearchDialog()
   end)
 
+  local operationInProgress = false
+
   local function Save()
-    if self.CategoryName:GetText() == "" then
+    if self.CategoryName:GetText() == "" or operationInProgress then
       return
     end
+    operationInProgress = true
 
     local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
@@ -207,9 +210,11 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
 
     addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+    operationInProgress = false
   end
 
   local function SetState(value)
+    operationInProgress = true
     local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
 
     for _, region in ipairs(self.ChangeAlpha) do
@@ -234,6 +239,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.ItemsEditor:SetupItems()
       self.HelpButton:Enable()
       self.ChangeSearchModeButton:Enable()
+      operationInProgress = false
       Save()
       return
     end
@@ -282,6 +288,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     else
       self.PrefixCheckBox:SetChecked(true)
     end
+    operationInProgress = false
   end
 
   addonTable.CallbackRegistry:RegisterCallback("EditCategory", function(_, value)
