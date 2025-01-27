@@ -28,7 +28,7 @@ local function UpdateButtonFrameVisuals(frame)
         frame[key]:SetShown(not noFrameBorders)
       end
     end
-  elseif frame.TitleBg then -- classic
+  elseif frame.TitleBg then -- older classic builds
     frame.TitleBg:SetAlpha(alpha)
     for _, key in ipairs(classicBorderFrames) do
       frame[key]:SetAlpha(alpha)
