@@ -1087,6 +1087,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:UpdateItemContextMatching(
     self.BGR.contextMatch = result
   end
   self.ItemContextOverlay:SetShown(not result)
+  SetWidgetsAlpha(self, not self.ItemContextOverlay:IsShown() and not self.searchOverlay:IsShown())
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:GetInventorySlot()
