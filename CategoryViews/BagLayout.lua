@@ -350,7 +350,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
 
   for _, details in ipairs(composed.details) do
     if details.results then
-      details.sourceKey = details.source .. "_" .. details.label .. "_" .. (details.groupLabel or "") .. (details.autoIndex or "")
+      details.sourceKey = details.source .. "_" .. details.label .. "_" .. (details.groupLabel or "") .. "_" .. (details.autoIndex or "")
       if #details.results > 0 then
         sourceKeysInUse[details.sourceKey] = details
       end
