@@ -16,11 +16,17 @@ local function UpdateButtonFrameVisuals(frame)
     frame.NineSlice:SetAlpha(alpha)
     frame.NineSlice:SetShown(not noFrameBorders)
     if noFrameBorders then
-      frame.Bg:SetPoint("TOPLEFT", 6, 0)
+      frame.Bg:SetPoint("TOPLEFT", addonTable.Constants.IsClassic and 2 or 6, 0)
       frame.TopTileStreaks:SetPoint("TOPLEFT", 6, 0)
     else
-      frame.Bg:SetPoint("TOPLEFT", 6, -21)
+      frame.Bg:SetPoint("TOPLEFT", addonTable.Constants.IsClassic and 2 or 6, -21)
       frame.TopTileStreaks:SetPoint("TOPLEFT", 6, -21)
+    end
+    if frame.NineSlice:GetRegions() == nil then
+      for _, key in ipairs(classicBorderFrames) do
+        frame[key]:SetAlpha(alpha)
+        frame[key]:SetShown(not noFrameBorders)
+      end
     end
   elseif frame.TitleBg then -- classic
     frame.TitleBg:SetAlpha(alpha)
