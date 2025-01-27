@@ -1074,6 +1074,7 @@ end
 
 function BaganatorClassicLiveContainerItemButtonMixin:OnShowHook()
   addonTable.CallbackRegistry:RegisterCallback("ItemContextChanged", self.UpdateItemContextMatching, self)
+  self:UpdateItemContextMatching()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:OnHideHook()
@@ -1081,8 +1082,11 @@ function BaganatorClassicLiveContainerItemButtonMixin:OnHideHook()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:UpdateItemContextMatching()
-  self.BGR.contextMatch = not iconSettings.contextFading or GetItemContextMatch(self)
-  self.ItemContextOverlay:SetShown(not self.BGR.contextMatch)
+  local result = not iconSettings.contextFading or GetItemContextMatch(self)
+  if self.BGR then
+    self.BGR.contextMatch = result
+  end
+  self.ItemContextOverlay:SetShown(not result)
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:GetInventorySlot()
