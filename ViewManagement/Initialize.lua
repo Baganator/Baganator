@@ -312,6 +312,7 @@ local function SetupBankView(frameGroup)
 
   addonTable.CallbackRegistry:RegisterCallback("FrameGroupSwapped", function()
     if currentFrameGroup == frameGroup then
+      bankView = allBankViews[GetViewType("bank")] or bankView
       FrameUtil.RegisterFrameForEvents(bankView, {
         "BANKFRAME_OPENED",
         "BANKFRAME_CLOSED",
