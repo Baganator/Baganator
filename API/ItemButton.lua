@@ -289,7 +289,7 @@ end, nil, true)
 
 Baganator.API.RegisterCornerWidget(BAGANATOR_L_EQUIPMENT_SET_ICON, "equipment_set_icon", function(EquipmentSetIcon, details)
   EquipmentSetIcon:SetTexture(details.setInfo and details.setInfo[1].iconTexture or nil)
-  return details.setInfo and details.setInfo[1].iconTexture ~= nil
+  return details.setInfo ~= nil and details.setInfo[1].iconTexture ~= nil
 end, function(itemButton)
   local EquipmentSetIcon = itemButton:CreateTexture(nil, "ARTWORK")
   EquipmentSetIcon:SetSize(15, 15)
