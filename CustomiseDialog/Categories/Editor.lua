@@ -424,6 +424,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     if self.currentCategory ~= "-1" and oldSearch then
       self.CategorySearch:SetText(oldSearch:GetText())
     end
+    if oldSearch then
+      self.CategorySearch:SetEnabled(oldSearch.enabled ~= nil and oldSearch.enabled or oldSearch:IsEnabled())
+    end
   end
 
   ApplySearchMode()
