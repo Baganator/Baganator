@@ -156,6 +156,7 @@ API\ItemButton.lua
 API\EquipmentSets.lua
 API\Sorting.lua
 API\Pawn.lua
+API\CategorySource.lua
 
 Compatibility\VanillaEngraving.lua
 Compatibility\Lockpicking.lua

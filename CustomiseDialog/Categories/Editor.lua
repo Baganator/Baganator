@@ -637,108 +637,86 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
   end)
 
-  if ATTC then
-    local addFromATTButton = self:MakeATTImportButton(container)
-    addFromATTButton:SetPoint("BOTTOMRIGHT")
+  if #addonTable.API.CategorySource > 0 then
+    container.externalItemIDFrames = {}
+    local button = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
+    button:SetText(BAGANATOR_L_EXTERNAL)
+    DynamicResizeButton_Resize(button)
+    addonTable.Skins.AddFrame("Button", button)
+    button:SetPoint("BOTTOMRIGHT", 20, 0)
+    local dropdown = CreateFrame("DropdownButton", nil, button)
+    dropdown:SetAllPoints(button)
+    dropdown:SetFrameStrata("LOW")
+
+    button:SetScript("OnClick", function()
+      if dropdown:IsMenuOpen() then
+        dropdown:CloseMenu()
+      else
+        dropdown:OpenMenu()
+      end
+    end)
+
+    local pendingClose = false
+    local function Add(itemIDs, petSpecies)
+      if not pendingClose then
+        return
+      end
+      pendingClose = false
+      local result = {}
+      for _, item in ipairs(itemIDs) do
+        result["i:" .. item] = true
+      end
+      for _, pet in ipairs(petSpecies) do
+        result["p:" .. pet] = true
+      end
+
+      local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+      if not categoryMods[self.currentCategory] then
+        categoryMods[self.currentCategory] = {}
+      end
+      if not categoryMods[self.currentCategory].addedItems then
+        categoryMods[self.currentCategory].addedItems = {}
+      end
+      for item in pairs(result) do
+        for _, mods in pairs(categoryMods) do
+          if mods.addedItems and mods.addedItems[item] then
+            mods.addedItems[item] = nil
+            if next(mods.addedItems) == nil then
+              mods.addedItems = {}
+            end
+          end
+        end
+        categoryMods[self.currentCategory].addedItems[item] = true
+      end
+
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
+    end
+
+    dropdown:SetupMenu(function(_, rootDescription)
+      table.sort(addonTable.API.CategorySource, function(a, b)
+        return a.label < b.label
+      end)
+      for _, details in ipairs(addonTable.API.CategorySource) do
+        local b = rootDescription:CreateButton(details.label, function()
+          if not container.externalItemIDFrames[details.id] then
+            container.externalItemIDFrames[details.id] = details.frameGenerator()
+            container.externalItemIDFrames[details.id]:HookScript("OnHide", function(f)
+              Add(f:GetItems(), f:GetPets())
+            end)
+          end
+          pendingClose = true
+          container.externalItemIDFrames[details.id]:Show()
+        end)
+        if details.tooltip then
+          b:SetTooltip(function(tooltip)
+            tooltip:AddLine(details.tooltip)
+          end)
+        end
+      end
+    end)
   end
 
   return container
-end
-
-function BaganatorCustomiseDialogCategoriesEditorMixin:MakeATTImportButton(container)
-  local completeDialog = "Baganator_ATT_Add_Items_Complete"
-  StaticPopupDialogs[completeDialog] = {
-    text = "",
-    button1 = DONE,
-    timeout = 0,
-    hideOnEscape = 1,
-  }
-  local addFromATTButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
-  addonTable.Skins.AddFrame("Button", addFromATTButton)
-  addFromATTButton:SetText(BAGANATOR_L_ATT_ADDON)
-  DynamicResizeButton_Resize(addFromATTButton)
-  addFromATTButton:SetScript("OnEnter", function()
-    GameTooltip:SetOwner(addFromATTButton, "ANCHOR_TOP")
-    GameTooltip:SetText(BAGANATOR_L_ADD_FROM_ATT_MESSAGE, nil, nil, nil, nil, true)
-  end)
-  addFromATTButton:SetScript("OnLeave", function()
-    GameTooltip:Hide()
-  end)
-
-  local function GetItemsFromATTEntry(entry)
-    local result = {}
-    if entry.itemID then
-      table.insert(result, "i:" .. entry.itemID)
-    end
-    if entry.petID then
-      table.insert(result, "p:" .. entry.petID)
-    end
-    if entry.g then
-      for _, val in pairs(entry.g) do
-        tAppendAll(result, GetItemsFromATTEntry(val))
-      end
-    end
-    return result
-  end
-
-  addFromATTButton:SetScript("OnClick", function()
-    local activePaths = {}
-    for key, frame in pairs(_G) do
-      local path = key:match("^AllTheThings%-Window%-.*%|r(.*%>.*%d)$")
-      if path and frame:IsVisible() then
-        table.insert(activePaths, path)
-      end
-    end
-
-    local items = {}
-    for _, path in ipairs(activePaths) do
-      local hashes = {strsplit(">", path)}
-      local entry = ATTC.SearchForSourcePath(ATTC:GetDataCache().g, hashes, 2, #hashes)
-
-      local label, value = hashes[#hashes]:match("(%a+)(%-?%d+)")
-
-      if not entry then
-        local searchResults = ATTC.SearchForField(label, tonumber(value))
-        for _, result in ipairs(searchResults) do
-          if ATTC.GenerateSourceHash(result) == path then
-            entry = result
-          end
-        end
-      end
-
-      if not entry then
-        entry = ATTC.GetCachedSearchResults(ATTC.SearchForLink, label .. ":" .. value);
-      end
-
-      if not entry then
-        local tmp = {}
-        ATTC.BuildFlatSearchResponse(ATTC:GetDataCache().g, label, tonumber(value), tmp)
-        if #tmp == 1 then
-          entry = tmp[1]
-        end
-      end
-      if entry then
-        tAppendAll(items, GetItemsFromATTEntry(entry))
-      end
-    end
-
-    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
-    if not categoryMods[self.currentCategory] then
-      categoryMods[self.currentCategory] = {}
-    end
-    if not categoryMods[self.currentCategory].addedItems then
-      categoryMods[self.currentCategory].addedItems = {}
-    end
-    for _, item in ipairs(items) do
-      categoryMods[self.currentCategory].addedItems[item] = true
-    end
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
-
-    StaticPopupDialogs[completeDialog].text = BAGANATOR_L_ADD_FROM_ATT_POPUP_COMPLETE:format(#items, #activePaths)
-    StaticPopup_Show(completeDialog)
-  end)
-
-  return addFromATTButton
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsGrid(container)

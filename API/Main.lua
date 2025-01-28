@@ -276,6 +276,10 @@ function Baganator.API.Skins.GetCurrentSkin()
   return addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)
 end
 
+function Baganator.API.Skins.AddFrame(regionType, region, tags)
+  addonTable.Skins.AddFrame(regionType, region, tags)
+end
+
 function Baganator.API.Skins.GetAllFrames()
   return addonTable.Skins.allFrames
 end
@@ -334,4 +338,21 @@ function Baganator.API.RequestLayoutUpdate()
       queuedLayoutUpdate = false
     end)
   end
+end
+
+Baganator.API.Categories = {}
+
+addonTable.API.CategorySource = {}
+
+-- id: string
+-- label: string
+-- tooltip: string?
+-- frameGenerator: function() end -> frame: GetItems(), GetPets(), Clear()
+-- This frame is the widget to display to input/generate any item IDs this
+-- source provides.
+function Baganator.API.Categories.RegisterSourceOfIDs(id, label, tooltip, frameGenerator)
+  assert(type(id) == "string" and type(label) == "string" and (tooltip == nil or type(tooltip) == "string") and type(frameGenerator) == "function")
+  assert(not FindInTableIf(addonTable.API.CategorySource, function(a) return a.id == id end), "id already exists")
+
+  table.insert(addonTable.API.CategorySource, {id = id, label = label, tooltip = tooltip, frameGenerator = frameGenerator})
 end
