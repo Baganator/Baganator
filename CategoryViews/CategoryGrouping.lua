@@ -406,6 +406,7 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
           source = details.details.source,
           groupLabel = label,
           auto = true,
+          autoIndex = details.details.autoIndex,
           results = {},
           next = prevEntry.next,
         }
