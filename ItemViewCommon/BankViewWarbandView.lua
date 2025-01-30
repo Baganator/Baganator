@@ -513,10 +513,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
     self.DepositMoneyButton:ClearAllPoints()
     if isWarbandData then
-      self.DepositMoneyButton:SetPoint("BOTTOM", 0, 29)
-      self.DepositMoneyButton:SetPoint("RIGHT", -sideSpacing, 0)
+      self.DepositMoneyButton:SetPoint("BOTTOM", self, 0, 29)
+      self.DepositMoneyButton:SetPoint("RIGHT",  self,-sideSpacing, 0)
     else
-      self.DepositMoneyButton:SetPoint("BOTTOM", 0, 5)
+      self.DepositMoneyButton:SetPoint("BOTTOM",  self, 0, 5)
       self.DepositMoneyButton:SetPoint("RIGHT", self.Money, "LEFT", -sideSpacing, 0)
     end
   end
