@@ -122,6 +122,28 @@ local skinners = {
   TrimScrollBar = function(frame)
     S:HandleTrimScrollBar(frame)
   end,
+  ScrollButton = function(button, tags)
+    button:ClearNormalTexture()
+    local tex = button:CreateTexture(nil, "ARTWORK")
+    tex:SetTexture(E.Media.Textures.ArrowUp)
+    tex:SetSize(16, 16)
+    button:SetSize(16, 16)
+    button:SetAlpha(1)
+    if tags.left then
+      tex:SetPoint("RIGHT")
+      tex:SetRotation(math.pi/2)
+    elseif tags.right then
+      tex:SetPoint("LEFT")
+      tex:SetRotation(-math.pi/2)
+    end
+    button.__texture = tex
+    button:SetScript("OnEnter", function()
+      tex:SetVertexColor(unpack(E.media.rgbvaluecolor))
+    end)
+    button:SetScript("OnLeave", function()
+      tex:SetVertexColor(1, 1, 1)
+    end)
+  end,
   CheckBox = function(frame)
     S:HandleCheckBox(frame)
   end,

@@ -351,6 +351,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   end
 
   self.TextCategorySearch:SetScript("OnEnterPressed", Save)
+  addonTable.Skins.AddFrame("EditBox", self.TextCategorySearch)
   addonTable.Skins.AddFrame("IconButton", self.ChangeSearchModeButton, {"changeSearchMode"})
 
   local function ApplySearchMode()
