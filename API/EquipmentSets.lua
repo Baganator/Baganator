@@ -52,7 +52,8 @@ if not addonTable.Constants.IsEra then
       local validItems = true
       if IsMacClient() then
         for _, itemID in pairs(C_EquipmentSet.GetItemIDs(setID)) do
-          if not C_Item.GetItemInfoInstant(itemID) then
+          -- itemID == -1 represents a "skipped" slot
+          if not C_Item.GetItemInfoInstant(itemID) and itemID ~= -1 then
             validItems = false
           end
         end
