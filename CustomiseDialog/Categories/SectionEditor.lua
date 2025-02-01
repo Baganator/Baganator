@@ -76,6 +76,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
     if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER then
       local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
       if displayOrder[self.currentSectionIndex] ~= self.currentSection then
+        self:Disable() -- Necessary to work around edit box not losing focus in classic era
         self:Return()
       end
     end
