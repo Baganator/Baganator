@@ -7,7 +7,7 @@
     </Scripts>
     <Layers>
       <Layer level="BACKGROUND">
-        <FontString inherits="GameFontHighlight" text="NAME" parentArray="ChangeAlpha">
+        <FontString inherits="GameFontHighlight" text="NAME" parentKey="NameLabel" parentArray="ChangeAlpha">
           <Anchors>
             <Anchor point="TOPLEFT" x="15"/>
           </Anchors>

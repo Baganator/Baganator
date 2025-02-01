@@ -467,7 +467,11 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
         layout.sourceKey = details.sourceKey
         local label = self.labelsPool:Acquire()
         addonTable.Skins.AddFrame("CategoryLabel", label)
-        label:SetText(details.label)
+        if details.color then
+          label:SetText("|cff" .. details.color .. details.label .. "|r")
+        else
+          label:SetText(details.label)
+        end
         label.index = index
         label.source = details.source
         label.sourceKey = details.sourceKey

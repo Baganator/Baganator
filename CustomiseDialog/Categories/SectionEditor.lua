@@ -63,7 +63,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
     else
       self.currentSection = value
       self.currentSectionIndex = index
-      local section = value:match("^_(.*)")
+      local section = value:match("^_(.-)$")
       self.SectionName:SetText(_G["BAGANATOR_L_SECTION_" .. section] or section)
     end
   end)
@@ -81,6 +81,17 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       end
     end
   end)
+
+  local colorPickerFrameMonitor = CreateFrame("Frame")
+  colorPickerFrameMonitor.OnUpdate = function()
+    if not ColorPickerFrame:IsVisible() then
+      colorPickerFrameMonitor:SetScript("OnUpdate", nil)
+    end
+    if colorPickerFrameMonitor.changed then
+      Save()
+    end
+    colorPickerFrameMonitor.changed = false
+  end
 
   self.SectionName:SetScript("OnEditFocusLost", Save)
   self.SectionName:SetScript("OnKeyDown", function(_, key)

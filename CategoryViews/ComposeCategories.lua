@@ -148,7 +148,6 @@ function addonTable.CategoryViews.ComposeCategories(everything)
   local categoryKeys = {}
   local currentSection = {}
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
-    local sectionName = source:match("^_(.*)")
     local section = CopyTable(currentSection)
     if source == addonTable.CategoryViews.Constants.DividerName then
       table.insert(allDetails, {
@@ -163,7 +162,8 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         type = "divider",
         section = section,
       })
-    elseif sectionName then
+    elseif source:sub(1, 1) == "_" then
+      local sectionName = source:match("^_(.*)")
       table.insert(allDetails, {
         type = "divider",
         section = section,
@@ -180,13 +180,14 @@ function addonTable.CategoryViews.ComposeCategories(everything)
     local priority = categoryMods[source] and categoryMods[source].priority and (categoryMods[source].priority + 1) * 200 or 0
 
     local mods = categoryMods[source]
-    local group, groupPrefix, attachedItems
+    local group, groupPrefix, attachedItems, color
     if mods then
       if mods.addedItems and next(mods.addedItems) then
         attachedItems = mods.addedItems
       end
       group = mods.group
       groupPrefix = mods.showGroupPrefix
+      color = mods.color
     end
 
     local category = addonTable.CategoryViews.Constants.SourceToCategory[source]
@@ -230,6 +231,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
               attachedItems = autoDetails.attachedItems[index],
               group = group,
               groupPrefix = groupPrefix,
+              color = color,
               auto = true,
               autoIndex = index,
               section = section,
@@ -259,6 +261,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
           attachedItems = attachedItems,
           group = group,
           groupPrefix = groupPrefix,
+          color = color,
           section = section,
         }
       end
@@ -280,6 +283,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         attachedItems = attachedItems,
         group = group,
         groupPrefix = groupPrefix,
+        color = color,
         section = section,
       }
     end
