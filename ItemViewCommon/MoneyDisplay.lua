@@ -4,7 +4,7 @@ local function GetShowState(data)
   if data.details.show then
     return data.details.show.gold
   else
-    return not data.details.hidden == false
+    return data.details.hidden ~= true
   end
 end
 
@@ -38,7 +38,8 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
   end
 
   for _, guildInfo in ipairs(addonTable.Utilities.GetAllGuilds()) do
-    if realmsToInclude[guildInfo.realmNormalized] and GetShowState(Syndicator.API.GetGuild(guildInfo.fullName)) then
+    local guildData = Syndicator.API.GetGuild(guildInfo.fullName)
+    if realmsToInclude[guildInfo.realmNormalized] and guildData.details.show and guildData.details.show.gold then
       local money = Syndicator.API.GetGuild(guildInfo.fullName).money
       local guildName = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guildInfo.name)
       if #connectedRealms > 1 then
