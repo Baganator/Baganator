@@ -10,7 +10,7 @@ function BaganatorCategoryViewsCategoryButtonMixin:OnLoad()
 end
 
 function BaganatorCategoryViewsCategoryButtonMixin:Resize()
-  self:SetSize(self:GetFontString():GetUnboundedStringWidth(), self:GetFontString():GetHeight())
+  self:SetSize(self:GetFontString():GetUnboundedStringWidth(), self:GetFontString():GetLineHeight())
 end
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnClick(button)
