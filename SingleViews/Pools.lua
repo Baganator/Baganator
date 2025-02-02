@@ -56,6 +56,8 @@ function addonTable.SingleViews.GetCollapsingBagSectionsPool(self)
     end
     function button:CheckResults(text)
       self.fadeAnimation:Stop()
+      text = text or button.lastSearch
+      button.lastSearch = text
       if text == "" or not addonTable.Config.Get(addonTable.Config.Options.HIDE_SPECIAL_CONTAINER)[details.key] then
         return
       end
