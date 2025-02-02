@@ -57,6 +57,7 @@ end
 function addonTable.SlashCmd.ResetCategories()
   addonTable.Config.ResetOne(addonTable.Config.Options.CUSTOM_CATEGORIES)
   addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+  addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_SECTIONS)
   addonTable.Config.ResetOne(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED)
   addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
   addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_HIDDEN)

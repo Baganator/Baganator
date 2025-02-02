@@ -2,7 +2,7 @@ local _, addonTable = ...
 
 function addonTable.CustomiseDialog.SingleCategoryExport(name)
   local export = {
-    version = 1,
+    version = 2,
     categories = {},
     modifications = {},
   }
@@ -41,8 +41,9 @@ end
 
 function addonTable.CustomiseDialog.CategoriesExport()
   local export = {
-    version = 1,
+    version = 2,
     categories = {},
+    sections = CopyTable(addonTable.Config.Get("category_sections")),
     modifications = {},
     hidden = {},
     order = CopyTable(addonTable.Config.Get("category_display_order")),
@@ -88,6 +89,22 @@ function addonTable.CustomiseDialog.CategoriesExport()
 end
 
 local function ImportCategories(import)
+  if import.version == 1 and import.order then
+    if type(import.order) ~= "table" then
+      addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+      return
+    end
+    local sectionIndex = 1
+    import.sections = {}
+    for index, entry in ipairs(import.order) do
+      if entry:match("^_") and entry ~= addonTable.CategoryViews.Constants.SectionEnd then
+        import.sections[tostring(sectionIndex)] = {name = entry:match("^_(.*)")}
+        import.order[index] = "_" .. tostring(sectionIndex)
+        sectionIndex = sectionIndex + 1
+      end
+    end
+  end
+
   local customCategories = {}
   local categoryMods = {}
   local priorities = {}
@@ -243,6 +260,30 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
         table.insert(displayOrder, source)
       end
     end
+    local sections = {}
+    if type(import.sections) ~= "table" then
+      addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+      return
+    end
+    for source, details in pairs(import.sections) do
+      if tIndexOf(displayOrder, "_" .. source) ~= nil then
+        local s = {}
+        if type(details.name) ~= "string" then
+          addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+          return
+        end
+        s.name = details.name
+
+        if details.color then
+          if type(details.color) ~= "string" or #details.color ~= 6 then
+            addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+            return
+          end
+          s.color = details.color
+        end
+        sections[source] = s
+      end
+    end
 
     local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     for source, category in pairs(customCategories) do
@@ -266,6 +307,7 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
       end
     end
     addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
+    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTIONS, CopyTable(sections))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)

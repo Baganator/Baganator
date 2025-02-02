@@ -276,7 +276,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       if current.source ~= old.source then
         anyNew = true
         break
-      elseif (current.source and (current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory)
+      elseif current.results and (current.source and (current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory)
           and not old.emptySlots and (old.oldLength or #old.results) < #current.results) then
         for _, item in ipairs(current.results) do -- Put returning items back where they were before
           -- Check if the exact item existed before, or at least a similar one
@@ -423,7 +423,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       if index < #composed.details then
         for i = index + 1, #composed.details do
           local d = composed.details[i]
-          if d.section[level] ~= details.label then
+          if d.section[level] ~= details.source then
             break
           elseif d.type == "category" and #d.results > 0 and not hidden[d.source] then
             itemCount = itemCount + (d.oldLength or #d.results)
@@ -433,7 +433,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       end
       if itemCount > 0 or any then
         local button = self.sectionButtonPool:Acquire()
-        if sectionToggled[details.label] then
+        if sectionToggled[details.source] then
           button:SetText(details.label .. " " .. LIGHTGRAY_FONT_COLOR:WrapTextInColorCode("(" .. itemCount .. ")"))
           button:SetCollapsed()
         else
@@ -441,7 +441,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
           button:SetExpanded()
         end
         button.assignedLayouts = {}
-        button.label = details.label
+        button.source = details.source
         button.section = details.section
         button.moveOffscreen = IsSectionToggled(details.section)
         table.insert(layoutsShown, button)

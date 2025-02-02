@@ -76,6 +76,7 @@ addonTable.Config.Options = {
 
   CUSTOM_CATEGORIES = "custom_categories",
   CATEGORY_MODIFICATIONS = "category_modifications",
+  CATEGORY_SECTIONS = "category_sections",
   CATEGORY_MIGRATION = "category_migration",
   CATEGORY_DEFAULT_IMPORT = "category_default_import",
   AUTOMATIC_CATEGORIES_ADDED = "automatic_categories_added",
@@ -191,6 +192,7 @@ addonTable.Config.Defaults = {
   [addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED] = {},
   [addonTable.Config.Options.CATEGORY_DISPLAY_ORDER] = {},
   [addonTable.Config.Options.CATEGORY_HIDDEN] = {},
+  [addonTable.Config.Options.CATEGORY_SECTIONS] = {},
   [addonTable.Config.Options.CATEGORY_SECTION_TOGGLED] = {},
   [addonTable.Config.Options.CATEGORY_HORIZONTAL_SPACING] = 0.30,
   [addonTable.Config.Options.CATEGORY_ITEM_GROUPING] = true,

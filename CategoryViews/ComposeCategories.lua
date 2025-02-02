@@ -145,6 +145,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
 
   local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
   local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
+  local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
   local categoryKeys = {}
   local currentSection = {}
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
@@ -163,15 +164,17 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         section = section,
       })
     elseif source:sub(1, 1) == "_" then
-      local sectionName = source:match("^_(.*)")
+      local sectionID = source:match("^_(.*)")
       table.insert(allDetails, {
         type = "divider",
         section = section,
       })
+      local sectionName = sections[sectionID].name
       local label = _G["BAGANATOR_L_SECTION_" .. sectionName] or sectionName
-      table.insert(currentSection, label)
+      table.insert(currentSection, sectionID)
       table.insert(allDetails, {
         type = "section",
+        source = sectionID,
         label = label,
         section = section,
       })

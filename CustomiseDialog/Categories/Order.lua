@@ -54,6 +54,7 @@ local function PopulateCategoryOrder(container)
   local elements = {}
   local dataProviderElements = {}
   local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+  local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
   local indentLevel = 0
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
     local indent = string.rep("      ", indentLevel)
@@ -83,8 +84,8 @@ local function PopulateCategoryOrder(container)
         name = " "
       else
         indentLevel = indentLevel + 1
-        local section = source:match("^_(.*)")
-        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. (_G["BAGANATOR_L_SECTION_" .. section] or section)
+        local sectionDetails = sections[source:match("^_(.*)")]
+        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. (_G["BAGANATOR_L_SECTION_" .. sectionDetails.name] or sectionDetails.name)
       end
       table.insert(dataProviderElements, {value = source, label = name})
       table.insert(elements, source)
@@ -124,7 +125,7 @@ local function GetCategoryContainer(parent, pickupCallback)
       frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
       frame:SetScript("OnClick", function(self, button)
         if self.value:match("^_") then
-          addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", self.value, self.indexValue)
+          addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", (self.value:match("^_(.*)")))
         elseif self.value == "default_auto_recents" then
           addonTable.CallbackRegistry:TriggerEvent("EditCategoryRecent")
         elseif self.value == addonTable.CategoryViews.Constants.EmptySlotsCategory then
@@ -298,6 +299,8 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
       end
 
       if draggable.value:match("^_") then
+        local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
+        sections[draggable.value:gsub("^_", "")] = draggable.sectionDetails
         table.insert(categoryOrder.elements, insertIndex, draggable.value)
         for _, value in ipairs(draggable.sectionValues) do
           insertIndex = insertIndex + 1
@@ -361,10 +364,16 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
 
   local function Pickup(value, label, index)
     draggable.value = value
+    draggable.sectionDetails = nil
     draggable.sectionValues = {}
     if index ~= nil then
       table.remove(categoryOrder.elements, index)
       if value:match("^_") then -- section
+        local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
+        local key = value:match("^_(.*)")
+        draggable.sectionDetails = sections[key]
+        sections[key] = nil
+
         local level = 1
         while level ~= 0 and #categoryOrder.elements > 0 do
           local tmp = categoryOrder.elements[index]
@@ -392,7 +401,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
 
   dropdown.OnEntryClicked = function(_, option)
     if option.value == "_" then
-      addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", option.value)
+      addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", (option.value:match("^_(.*)")))
     elseif option.value == addonTable.CategoryViews.Constants.DividerName then
       Pickup(option.value, addonTable.CategoryViews.Constants.DividerLabel, nil)
     elseif option.value ~= "" then
