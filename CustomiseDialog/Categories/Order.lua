@@ -202,10 +202,12 @@ end
 
 local function SetCategoriesToDropDown(dropdown, ignore)
   dropdown:SetupMenu(function(_, rootDescription)
+    local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     local defaultOptions = {}
     for source, category in pairs(addonTable.CategoryViews.Constants.SourceToCategory) do
+      local color = categoryMods[source] and categoryMods[source].color or "ffffff"
       if not ignore[source] then
-        table.insert(defaultOptions, {label = category.name, value = source})
+        table.insert(defaultOptions, {label = "|cff" .. color .. category.name .. "|r", sortKey = category.name, value = source})
       end
     end
     table.sort(defaultOptions, function(a, b) return a.label:lower() < b.label:lower() end)
@@ -214,16 +216,19 @@ local function SetCategoriesToDropDown(dropdown, ignore)
     local nameCount = {}
     for source, category in pairs(addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)) do
       if not ignore[source] then
+        local color = categoryMods[source] and categoryMods[source].color or "ffffff"
         if not nameCount[category.name] then
-          table.insert(customOptions, {label = category.name .. " (*)", value = source, isCustom = true})
+          local raw = category.name .. " (*)"
+          table.insert(customOptions, {label = "|cff" .. color .. raw .. "|r", sortKey = raw, value = source, isCustom = true})
           nameCount[category.name] = 1
         else
+          local raw = category.name .. " (*" .. nameCount[category.name] .. ")"
           nameCount[category.name] = nameCount[category.name] + 1
-          table.insert(customOptions, {label = category.name .. " (*" .. nameCount[category.name] .. ")", value = source, isCustom = true})
+          table.insert(customOptions, {label = "|cff" .. color .. raw .. "|r", sortKey = raw, value = source, isCustom = true})
         end
       end
     end
-    table.sort(customOptions, function(a, b) return a.label:lower() < b.label:lower() end)
+    table.sort(customOptions, function(a, b) return a.sortKey:lower() < b.sortKey:lower() end)
 
     local options = customOptions
     tAppendAll(options, defaultOptions)
