@@ -199,11 +199,13 @@ function addonTable.CategoryViews.ComposeCategories(everything)
     if category then
       if category.auto then
         local autoDetails = GetAuto(category, everything)
+        local currentTree = {}
         for index = 1, #autoDetails.searches do
           section = CopyTable(currentSection)
           local search = autoDetails.searches[index]
           if search == "__start" or search == "__end" then
             if search == "__end" then
+              table.remove(currentTree)
               table.remove(currentSection)
               table.remove(section)
               table.insert(allDetails, {
@@ -215,7 +217,8 @@ function addonTable.CategoryViews.ComposeCategories(everything)
                 type = "divider",
                 section = section,
               })
-              local sectionSource = source .. "$" .. table.concat(section, "$") .. "$" .. autoDetails.searchLabels[index]
+              table.insert(currentTree, autoDetails.searchLabels[index])
+              local sectionSource = source .. "$" .. table.concat(currentTree, "$")
               table.insert(currentSection, sectionSource)
               table.insert(allDetails, {
                 type = "section",
