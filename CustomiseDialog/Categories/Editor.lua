@@ -231,6 +231,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     self.Blocker:SetPoint("TOPLEFT", self.CategoryName)
     self.Blocker:SetPoint("BOTTOMRIGHT", self.CategorySearch)
     self.DeleteButton:SetEnabled(tIndexOf(addonTable.CategoryViews.Constants.ProtectedCategories, value) == nil)
+    self.ItemsEditor:Enable()
     self.CategoryColorSwatch:Enable()
     self.CategoryColorSwatch.pendingColor = nil
 
@@ -268,6 +269,10 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.ChangeSearchModeButton:Enable()
     else
       category = addonTable.CategoryViews.Constants.SourceToCategory[value]
+      self.ItemsEditor:SetEnabled(not category.auto)
+      if category.auto then
+        self.ItemsEditor:SetAlpha(disabledAlpha)
+      end
       self.CategoryName:SetAlpha(disabledAlpha)
       self.CategorySearch:SetAlpha(disabledAlpha)
       self.CategorySearch:Disable()
@@ -527,6 +532,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:Disable()
   self.currentCategory = "-1"
   self.DeleteButton:Disable()
   self.ExportButton:Disable()
+  self.ItemsEditor:Disable()
   self.ItemsEditor:SetupItems()
   self.TextCategorySearch:Disable()
   for _, region in ipairs(self.ChangeAlpha) do
@@ -602,7 +608,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
   end)
   local function UpdateForCursor()
     local t, itemID, itemLink = GetCursorInfo()
-    dropRegion:SetShown(t == "item" and self.currentCategory ~= "-1")
+    dropRegion:SetShown(t == "item" and container.enabled)
   end
   container:SetScript("OnEvent", UpdateForCursor)
   hooksecurefunc(container, "SetupItems", UpdateForCursor)
@@ -624,8 +630,10 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
     end
   end)
   addItemsEditBox:SetScript("OnEnter", function()
-    GameTooltip:SetOwner(addItemsEditBox, "ANCHOR_TOP")
-    GameTooltip:SetText(BAGANATOR_L_ADD_ITEM_IDS_MESSAGE)
+    if container.enabled then
+      GameTooltip:SetOwner(addItemsEditBox, "ANCHOR_TOP")
+      GameTooltip:SetText(BAGANATOR_L_ADD_ITEM_IDS_MESSAGE)
+    end
   end)
   addItemsEditBox:SetScript("OnLeave", function()
     GameTooltip:Hide()
@@ -659,9 +667,25 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
   end)
 
+  local addFromATTButton
   if ATTC then
-    local addFromATTButton = self:MakeATTImportButton(container)
+    addFromATTButton = self:MakeATTImportButton(container)
     addFromATTButton:SetPoint("BOTTOMRIGHT")
+  end
+
+  container.Enable = function()
+    container:SetEnabled(true)
+  end
+  container.Disable = function()
+    container:SetEnabled(false)
+  end
+  container.SetEnabled = function(_, state)
+    container.enabled = state
+    addButton:SetEnabled(state)
+    addItemsEditBox:SetEnabled(state)
+    if addFromATTButton then
+      addFromATTButton:SetEnabled(state)
+    end
   end
 
   return container
