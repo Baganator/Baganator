@@ -195,6 +195,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(char
 
     local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
     if self.searchToApply then
+      self.searchToApply = false
       self:ApplySearch(searchText)
     end
 

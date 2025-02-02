@@ -230,6 +230,7 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
 
     local searchText = self.SearchWidget.SearchBox:GetText()
     if self.searchToApply then
+      self.searchToApply = false
       self:ApplySearch(searchText)
     end
 
