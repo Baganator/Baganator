@@ -54,6 +54,7 @@ local function PopulateCategoryOrder(container)
   local elements = {}
   local dataProviderElements = {}
   local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
+  local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
   local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
   local indentLevel = 0
   for _, source in ipairs(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)) do
@@ -61,6 +62,8 @@ local function PopulateCategoryOrder(container)
     local color = WHITE_FONT_COLOR
     if hidden[source] then
       color = GRAY_FONT_COLOR
+    elseif categoryMods[source] and categoryMods[source].color then
+      color = CreateColorFromRGBHexString(categoryMods[source].color)
     end
 
     local category = addonTable.CategoryViews.Constants.SourceToCategory[source]
@@ -85,7 +88,10 @@ local function PopulateCategoryOrder(container)
       else
         indentLevel = indentLevel + 1
         local sectionDetails = sections[source:match("^_(.*)")]
-        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. (_G["BAGANATOR_L_SECTION_" .. sectionDetails.name] or sectionDetails.name)
+        if sectionDetails.color then
+          color = CreateColorFromRGBHexString(sectionDetails.color)
+        end
+        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. color:WrapTextInColorCode((_G["BAGANATOR_L_SECTION_" .. sectionDetails.name] or sectionDetails.name))
       end
       table.insert(dataProviderElements, {value = source, label = name})
       table.insert(elements, source)
