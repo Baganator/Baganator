@@ -404,6 +404,7 @@ function BaganatorCategoryViewsCategoryGroupingMixin:GroupingResults()
           label = prefix .. label,
           section = details.details.section,
           source = details.details.source,
+          color = details.details.color,
           groupLabel = label,
           auto = true,
           autoIndex = details.details.autoIndex,
