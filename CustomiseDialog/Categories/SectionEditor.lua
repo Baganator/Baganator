@@ -44,6 +44,14 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       table.insert(displayOrder, 1, "_" .. self.currentSection)
       table.insert(displayOrder, 2, addonTable.CategoryViews.Constants.SectionEnd)
     end
+    if self.SectionColorSwatch.pendingColor then
+      local c = self.SectionColorSwatch.pendingColor
+      if c.r == 1 and c.g == 1 and c.b == 1 then
+        sections[self.currentSection].color = nil
+      else
+        sections[self.currentSection].color = c:GenerateHexColorNoAlpha()
+      end
+    end
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
   end
 
@@ -55,18 +63,33 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
   end)
 
+  self.SectionColorSwatch = addonTable.CustomiseDialog.GetColorSwatch(self, self.NameLabel, Save)
+  table.insert(self.ChangeAlpha, self.SectionColorSwatch)
+
   addonTable.CallbackRegistry:RegisterCallback("EditCategorySection", function(_, value)
     if not self:GetParent():IsVisible() then
       return
     end
+    self.SectionColorSwatch.pendingColor = nil
     if value == "" then
       self.currentSection = "-1"
       self.SectionName:SetText(BAGANATOR_L_NEW_SECTION)
+
+      self.SectionColorSwatch.lastColor = CreateColor(1, 1, 1)
+      self.SectionColorSwatch:SetColorRGB(self.SectionColorSwatch.lastColor:GetRGBA())
+
       Save()
     else
       self.currentSection = value
       local sectionDetails = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)[value]
       self.SectionName:SetText(_G["BAGANATOR_L_SECTION_" .. sectionDetails.name] or sectionDetails.name)
+
+      if sectionDetails.color then
+        self.SectionColorSwatch.lastColor = CreateColorFromRGBAHexString(sectionDetails.color .. "ff")
+      else
+        self.SectionColorSwatch.lastColor = CreateColor(1, 1, 1)
+      end
+      self.SectionColorSwatch:SetColorRGB(self.SectionColorSwatch.lastColor:GetRGBA())
     end
   end)
 
@@ -107,6 +130,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
 end
 
 function BaganatorCustomiseDialogCategoriesSectionEditorMixin:Disable()
+  self.SectionColorSwatch:SetColorRGB(1, 1, 1)
   self.SectionName:SetText("")
 end
 

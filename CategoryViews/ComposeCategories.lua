@@ -169,12 +169,14 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         type = "divider",
         section = section,
       })
-      local sectionName = sections[sectionID].name
+      local sectionDetails = sections[sectionID]
+      local sectionName = sectionDetails.name
       local label = _G["BAGANATOR_L_SECTION_" .. sectionName] or sectionName
       table.insert(currentSection, sectionID)
       table.insert(allDetails, {
         type = "section",
         source = sectionID,
+        color = sectionDetails.color,
         label = label,
         section = section,
       })
@@ -213,9 +215,12 @@ function addonTable.CategoryViews.ComposeCategories(everything)
                 type = "divider",
                 section = section,
               })
-              table.insert(currentSection, autoDetails.searchLabels[index])
+              local sectionSource = source .. "$" .. table.concat(section, "$") .. "$" .. autoDetails.searchLabels[index]
+              table.insert(currentSection, sectionSource)
               table.insert(allDetails, {
                 type = "section",
+                color = color,
+                source = sectionSource,
                 label = autoDetails.searchLabels[index],
                 section = section,
               })

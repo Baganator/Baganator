@@ -142,6 +142,7 @@ CustomiseDialog\Categories\DividerEditor.lua
 CustomiseDialog\Categories\DividerEditor.xml
 CustomiseDialog\Categories\RecentEditor.lua
 CustomiseDialog\Categories\EmptyEditor.lua
+CustomiseDialog\Categories\Utilities.lua
 CustomiseDialog\Categories\ImportExport.lua
 CustomiseDialog\Main.lua
 CustomiseDialog\Main.xml

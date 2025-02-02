@@ -433,11 +433,15 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       end
       if itemCount > 0 or any then
         local button = self.sectionButtonPool:Acquire()
+        local label = details.label
+        if details.color then
+          label = "|cff" .. details.color .. label .. "|r"
+        end
         if sectionToggled[details.source] then
-          button:SetText(details.label .. " " .. LIGHTGRAY_FONT_COLOR:WrapTextInColorCode("(" .. itemCount .. ")"))
+          button:SetText(label .. " " .. LIGHTGRAY_FONT_COLOR:WrapTextInColorCode("(" .. itemCount .. ")"))
           button:SetCollapsed()
         else
-          button:SetText(details.label)
+          button:SetText(label)
           button:SetExpanded()
         end
         button.assignedLayouts = {}

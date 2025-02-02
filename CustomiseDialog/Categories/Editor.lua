@@ -232,6 +232,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     self.Blocker:SetPoint("BOTTOMRIGHT", self.CategorySearch)
     self.DeleteButton:SetEnabled(tIndexOf(addonTable.CategoryViews.Constants.ProtectedCategories, value) == nil)
     self.CategoryColorSwatch:Enable()
+    self.CategoryColorSwatch.pendingColor = nil
 
     if value == "" then
       self.currentCategory = "-1"
@@ -305,7 +306,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.CategoryColorSwatch.lastColor = CreateColor(1, 1, 1)
     end
     self.CategoryColorSwatch:SetColorRGB(self.CategoryColorSwatch.lastColor:GetRGBA())
-    self.CategoryColorSwatch.pendingColor = nil
 
     operationInProgress = false
   end
@@ -400,63 +400,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
   end)
 
-  local colorPickerFrameMonitor = CreateFrame("Frame")
-  colorPickerFrameMonitor.OnUpdate = function()
-    if not ColorPickerFrame:IsVisible() then
-      colorPickerFrameMonitor:SetScript("OnUpdate", nil)
-    end
-    if colorPickerFrameMonitor.changed then
-      Save()
-      self.CategoryColorSwatch.lastColor = self.CategoryColorSwatch.pendingColor
-      self.CategoryColorSwatch.pendingColor = nil
-    end
-    colorPickerFrameMonitor.changed = false
-  end
-  self.CategoryColorSwatch = CreateFrame("Button", nil, self, "ColorSwatchTemplate")
-  self.CategoryColorSwatch:SetPoint("RIGHT", -10, 0)
-  self.CategoryColorSwatch:SetPoint("CENTER", self.NameLabel)
-  self.CategoryColorSwatch:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-  self.CategoryColorSwatch:SetScript("OnClick", function(_, button)
-    if button == "LeftButton" then
-      local info = {}
-      info.r, info.g, info.b = self.CategoryColorSwatch.lastColor:GetRGBA()
-      info.swatchFunc = function()
-        colorPickerFrameMonitor.changed = true
-        local r, g, b = ColorPickerFrame:GetColorRGB()
-        self.CategoryColorSwatch.pendingColor = CreateColor(r, g, b)
-        self.CategoryColorSwatch:SetColorRGB(r, g, b)
-      end
-      info.cancelFunc = function()
-        self.CategoryColorSwatch.pendingColor = self.CategoryColorSwatch.lastColor
-        self.CategoryColorSwatch:SetColorRGB(self.CategoryColorSwatch.lastColor:GetRGBA())
-        Save()
-        self.CategoryColorSwatch.pendingColor = nil
-      end,
-      colorPickerFrameMonitor:SetScript("OnUpdate", colorPickerFrameMonitor.OnUpdate)
-      ColorPickerFrame:SetupColorPickerAndShow(info);
-    else
-      self.CategoryColorSwatch.pendingColor = CreateColor(1, 1, 1)
-      self.CategoryColorSwatch.lastColor = self.CategoryColorSwatch.pendingColor
-      self.CategoryColorSwatch:SetColorRGB(1, 1, 1)
-      Save()
-      -- Update tooltip to hide text about resetting the color
-      self.CategoryColorSwatch:GetScript("OnLeave")(self.CategoryColorSwatch)
-      self.CategoryColorSwatch:GetScript("OnEnter")(self.CategoryColorSwatch)
-      self.CategoryColorSwatch.pendingColor = nil
-    end
-  end)
-  self.CategoryColorSwatch:HookScript("OnEnter", function()
-    GameTooltip:SetOwner(self.CategoryColorSwatch, "ANCHOR_TOP")
-    GameTooltip:SetText(BAGANATOR_L_CHANGE_COLOR)
-    local c = self.CategoryColorSwatch.lastColor
-    if c.r ~= 1 or c.g ~= 1 or c.b ~= 1 then
-      GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_RESET))
-    end
-    GameTooltip:Show()
-  end)
-  self.CategoryColorSwatch:HookScript("OnLeave", function()
-    GameTooltip:Hide()
-  end)
+  self.CategoryColorSwatch = addonTable.CustomiseDialog.GetColorSwatch(self, self.NameLabel, Save)
   table.insert(self.ChangeAlpha, self.CategoryColorSwatch)
 
   self.CategorySearchOptions = {
