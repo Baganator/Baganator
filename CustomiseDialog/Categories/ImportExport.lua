@@ -306,11 +306,13 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
         currentCategoryMods[source] = nil
       end
     end
-    addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTIONS, CopyTable(sections))
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, displayOrder)
+    addonTable.Config.MultiSet({
+      [addonTable.Config.Options.CUSTOM_CATEGORIES] = CopyTable(currentCustomCategories),
+      [addonTable.Config.Options.CATEGORY_SECTIONS] = CopyTable(sections),
+      [addonTable.Config.Options.CATEGORY_MODIFICATIONS] = CopyTable(currentCategoryMods),
+      [addonTable.Config.Options.CATEGORY_HIDDEN] = CopyTable(hidden),
+      [addonTable.Config.Options.CATEGORY_DISPLAY_ORDER] = displayOrder,
+    })
 
     addonTable.CategoryViews.FixAnyBrokenSections()
   else
@@ -331,8 +333,10 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
       currentCustomCategories[sourceMap[key]] = category
       currentCategoryMods[sourceMap[key]] = categoryMods[key]
     end
-    addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(currentCustomCategories))
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(currentCategoryMods))
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+    addonTable.Config.MultiSet({
+      [addonTable.Config.Options.CUSTOM_CATEGORIES] = CopyTable(currentCustomCategories),
+      [addonTable.Config.Options.CATEGORY_MODIFICATIONS] = CopyTable(currentCategoryMods),
+      [addonTable.Config.Options.CATEGORY_DISPLAY_ORDER] = CopyTable(displayOrder),
+    })
   end
 end
