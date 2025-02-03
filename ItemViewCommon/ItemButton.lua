@@ -709,9 +709,9 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
   self:UpdateExtended();
   self:UpdateJunkItem(quality, noValue);
-  self:UpdateCooldown(texture);
   self:SetReadable(readable);
   self:SetMatchesSearch(true)
+  self.Cooldown:Hide()
 
   if GameTooltip:IsOwned(self) then
     GameTooltip:Hide()
@@ -738,6 +738,8 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self:BGRUpdateQuests()
     ApplyNewItemAnimation(self, quality);
   end, function()
+    self.BGR.hasSpell = C_Item.GetItemSpell(self.BGR.itemID) ~= nil
+    self:BGRUpdateCooldown()
     self:BGRUpdateQuests()
     self:UpdateItemContextMatching();
     local doNotSuppressOverlays = false
@@ -759,7 +761,22 @@ function BaganatorRetailLiveContainerItemButtonMixin:BGRSetHighlight(isHighlight
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateCooldown()
-  self:UpdateCooldown(self.BGR.itemLink ~= nil);
+  if self.BGR.hasSpell then
+    local start, duration, enable = C_Container.GetContainerItemCooldown(self:GetParent():GetID(), self:GetID())
+    if enable and enable ~= 0 and start > 0 and duration > 0 then
+      self.Cooldown:SetDrawEdge();
+      self.Cooldown:SetCooldown(start, duration);
+    else
+      self.Cooldown:Clear();
+    end
+    if ( duration > 0 and enable == 0 ) then
+      self.icon:SetVertexColor(0.4, 0.4, 0.4);
+    else
+      self.icon:SetVertexColor(1, 1, 1);
+    end
+  else
+    self.Cooldown:Hide();
+  end
 end
 
 function BaganatorRetailLiveContainerItemButtonMixin:BGRUpdateQuests()
@@ -1105,10 +1122,22 @@ function BaganatorClassicLiveContainerItemButtonMixin:OnEnter()
 end
 
 function BaganatorClassicLiveContainerItemButtonMixin:BGRUpdateCooldown()
-  if self.BGR.itemLink then
-    ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
+  local Cooldown = _G[self:GetName() .. "Cooldown"]
+  if self.BGR.hasSpell then
+    local start, duration, enable = C_Container.GetContainerItemCooldown(self:GetParent():GetID(), self:GetID())
+    if enable and enable ~= 0 and start > 0 and duration > 0 then
+      Cooldown:SetDrawEdge();
+      Cooldown:SetCooldown(start, duration);
+    else
+      Cooldown:Clear();
+    end
+    if ( duration > 0 and enable == 0 ) then
+      self.icon:SetVertexColor(0.4, 0.4, 0.4);
+    else
+      self.icon:SetVertexColor(1, 1, 1);
+    end
   else
-    _G[self:GetName().."Cooldown"]:Hide();
+    Cooldown:Hide();
   end
 end
 
@@ -1165,16 +1194,10 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   ApplyQualityBorderClassic(self, quality)
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
+  _G[self:GetName() .. "Cooldown"]:Hide()
 
   ContainerFrameItemButton_SetForceExtended(self, false);
 
-  if ( texture ) then
-    ContainerFrame_UpdateCooldown(self:GetParent():GetID(), self);
-    self.hasItem = 1;
-  else
-    _G[self:GetName().."Cooldown"]:Hide();
-    self.hasItem = nil;
-  end
   self.readable = readable;
 
   if GameTooltip:IsOwned(self) then
@@ -1224,6 +1247,8 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
     self.BGR.hasNoValue = noValue
   end, function()
+    self.BGR.hasSpell = C_Item.GetItemSpell(self.BGR.itemID) ~= nil
+    self:BGRUpdateCooldown()
     self:BGRUpdateQuests()
     self:UpdateItemContextMatching()
   end)
