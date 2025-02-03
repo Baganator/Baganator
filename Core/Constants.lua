@@ -166,7 +166,6 @@ if addonTable.Constants.IsRetail then
     SYNDICATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
     SYNDICATOR_L_KEYWORD_COSMETIC,
     SYNDICATOR_L_KEYWORD_REAGENT,
-    SYNDICATOR_L_KEYWORD_MANUSCRIPT,
     TOY:lower(),
   }
   tAppendAll(addonTable.Constants.SampleSearchTerms, retailSearchTerms)
