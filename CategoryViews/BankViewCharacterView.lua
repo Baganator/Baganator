@@ -105,10 +105,6 @@ end
 function BaganatorCategoryViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
   BaganatorItemViewCommonBankViewCharacterViewMixin.UpdateForCharacter(self, character, isLive)
 
-  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] then
-    self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
-  end
-
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   if self.BankMissingHint:IsShown() then

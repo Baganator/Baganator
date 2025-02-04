@@ -138,10 +138,6 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
   local start = debugprofilestop()
   BaganatorItemViewCommonBackpackViewMixin.UpdateForCharacter(self, character, isLive)
 
-  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] then
-    self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
-  end
-
   if self.isLive then
     addonTable.NewItems:ImportNewItems(true)
   end

@@ -97,10 +97,6 @@ end
 function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
 
-  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] then
-    self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
-  end
-
   if self.BankMissingHint:IsShown() then
     return
   end

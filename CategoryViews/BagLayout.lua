@@ -489,6 +489,10 @@ end
 function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTypes, bagIndexes, sideSpacing, topSpacing, callback)
   local refreshState = self:GetParent().refreshState
 
+  if refreshState[Refresh.ItemData] or refreshState[Refresh.Searches] then
+    refreshState[Refresh.Layout] = true
+  end
+
   if refreshState[Refresh.Searches] then
     self.ItemsPreparation:ResetCaches()
     self.CategoryFilter:ResetCaches()

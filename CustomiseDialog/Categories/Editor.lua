@@ -224,11 +224,11 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
 
     if hidden[self.currentCategory] ~= oldHidden then
-      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
+      refreshState[addonTable.Constants.RefreshReason.Layout] = true
     end
 
     for key, value in pairs(mods) do
-      if value ~= oldMods[key] and key ~= "color" then
+      if value ~= oldMods[key] and key ~= "color" and key ~= "addedItems" then
         refreshState[addonTable.Constants.RefreshReason.Searches] = true
         refreshState[addonTable.Constants.RefreshReason.Layout] = true
       elseif value ~= oldMods[key] and key == "color" then
@@ -237,7 +237,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     end
 
     for key, value in pairs(oldMods) do
-      if value ~= mods[key] and key ~= "color" then
+      if value ~= mods[key] and key ~= "color" and key ~= "addedItems" then
         refreshState[addonTable.Constants.RefreshReason.Searches] = true
         refreshState[addonTable.Constants.RefreshReason.Layout] = true
       elseif value ~= mods[key] and key == "color" then
@@ -245,7 +245,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       end
     end
 
-    addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
+    if next(refreshState) ~= nil then
+      addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
+    end
     operationInProgress = false
   end
 

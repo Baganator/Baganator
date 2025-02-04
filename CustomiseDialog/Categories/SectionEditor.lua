@@ -63,7 +63,9 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       end
     end
 
-    addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
+    if next(refreshState) ~= nil then
+      addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
+    end
   end
 
   self.DeleteButton:SetScript("OnClick", function()
