@@ -9,16 +9,8 @@ function BaganatorSingleViewBankViewCharacterViewMixin:OnLoad()
   self.CollapsingBankBags = {}
   self.bagDetailsForComparison = {}
 
-  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Container.Layouts) do
-      layout:RequestContentRefresh()
-    end
-    if self:IsVisible() and self.lastCharacter ~= nil then
-      self:GetParent():UpdateView()
-    end
-  end)
-
   addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+    self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
     if self:IsVisible() and self.lastCharacter ~= nil then
       self:GetParent():UpdateView()
     end
@@ -99,7 +91,9 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
     return
   end
 
-  self:AllocateBankBags(character)
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] then
+    self:AllocateBankBags(character)
+  end
 
   self.Container.BankLive:SetShown(self.isLive)
   self.Container.BankCached:SetShown(not self.isLive)
@@ -125,73 +119,84 @@ function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(charac
 
   local bankWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
 
-  local characterData = Syndicator.API.GetCharacter(character) 
-  local bagData = characterData and characterData.bank
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] or self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] or self.refreshState[addonTable.Constants.RefreshReason.Flow] then
+    self.searchToApply = true
+    local characterData = Syndicator.API.GetCharacter(character) 
+    local bagData = characterData and characterData.bank
 
-  activeBank:ShowBags(bagData, character, Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
+    activeBank:ShowBags(bagData, character, Syndicator.Constants.AllBankIndexes, self.lastBankBagDetails.mainIndexesToUse, bankWidth)
 
-  for index, layout in ipairs(activeBankBagCollapsibles) do
-    layout:ShowBags(bagData, character, Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
+    for index, layout in ipairs(activeBankBagCollapsibles) do
+      layout:ShowBags(bagData, character, Syndicator.Constants.AllBankIndexes, self.CollapsingBankBags[index].indexesToUse, bankWidth)
+    end
   end
 
-  local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
-  self:ApplySearch(searchText)
+  if self.searchToApply then
+    local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
+    self:ApplySearch(searchText)
+  end
 
-  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+  if self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  local bankHeight = activeBank:GetHeight()
+    self.bankHeight = activeBank:GetHeight()
 
-  -- Copied from SingleViews/BagView.lua
-  bankHeight = bankHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
+    -- Copied from SingleViews/BagView.lua
+    self.bankHeight = self.bankHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBankBagCollapsibles, activeBank, self.CollapsingBankBags)
 
-  local buttonsWidth = 0
-  local lastButton = nil
-  for index, layout in ipairs(activeBankBagCollapsibles) do
-    local button = self.CollapsingBankBags[index].button
-    button:SetParent(self)
-    button:SetShown(layout:GetHeight() > 0)
-    if button:IsShown() then
-      buttonsWidth = button:GetWidth() + 5
-      button:ClearAllPoints()
-      if lastButton then
-        button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
-      else
-        button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
-        button:SetPoint("LEFT", self.Container, -2, 0)
+    self.buttonsWidth = 0
+    local lastButton = nil
+    for index, layout in ipairs(activeBankBagCollapsibles) do
+      local button = self.CollapsingBankBags[index].button
+      button:SetParent(self)
+      button:SetShown(layout:GetHeight() > 0)
+      if button:IsShown() then
+        self.buttonsWidth = button:GetWidth() + 5
+        button:ClearAllPoints()
+        if lastButton then
+          button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
+        else
+          button:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
+          button:SetPoint("LEFT", self.Container, -2, 0)
+        end
+        table.insert(self:GetParent().AllButtons, button)
+        lastButton = button
       end
-      table.insert(self:GetParent().AllButtons, button)
-      lastButton = button
     end
-  end
 
-  if self.BuyReagentBankButton:IsShown() then
-    table.insert(self:GetParent().AllButtons, self.BuyReagentBankButton)
-    self.BuyReagentBankButton:ClearAllPoints()
-    if lastButton then
-      self.BuyReagentBankButton:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", 5, 0)
-    else
-      self.BuyReagentBankButton:SetPoint("LEFT", activeBank, -2, 0)
-      self.BuyReagentBankButton:SetPoint("BOTTOM", 0, 6)
+    if self.BuyReagentBankButton:IsShown() then
+      table.insert(self:GetParent().AllButtons, self.BuyReagentBankButton)
+      self.BuyReagentBankButton:ClearAllPoints()
+      if lastButton then
+        self.BuyReagentBankButton:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", 5, 0)
+      else
+        self.BuyReagentBankButton:SetPoint("LEFT", activeBank, -2, 0)
+        self.BuyReagentBankButton:SetPoint("BOTTOM", 0, 6)
+      end
+      self.buttonsWidth = self.buttonsWidth + self.BuyReagentBankButton:GetWidth()
     end
-    buttonsWidth = buttonsWidth + self.BuyReagentBankButton:GetWidth()
-  end
-  if self.DepositIntoReagentsBankButton:IsShown() then
-    table.insert(self:GetParent().AllButtons, self.DepositIntoReagentsBankButton)
-    self.DepositIntoReagentsBankButton:ClearAllPoints()
-    self.DepositIntoReagentsBankButton:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", 5, 0)
-    buttonsWidth = buttonsWidth + self.DepositIntoReagentsBankButton:GetWidth()
-  end
+    if self.DepositIntoReagentsBankButton:IsShown() then
+      table.insert(self:GetParent().AllButtons, self.DepositIntoReagentsBankButton)
+      self.DepositIntoReagentsBankButton:ClearAllPoints()
+      self.DepositIntoReagentsBankButton:SetPoint("TOPLEFT", lastButton, "TOPRIGHT", 5, 0)
+      self.buttonsWidth = self.buttonsWidth + self.DepositIntoReagentsBankButton:GetWidth()
+    end
 
-  activeBank:ClearAllPoints()
-  activeBank:SetPoint("TOPLEFT", 0, 0)
+    activeBank:ClearAllPoints()
+    activeBank:SetPoint("TOPLEFT", 0, 0)
+  end
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
-  self.Container:SetSize(activeBank:GetWidth(), bankHeight)
+  self.Container:SetSize(activeBank:GetWidth(), self.bankHeight)
 
   self:OnFinished()
 
-  self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 5, self.Container:GetWidth())
+  if self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - self.buttonsWidth - 5, self.Container:GetWidth())
+  end
 
   self:GetParent():OnTabFinished()
+
+  self.refreshState = {}
 end

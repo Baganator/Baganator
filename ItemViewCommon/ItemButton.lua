@@ -33,12 +33,12 @@ local registered = false
 function addonTable.ItemButtonUtil.UpdateSettings()
   if not registered  then
     registered = true
-    addonTable.CallbackRegistry:RegisterCallback("SettingChangedEarly", function()
+    addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function()
       addonTable.ItemButtonUtil.UpdateSettings()
     end)
     addonTable.CallbackRegistry:RegisterCallback("PluginsUpdated", function()
       addonTable.ItemButtonUtil.UpdateSettings()
-      Baganator.API.RequestItemButtonsRefresh()
+      addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", {[addonTable.Constants.RefreshReason.ItemWidgets] = true})
     end)
   end
   itemCallbacks = {}
@@ -58,8 +58,8 @@ function addonTable.ItemButtonUtil.UpdateSettings()
         self.BGR.isJunk = junkStatus == true
         if iconSettings.markJunk and self.BGR.isJunk then
           self.BGR.persistIconGrey = true
-          self.icon:SetDesaturated(true)
         end
+        self.icon:SetDesaturated(self.BGR.persistIconGrey)
       end
     end)
   end
@@ -175,9 +175,23 @@ function addonTable.ItemButtonUtil.UpdateSettings()
   end
 end
 
-local function WidgetsOnly(self)
+local function GetInfo(self, cacheData, earlyCallback, finalCallback)
+  local info = Syndicator.Search.GetBaseInfo(cacheData)
+  self.BGR = info
+
+  self.BGR.earlyCallback = earlyCallback or function() end
+  self.BGR.finalCallback = finalCallback or function() end
+
+  self.BGR.bagType = cacheData.bagType
+
+  self.BGR.earlyCallback()
+
   for plugin, widget in pairs(self.cornerPlugins) do
     widget:Hide()
+  end
+
+  if self.BaganatorBagHighlight then
+    self.BaganatorBagHighlight:Hide()
   end
 
   if self.BGR.itemID == nil then
@@ -190,46 +204,6 @@ local function WidgetsOnly(self)
     self.icon:SetDesaturated(self.BGR.persistIconGrey)
   end
 
-  local info = self.BGR
-
-  local function OnCached()
-    if self.BGR ~= info then -- Check that the item button hasn't been refreshed
-      return
-    end
-    for _, callback in ipairs(itemCallbacks) do
-      callback(self)
-    end
-  end
-  if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
-    OnCached()
-  else
-    addonTable.Utilities.LoadItemData(self.BGR.itemID, function()
-      OnCached()
-    end)
-  end
-end
-
-local function GetInfo(self, cacheData, earlyCallback, finalCallback)
-  local info = Syndicator.Search.GetBaseInfo(cacheData)
-  self.BGR = info
-
-  self.BGR.earlyCallback = earlyCallback or function() end
-  self.BGR.finalCallback = finalCallback or function() end
-
-  self.BGR.bagType = cacheData.bagType
-
-  self.BGR.earlyCallback()
-
-  WidgetsOnly(self)
-
-  if self.BaganatorBagHighlight then
-    self.BaganatorBagHighlight:Hide()
-  end
-
-  if self.BGR.itemID == nil then
-    return
-  end
-
   local function OnCached()
     if self.BGR ~= info then -- Check that the item button hasn't been refreshed
       return
@@ -238,15 +212,16 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
       self.IconOverlay:SetAtlas("CosmeticIconFrame")
       self.IconOverlay:Show();
     end
+    for _, callback in ipairs(itemCallbacks) do -- Process any item widgets/effects
+      callback(self)
+    end
     self.BGR.finalCallback()
   end
 
   if C_Item.IsItemDataCachedByID(self.BGR.itemID) then
     OnCached()
   else
-    addonTable.Utilities.LoadItemData(self.BGR.itemID, function()
-      OnCached()
-    end)
+    addonTable.Utilities.LoadItemData(self.BGR.itemID, OnCached)
   end
 end
 

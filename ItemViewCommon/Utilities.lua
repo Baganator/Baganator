@@ -282,13 +282,14 @@ function addonTable.Utilities.AddScrollBar(self)
   self.Container:SetPoint("TOPLEFT", 2, -2)
   ScrollUtil.InitScrollBoxWithScrollBar(self.ScrollBox, self.ScrollBar, CreateScrollBoxLinearView())
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(self.ScrollBox, self.ScrollBar)
+  self.ScrollChild:SetScript("OnSizeChanged", nil)
+  self.ScrollBox:SetScript("OnSizeChanged", nil)
 
   function self:UpdateScroll(ySaved, scale)
     local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
     self.ScrollBox:ClearAllPoints()
     self.ScrollBox:SetPoint("TOPLEFT", sideSpacing + addonTable.Constants.ButtonFrameOffset - 2 - 2, -25 - searchSpacing - topSpacing / 4 + 2)
-    self.ScrollChild:SetWidth(self.Container:GetWidth() + 4)
-    self.ScrollChild:SetHeight(self.Container:GetHeight() + 4)
+    self.ScrollChild:SetSize(self.Container:GetWidth() + 4, self.Container:GetHeight() + 4)
     self.ScrollBox:SetSize(
       self.Container:GetWidth() + 4,
       math.min(

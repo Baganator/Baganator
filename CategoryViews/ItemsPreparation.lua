@@ -25,26 +25,26 @@ function BaganatorCategoryViewsItemsPreparationMixin:PrepareItems(everything, ca
     local seen = self.seenData[key]
     if not processedKey[key] then
       if not seen then
-        if item.isJunkGetter or item.isUpgradeGetter then
-          if not C_Item.IsItemDataCachedByID(item.itemID) then
-            if C_Item.GetItemInfoInstant(item.itemID) ~= nil then
+        seen = CopyTable(item)
+        if seen.isJunkGetter or seen.isUpgradeGetter then
+          if not C_Item.IsItemDataCachedByID(seen.itemID) then
+            if C_Item.GetItemInfoInstant(seen.itemID) ~= nil then
               waiting = waiting + 1
-              addonTable.Utilities.LoadItemData(item.itemID, function()
+              addonTable.Utilities.LoadItemData(seen.itemID, function()
                 addonTable.ReportEntry()
                 waiting = waiting - 1
-                item.isJunk = item.isJunkGetter and item.isJunkGetter()
-                item.isUpgrade = item.isUpgradeGetter and item.isUpgradeGetter()
+                seen.isJunk = seen.isJunkGetter and seen.isJunkGetter()
+                seen.isUpgrade = seen.isUpgradeGetter and seen.isUpgradeGetter()
                 if waiting == 0 and loopComplete then
                   callback()
                 end
               end)
             end
           else
-            item.isJunk = item.isJunkGetter and item.isJunkGetter()
-            item.isUpgrade = item.isUpgradeGetter and item.isUpgradeGetter()
+            seen.isJunk = seen.isJunkGetter and seen.isJunkGetter()
+            seen.isUpgrade = seen.isUpgradeGetter and seen.isUpgradeGetter()
           end
         end
-        seen = CopyTable(item)
         addonTable.Sorting.AddSortKeys({seen})
         self.seenData[key] = seen
       end

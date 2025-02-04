@@ -34,6 +34,7 @@ addonTable.Constants.Events = {
   "GuildShow",
   "GuildHide",
   "CurrencyPanelToggle",
+  "RefreshStateChange",
 
   "ViewComplete",
   "BagCacheAfterNewItemsUpdate",
@@ -71,8 +72,6 @@ addonTable.Constants.Events = {
   "HighlightGuildTabItems",
   "ClearHighlightGuildTab",
 
-  "ContentRefreshRequired",
-  "LayoutUpdateRequired",
   "PluginsUpdated",
 
   "TransferCancel",
@@ -166,6 +165,7 @@ if addonTable.Constants.IsRetail then
     SYNDICATOR_L_KEYWORD_EQUIPMENT .. "&" .. "classic",
     SYNDICATOR_L_KEYWORD_COSMETIC,
     SYNDICATOR_L_KEYWORD_REAGENT,
+    SYNDICATOR_L_KEYWORD_MANUSCRIPT,
     TOY:lower(),
   }
   tAppendAll(addonTable.Constants.SampleSearchTerms, retailSearchTerms)
@@ -195,4 +195,29 @@ addonTable.Constants.ContainerTypes = 13
 addonTable.Constants.BankTabType = {
   Character = 0,
   Warband = 1,
+}
+
+addonTable.Constants.RefreshReason = {
+  ItemData = 2,
+  ItemWidgets = 4,
+  ItemTextures = 8,
+  Searches = 16,
+  Layout = 32,
+  Buttons = 64,
+  Sorts = 128,
+  Flow = 256,
+  Cosmetic = 512,
+  Character = 1024,
+}
+
+Baganator.Constants.RefreshReason = {
+  ItemWidgets = addonTable.Constants.RefreshReason.ItemWidgets,
+  Searches = addonTable.Constants.RefreshReason.Searches,
+}
+
+addonTable.Constants.RefreshZone = {
+  Bags = 2,
+  CharacterBank = 4,
+  WarbandBank = 8,
+  GuildBank = 16,
 }

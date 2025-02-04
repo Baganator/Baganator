@@ -19,45 +19,11 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
   self.sectionButtonPool = addonTable.CategoryViews.GetSectionButtonPool(self)
   self.dividerPool = CreateFramePool("Button", self, "BaganatorBagDividerTemplate")
 
-  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    self.searchToApply = true
-    self.LayoutManager:FullRefresh()
-    for _, layout in ipairs(self.Container.Layouts) do
-      layout:RequestContentRefresh()
-    end
-    if self:IsVisible() then
-      self:GetParent():UpdateView()
-    end
-  end)
-
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.CategoryViews.Constants.RedisplaySettings, settingName) ~= nil then
-      self.searchToApply = true
-      self.LayoutManager:SettingChanged(settingName)
-      if self:IsVisible() then
-        self:GetParent():UpdateView()
-      end
-    elseif settingName == addonTable.Config.Options.SORT_METHOD or settingName == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
-      for _, layout in ipairs(self.Container.Layouts) do
-        layout:InformSettingChanged(settingName)
-      end
-      self.LayoutManager:SettingChanged(settingName)
-      if self:IsVisible() then
-        self:GetParent():UpdateView()
-      end
-    elseif settingName == addonTable.Config.Options.JUNK_PLUGIN or settingName == addonTable.Config.Options.UPGRADE_PLUGIN then
-      self.searchToApply = true
-      self.LayoutManager:SettingChanged(settingName)
-      if self:IsVisible() then
-        self:GetParent():UpdateView()
-      end
-    end
-  end)
-
   addonTable.CallbackRegistry:RegisterCallback("CategoryAddItemStart", function(_, fromCategory, itemID, itemLink, addedDirectly)
     self.addToCategoryMode = fromCategory
     self.addedToFromCategory = addedDirectly == true
     if self:IsVisible() and addonTable.CategoryViews.Utilities.GetAddButtonsState() then
+      self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
       self:GetParent():UpdateView()
     end
   end)
@@ -67,10 +33,14 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnEvent(eventName, ...)
   if eventName == "CURSOR_CHANGED" and self.addToCategoryMode and not C_Cursor.GetCursorItem() then
     self.addToCategoryMode = nil
     if self:IsVisible() then
+      self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
       self:GetParent():UpdateView()
     end
   elseif eventName == "MODIFIER_STATE_CHANGED" and self.addToCategoryMode and (addonTable.CategoryViews.Utilities.GetAddButtonsState() or self.LayoutManager.showAddButtons) and C_Cursor.GetCursorItem() then
-    self:GetParent():UpdateView()
+    if self:IsVisible() then
+      self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
+      self:GetParent():UpdateView()
+    end
   end
 end
 
@@ -121,16 +91,15 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:GetActiveLayouts()
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:NotifyBagUpdate(updatedBags)
-  self.LayoutManager:NotifyBagUpdate(updatedBags.bags)
+  --self.LayoutManager:NotifyBagUpdate(updatedBags.bags)
 end
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
 
-  if tabIndex ~= self.lastTab then
-    self.LayoutManager:NewCharacter()
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] then
+    self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
   end
-  self.lastTab = tabIndex
 
   if self.BankMissingHint:IsShown() then
     return
@@ -172,6 +141,8 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
       self.searchToApply = false
       self:ApplySearch(searchText)
     end
+
+    self.refreshState = {}
 
     addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 

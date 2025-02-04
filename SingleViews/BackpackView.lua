@@ -10,16 +10,8 @@ function BaganatorSingleViewBackpackViewMixin:OnLoad()
   self.CollapsingBags = {}
   self.bagDetailsForComparison = {}
 
-  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Container.Layouts) do
-      layout:RequestContentRefresh()
-    end
-    if self:IsVisible() and self.lastCharacter ~= nil then
-      self:UpdateForCharacter(self.lastCharacter, self.isLive)
-    end
-  end)
-
   addonTable.CallbackRegistry:RegisterCallback("SpecialBagToggled", function(_, character)
+    self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
     if self:IsVisible() and self.lastCharacter ~= nil then
       self:UpdateForCharacter(self.lastCharacter, self.isLive)
     end
@@ -84,7 +76,9 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
     addonTable.NewItems:ImportNewItems()
   end
 
-  self:AllocateBags(character)
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] then
+    self:AllocateBags(character)
+  end
 
   self.Container.BagLive:SetShown(isLive)
   self.Container.BagCached:SetShown(not isLive)
@@ -105,81 +99,87 @@ function BaganatorSingleViewBackpackViewMixin:UpdateForCharacter(character, isLi
     end
   end
 
-  local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] or self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] or self.refreshState[addonTable.Constants.RefreshReason.Flow] then
+    self.searchToApply = true
+    local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_WIDTH)
+    local characterData = Syndicator.API.GetCharacter(character) 
+    local bagData = characterData and characterData.bags
+    activeBag:ShowBags(bagData, character, Syndicator.Constants.AllBagIndexes, self.lastBagDetails.mainIndexesToUse, bagWidth)
 
-  local characterData = Syndicator.API.GetCharacter(character) 
-  local bagData = characterData and characterData.bags
-
-  activeBag:ShowBags(bagData, character, Syndicator.Constants.AllBagIndexes, self.lastBagDetails.mainIndexesToUse, bagWidth)
-
-  for index, layout in ipairs(activeBagCollapsibles) do
-    layout:ShowBags(bagData, character, Syndicator.Constants.AllBagIndexes, self.CollapsingBags[index].indexesToUse, bagWidth)
+    for index, layout in ipairs(activeBagCollapsibles) do
+      layout:ShowBags(bagData, character, Syndicator.Constants.AllBagIndexes, self.CollapsingBags[index].indexesToUse, bagWidth)
+    end
   end
 
   if self.searchToApply then
     self:ApplySearch(searchText)
   end
 
-  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    self.bagHeight = activeBag:GetHeight()
+    self.bagHeight = self.bagHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
 
-  local bagHeight = activeBag:GetHeight()
+    for _, layouts in ipairs(self.CollapsingBags) do
+      layouts.live:SetShown(isLive and layouts.live:IsShown())
+      layouts.cached:SetShown(not isLive and layouts.cached:IsShown())
+    end
 
-  bagHeight = bagHeight + addonTable.SingleViews.ArrangeCollapsibles(activeBagCollapsibles, activeBag, self.CollapsingBags)
+    activeBag:SetPoint("TOPRIGHT")
 
-  for _, layouts in ipairs(self.CollapsingBags) do
-    layouts.live:SetShown(isLive and layouts.live:IsShown())
-    layouts.cached:SetShown(not isLive and layouts.cached:IsShown())
+    self.Container:SetSize(
+      activeBag:GetWidth(),
+      self.bagHeight
+    )
   end
-
-  activeBag:SetPoint("TOPRIGHT")
-
-  self.Container:SetSize(
-    activeBag:GetWidth(),
-    bagHeight
-  )
 
   self:OnFinished()
 
-  self.AllButtons = {}
-  tAppendAll(self.AllButtons, self.AllFixedButtons)
-  tAppendAll(self.AllButtons, self.TopButtons)
+  if self.refreshState[addonTable.Constants.RefreshReason.Buttons] or self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    self.AllButtons = {}
+    tAppendAll(self.AllButtons, self.AllFixedButtons)
+    tAppendAll(self.AllButtons, self.TopButtons)
 
-  local lastButton = self.CurrencyButton
-  lastButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
-  lastButton:SetPoint("LEFT", self.Container, -2, 0)
-  table.insert(self.AllButtons, lastButton)
+    local lastButton = self.CurrencyButton
+    lastButton:SetPoint("BOTTOM", self, "BOTTOM", 0, 6)
+    lastButton:SetPoint("LEFT", self.Container, -2, 0)
+    table.insert(self.AllButtons, lastButton)
 
-  local buttonsWidth = lastButton:GetWidth()
+    self.buttonsWidth = lastButton:GetWidth()
 
-  for index, layout in ipairs(activeBagCollapsibles) do
-    local button = self.CollapsingBags[index].button
-    button:SetParent(self)
-    button:SetShown(layout:GetHeight() > 0)
-    button:ClearAllPoints()
-    if button:IsShown() then
-      buttonsWidth = buttonsWidth + 5 + button:GetWidth()
-      button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
-      lastButton = button
-      table.insert(self.AllButtons, button)
+    for index, layout in ipairs(activeBagCollapsibles) do
+      local button = self.CollapsingBags[index].button
+      button:SetParent(self)
+      button:SetShown(layout:GetHeight() > 0)
+      button:ClearAllPoints()
+      if button:IsShown() then
+        self.buttonsWidth = self.buttonsWidth + 5 + button:GetWidth()
+        button:SetPoint("LEFT", lastButton, "RIGHT", 5, 0)
+        lastButton = button
+        table.insert(self.AllButtons, button)
+      end
     end
-  end
 
-  buttonsWidth = buttonsWidth + addonTable.Utilities.AddButtons(self.AllButtons,
-    lastButton, self, 5, addonTable.API.customRegions["backpack"]["bottom_left"]
-  )
-  addonTable.Utilities.AddButtons(self.AllButtons, self.TopButtons[#self.TopButtons], self, 0, addonTable.API.customRegions["backpack"]["top_left"])
+    self.buttonsWidth = self.buttonsWidth + addonTable.Utilities.AddButtons(self.AllButtons,
+      lastButton, self, 5, addonTable.API.customRegions["backpack"]["bottom_left"]
+    )
+    addonTable.Utilities.AddButtons(self.AllButtons, self.TopButtons[#self.TopButtons], self, 0, addonTable.API.customRegions["backpack"]["top_left"])
+  end
 
   -- Necessary extra call as collapsing bag region buttons get updated
   -- out-of-sync with everything else
   self.ButtonVisibility:Update()
 
-  self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - buttonsWidth - 10, self.Container:GetWidth())
+  if self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - self.buttonsWidth - 10, self.Container:GetWidth())
+  end
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     addonTable.Utilities.DebugOutput("-- updateforcharacter backpack", debugprofilestop() - start)
   end
+
+  self.refreshState = {}
 end
 
 function BaganatorSingleViewBackpackViewMixin:GetSearchMatches()

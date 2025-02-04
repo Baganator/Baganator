@@ -176,7 +176,6 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       table.insert(allDetails, {
         type = "section",
         source = sectionID,
-        color = sectionDetails.color,
         label = label,
         section = section,
       })
@@ -192,7 +191,6 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       end
       group = mods.group
       groupPrefix = mods.showGroupPrefix
-      color = mods.color
     end
 
     local category = addonTable.CategoryViews.Constants.SourceToCategory[source]
@@ -222,7 +220,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
               table.insert(currentSection, sectionSource)
               table.insert(allDetails, {
                 type = "section",
-                color = color,
+                color = category.source,
                 source = sectionSource,
                 label = autoDetails.searchLabels[index],
                 section = section,
@@ -242,7 +240,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
               attachedItems = autoDetails.attachedItems[index],
               group = group,
               groupPrefix = groupPrefix,
-              color = color,
+              color = category.source,
               auto = true,
               autoIndex = index,
               section = section,
@@ -272,7 +270,6 @@ function addonTable.CategoryViews.ComposeCategories(everything)
           attachedItems = attachedItems,
           group = group,
           groupPrefix = groupPrefix,
-          color = color,
           section = section,
         }
       end
@@ -294,7 +291,6 @@ function addonTable.CategoryViews.ComposeCategories(everything)
         attachedItems = attachedItems,
         group = group,
         groupPrefix = groupPrefix,
-        color = color,
         section = section,
       }
     end

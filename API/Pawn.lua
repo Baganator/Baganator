@@ -5,9 +5,20 @@ end
 
 addonTable.Utilities.OnAddonLoaded("Pawn", function()
   local upgradeCache = {}
+
+  local function PostRefresh()
+    local result = {}
+    if Baganator.API.IsCornerWidgetActive("pawn") then
+      table.insert(result, Baganator.Constants.RefreshReason.ItemWidgets)
+    end
+    if Baganator.API.IsUpgradePluginActive("pawn") then
+      table.insert(result, Baganator.Constants.RefreshReason.Searches)
+    end
+    Baganator.API.RequestItemButtonsRefresh(result)
+  end
   Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
     if Baganator.API.IsCornerWidgetActive("pawn") or Baganator.API.IsUpgradePluginActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
+      PostRefresh()
       upgradeCache = {}
     end
   end)
@@ -20,24 +31,12 @@ addonTable.Utilities.OnAddonLoaded("Pawn", function()
   -- Level up
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("PLAYER_LEVEL_UP")
-  frame:SetScript("OnEvent", function()
-    if Baganator.API.IsCornerWidgetActive("pawn") or Baganator.API.IsUpgradePluginActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
-    end
-  end)
+  frame:SetScript("OnEvent", PostRefresh)
 
   -- Spec change
-  hooksecurefunc("PawnInvalidateBestItems", function()
-    if Baganator.API.IsCornerWidgetActive("pawn") or Baganator.API.IsUpgradePluginActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
-    end
-  end)
+  hooksecurefunc("PawnInvalidateBestItems", PostRefresh)
   -- Settings change
-  hooksecurefunc("PawnResetTooltips", function()
-    if Baganator.API.IsCornerWidgetActive("pawn") or Baganator.API.IsUpgradePluginActive("pawn") then
-      Baganator.API.RequestItemButtonsRefresh()
-    end
-  end)
+  hooksecurefunc("PawnResetTooltips", PostRefresh)
 
   local limit = 2 / 60 / 4
   local resetInterval = 1 / 4
@@ -84,7 +83,7 @@ addonTable.Utilities.OnAddonLoaded("Pawn", function()
     end
     if next(pending) == nil then
       self:SetScript("OnUpdate", nil)
-      Baganator.API.RequestItemButtonsRefresh()
+      PostRefresh()
     end
   end
 

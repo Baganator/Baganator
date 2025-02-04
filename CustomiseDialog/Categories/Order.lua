@@ -434,6 +434,12 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   dropdown:SetPoint("BOTTOMLEFT", categoryOrder, "TOPLEFT", 0, 8)
   dropdown:SetPoint("RIGHT", categoryOrder.ScrollBar, 5, 0)
 
+  addonTable.CallbackRegistry:RegisterCallback("RefreshStateChange", function(_, refreshState)
+    if refreshState[addonTable.Constants.RefreshReason.Cosmetic] or refreshState[addonTable.Constants.RefreshReason.Searches] then
+      SetCategoriesToDropDown(dropdown, GetInsertedCategories())
+      PopulateCategoryOrder(categoryOrder)
+    end
+  end)
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER or settingName == addonTable.Config.Options.CATEGORY_HIDDEN or settingName == addonTable.Config.Options.CUSTOM_CATEGORIES then
       SetCategoriesToDropDown(dropdown, GetInsertedCategories())

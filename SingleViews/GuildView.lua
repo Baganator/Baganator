@@ -26,6 +26,11 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     table.insert(self.searchMonitors, CreateFrame("Frame", nil, self, "SyndicatorOfflineListSearchTemplate"))
   end
 
+  self.refreshState = {}
+  for _, value in pairs(addonTable.Constants.RefreshReason) do
+    self.refreshState[value] = true
+  end
+
   Syndicator.CallbackRegistry:RegisterCallback("GuildCacheUpdate",  function(_, guild, changes)
     if changes then
       for tabIndex, isChanged in pairs(changes) do
@@ -36,7 +41,7 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
           self.otherTabsCache[guild][tabIndex] = nil
           if tabIndex == self.currentTab or self.currentTab == 0 then
             for _, layout in ipairs(self.Container.Layouts) do
-              layout:RequestContentRefresh()
+              layout:UpdateRefreshState({[addonTable.Constants.RefreshReason.ItemData] = true})
             end
           end
         end
@@ -53,27 +58,18 @@ function BaganatorSingleViewGuildViewMixin:OnLoad()
     end
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Container.Layouts) do
-      layout:RequestContentRefresh()
-    end
-    if self:IsVisible() then
-      self:UpdateForGuild(self.lastGuild, self.isLive)
-    end
-  end)
-
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
+  addonTable.CallbackRegistry:RegisterCallback("RefreshStateChange",  function(_, refreshState)
     if not self.lastGuild then
       return
     end
-    if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
-      for _, layout in ipairs(self.Container.Layouts) do
-        layout:InformSettingChanged(settingName)
-      end
-      if self:IsVisible() then
-        self:UpdateForGuild(self.lastGuild, self.isLive)
-      end
-    elseif settingName == addonTable.Config.Options.GUILD_BANK_SORT_METHOD then
+
+    self.refreshState = Mixin(self.refreshState, refreshState)
+
+    for _, layout in ipairs(self.Container.Layouts) do
+      layout:UpdateRefreshState(refreshState)
+    end
+
+    if self:IsVisible() then
       self:UpdateForGuild(self.lastGuild, self.isLive)
     end
   end)
@@ -634,6 +630,8 @@ function BaganatorSingleViewGuildViewMixin:UpdateForGuild(guild, isLive)
   end
 
   self.ButtonVisibility:Update()
+
+  self.refreshState = {}
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 end

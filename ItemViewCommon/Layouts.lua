@@ -137,33 +137,6 @@ local function TooltipAdditions(...)
   AddCategories(...)
 end
 
-local UpdateTextureSettings = {
-  addonTable.Config.Options.ICON_TEXT_FONT_SIZE,
-  addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
-  addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
-  addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
-  addonTable.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
-}
-
-local ReflowSettings = {
-  addonTable.Config.Options.BAG_ICON_SIZE,
-  addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP,
-  addonTable.Config.Options.REDUCE_SPACING,
-}
-
-local RefreshContentSettings = {
-  addonTable.Config.Options.HIDE_BOE_ON_COMMON,
-  addonTable.Config.Options.ICON_MARK_UNUSABLE,
-  addonTable.Config.Options.ICON_CONTEXT_FADING,
-  addonTable.Config.Options.ICON_TOP_LEFT_CORNER_ARRAY,
-  addonTable.Config.Options.ICON_TOP_RIGHT_CORNER_ARRAY,
-  addonTable.Config.Options.ICON_BOTTOM_LEFT_CORNER_ARRAY,
-  addonTable.Config.Options.ICON_BOTTOM_RIGHT_CORNER_ARRAY,
-  addonTable.Config.Options.ICON_TEXT_QUALITY_COLORS,
-  addonTable.Config.Options.ICON_GREY_JUNK,
-  addonTable.Config.Options.JUNK_PLUGIN,
-}
-
 function addonTable.ItemButtonUtil.GetPaddingAndSize()
   local iconPadding = 4
 
@@ -283,23 +256,8 @@ function BaganatorCachedBagLayoutMixin:OnLoad()
   self.prevState = {}
   self.buttonsByBag = {}
   self.waitingUpdate = {}
+  self.refreshState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
-end
-
-function BaganatorCachedBagLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-  if tIndexOf(RefreshContentSettings, setting) ~= nil then
-    self.refreshContent = true
-  end
-end
-
-function BaganatorCachedBagLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorCachedBagLayoutMixin:CompareButtonIndexes(indexes, indexesToUse, newBags)
@@ -317,6 +275,10 @@ function BaganatorCachedBagLayoutMixin:MarkBagsPending(section, updatedWaiting)
   for bag in pairs(updatedWaiting[section]) do
     self.waitingUpdate[bag] = true
   end
+end
+
+function BaganatorCachedBagLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 function BaganatorCachedBagLayoutMixin:RebuildLayout(newBags, indexes, indexesToUse, rowWidth)
@@ -374,18 +336,16 @@ function BaganatorCachedBagLayoutMixin:ShowBags(bagData, source, indexes, indexe
     for _, bagID in ipairs(indexes) do
       self.waitingUpdate[bagID] = true
     end
-  elseif self.reflow or rowWidth ~= self.oldRowWidth then
-    self.reflow = false
+  elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsRows(self, rowWidth)
   end
 
-  if self.updateTextures then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] then
     UpdateTextures(self)
     self.updateTextures = false
   end
 
-  if self.refreshContent then
-    self.refreshContent = false
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] then
     self.waitingUpdate = {}
     for index in pairs(indexesToUse) do
       self.waitingUpdate[indexes[index]] = true
@@ -414,6 +374,7 @@ function BaganatorCachedBagLayoutMixin:ShowBags(bagData, source, indexes, indexe
   self.prevState = {
     source = source,
   }
+  self.refreshState = {}
 end
 
 function BaganatorCachedBagLayoutMixin:ApplySearch(text)
@@ -459,9 +420,14 @@ function BaganatorLiveBagLayoutMixin:OnLoad()
   self.bagSizesUsed = {}
   self.waitingUpdate = {}
   self.prevState = {}
+  self.refreshState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
 
   self:RegisterEvent("ITEM_LOCK_CHANGED")
+end
+
+function BaganatorLiveBagLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 function BaganatorLiveBagLayoutMixin:SetPool(buttonPool)
@@ -502,6 +468,8 @@ function BaganatorLiveBagLayoutMixin:OnShow()
   end, self)
 
   RegisterHighlightSimilarItems(self)
+
+  self.refreshState = {}
 end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
@@ -515,22 +483,6 @@ function BaganatorLiveBagLayoutMixin:OnHide()
   for _, button in ipairs(self.buttons) do
     button:ClearNewItem()
   end
-end
-
-function BaganatorLiveBagLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-  if tIndexOf(RefreshContentSettings, setting) ~= nil then
-    self.refreshContent = true
-  end
-end
-
-function BaganatorLiveBagLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorLiveBagLayoutMixin:UpdateLockForItem(bagID, slotID)
@@ -630,19 +582,17 @@ function BaganatorLiveBagLayoutMixin:ShowBags(bagData, source, indexes, indexesT
     for _, bagID in ipairs(indexes) do
       self.waitingUpdate[bagID] = true
     end
-  elseif self.reflow or rowWidth ~= self.oldRowWidth then
-    self.reflow = false
+  elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsRows(self, rowWidth)
   end
 
-  if self.updateTextures then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] then
     UpdateTextures(self)
     self.updateTextures = false
   end
 
-  local refreshContent = self.refreshContent
-  if self.refreshContent then
-    self.refreshContent = false
+  local refreshWidgets = self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets]
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] then
     for _, bagID in ipairs(indexes) do
       self.waitingUpdate[bagID] = true
     end
@@ -657,7 +607,7 @@ function BaganatorLiveBagLayoutMixin:ShowBags(bagData, source, indexes, indexesT
           local button = bag[index]
           if IsDifferentCachedData(button.BGR, cacheData) then
             button:SetItemDetails(cacheData)
-          elseif refreshContent then
+          elseif refreshWidgets then
             addonTable.ItemButtonUtil.ResetCache(button, cacheData)
           end
         end
@@ -732,8 +682,13 @@ function BaganatorLiveCategoryLayoutMixin:OnLoad()
   self.indexFrames = {}
   self.prevState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
+  self.refreshState = {}
 
   self:RegisterEvent("ITEM_LOCK_CHANGED")
+end
+
+function BaganatorLiveCategoryLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 function BaganatorLiveCategoryLayoutMixin:SetPool(buttonPool)
@@ -788,22 +743,6 @@ function BaganatorLiveCategoryLayoutMixin:OnHide()
       button:ClearNewItem()
     end
   end
-end
-
-function BaganatorLiveCategoryLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD or setting == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-  if tIndexOf(RefreshContentSettings, setting) ~= nil then
-    self.refreshContent = true
-  end
-end
-
-function BaganatorLiveCategoryLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorLiveCategoryLayoutMixin:SetupButton(button)
@@ -923,7 +862,8 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
   local toSet = {}
   local toResetCache = {}
   self.buttons = {}
-  for _, cacheData in ipairs(cacheList) do
+  local itemWidgetsRefresh = self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets]
+  for index, cacheData in ipairs(cacheList) do
     local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
     local newButton
     if self.buttonsByKey[key] then
@@ -932,10 +872,13 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
       if #self.buttonsByKey[key] == 0 then
         self.buttonsByKey[key] = nil
       end
-      if self.refreshContent then
+      if itemWidgetsRefresh then
         table.insert(toResetCache, {newButton, cacheData})
       elseif newButton.BGR then
         newButton.BGR.itemLocation = {bagID = cacheData.bagID, slotIndex = cacheData.slotID}
+      end
+      if newButton.index ~= index then
+        self.reflowRequired = true
       end
     else
       if cacheData.isDummy then
@@ -980,6 +923,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
 
   self.buttonsByKey = {}
   for index, button in ipairs(self.buttons) do
+    button.index = index
     local cacheData = cacheList[index]
     local key = addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(cacheData)
     self.buttonsByKey[key] = self.buttonsByKey[key] or {}
@@ -999,9 +943,12 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     end
   end
 
-  if self.updateTextures then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] then
     UpdateTextures(self)
-    self.updateTextures = false
+  end
+
+  if self.refreshState[addonTable.Constants.RefreshReason.Flow] then
+    self.reflowRequired = true
   end
 
   for _, details in ipairs(toResetCache) do
@@ -1011,17 +958,17 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
     end
   end
 
-  self.refreshContent = false
-
   for index, button in ipairs(self.buttons) do
     button.BGR.category = category
   end
+
+  self.refreshState = {}
 end
 
 function BaganatorLiveCategoryLayoutMixin:Flow(rowWidth)
-  if self.reflow or self.toSet or self.anyRemoved or rowWidth ~= self.prevRowWidth then
+  if self.reflowRequired or self.toSet or self.anyRemoved or rowWidth ~= self.prevRowWidth then
     self.toSet = false
-    self.reflow = false
+    self.reflowRequired = false
     self.anyRemoved = false
     FlowButtonsRows(self, rowWidth)
     self.prevRowWidth = rowWidth
@@ -1037,7 +984,12 @@ function BaganatorCachedCategoryLayoutMixin:OnLoad()
   self.buttonsByKey = {}
   self.indexFrames = {}
   self.prevState = {}
+  self.refreshState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
+end
+
+function BaganatorCachedCategoryLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 function BaganatorCachedCategoryLayoutMixin:ApplySearch(text)
@@ -1053,24 +1005,8 @@ function BaganatorCachedCategoryLayoutMixin:OnHide()
   addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
 end
 
-function BaganatorCachedCategoryLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil or setting == addonTable.Config.Options.SORT_METHOD or setting == addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-  if tIndexOf(RefreshContentSettings, setting) ~= nil then
-    self.refreshContent = true
-  end
-end
-
 function BaganatorCachedCategoryLayoutMixin:Flow(width)
   FlowButtonsRows(self, width)
-end
-
-function BaganatorCachedCategoryLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
@@ -1101,6 +1037,8 @@ function BaganatorCachedCategoryLayoutMixin:ShowGroup(cacheList, rowWidth)
       RestoreCategoryButtonFromEmptySlot(button)
     end
   end
+
+  self.refreshState = {}
 end
 
 BaganatorGeneralGuildLayoutMixin = {}
@@ -1109,8 +1047,13 @@ function BaganatorGeneralGuildLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
+  self.refreshState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
   self.layoutType = "cached"
+end
+
+function BaganatorGeneralGuildLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 function BaganatorGeneralGuildLayoutMixin:ApplySearch(text)
@@ -1124,22 +1067,6 @@ end
 function BaganatorGeneralGuildLayoutMixin:OnHide()
   addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
-end
-
-function BaganatorGeneralGuildLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-  if tIndexOf(RefreshContentSettings, setting) ~= nil then
-    self.refreshContent = true
-  end
-end
-
-function BaganatorGeneralGuildLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorGeneralGuildLayoutMixin:RebuildLayout(rowWidth)
@@ -1169,16 +1096,14 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   local guildData = Syndicator.API.GetGuild(guild)
 
   if #self.buttons ~= Syndicator.Constants.MaxGuildBankTabItemSlots then
-    self.refreshContent = true
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
     self:RebuildLayout(rowWidth)
-  elseif self.reflow or rowWidth ~= self.oldRowWidth then
-    self.reflow = false
+  elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsColumns(self, rowWidth)
   end
 
-  if self.updateTextures then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] then
     UpdateTextures(self)
-    self.updateTextures = false
   end
 
   if not guildData then
@@ -1186,12 +1111,10 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
   end
 
   if self.prevState.guild ~= guild or self.prevState.tabIndex ~= tabIndex then
-    self.refreshContent = true
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
   end
 
-  if self.refreshContent then
-    self.refreshContent = false
-
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] then
     local tab = guildData.bank[tabIndex] and guildData.bank[tabIndex].slots or {}
     for index, cacheData in ipairs(tab) do
       local button = self.buttons[index]
@@ -1212,6 +1135,7 @@ function BaganatorGeneralGuildLayoutMixin:ShowGuild(guild, tabIndex, rowWidth)
     guild = guild,
     tabIndex = tabIndex,
   }
+  self.refreshState = {}
 end
 
 BaganatorLiveGuildLayoutMixin = CreateFromMixins(BaganatorGeneralGuildLayoutMixin)
@@ -1220,6 +1144,7 @@ function BaganatorLiveGuildLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetLiveGuildItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
+  self.refreshState = {}
   self.layoutType = "live"
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
 
@@ -1228,7 +1153,7 @@ end
 
 function BaganatorLiveGuildLayoutMixin:OnEvent(eventName, ...)
   if eventName == "GUILDBANK_ITEM_LOCK_CHANGED" and self.prevState and self.prevState.guild ~= nil and self.prevState.guild ~= "" then
-    self.refreshContent = true
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
     self:ShowGuild(self.prevState.guild, self.prevState.tabIndex, self.oldRowWidth)
     self.SearchMonitor:StartSearch(self.SearchMonitor.text)
   end
@@ -1240,8 +1165,13 @@ function BaganatorUnifiedGuildLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
+  self.refreshState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
   self.layoutType = "cached"
+end
+
+function BaganatorUnifiedGuildLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 function BaganatorUnifiedGuildLayoutMixin:ApplySearch(text)
@@ -1270,22 +1200,6 @@ function BaganatorUnifiedGuildLayoutMixin:OnHide()
 
   addonTable.CallbackRegistry:UnregisterCallback("HighlightGuildTabItems", self)
   addonTable.CallbackRegistry:UnregisterCallback("ClearHighlightGuildTab", self)
-end
-
-function BaganatorUnifiedGuildLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-  if tIndexOf(RefreshContentSettings, setting) ~= nil then
-    self.refreshContent = true
-  end
-end
-
-function BaganatorUnifiedGuildLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorUnifiedGuildLayoutMixin:RebuildLayout(tabCount, rowWidth)
@@ -1327,16 +1241,14 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
   end
 
   if #self.buttons ~= wantedButtonCount then
-    self.refreshContent = true
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
     self:RebuildLayout(availableTabs, rowWidth)
-  elseif self.reflow or rowWidth ~= self.oldRowWidth then
-    self.reflow = false
+  elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsRows(self, rowWidth)
   end
 
-  if self.updateTextures then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] then
     UpdateTextures(self)
-    self.updateTextures = false
   end
 
   if not guildData then
@@ -1344,12 +1256,10 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
   end
 
   if self.prevState.guild ~= guild then
-    self.refreshContent = true
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
   end
 
-  if self.refreshContent then
-    self.refreshContent = false
-
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] then
     local index = 1
     for tabIndex, tabData in ipairs(guildData.bank) do
       if tabData.isViewable then
@@ -1369,6 +1279,7 @@ function BaganatorUnifiedGuildLayoutMixin:ShowGuild(guild, rowWidth)
   self.prevState = {
     guild = guild,
   }
+  self.refreshState = {}
 end
 
 BaganatorLiveUnifiedGuildLayoutMixin = CreateFromMixins(BaganatorUnifiedGuildLayoutMixin)
@@ -1377,6 +1288,7 @@ function BaganatorLiveUnifiedGuildLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetLiveGuildItemButtonPool(self)
   self.buttons = {}
   self.prevState = {}
+  self.refreshState = {}
   self.layoutType = "live"
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorGuildSearchLayoutMonitorTemplate")
 
@@ -1385,7 +1297,7 @@ end
 
 function BaganatorLiveUnifiedGuildLayoutMixin:OnEvent(eventName, ...)
   if eventName == "GUILDBANK_ITEM_LOCK_CHANGED" and self.prevState and self.prevState.guild ~= nil and self.prevState.guild ~= "" then
-    self.refreshContent = true
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
     self:ShowGuild(self.prevState.guild, self.oldRowWidth)
     self.SearchMonitor:StartSearch(self.SearchMonitor.text)
   end
@@ -1397,11 +1309,15 @@ function BaganatorLiveWarbandLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetLiveItemButtonPool(self)
   self.indexFrame = CreateFrame("Frame", nil, self)
   self.buttons = {}
-  self.waitingUpdate = true
   self.prevState = {}
+  self.refreshState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
 
   self:RegisterEvent("ITEM_LOCK_CHANGED")
+end
+
+function BaganatorLiveWarbandLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 BaganatorLiveWarbandLayoutMixin.OnEvent = LiveBagOnEvent
@@ -1413,22 +1329,6 @@ end
 function BaganatorLiveWarbandLayoutMixin:OnHide()
   addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
-end
-
-function BaganatorLiveWarbandLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-  if tIndexOf(RefreshContentSettings, setting) ~= nil then
-    self.refreshContent = true
-  end
-end
-
-function BaganatorLiveWarbandLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorLiveWarbandLayoutMixin:UpdateLockForItem(bagID, slotID)
@@ -1470,7 +1370,7 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
 end
 
 function BaganatorLiveWarbandLayoutMixin:MarkTabsPending(updatedWaiting)
-  self.waitingUpdate = updatedWaiting.bags[self.prevState.bagID] == true
+  self.refreshState[addonTable.Constants.RefreshReason.ItemData] = updatedWaiting.bags[self.prevState.bagID] == true
 end
 
 function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
@@ -1489,31 +1389,23 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
       addonTable.Utilities.DebugOutput("rebuild")
     end
     self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
-    self.waitingUpdate = true
-  elseif self.reflow or rowWidth ~= self.oldRowWidth then
-    self.reflow = false
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
+  elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsColumns(self, rowWidth)
   end
 
-  if self.updateTextures then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] then
     UpdateTextures(self)
-    self.updateTextures = false
   end
 
-  local refreshContent = self.refreshContent
-  if self.refreshContent then
-    self.refreshContent = false
-    self.waitingUpdate = true
-  end
-
-  if self.waitingUpdate or self.prevState.tabIndex ~= tabIndex then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] or self.prevState.tabIndex ~= tabIndex then
     local bagID = indexes[tabIndex]
     self.indexFrame:SetID(bagID)
     for index, cacheData in ipairs(warbandData[tabIndex].slots) do
       local button = self.buttons[index]
       if IsDifferentCachedData(button.BGR, cacheData) then
         button:SetItemDetails(cacheData)
-      elseif refreshContent then
+      elseif self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] then
         addonTable.ItemButtonUtil.ResetCache(button, cacheData)
       end
     end
@@ -1527,7 +1419,7 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     tabIndex = tabIndex,
     bagID = indexes[tabIndex],
   }
-  self.waitingUpdate = false
+  self.refreshState = {}
 end
 
 function BaganatorLiveWarbandLayoutMixin:ApplySearch(text)
@@ -1539,7 +1431,12 @@ BaganatorCachedWarbandLayoutMixin = {}
 function BaganatorCachedWarbandLayoutMixin:OnLoad()
   self.buttonPool = addonTable.ItemViewCommon.GetCachedItemButtonPool(self)
   self.buttons = {}
+  self.refreshState = {}
   self.SearchMonitor = CreateFrame("Frame", nil, self, "BaganatorBagSearchLayoutMonitorTemplate")
+end
+
+function BaganatorCachedWarbandLayoutMixin:UpdateRefreshState(refreshState)
+  Mixin(self.refreshState, refreshState)
 end
 
 function BaganatorCachedWarbandLayoutMixin:OnShow()
@@ -1549,19 +1446,6 @@ end
 function BaganatorCachedWarbandLayoutMixin:OnHide()
   addonTable.CallbackRegistry:UnregisterCallback("HighlightSimilarItems", self)
   addonTable.CallbackRegistry:UnregisterCallback("HighlightIdenticalItems", self)
-end
-
-function BaganatorCachedWarbandLayoutMixin:InformSettingChanged(setting)
-  if tIndexOf(ReflowSettings, setting) ~= nil then
-    self.reflow = true
-  end
-  if tIndexOf(UpdateTextureSettings, setting) ~= nil then
-    self.updateTextures = true
-  end
-end
-
-function BaganatorCachedWarbandLayoutMixin:RequestContentRefresh()
-  self.refreshContent = true
 end
 
 function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
@@ -1603,27 +1487,20 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
       addonTable.Utilities.DebugOutput("rebuild")
     end
     self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
-    self.waitingUpdate = true
-  elseif self.reflow or rowWidth ~= self.oldRowWidth then
-    self.reflow = false
+  elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsColumns(self, rowWidth)
   end
 
-  if self.updateTextures then
+  if self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] then
     UpdateTextures(self)
-    self.updateTextures = false
-  end
-
-  local refreshContent = self.refreshContent
-  if self.refreshContent then
-    self.refreshContent = false
-    self.waitingUpdate = true
   end
 
   for index, cacheData in ipairs(warbandData[tabIndex].slots) do
     local button = self.buttons[index]
     button:SetItemDetails(cacheData)
   end
+
+  self.refreshState = {}
 
   if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
     addonTable.Utilities.DebugOutput("cached warband layout took", debugprofilestop() - start)

@@ -163,31 +163,35 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
-    local oldMods = categoryMods[self.currentCategory]
+    local mods = categoryMods[self.currentCategory]
     local oldIndex
     local isNew, isDefault = self.currentCategory == "-1", customCategories[self.currentCategory] == nil
     if not isNew and not isDefault then
       oldIndex = tIndexOf(displayOrder, self.currentCategory)
     end
-    if not oldMods then
-      oldMods = {}
+    if not mods then
+      mods = {}
     end
+    local oldMods = CopyTable(mods)
+    local oldCat = customCategories[self.currentCategory] or {}
     if isNew then
       self.currentCategory = tostring(1)
       while customCategories[self.currentCategory] do
         self.currentCategory = tostring(tonumber(self.currentCategory) + 1)
       end
     end
-    oldMods.priority = self.PrioritySlider:GetValue()
-    oldMods.showGroupPrefix = self.PrefixCheckBox:GetChecked()
+    mods.priority = self.PrioritySlider:GetValue()
+    mods.showGroupPrefix = self.PrefixCheckBox:GetChecked()
     if self.CategoryColorSwatch.pendingColor then
       local c = self.CategoryColorSwatch.pendingColor
       if c.r == 1 and c.g == 1 and c.b == 1 then
-        oldMods.color = nil
+        mods.color = nil
       else
-        oldMods.color = c:GenerateHexColorNoAlpha()
+        mods.color = c:GenerateHexColorNoAlpha()
       end
     end
+
+    local refreshState = {}
 
     local hidden = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)
     local oldHidden = hidden[self.currentCategory] == true
@@ -198,26 +202,50 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
         name = newName,
         search = self.CategorySearch:GetText(),
       }
-      categoryMods[self.currentCategory] = oldMods
+      categoryMods[self.currentCategory] = mods
 
       hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
 
       self.CategoryName:SetText(newName)
 
       if isNew and tIndexOf(displayOrder, self.currentCategory) == nil then
+        refreshState[addonTable.Constants.RefreshReason.Searches] = true
+        refreshState[addonTable.Constants.RefreshReason.Layout] = true
         table.insert(displayOrder, 1, self.currentCategory)
-        addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+      end
+
+      if not tCompare(oldCat, customCategories[self.currentCategory]) then
+        refreshState[addonTable.Constants.RefreshReason.Searches] = true
+        refreshState[addonTable.Constants.RefreshReason.Layout] = true
       end
     else
       hidden[self.currentCategory] = self.HiddenCheckBox:GetChecked()
-      categoryMods[self.currentCategory] = oldMods
+      categoryMods[self.currentCategory] = mods
     end
 
     if hidden[self.currentCategory] ~= oldHidden then
       addonTable.Config.Set(addonTable.Config.Options.CATEGORY_HIDDEN, CopyTable(hidden))
     end
 
-    addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
+    for key, value in pairs(mods) do
+      if value ~= oldMods[key] and key ~= "color" then
+        refreshState[addonTable.Constants.RefreshReason.Searches] = true
+        refreshState[addonTable.Constants.RefreshReason.Layout] = true
+      elseif value ~= oldMods[key] and key == "color" then
+        refreshState[addonTable.Constants.RefreshReason.Cosmetic] = true
+      end
+    end
+
+    for key, value in pairs(oldMods) do
+      if value ~= mods[key] and key ~= "color" then
+        refreshState[addonTable.Constants.RefreshReason.Searches] = true
+        refreshState[addonTable.Constants.RefreshReason.Layout] = true
+      elseif value ~= mods[key] and key == "color" then
+        refreshState[addonTable.Constants.RefreshReason.Cosmetic] = true
+      end
+    end
+
+    addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
     operationInProgress = false
   end
 

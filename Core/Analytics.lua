@@ -15,8 +15,6 @@ function addonTable.Core.RunAnalytics()
   WagoAnalytics:Switch("UsingCategories", addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE) == "category" or addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE) == "category")
   WagoAnalytics:Switch("DifferentViews", addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE) ~= addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE))
 
-  WagoAnalytics:Switch("NoFrameBorders", addonTable.Config.Get(addonTable.Config.Options.NO_FRAME_BORDERS))
-
   WagoAnalytics:Switch("EmptySpaceAtTop", addonTable.Config.Get(addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP))
   WagoAnalytics:Switch("FlashSimilarAlt", addonTable.Config.Get(addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT))
 
@@ -71,10 +69,7 @@ function addonTable.Core.RunAnalytics()
     [addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH] = true,
     [addonTable.Config.Options.GUILD_VIEW_WIDTH] = true,
     [addonTable.Config.Options.BAG_ICON_SIZE] = true,
-    [addonTable.Config.Options.VIEW_ALPHA] = true,
     [addonTable.Config.Options.LOCK_FRAMES] = true,
-    [addonTable.Config.Options.NO_FRAME_BORDERS] = true,
-    [addonTable.Config.Options.EMPTY_SLOT_BACKGROUND] = true,
     [addonTable.Config.Options.SHOW_SORT_BUTTON] = true,
     [addonTable.Config.Options.HIDE_BOE_ON_COMMON] = true,
     [addonTable.Config.Options.SHOW_RECENTS_TABS] = true,

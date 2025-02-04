@@ -51,7 +51,7 @@ local function CacheSettings()
     iconSettings.junkPlugin = nil
   end
 end
-addonTable.CallbackRegistry:RegisterCallback("SettingChangedEarly", CacheSettings)
+addonTable.CallbackRegistry:RegisterCallback("SettingChanged", CacheSettings)
 addonTable.Utilities.OnAddonLoaded("Baganator", CacheSettings)
 
 local function textInit(itemButton)
@@ -87,7 +87,7 @@ do
   frame:RegisterEvent("PLAYER_LEVEL_UP")
   frame:SetScript("OnEvent", function()
     if Baganator.API.IsCornerWidgetActive("item_level") then
-      Baganator.API.RequestItemButtonsRefresh()
+      Baganator.API.RequestItemButtonsRefresh({Baganator.Constants.RefreshReason.ItemWidgets})
     end
   end)
 end
@@ -324,7 +324,7 @@ addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
 
   local function Callback()
     if Baganator.API.IsCornerWidgetActive("can_i_mog_it") then
-      Baganator.API.RequestItemButtonsRefresh()
+      Baganator.API.RequestItemButtonsRefresh({Baganator.Constants.RefreshReason.ItemWidgets})
     end
   end
   CanIMogIt:RegisterMessage("OptionUpdate", function()

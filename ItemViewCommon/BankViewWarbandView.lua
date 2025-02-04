@@ -35,9 +35,13 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     self:ApplySearch(text)
   end)
 
+  self.refreshState = {}
+  for _, value in pairs(addonTable.Constants.RefreshReason) do
+    self.refreshState[value] = true
+  end
+
   Syndicator.CallbackRegistry:RegisterCallback("WarbandBankCacheUpdate",  function(_, index, updates)
     self:NotifyBagUpdate(updates)
-    self.searchToApply = true
     if updates.tabInfo then
       self.updateTabs = true
     end
@@ -45,6 +49,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
       for bagID in pairs(updates.bags) do
         self.tabsSearchCache[index][tIndexOf(Syndicator.Constants.AllWarbandIndexes, bagID)] = nil
       end
+    end
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
+    if updates.tabInfo then
+      self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
     end
     if self:IsVisible() then
       self:GetParent():UpdateView()
@@ -57,14 +65,15 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
     end
   end)
 
-  addonTable.CallbackRegistry:RegisterCallback("SettingChanged",  function(_, settingName)
-    if tIndexOf(addonTable.Config.ItemButtonsRelayoutSettings, settingName) ~= nil then
-      for _, layout in ipairs(self.Container.Layouts) do
-        layout:InformSettingChanged(settingName)
-      end
-      if self:IsVisible() then
-        self:GetParent():UpdateView()
-      end
+  addonTable.CallbackRegistry:RegisterCallback("RefreshStateChange",  function(_, refreshState)
+    self.refreshState = Mixin(self.refreshState, refreshState)
+
+    for _, layout in ipairs(self.Container.Layouts) do
+      layout:UpdateRefreshState(refreshState)
+    end
+
+    if self:IsVisible() then
+      self:GetParent():UpdateView()
     end
   end)
 
@@ -454,6 +463,12 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateView()
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
+  if tabIndex ~= self.lastTab or self.isLive ~= isLive then
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
+    self.refreshState[addonTable.Constants.RefreshReason.Character] = true
+  end
+  self.lastTab = tabIndex
+
   self.isLive = isLive
 
   addonTable.Utilities.AddGeneralDropSlot(self, function()

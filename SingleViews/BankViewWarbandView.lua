@@ -1,19 +1,6 @@
 local _, addonTable = ...
 BaganatorSingleViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
 
-function BaganatorSingleViewBankViewWarbandViewMixin:OnLoad()
-  BaganatorItemViewCommonBankViewWarbandViewMixin.OnLoad(self)
-
-  addonTable.CallbackRegistry:RegisterCallback("ContentRefreshRequired",  function()
-    for _, layout in ipairs(self.Container.Layouts) do
-      layout:RequestContentRefresh()
-    end
-    if self:IsVisible() then
-      self:GetParent():UpdateView()
-    end
-  end)
-end
-
 function BaganatorSingleViewBankViewWarbandViewMixin:GetSearchMatches()
   if self.Container.BankTabLive:IsShown() then
     return self.Container.BankTabLive.SearchMonitor:GetMatches()
@@ -42,6 +29,8 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
 
   local bankWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
 
+  local refresh = self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] or self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] or self.refreshState[addonTable.Constants.RefreshReason.Flow]
+
   local activeBank
 
   if self.currentTab > 0 then
@@ -51,7 +40,9 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
       activeBank = self.Container.BankTabCached
     end
 
-    activeBank:ShowTab(self.currentTab, Syndicator.Constants.AllWarbandIndexes, bankWidth)
+    if refresh then
+      activeBank:ShowTab(self.currentTab, Syndicator.Constants.AllWarbandIndexes, bankWidth)
+    end
   else
     if self.Container.BankUnifiedLive:IsShown() then
       activeBank = self.Container.BankUnifiedLive
@@ -59,28 +50,35 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
       activeBank = self.Container.BankUnifiedCached
     end
 
-    local warbandData = Syndicator.API.GetWarband(1)
-    local bagData = {}
-    for _, tab in ipairs(warbandData.bank) do
-      table.insert(bagData, tab.slots)
-    end
+    if refresh then
+      local warbandData = Syndicator.API.GetWarband(1)
+      local bagData = {}
+      for _, tab in ipairs(warbandData.bank) do
+        table.insert(bagData, tab.slots)
+      end
 
-    activeBank:ShowBags(bagData, 1, Syndicator.Constants.AllWarbandIndexes, nil, bankWidth * 2)
+      activeBank:ShowBags(bagData, 1, Syndicator.Constants.AllWarbandIndexes, nil, bankWidth * 2)
+    end
   end
 
-  local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
-  self:ApplySearch(searchText)
+  self.searchToApply = self.searchToApply or refresh
+  if self.searchToApply then
+    local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
+    self:ApplySearch(searchText)
+  end
 
-  local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+  if self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
-  local bankHeight = activeBank:GetHeight()
+    self.bankHeight = activeBank:GetHeight()
 
-  activeBank:ClearAllPoints()
-  activeBank:SetPoint("TOPLEFT", 0, 0)
+    activeBank:ClearAllPoints()
+    activeBank:SetPoint("TOPLEFT", 0, 0)
+
+    self.Container:SetSize(math.max(activeBank:GetWidth(), self:GetButtonsWidth(sideSpacing)), self.bankHeight)
+  end
 
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
-
-  self.Container:SetSize(math.max(activeBank:GetWidth(), self:GetButtonsWidth(sideSpacing)), bankHeight)
 
   self:OnFinished()
 

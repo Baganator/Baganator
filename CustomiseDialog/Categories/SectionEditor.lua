@@ -33,7 +33,11 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
     local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
 
+    local refreshState = {}
     if sections[self.currentSection] then
+      if sections[self.currentSection].name ~= self.SectionName:GetText() then
+        refreshState[addonTable.Constants.RefreshReason.Searches] = true
+      end
       sections[self.currentSection].name = self.SectionName:GetText()
     else
       self.currentSection = tostring(1)
@@ -43,16 +47,23 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       sections[self.currentSection] = {name = self.SectionName:GetText()}
       table.insert(displayOrder, 1, "_" .. self.currentSection)
       table.insert(displayOrder, 2, addonTable.CategoryViews.Constants.SectionEnd)
+      refreshState[addonTable.Constants.RefreshReason.Searches] = true
+      refreshState[addonTable.Constants.RefreshReason.Layout] = true
     end
     if self.SectionColorSwatch.pendingColor then
       local c = self.SectionColorSwatch.pendingColor
+      local oldColor = sections[self.currentSection].color
       if c.r == 1 and c.g == 1 and c.b == 1 then
         sections[self.currentSection].color = nil
       else
         sections[self.currentSection].color = c:GenerateHexColorNoAlpha()
       end
+      if oldColor ~= sections[self.currentSection].color then
+        refreshState[addonTable.Constants.RefreshReason.Cosmetic] = true
+      end
     end
-    addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
+
+    addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
   end
 
   self.DeleteButton:SetScript("OnClick", function()
