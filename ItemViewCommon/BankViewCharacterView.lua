@@ -186,7 +186,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
     self:GetParent():SetTitle(BAGANATOR_L_XS_BANK:format(characterData.details.character))
   end
 
-  self.searchToApply = self.searchToApply or self.refreshState[addonTable.Constants.RefreshReason.Searches] or self.refreshState[addonTable.Constants.RefreshReason.ItemData]
+  self.searchToApply = self.searchToApply or self.refreshState[addonTable.Constants.RefreshReason.Searches] or self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets]
 
   local oldLast = self.lastCharacter
   self.lastCharacter = character

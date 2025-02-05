@@ -314,7 +314,7 @@ end
 function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, isLive)
   addonTable.ReportEntry()
 
-  self.searchToApply = self.searchToApply or self.refreshState[addonTable.Constants.RefreshReason.Searches] or self.refreshState[addonTable.Constants.RefreshReason.ItemData]
+  self.searchToApply = self.searchToApply or self.refreshState[addonTable.Constants.RefreshReason.Searches] or self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets]
 
   local start = debugprofilestop()
 
