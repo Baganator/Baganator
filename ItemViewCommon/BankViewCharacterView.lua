@@ -21,7 +21,6 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
 
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
     self:SetLiveCharacter(character)
-    self.searchToApply = true
     self:NotifyBagUpdate(updatedBags)
     if next(updatedBags.bank) then
       self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
@@ -186,6 +185,8 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   else
     self:GetParent():SetTitle(BAGANATOR_L_XS_BANK:format(characterData.details.character))
   end
+
+  self.searchToApply = self.searchToApply or self.refreshState[addonTable.Constants.RefreshReason.Searches] or self.refreshState[addonTable.Constants.RefreshReason.ItemData]
 
   local oldLast = self.lastCharacter
   self.lastCharacter = character

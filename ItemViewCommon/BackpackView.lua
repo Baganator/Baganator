@@ -314,6 +314,8 @@ end
 function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, isLive)
   addonTable.ReportEntry()
 
+  self.searchToApply = self.searchToApply or self.refreshState[addonTable.Constants.RefreshReason.Searches] or self.refreshState[addonTable.Constants.RefreshReason.ItemData]
+
   local start = debugprofilestop()
 
   local characterData = Syndicator.API.GetCharacter(character)

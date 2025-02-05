@@ -150,8 +150,6 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
     self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
   end
 
-  self.searchToApply = self.searchToApply or self.refreshState[addonTable.Constants.RefreshReason.Searches] or self.refreshState[addonTable.Constants.RefreshReason.ItemData]
-
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
     self.addToCategoryMode = nil
   end
