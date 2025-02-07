@@ -75,7 +75,7 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
             info.guid = C_Item.GetItemGUID(location)
             info.useGUID = true
           end
-        elseif isGrouping then
+        elseif not isGrouping then
           info.guid = C_Item.GetItemGUID(location)
         end
       end
