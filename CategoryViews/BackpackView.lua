@@ -67,7 +67,9 @@ end
 
 function BaganatorCategoryViewBackpackViewMixin:OnShow()
   BaganatorItemViewCommonBackpackViewMixin.OnShow(self)
-  addonTable.NewItems:ClearNewItemsForTimeout()
+  if addonTable.NewItems:ClearNewItemsForTimeout() then
+    self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true -- Change to more relevant refresh state
+  end
 end
 
 -- Clear new item status on items that are hidden as part of a stack
