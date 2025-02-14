@@ -38,7 +38,7 @@
       </Layer>
       <Layer level="ARTWORK">
         <Texture parentKey="SelectedTexture" file="Interface\Buttons\CheckButtonHilight" alphaMode="ADD"/>
-        <Texture parentKey="Icon" alphaMode="ADD" setAllPoints="true"/>
+        <Texture parentKey="Icon" setAllPoints="true"/>
       </Layer>
     </Layers>
     <NormalTexture/>
