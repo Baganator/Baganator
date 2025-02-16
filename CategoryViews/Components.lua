@@ -105,6 +105,7 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
     button:SetScript("OnEnter", BaganatorCategoryViewsCategoryButtonMixin.OnEnter)
     button:SetScript("OnLeave", BaganatorCategoryViewsCategoryButtonMixin.OnLeave)
     button:SetScript("OnShow", function(self)
+      self:CheckResults(self.lastText or "")
       addonTable.CallbackRegistry:RegisterCallback("SearchMonitorComplete", self.CheckResults, self)
     end)
     button:SetScript("OnHide", function(self)
@@ -113,6 +114,7 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
     end)
     function button:CheckResults(text)
       self.fadeAnimation:Stop()
+      self.lastText = text
       if text == "" or not self.collapsed then
         return
       end
