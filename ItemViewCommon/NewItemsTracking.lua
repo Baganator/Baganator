@@ -163,7 +163,9 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItemsForTimeout()
       if not self.seenGUIDs[guid] or time - details.time >= self.timeout then
         anyChanges = true
         self.recentTimeout[guid] = nil
-        self.recentByContainerTimeout[details.bagID][details.slotID] = nil
+        if self.recentByContainerTimeout[details.bagID][details.slotID] == guid then
+          self.recentByContainerTimeout[details.bagID][details.slotID] = nil
+        end
       end
     end
   end
