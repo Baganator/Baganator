@@ -99,7 +99,9 @@ local skinners = {
     B.ReskinSlider(frame)
   end,
   InsetFrame = function(frame)
-    frame.NineSlice:SetAlpha(0)
+    if frame.NineSlice then
+      frame.NineSlice:SetAlpha(0)
+    end
   end,
   CornerWidget = function(frame, tags)
     if frame:IsObjectType("FontString") and BAGANATOR_ELVUI_USE_BAG_FONT then
