@@ -46,11 +46,16 @@ if Syndicator and Syndicator.Constants.WarbandBankActive then
       bankSlots = addonTable.Transfers.GetBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
     elseif BankFrame:GetActiveBankType() == Enum.BankType.Account then
       local oldCount = #matches
+      local missing = 0
       matches = tFilter(matches, function(m)
         local location = ItemLocation:CreateFromBagAndSlot(m.bagID, m.slotID)
-        return C_Item.DoesItemExist(location) and C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, location)
+        if not C_Item.DoesItemExist(location) then
+          missing = missing + 1
+          return false
+        end
+        return C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, location)
       end, true)
-      if oldCount ~= #matches then
+      if oldCount ~= #matches + missing then
         UIErrorsFrame:AddMessage(ERR_NO_SOULBOUND_ITEM_IN_ACCOUNT_BANK, 1.0, 0.1, 0.1, 1.0)
       end
       local tabIndex = addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
