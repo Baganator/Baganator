@@ -253,13 +253,19 @@ function BaganatorSingleViewGuildViewMixin:ApplySearch(text)
 end
 
 function BaganatorSingleViewGuildViewMixin:OnDragStart()
-  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
-    self:StartMoving()
-    self:SetUserPlaced(false)
+  if addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
+    return
   end
+
+  self:StartMoving()
+  self:SetUserPlaced(false)
 end
 
 function BaganatorSingleViewGuildViewMixin:OnDragStop()
+  if addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
+    return
+  end
+
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local oldCorner = addonTable.Config.Get(addonTable.Config.Options.GUILD_VIEW_POSITION)[1]
@@ -733,13 +739,19 @@ function BaganatorGuildLogsTemplateMixin:OnShow()
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStart()
-  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
-    self:StartMoving()
-    self:SetUserPlaced(false)
+  if addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
+    return
   end
+
+  self:StartMoving()
+  self:SetUserPlaced(false)
 end
 
 function BaganatorGuildLogsTemplateMixin:OnDragStop()
+  if addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
+    return
+  end
+
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
@@ -897,13 +909,19 @@ function BaganatorGuildTabTextTemplateMixin:ApplyTabTitle()
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnDragStart()
-  if not addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
-    self:StartMoving()
-    self:SetUserPlaced(false)
+  if addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
+    return
   end
+
+  self:StartMoving()
+  self:SetUserPlaced(false)
 end
 
 function BaganatorGuildTabTextTemplateMixin:OnDragStop()
+  if addonTable.Config.Get(addonTable.Config.Options.LOCK_FRAMES) then
+    return
+  end
+
   self:StopMovingOrSizing()
   self:SetUserPlaced(false)
   local point, _, relativePoint, x, y = self:GetPoint(1)
