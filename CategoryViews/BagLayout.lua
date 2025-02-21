@@ -309,7 +309,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
                   )
                 )
                 then
-                table.insert(current.results, index2, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty", oldKey = info.keyGUID or info.oldKeyGUID, oldKeyNoGUID = info.keyNoGUID or info.oldKeyNoGUID})
+                table.insert(current.results, index2, {bagID = info.bagID, slotID = info.slotID, isDummy = true, dummyType = "empty", oldKeyGUID = info.keyGUID or info.oldKeyGUID, oldKeyNoGUID = info.keyNoGUID or info.oldKeyNoGUID})
                 self.dummyAdded = true
               end
             end
