@@ -208,7 +208,7 @@
     <Frames>
       <Frame parentKey="TextContainer" mixin="ScrollingFontMixin">
         <KeyValues>
-          <KeyValue key="fontName" value="GameFontNormal" type="string"/>
+          <KeyValue key="fontName" value="GameFontHighlight" type="string"/>
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" y="-25" x="15"/>
@@ -256,7 +256,7 @@
     <Frames>
       <Frame parentKey="TextContainer" inherits="ScrollingEditBoxTemplate">
         <KeyValues>
-          <KeyValue key="fontName" value="GameFontNormal" type="string"/>
+          <KeyValue key="fontName" value="GameFontHighlight" type="string"/>
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" y="-25" x="15"/>
