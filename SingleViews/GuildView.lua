@@ -723,6 +723,10 @@ function BaganatorGuildLogsTemplateMixin:OnLoad()
   self:SetClampedToScreen(true)
   ScrollUtil.RegisterScrollBoxWithScrollBar(self.TextContainer:GetScrollBox(), self.ScrollBar)
 
+  self.TextContainer.ScrollBox.FontStringContainer:HookScript("OnHyperlinkClick", function()
+    self:Raise()
+  end)
+
   addonTable.Skins.AddFrame("ButtonFrame", self)
   addonTable.Skins.AddFrame("TrimScrollBar", self.ScrollBar)
 
