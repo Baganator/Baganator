@@ -39,6 +39,9 @@ local skinners = {
     frame.SlotBackground:SetTexCoord(unpack(E.TexCoords))
     S:HandleItemButton(frame, true)
     S:HandleIconBorder(frame.IconBorder)
+    hooksecurefunc(frame.IconBorder, "SetVertexColor", function(_, r, g, b, a)
+      frame.backdrop.forcedBorderColors = {r, g, b, a}
+    end)
     if frame.SetItemButtonTexture then
       hooksecurefunc(frame, "SetItemButtonTexture", function()
         frame.icon:SetTexCoord(unpack(E.TexCoords))
