@@ -116,7 +116,11 @@ end
 local function CompareCurrent()
   local current = addonTable.CustomiseDialog.CategoriesExport()
   local toMod = addonTable.json.decode(current)
-  local defaultImport = addonTable.json.decode(addonTable.CategoryViews.Constants.DefaultImport[addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT)])
+  local defaultImport = addonTable.json.decode(
+  -- math.max(1 in case the user has an old category layout from before the
+  -- defaults import was added
+    addonTable.CategoryViews.Constants.DefaultImport[math.max(1, addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT))]
+  )
 
   if #toMod.order ~= #defaultImport.order then
     return false
