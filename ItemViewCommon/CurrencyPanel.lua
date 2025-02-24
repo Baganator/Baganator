@@ -116,6 +116,7 @@ function BaganatorCurrencyPanelMixin:OnLoad()
     self:SetupRow(row, details)
   end)
   ScrollUtil.InitScrollBoxListWithScrollBar(self.scrollBox, scrollBar, view)
+  addonTable.Skins.AddFrame("TrimScrollBar", scrollBar)
 
   self.transferButton = self:GetTransferButton(self.scrollBox)
   self.transferButton:SetFrameStrata("DIALOG")
