@@ -1,5 +1,5 @@
-## Interface: 110007
-## Interface-Cata: 40401, 40402
+## Interface: 110007, 110100
+## Interface-Cata: 40402
 ## Interface-Vanilla: 11506
 ## Title: Baganator
 ## Version: @project-version@
