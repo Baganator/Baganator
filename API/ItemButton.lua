@@ -82,12 +82,29 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", functio
 end, textInit)
 
 do
-  -- Level up (as heirlooms may change ilvl)
+  -- Level up (as heirlooms may change ilvl) or timewalking raid begin/end
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("PLAYER_LEVEL_UP")
-  frame:SetScript("OnEvent", function()
-    if Baganator.API.IsCornerWidgetActive("item_level") then
+  frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+
+  local lastDifficultyID
+
+  frame:SetScript("OnEvent", function(_, eventName)
+    if not Baganator.API.IsCornerWidgetActive("item_level") then
+      return
+    end
+
+    if eventName == "PLAYER_LEVEL_UP" then
       Baganator.API.RequestItemButtonsRefresh({Baganator.Constants.RefreshReason.ItemWidgets})
+    -- Detect entering or leaving a timewalking raid instance
+    elseif eventName == "PLAYER_ENTERING_WORLD" then
+      local newDifficultyID = GetDungeonDifficultyID()
+      if lastDifficultyID ~= nil and lastDifficultyID ~= newDifficultyID and (
+        newDifficultyID == 33 or lastDifficultyID == 33
+        ) then
+        Baganator.API.RequestItemButtonsRefresh({Baganator.Constants.RefreshReason.ItemWidgets})
+      end
+      lastDifficultyID = newDifficultyID
     end
   end)
 end
