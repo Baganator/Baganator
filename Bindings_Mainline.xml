@@ -1,6 +1,6 @@
 <Bindings>
   <Binding name="BAGANATOR_TOGGLE_BANK" category="Baganator">
-    Baganator.CallbackRegistry:TriggerEvent("BankToggle")
+    Baganator.CallbackRegistry:TriggerEvent("BankToggle", Syndicator.API.GetCurrentCharacter())
   </Binding>
   <Binding name="BAGANATOR_TOGGLE_WARBAND_BANK" category="Baganator">
     Baganator.CallbackRegistry:TriggerEvent("BankToggle", 1)

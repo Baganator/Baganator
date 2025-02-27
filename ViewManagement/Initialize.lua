@@ -238,7 +238,7 @@ local function SetupBankView(frameGroup)
   end
 
   local function GetSelectedBankTab(entity)
-    if type(entity) == "string" or entity == nil then -- Character bank
+    if type(entity) == "string" then -- Character bank
       return addonTable.Constants.BankTabType.Character
     elseif type(entity) == "number" then -- Warband bank
       return addonTable.Constants.BankTabType.Warband
@@ -256,13 +256,17 @@ local function SetupBankView(frameGroup)
 
     local selectedTab = GetSelectedBankTab(entity)
     if selectedTab == addonTable.Constants.BankTabType.Character then -- Character bank
-      local characterName = entity or Syndicator.API.GetCurrentCharacter()
-      bankView:SetShown(characterName ~= bankView.Character.lastCharacter or not bankView:IsShown())
-      bankView:UpdateViewToCharacter(characterName)
+      bankView:SetShown(entity ~= bankView.Character.lastCharacter or not bankView:IsShown())
+      bankView:UpdateViewToCharacter(entity)
     elseif selectedTab == addonTable.Constants.BankTabType.Warband then -- Warband bank
       subView = subView or addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
-      bankView:SetShown(not bankView:IsShown())
+      bankView:SetShown(addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB) ~= addonTable.Constants.BankTabType.Warband or not bankView:IsShown())
       bankView:UpdateViewToWarband(entity, subView)
+    else -- Keep current tab
+      bankView:SetShown(not bankView:IsShown())
+      if bankView:IsShown() then
+        bankView:UpdateView()
+      end
     end
   end)
 

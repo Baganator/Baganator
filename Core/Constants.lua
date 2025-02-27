@@ -193,8 +193,8 @@ addonTable.Constants.ContainerKeyToInfo = {
 addonTable.Constants.ContainerTypes = 13
 
 addonTable.Constants.BankTabType = {
-  Character = 0,
-  Warband = 1,
+  Character = 1,
+  Warband = 2,
 }
 
 addonTable.Constants.RefreshReason = {

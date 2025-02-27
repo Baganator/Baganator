@@ -22,8 +22,8 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
   self:InitializeWarband(self.warbandTemplate)
 
   self.currentTab = self.Character
-  if addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB) == 2 then
-    self:SetTab(2)
+  if addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB) == addonTable.Constants.BankTabType.Warband then
+    self:SetTab(addonTable.Constants.BankTabType.Warband)
   end
 
   Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
@@ -50,9 +50,9 @@ function BaganatorItemViewCommonBankViewMixin:SetTab(index)
   self.currentTab:Hide()
   addonTable.Config.Set(addonTable.Config.Options.BANK_CURRENT_TAB, index)
 
-  if index == 1 then
+  if index == addonTable.Constants.BankTabType.Character then
     self.currentTab = self.Character
-  elseif index == 2 then
+  elseif index == addonTable.Constants.BankTabType.Warband then
     self.currentTab = self.Warband
   end
 
@@ -179,7 +179,7 @@ function BaganatorItemViewCommonBankViewMixin:OnHide(eventName)
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateViewToCharacter(characterName)
-  self.Character.lastCharacter = characterName
+  addonTable.CallbackRegistry:TriggerEvent("CharacterSelect", characterName)
   if not self.Character:IsShown() then
     self.Tabs[1]:Click()
   else

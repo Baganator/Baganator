@@ -181,7 +181,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnDragStop()
 end
 
 function BaganatorItemViewCommonBackpackViewMixin:ToggleBank()
-  addonTable.CallbackRegistry:TriggerEvent("BankToggle", self.lastCharacter)
+  addonTable.CallbackRegistry:TriggerEvent("BankToggle")
   self:Raise()
 end
 

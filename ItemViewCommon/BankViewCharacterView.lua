@@ -71,6 +71,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
     if character ~= self.lastCharacter then
       self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
       self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
+      self.refreshState[addonTable.Constants.RefreshReason.Character] = true
       if self:IsVisible() then
         self.lastCharacter = character
         self:GetParent():UpdateView()
