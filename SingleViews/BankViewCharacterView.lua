@@ -75,6 +75,9 @@ function BaganatorSingleViewBankViewCharacterViewMixin:NotifyBagUpdate(updatedBa
 end
 
 function BaganatorSingleViewBankViewCharacterViewMixin:UpdateForCharacter(character, isLive)
+  if isLive ~= self.isLive then
+    self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
+  end
   BaganatorItemViewCommonBankViewCharacterViewMixin.UpdateForCharacter(self, character, isLive)
   if self.lastCharacter ~= character then
     return
