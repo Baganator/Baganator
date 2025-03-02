@@ -280,8 +280,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.ItemsEditor:SetupItems()
       self.HelpButton:Enable()
       self.ChangeSearchModeButton:Enable()
-      self.CategoryColorSwatch.lastColor = CreateColor(1, 1, 1)
-      self.CategoryColorSwatch:SetColorRGB(self.CategoryColorSwatch.lastColor:GetRGBA())
+      self.CategoryColorSwatch.currentColor = CreateColor(1, 1, 1)
+      self.CategoryColorSwatch:SetColorRGB(self.CategoryColorSwatch.currentColor:GetRGBA())
       operationInProgress = false
       Save()
       return
@@ -336,11 +336,11 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.PrefixCheckBox:SetChecked(true)
     end
     if categoryMods[value] and categoryMods[value].color then
-      self.CategoryColorSwatch.lastColor = CreateColorFromRGBAHexString(categoryMods[value].color .. "ff")
+      self.CategoryColorSwatch.currentColor = CreateColorFromRGBAHexString(categoryMods[value].color .. "ff")
     else
-      self.CategoryColorSwatch.lastColor = CreateColor(1, 1, 1)
+      self.CategoryColorSwatch.currentColor = CreateColor(1, 1, 1)
     end
-    self.CategoryColorSwatch:SetColorRGB(self.CategoryColorSwatch.lastColor:GetRGBA())
+    self.CategoryColorSwatch:SetColorRGB(self.CategoryColorSwatch.currentColor:GetRGBA())
 
     operationInProgress = false
   end

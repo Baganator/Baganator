@@ -88,8 +88,8 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       self.currentSection = "-1"
       self.SectionName:SetText(BAGANATOR_L_NEW_SECTION)
 
-      self.SectionColorSwatch.lastColor = CreateColor(1, 1, 1)
-      self.SectionColorSwatch:SetColorRGB(self.SectionColorSwatch.lastColor:GetRGBA())
+      self.SectionColorSwatch.currentColor = CreateColor(1, 1, 1)
+      self.SectionColorSwatch:SetColorRGB(self.SectionColorSwatch.currentColor:GetRGBA())
 
       Save()
     else
@@ -98,11 +98,11 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       self.SectionName:SetText(_G["BAGANATOR_L_SECTION_" .. sectionDetails.name] or sectionDetails.name)
 
       if sectionDetails.color then
-        self.SectionColorSwatch.lastColor = CreateColorFromRGBAHexString(sectionDetails.color .. "ff")
+        self.SectionColorSwatch.currentColor = CreateColorFromRGBAHexString(sectionDetails.color .. "ff")
       else
-        self.SectionColorSwatch.lastColor = CreateColor(1, 1, 1)
+        self.SectionColorSwatch.currentColor = CreateColor(1, 1, 1)
       end
-      self.SectionColorSwatch:SetColorRGB(self.SectionColorSwatch.lastColor:GetRGBA())
+      self.SectionColorSwatch:SetColorRGB(self.SectionColorSwatch.currentColor:GetRGBA())
     end
   end)
 

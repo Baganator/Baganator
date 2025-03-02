@@ -9,11 +9,12 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
     end
     if colorPickerFrameMonitor.changed then
       Save()
-      colorSwatch.lastColor = colorSwatch.pendingColor
+      colorSwatch.currentColor = colorSwatch.pendingColor
       colorSwatch.pendingColor = nil
     end
     colorPickerFrameMonitor.changed = false
   end
+  local cancelColor
   colorPickerFrameMonitor:SetScript("OnHide", function() colorPickerFrameMonitor:SetScript("OnUpdate", nil) end)
   colorSwatch = CreateFrame("Button", nil, parent, "ColorSwatchTemplate")
   colorSwatch:SetPoint("RIGHT", -10, 0)
@@ -22,7 +23,8 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
   colorSwatch:SetScript("OnClick", function(_, button)
     if button == "LeftButton" then
       local info = {}
-      info.r, info.g, info.b = colorSwatch.lastColor:GetRGBA()
+      info.r, info.g, info.b = colorSwatch.currentColor:GetRGBA()
+      cancelColor = colorSwatch.currentColor
       info.swatchFunc = function()
         colorPickerFrameMonitor.changed = true
         local r, g, b = ColorPickerFrame:GetColorRGB()
@@ -30,8 +32,8 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
         colorSwatch:SetColorRGB(r, g, b)
       end
       info.cancelFunc = function()
-        colorSwatch.pendingColor = colorSwatch.lastColor
-        colorSwatch:SetColorRGB(colorSwatch.lastColor:GetRGBA())
+        colorSwatch.pendingColor = cancelColor
+        colorSwatch:SetColorRGB(cancelColor:GetRGBA())
         Save()
         colorSwatch.pendingColor = nil
       end,
@@ -39,7 +41,7 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
       ColorPickerFrame:SetupColorPickerAndShow(info);
     else
       colorSwatch.pendingColor = CreateColor(1, 1, 1)
-      colorSwatch.lastColor = colorSwatch.pendingColor
+      colorSwatch.currentColor = colorSwatch.pendingColor
       colorSwatch:SetColorRGB(1, 1, 1)
       Save()
       -- Update tooltip to hide text about resetting the color
@@ -51,7 +53,7 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
   colorSwatch:HookScript("OnEnter", function()
     GameTooltip:SetOwner(colorSwatch, "ANCHOR_TOP")
     GameTooltip:SetText(BAGANATOR_L_CHANGE_COLOR)
-    local c = colorSwatch.lastColor
+    local c = colorSwatch.currentColor
     if c.r ~= 1 or c.g ~= 1 or c.b ~= 1 then
       GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_RESET))
     end
