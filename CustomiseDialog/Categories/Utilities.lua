@@ -35,6 +35,7 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
         colorSwatch.pendingColor = cancelColor
         colorSwatch:SetColorRGB(cancelColor:GetRGBA())
         Save()
+        colorSwatch.currentColor = cancelColor
         colorSwatch.pendingColor = nil
       end,
       colorPickerFrameMonitor:SetScript("OnUpdate", colorPickerFrameMonitor.OnUpdate)
