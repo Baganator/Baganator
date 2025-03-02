@@ -285,6 +285,13 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
       end
     end
 
+    for _, source in ipairs(displayOrder) do
+      if source:sub(1, 1) == "_" and source ~= addonTable.CategoryViews.Constants.SectionEnd and sections[source:sub(2)] == nil then
+        addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+        return
+      end
+    end
+
     local currentCustomCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
     for source, category in pairs(customCategories) do
       currentCustomCategories[sourceMap[source]] = category
