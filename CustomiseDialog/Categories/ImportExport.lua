@@ -238,35 +238,13 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
       return
     end
 
-    local hidden = {}
-    if import.hidden then
-      if type(import.hidden) ~= "table" then
-        addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
-        return
-      end
-      for _, source in ipairs(import.hidden) do
-        hidden[sourceMap[source] or source] = true
-      end
-    end
-    local displayOrder = {}
-    for _, source in ipairs(import.order) do
-      local category = addonTable.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
-      if category or source == addonTable.CategoryViews.Constants.DividerName or source:match("^_") then
-        table.insert(displayOrder, sourceMap[source] or source)
-      end
-    end
-    for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
-      if tIndexOf(displayOrder, source) == nil  then
-        table.insert(displayOrder, source)
-      end
-    end
     local sections = {}
     if type(import.sections) ~= "table" then
       addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
       return
     end
     for source, details in pairs(import.sections) do
-      if tIndexOf(displayOrder, "_" .. source) ~= nil then
+      if tIndexOf(import.order, "_" .. source) ~= nil then
         local s = {}
         if type(details.name) ~= "string" then
           addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
@@ -285,10 +263,31 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
       end
     end
 
-    for _, source in ipairs(displayOrder) do
-      if source:sub(1, 1) == "_" and source ~= addonTable.CategoryViews.Constants.SectionEnd and sections[source:sub(2)] == nil then
+    local hidden = {}
+    if import.hidden then
+      if type(import.hidden) ~= "table" then
         addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
         return
+      end
+      for _, source in ipairs(import.hidden) do
+        hidden[sourceMap[source] or source] = true
+      end
+    end
+    local displayOrder = {}
+    for _, source in ipairs(import.order) do
+      local category = addonTable.CategoryViews.Constants.SourceToCategory[source] or customCategories[source]
+      if category or source == addonTable.CategoryViews.Constants.DividerName then
+        table.insert(displayOrder, sourceMap[source] or source)
+      elseif source:sub(1, 1) == "_" and (source == addonTable.CategoryViews.Constants.SectionEnd or sections[source:sub(2)] ~= nil) then
+        table.insert(displayOrder, source)
+      else
+        addonTable.Utilities.Message(BAGANATOR_L_INVALID_CATEGORY_IMPORT_FORMAT)
+        return
+      end
+    end
+    for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
+      if tIndexOf(displayOrder, source) == nil  then
+        table.insert(displayOrder, source)
       end
     end
 
