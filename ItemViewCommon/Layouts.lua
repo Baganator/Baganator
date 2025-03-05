@@ -621,6 +621,7 @@ function BaganatorLiveBagLayoutMixin:ShowBags(bagData, source, indexes, indexesT
     source = source,
   }
   self.waitingUpdate = {}
+  self.refreshState = {}
 end
 
 function BaganatorLiveBagLayoutMixin:ApplySearch(text)
