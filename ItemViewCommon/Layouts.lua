@@ -468,8 +468,6 @@ function BaganatorLiveBagLayoutMixin:OnShow()
   end, self)
 
   RegisterHighlightSimilarItems(self)
-
-  self.refreshState = {}
 end
 
 function BaganatorLiveBagLayoutMixin:OnHide()
