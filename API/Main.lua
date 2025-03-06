@@ -79,6 +79,10 @@ do
     ReportPluginAdded()
   end
 
+  function Baganator.API.IsJunkPluginActive(id)
+    return addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGIN) == id
+  end
+
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.JUNK_PLUGIN then
       local ignored = addonTable.Config.Get(addonTable.Config.Options.JUNK_PLUGINS_IGNORED)
