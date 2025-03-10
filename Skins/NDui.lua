@@ -117,7 +117,11 @@ local skinners = {
   end,
   Dropdown = function(button)
     B.ReskinDropDown(button)
-  end
+  end,
+  Dialog = function(frame)
+    B.StripTextures(frame)
+    B.SetBD(frame)
+  end,
 }
 
 local function SetConstants()

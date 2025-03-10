@@ -355,6 +355,17 @@ local skinners = {
     button.backdrop:SetPoint("TOPLEFT", -5, 0)
     button:SetHitRectInsets(-5, 0, 0, 0)
   end,
+  Dialog = function(frame)
+    (frame.GwStripTextures or frame.StripTextures)(frame)
+    if frame.NineSlice then
+      frame.NineSlice:Hide()
+    end
+    ;(frame.GwCreateBackdrop or frame.CreateBackdrop)(frame)
+    local tex = frame:CreateTexture(nil, "BACKGROUND")
+    tex:SetAllPoints(frame)
+    tex:SetTexture("Interface/AddOns/GW2_UI/textures/party/manage-group-bg")
+    frame.tex = tex
+  end,
 }
 
 local function SkinFrame(details)
