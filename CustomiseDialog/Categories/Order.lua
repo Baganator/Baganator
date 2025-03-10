@@ -18,29 +18,6 @@ StaticPopupDialogs[exportDialog] = {
   hideOnEscape = 1,
 }
 
-local importDialog = "Baganator_Import_Dialog"
-StaticPopupDialogs[importDialog] = {
-  text = BAGANATOR_L_PASTE_YOUR_IMPORT_STRING_HERE,
-  button1 = BAGANATOR_L_IMPORT,
-  button2 = CANCEL,
-  hasEditBox = 1,
-  OnShow = function(self, data)
-    self.editBox:SetText("")
-  end,
-  OnAccept = function(self)
-    addonTable.CustomiseDialog.CategoriesImport(self.editBox:GetText())
-  end,
-  EditBoxOnEnterPressed = function(self)
-    addonTable.CustomiseDialog.CategoriesImport(self:GetText())
-    self:GetParent():Hide()
-  end,
-  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-  editBoxWidth = 230,
-  maxLetters = 0,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
 local folderMarker
 if C_Texture.GetAtlasInfo("AnimCreate_Icon_Folder") then
   folderMarker = "AnimCreate_Icon_Folder"
@@ -463,6 +440,9 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   importButton:SetText(BAGANATOR_L_IMPORT)
   DynamicResizeButton_Resize(importButton)
   importButton:SetScript("OnClick", function()
+    addonTable.CustomiseDialog.ShowCategoriesImportDialog(function(text)
+      addonTable.CustomiseDialog.CategoriesImport(text)
+    end)
     StaticPopup_Show(importDialog)
   end)
   addonTable.Skins.AddFrame("Button", importButton)

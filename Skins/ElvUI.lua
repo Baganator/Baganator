@@ -149,6 +149,10 @@ local skinners = {
     tex:SetHeight(1)
     tex:SetColorTexture(1, 0.93, 0.73, 0.45)
   end,
+  Dialog = function(frame)
+    frame:StripTextures()
+    frame:SetTemplate('Transparent')
+  end,
 }
 
 local function SkinFrame(details)
