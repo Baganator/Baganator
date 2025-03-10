@@ -8,8 +8,9 @@ function addonTable.CustomiseDialog.ShowCategoriesImportDialog(callback)
     local dialog = CreateFrame("Frame", "BaganatorCustomiseDialogCategoriesImportDialog", UIParent)
     dialog:SetToplevel(true)
     table.insert(UISpecialFrames, "BaganatorCustomiseDialogCategoriesImportDialog")
-    dialog:SetPoint("CENTER")
+    dialog:SetPoint("TOP", 0, -135)
     dialog:EnableMouse(true)
+    dialog:SetFrameStrata("DIALOG")
 
     dialog.NineSlice = CreateFrame("Frame", nil, dialog, "NineSlicePanelTemplate")
     NineSliceUtil.ApplyLayoutByName(dialog.NineSlice, "Dialog", dialog.NineSlice:GetFrameLayoutTextureKit())
@@ -84,6 +85,11 @@ function addonTable.CustomiseDialog.ShowCategoriesImportDialog(callback)
     dialog:SetScript("OnShow", function()
       fakeText:SetText("")
       currentText = ""
+
+      PlaySound(SOUNDKIT.IG_MAINMENU_OPEN)
+    end)
+    dialog:SetScript("OnHide", function()
+      PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
     end)
 
     addonTable.Skins.AddFrame("Dialog", dialog)
@@ -91,12 +97,12 @@ function addonTable.CustomiseDialog.ShowCategoriesImportDialog(callback)
     addonTable.Skins.AddFrame("Button", acceptButton)
     addonTable.Skins.AddFrame("Button", cancelButton)
 
-    dialog:Hide()
     dialog.editBox = editBox
     dialogsBySkin[currentSkinKey] = dialog
   end
 
   local dialog = dialogsBySkin[currentSkinKey]
+  dialog:Hide()
   dialog.callback = callback
   dialog:Show()
   dialog.editBox:SetFocus()
