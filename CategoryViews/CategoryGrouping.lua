@@ -349,6 +349,12 @@ do
     return true
   end
 
+  groupings["track"] = {}
+  groupingsToLabels["track"] = {}
+  groupingGetters["track"] = function(item)
+    return true
+  end
+
   if addonTable.Constants.IsRetail then
     local upgradeTrackGroupings = {}
     groupingsToLabels["track"] = {}
@@ -372,30 +378,36 @@ do
         table.insert(groupings["track"], groupingsToLabels["track"][key])
       end
     end
-    for key, itemLink in pairs(items) do
-      local itemID = C_Item.GetItemInfoInstant(itemLink)
-      pending = pending + 1
-      assert(itemID, "Broken item for upgrade track")
-      addonTable.Utilities.LoadItemData(itemID, function()
-        pending = pending - 1
-        local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
-        for _, line in ipairs(tooltipData.lines) do
-          local label = line.leftText:match(labelPattern)
-          if label then
-            groupingsToLabels["track"][key] = label
-            labelToKey[label] = key
-            break
+
+    local frame = CreateFrame("Frame")
+    frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    frame:SetScript("OnEvent", function()
+      frame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+      for key, itemLink in pairs(items) do
+        local itemID = C_Item.GetItemInfoInstant(itemLink)
+        pending = pending + 1
+        assert(itemID, "Broken item for upgrade track")
+        addonTable.Utilities.LoadItemData(itemID, function()
+          pending = pending - 1
+          local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
+          for _, line in ipairs(tooltipData.lines) do
+            local label = line.leftText:match(labelPattern)
+            if label then
+              groupingsToLabels["track"][key] = label
+              labelToKey[label] = key
+              break
+            end
           end
-        end
-        if loopFinished and pending == 0 then
-          OnFinished()
-        end
-      end)
-    end
-    loopFinished = true
-    if pending == 0 then
-      OnFinished()
-    end
+          if loopFinished and pending == 0 then
+            OnFinished()
+          end
+        end)
+      end
+      loopFinished = true
+      if pending == 0 then
+        OnFinished()
+      end
+    end)
 
     groupingGetters["track"] = function(item)
       if item.track then
@@ -417,12 +429,6 @@ do
           break
         end
       end
-      return true
-    end
-  else
-    groupings["track"] = {}
-    groupingsToLabels["track"] = {}
-    groupingGetters["track"] = function(item)
       return true
     end
   end
