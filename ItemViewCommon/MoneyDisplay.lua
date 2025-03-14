@@ -17,9 +17,27 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
     realmsToInclude[r] = true
   end
 
+  local allCharacters = addonTable.Utilities.GetAllCharacters()
+  local allGuilds = addonTable.Utilities.GetAllGuilds()
+  local currentRealm = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).details.realmNormalized
+  local multipleRealms = false
+  -- Identify if any characters/guilds on a different realm to the current one
+  -- will be shown
+  for _, characterInfo in ipairs(allCharacters) do
+    if realmsToInclude[characterInfo.realmNormalized] and GetShowState(Syndicator.API.GetCharacter(characterInfo.fullName)) and characterInfo.realmNormalized ~= currentRealm then
+      multipleRealms = true
+    end
+  end
+  for _, guildInfo in ipairs(allGuilds) do
+    local guildData = Syndicator.API.GetGuild(guildInfo.fullName)
+    if realmsToInclude[guildInfo.realmNormalized] and guildData.details.show and guildData.details.show.gold and guildInfo.realmNormalized ~= currentRealm then
+      multipleRealms = true
+    end
+  end
+
   local lines = {}
   local total = 0
-  for _, characterInfo in ipairs(addonTable.Utilities.GetAllCharacters()) do
+  for _, characterInfo in ipairs(allCharacters) do
     if realmsToInclude[characterInfo.realmNormalized] and GetShowState(Syndicator.API.GetCharacter(characterInfo.fullName)) then
       local money = Syndicator.API.GetCharacter(characterInfo.fullName).money
       local characterName = characterInfo.name
@@ -29,7 +47,7 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
       if characterInfo.race then
         characterName = Syndicator.Utilities.GetCharacterIcon(characterInfo.race, characterInfo.sex) .. " " .. characterName
       end
-      if #connectedRealms > 1 then
+      if multipleRealms then
         characterName = characterName .. "-" .. characterInfo.realmNormalized
       end
       table.insert(lines, {left = characterName, right = addonTable.Utilities.GetMoneyString(money, true)})
@@ -37,12 +55,12 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
     end
   end
 
-  for _, guildInfo in ipairs(addonTable.Utilities.GetAllGuilds()) do
+  for _, guildInfo in ipairs(allGuilds) do
     local guildData = Syndicator.API.GetGuild(guildInfo.fullName)
     if realmsToInclude[guildInfo.realmNormalized] and guildData.details.show and guildData.details.show.gold then
       local money = Syndicator.API.GetGuild(guildInfo.fullName).money
       local guildName = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guildInfo.name)
-      if #connectedRealms > 1 then
+      if multipleRealms then
         guildName = guildName .. "-" .. guildInfo.realmNormalized
       end
       guildName = Syndicator.Utilities.GetGuildIcon() .. " " .. guildName
