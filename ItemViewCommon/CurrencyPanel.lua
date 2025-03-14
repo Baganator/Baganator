@@ -74,6 +74,7 @@ function BaganatorCurrencyPanelMixin:OnLoad()
   self.searchBox:SetHeight(22)
   self.searchBox:SetAutoFocus(false)
   self.searchBox:HookScript("OnTextChanged", function() self:UpdateCurrencies() end)
+  addonTable.Skins.AddFrame("SearchBox", self.searchBox)
 
   self.warbandOnlyButton = CreateFrame("Button", nil, self)
   self.warbandOnlyButton:SetSize(23, 31)
