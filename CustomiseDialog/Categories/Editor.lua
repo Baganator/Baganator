@@ -6,6 +6,7 @@ local groupingToLabel = {
   ["slot"] = BAGANATOR_L_SLOT,
   ["type"] = BAGANATOR_L_TYPE,
   ["quality"] = BAGANATOR_L_QUALITY,
+  ["track"] = BAGANATOR_L_UPGRADE_TRACK,
 }
 
 local disabledAlpha = 0.5
@@ -393,12 +394,14 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     BAGANATOR_L_TYPE,
     BAGANATOR_L_SLOT,
     BAGANATOR_L_QUALITY,
+    BAGANATOR_L_UPGRADE_TRACK,
   }, {
     "",
     "expansion",
     "type",
     "slot",
     "quality",
+    "track",
   })
   hooksecurefunc(self.GroupDropDown, "OnEntryClicked", function(_, option)
     local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)

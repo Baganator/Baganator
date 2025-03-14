@@ -348,6 +348,84 @@ do
     item.slot = (select(4, C_Item.GetItemInfoInstant(item.itemID))) or "NONE"
     return true
   end
+
+  if addonTable.Constants.IsRetail then
+    local upgradeTrackGroupings = {}
+    groupingsToLabels["track"] = {}
+    local items = {
+      explorer = "|cff0070dd|Hitem:144144::::::::80:268::54:9:6652:8812:11945:7756:10392:10395:12090:10034:10254:1:28:2462:::::|h[Whirling Dervish Choker]|h|r",
+      veteran = "|cffa335ee|Hitem:223292::::::::80:268::14:4:10281:10377:1656:10255:1:28:2462:::::|h[Gem-Wadded Shoulderpads]|h|r",
+      champion = "|cffa335ee|Hitem:223306::::::::80:268::14:5:10377:10876:10270:3135:10255:1:28:2462:::::|h[Inflammable Forging Cinch]|h|r",
+      hero = "|cffa335ee|Hitem:219204::::::::80:104::124:4:10265:6652:3189:10255:1:28:2462:::::|h[Imperial Flarebolt]|h|r",
+      myth = "|cffa335ee|Hitem:228846::::::::80:268::6:1:3524:1:28:2981::::::::|h[Galvanic Graffiti Cuffs]|h|r",
+    }
+    local order = {
+      "myth", "hero", "champion", "veteran", "explorer",
+    }
+    local labelToKey = {}
+    local labelPattern = ITEM_UPGRADE_TOOLTIP_FORMAT_STRING:gsub("%%s", "(.-)"):gsub("%%d", ".-")
+    local pending = 0
+    local loopFinished = false
+    local function OnFinished()
+      groupings["track"] = {}
+      for _, key in ipairs(order) do
+        table.insert(groupings["track"], groupingsToLabels["track"][key])
+      end
+    end
+    for key, itemLink in pairs(items) do
+      local itemID = C_Item.GetItemInfoInstant(itemLink)
+      pending = pending + 1
+      assert(itemID, "Broken item for upgrade track")
+      addonTable.Utilities.LoadItemData(itemID, function()
+        pending = pending - 1
+        local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
+        for _, line in ipairs(tooltipData.lines) do
+          local label = line.leftText:match(labelPattern)
+          if label then
+            groupingsToLabels["track"][key] = label
+            labelToKey[label] = key
+            break
+          end
+        end
+        if loopFinished and pending == 0 then
+          OnFinished()
+        end
+      end)
+    end
+    loopFinished = true
+    if pending == 0 then
+      OnFinished()
+    end
+
+    groupingGetters["track"] = function(item)
+      if item.track then
+        return true
+      end
+
+      local tooltipInfo = item.tooltipInfoSpell or item.tooltipInfo
+      if not tooltipInfo and C_Item.IsItemDataCached(item.itemID) then
+        item.tooltipInfo = C_TooltipInfo.GetHyperlink(item.itemLink) or {lines={}}
+        tooltipInfo = item.tooltipInfo
+      end
+      if not tooltipInfo then
+        return false
+      end
+      for _, line in ipairs(tooltipInfo.lines) do
+        local label = line.leftText:match(labelPattern)
+        if label then
+          item.track = labelToKey[label]
+          break
+        end
+      end
+      return true
+    end
+  else
+    groupings["track"] = {}
+    groupingsToLabels["track"] = {}
+    groupingGetters["track"] = function(item)
+      return true
+    end
+  end
 end
 
 BaganatorCategoryViewsCategoryGroupingMixin = {}
