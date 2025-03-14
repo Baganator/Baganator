@@ -261,7 +261,7 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
     local anyNew = #composed.details ~= #oldComposed.details
     for index, old in ipairs(oldComposed.details) do
       local current = composed.details[index]
-      if current.source ~= old.source then
+      if not current or current.source ~= old.source then
         anyNew = true
         break
       elseif current.results and (current.source and (current.source ~= addonTable.CategoryViews.Constants.RecentItemsCategory)
