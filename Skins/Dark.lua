@@ -103,7 +103,7 @@ local function ItemButtonQualityHook(frame, quality)
     frame:ClearNormalTexture()
     local c = ITEM_QUALITY_COLORS[quality]
     if c then
-      frame.IconBorder:SetVertexColor(c.r, c.g, c.b)
+      frame.IconBorder:SetVertexColor(c.r, c.g, c.b, quality > 1 and 1 or 0.5)
       frame.IconBorder:Show()
     else
       frame.IconBorder:SetVertexColor(color.r, color.g, color.b, 1)
