@@ -81,7 +81,11 @@ local function SetupBackpackHooks()
     if not backpackView:IsShown() then
       addonTable.CallbackRegistry:TriggerEvent("BagShow")
     end
-    backpackView.SearchWidget.SearchBox:SetFocus()
+    -- Delay so that triggering from a keyboard shortcut won't type the shortcut
+    -- in the search box
+    C_Timer.After(0, function()
+      backpackView.SearchWidget.SearchBox:SetFocus()
+    end)
   end)
 
   -- Backpack button
