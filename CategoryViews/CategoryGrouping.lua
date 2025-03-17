@@ -416,7 +416,7 @@ do
       end
 
       local tooltipInfo = item.tooltipInfoSpell or item.tooltipInfo
-      if not tooltipInfo and C_Item.IsItemDataCached(item.itemID) then
+      if not tooltipInfo and C_Item.IsItemDataCachedByID(item.itemID) then
         item.tooltipInfo = C_TooltipInfo.GetHyperlink(item.itemLink) or {lines={}}
         tooltipInfo = item.tooltipInfo
       end
