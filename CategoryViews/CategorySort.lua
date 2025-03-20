@@ -21,12 +21,7 @@ function BaganatorCategoryViewsCategorySortMixin:ApplySorts(composed, callback)
     end
   end
 
-  self.sortMethod = addonTable.Config.Get("sort_method")
-  if self.sortMethod == "combine_stacks_only" or addonTable.API.ExternalContainerSorts[self.sortMethod] then
-    addonTable.Utilities.Message(BAGANATOR_L_SORT_METHOD_RESET_FOR_CATEGORIES)
-    addonTable.Config.ResetOne(addonTable.Config.Options.SORT_METHOD)
-    self.sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
-  end
+  self.sortMethod = addonTable.Config.Get("category_sort_method")
 
   self:SortResults()
 end

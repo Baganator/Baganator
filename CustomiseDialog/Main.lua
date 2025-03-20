@@ -302,12 +302,12 @@ local SORTING_OPTIONS = {
     option = "auto_sort_on_open",
   },
   { type = "spacing" },
+  { type = "spacing" },
   {
     type = "checkbox",
     text = BAGANATOR_L_REVERSE_GROUPS_SORT_ORDER,
     option = "reverse_groups_sort_order",
   },
-  { type = "spacing" },
   {
     type = "dropdown",
     text = BAGANATOR_L_ARRANGE_ITEMS,
@@ -829,33 +829,53 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   local frame = GetWrapperFrame(self)
 
   do
-    local allModes = {
+    local commonModes = {
       {"type", BAGANATOR_L_ITEM_TYPE},
       {"name", BAGANATOR_L_ITEM_NAME},
       {"quality", BAGANATOR_L_ITEM_QUALITY},
       {"item-level", BAGANATOR_L_ITEM_LEVEL},
-      {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
       {"expansion", BAGANATOR_L_EXPANSION},
     }
 
+    local rawModes = {
+      {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
+    }
+
     for id, details in pairs(addonTable.API.ExternalContainerSorts) do
-      table.insert(allModes, {id, details.label})
+      table.insert(rawModes, {id, details.label})
     end
+    tAppendAll(rawModes, commonModes)
 
-    table.sort(allModes, function(a, b) return a[2] < b[2] end)
+    table.sort(commonModes, function(a, b) return a[2] < b[2] end)
+    table.sort(rawModes, function(a, b) return a[2] < b[2] end)
 
-    local typeDropDown = {
+    local category = {
       type = "dropdown",
-      text = BAGANATOR_L_SORT_METHOD_2,
+      text = BAGANATOR_L_CATEGORY_SORT_METHOD,
+      option = "category_sort_method",
+      entries = {},
+      values = {},
+    }
+
+    local raw = {
+      type = "dropdown",
+      text = BAGANATOR_L_SORT_METHOD,
       option = "sort_method",
       entries = {},
       values = {},
     }
 
-    for _, details in ipairs(allModes) do
+    for _, details in ipairs(commonModes) do
       if addonTable.Sorting.IsModeAvailable(details[1]) then
-        table.insert(typeDropDown.values, details[1])
-        table.insert(typeDropDown.entries, details[2])
+        table.insert(category.values, details[1])
+        table.insert(category.entries, details[2])
+      end
+    end
+
+    for _, details in ipairs(rawModes) do
+      if addonTable.Sorting.IsModeAvailable(details[1]) then
+        table.insert(raw.values, details[1])
+        table.insert(raw.entries, details[2])
       end
     end
 
@@ -863,7 +883,12 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
       addonTable.Config.ResetOne("sort_method")
     end
 
-    table.insert(options, 5, typeDropDown)
+    if not addonTable.Sorting.IsModeAvailable(addonTable.Config.Get("category_sort_method")) then
+      addonTable.Config.ResetOne("category_sort_method")
+    end
+
+    table.insert(options, 5, raw)
+    table.insert(options, 6, category)
   end
 
   local allFrames = GenerateFrames(options, frame)

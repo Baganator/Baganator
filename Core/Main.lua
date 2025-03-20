@@ -77,6 +77,13 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
     addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
     addonTable.Config.Set(addonTable.Config.Options.GLOBAL_VIEW_TYPE, "unset")
   end
+  if not addonTable.Config.Get(addonTable.Config.Options.MIGRATED_SORT_METHOD) then
+    local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
+    if sortMethod ~= "combine_stacks_only" and not addonTable.API.ExternalContainerSorts[sortMethod] then
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SORT_METHOD, sortMethod)
+    end
+    addonTable.Config.Set(addonTable.Config.Options.MIGRATED_SORT_METHOD, true)
+  end
 
   addonTable.Core.RunAnalytics()
 end)

@@ -83,6 +83,7 @@ function addonTable.Core.RunAnalytics()
     [addonTable.Config.Options.BAG_EMPTY_SPACE_AT_TOP] = true,
     [addonTable.Config.Options.REDUCE_SPACING] = true,
     [addonTable.Config.Options.SORT_METHOD] = true,
+    [addonTable.Config.Options.CATEGORY_SORT_METHOD] = true,
     [addonTable.Config.Options.REVERSE_GROUPS_SORT_ORDER] = true,
     [addonTable.Config.Options.SORT_START_AT_BOTTOM] = true,
     [addonTable.Config.Options.ICON_FLASH_SIMILAR_ALT] = true,
