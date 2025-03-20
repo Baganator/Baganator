@@ -859,7 +859,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
     local raw = {
       type = "dropdown",
-      text = BAGANATOR_L_SORT_METHOD,
+      text = BAGANATOR_L_SORT_METHOD_2,
       option = "sort_method",
       entries = {},
       values = {},
