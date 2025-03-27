@@ -183,6 +183,8 @@ function addonTable.Utilities.GetMoneyString(amount, splitThousands)
   return result
 end
 
+local hidden = CreateFrame("Frame")
+hidden:Hide()
 function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   local cursorChanged = false
   local function UpdateSlot(self)
@@ -256,9 +258,11 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   parent.backgroundButton.SlotBackground:Hide()
   for _, child in ipairs({parent.backgroundButton:GetRegions()}) do
     child:Hide()
+    child:SetParent(hidden)
   end
   for _, child in ipairs({parent.backgroundButton:GetChildren()}) do
     child:Hide()
+    child:SetParent(hidden)
   end
 
   UpdateVisibility()
