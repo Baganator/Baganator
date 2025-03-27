@@ -326,8 +326,9 @@ local function SetupBankView(frameGroup)
         "BANKFRAME_CLOSED",
       })
     else
-      bankView:Hide()
-      FrameUtil.UnregisterFrameForEvents(bankView, {
+      local oldView = allBankViews[GetViewType("bank")]
+      oldView:Hide()
+      FrameUtil.UnregisterFrameForEvents(oldView, {
         "BANKFRAME_OPENED",
         "BANKFRAME_CLOSED",
       })
