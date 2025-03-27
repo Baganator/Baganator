@@ -13,6 +13,7 @@ function ApplyCursor(targetInventorySlot, associatedTargetBag)
   -- Swap items around so that the bag can be assigned to the slot it was
   -- dropped on.
   if bagID == associatedTargetBag then
+    addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     ClearCursor()
     local bagID, slotID = location:GetBagAndSlot()
     C_Container.PickupContainerItem(bagID, slotID)
