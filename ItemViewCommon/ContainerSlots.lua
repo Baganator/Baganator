@@ -13,7 +13,6 @@ function ApplyCursor(targetInventorySlot, associatedTargetBag)
   -- Swap items around so that the bag can be assigned to the slot it was
   -- dropped on.
   if bagID == associatedTargetBag then
-    addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     ClearCursor()
     local bagID, slotID = location:GetBagAndSlot()
     C_Container.PickupContainerItem(bagID, slotID)
@@ -67,10 +66,11 @@ function ApplyCursor(targetInventorySlot, associatedTargetBag)
       Syndicator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", swapTracker)
     end, swapTracker)
   else
-    addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     PutItemInBag(targetInventorySlot)
   end
 end
+
+local HighlightMonitor = {}
 
 -- REGULAR BAGS
 BaganatorRetailBagSlotButtonMixin = {}
@@ -94,11 +94,16 @@ local function ShowBagSlotTooltip(self)
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   GameTooltip:SetInventoryItem("player", GetBagInventorySlot(self))
   GameTooltip:Show()
+  addonTable.CallbackRegistry:RegisterCallback("ViewComplete", function()
+    addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+    addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
+  end, HighlightMonitor)
 end
 
 local function HideBagSlotTooltip(self)
   addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
   GameTooltip:Hide()
+  addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", HighlightMonitor)
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnLoad()
@@ -254,7 +259,8 @@ local function OnBankSlotClick(self, button)
 end
 
 local function ShowBankSlotTooltip(self)
-  addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllBankIndexes[self:GetID() + 1]] = true})
+  local id = Syndicator.Constants.AllBankIndexes[self:GetID() + 1]
+  addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[id] = true})
 
   GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
   if self.needPurchase then
@@ -264,11 +270,16 @@ local function ShowBankSlotTooltip(self)
     GameTooltip:SetInventoryItem("player", GetBankInventorySlot(self))
   end
   GameTooltip:Show()
+  addonTable.CallbackRegistry:RegisterCallback("ViewComplete", function()
+    addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
+    addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[id] = true})
+  end, HighlightMonitor)
 end
 
 local function HideBankSlotTooltip(self)
   addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
   GameTooltip:Hide()
+  addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", HighlightMonitor)
 end
 
 local function GetBankBagInfo(bankBagID)
