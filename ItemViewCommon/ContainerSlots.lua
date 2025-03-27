@@ -67,6 +67,7 @@ function ApplyCursor(targetInventorySlot, associatedTargetBag)
       Syndicator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", swapTracker)
     end, swapTracker)
   else
+    addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     PutItemInBag(targetInventorySlot)
   end
 end
