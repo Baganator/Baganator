@@ -2,13 +2,17 @@ local _, addonTable = ...
 -- Blizzard Equipment sets (Wrath onwards)
 if not addonTable.Constants.IsEra then
   local BlizzardSetTracker = CreateFrame("Frame")
+  local EQUIPMENT_SETS_PATTERN = EQUIPMENT_SETS:gsub("%%s", "(.*)")
 
   function BlizzardSetTracker:OnLoad()
     FrameUtil.RegisterFrameForEvents(self, {
       "BANKFRAME_OPENED",
       "EQUIPMENT_SETS_CHANGED",
-      "PLAYER_LOGIN",
     })
+    Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate", function()
+      self:QueueScan()
+      Syndicator.CallbackRegistry:UnregisterCallback("BagCacheUpdate", self)
+    end, self)
     self.equipmentSetInfo = {}
     self.equipmentSetNames = {}
 
@@ -88,6 +92,52 @@ if not addonTable.Constants.IsEra then
               end
               table.insert(cache[guid], info)
             end
+          end
+        end
+      else
+        -- API will crash, so we do a much more intensive tooltip scan of all possible items
+        local matchingItemIDs = {}
+        for _, itemID in pairs(C_EquipmentSet.GetItemIDs(setID)) do
+          matchingItemIDs[itemID] = true
+        end
+        local function ProcessSlot(slot, location)
+          if matchingItemIDs[slot.itemID] and C_Item.DoesItemExist(location) then
+            local guid = C_Item.GetItemGUID(location)
+            addonTable.Utilities.LoadItemData(slot.itemID, function()
+              local tooltipInfo
+              if addonTable.Constants.IsRetail then
+                tooltipInfo = C_TooltipInfo.GetBagItem(location.bagID, location.slotIndex)
+              else
+                tooltipInfo = Syndicator.Utilities.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(location.bagID, location.slotIndex) end)
+              end
+              for _, line in ipairs(tooltipInfo.lines) do
+                local match = line.leftText:match(EQUIPMENT_SETS_PATTERN)
+                if match then
+                  for setName in match:gmatch("%s*([^" .. LIST_DELIMITER:gsub("%s", "") .. "]+)") do
+                    if setName == name then
+                      if not cache[guid] then
+                        cache[guid] = {}
+                      end
+                      table.insert(cache[guid], info)
+                      break
+                    end
+                  end
+                end
+              end
+            end)
+          end
+        end
+        local characterData = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter())
+        for bagIndex, bag in ipairs(characterData.bags) do
+          for slotIndex, slot in ipairs(bag) do
+            local location = {bagID = Syndicator.Constants.AllBagIndexes[bagIndex], slotIndex = slotIndex}
+            ProcessSlot(slot, location)
+          end
+        end
+        for bankIndex, bag in ipairs(characterData.bank) do
+          for slotIndex, slot in ipairs(bag) do
+            local location = {bagID = Syndicator.Constants.AllBankIndexes[bagIndex], slotIndex = slotIndex}
+            ProcessSlot(slot, location)
           end
         end
       end
