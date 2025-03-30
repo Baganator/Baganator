@@ -28,7 +28,8 @@ if not addonTable.Constants.IsEra then
     self:SetScript("OnUpdate", self.OnUpdate)
   end
 
-  BlizzardSetTracker:SetScript("OnEvent", function(self)
+  BlizzardSetTracker:SetScript("OnEvent", function(self, eventName)
+    self.bankScan = eventName == "BANKFRAME_OPENED"
     self:QueueScan()
   end)
 
@@ -134,10 +135,12 @@ if not addonTable.Constants.IsEra then
             ProcessSlot(slot, location)
           end
         end
-        for bankIndex, bag in ipairs(characterData.bank) do
-          for slotIndex, slot in ipairs(bag) do
-            local location = {bagID = Syndicator.Constants.AllBankIndexes[bagIndex], slotIndex = slotIndex}
-            ProcessSlot(slot, location)
+        if self.bankScan then
+          for bankIndex, bag in ipairs(characterData.bank) do
+            for slotIndex, slot in ipairs(bag) do
+              local location = {bagID = Syndicator.Constants.AllBankIndexes[bagIndex], slotIndex = slotIndex}
+              ProcessSlot(slot, location)
+            end
           end
         end
       end
@@ -149,6 +152,7 @@ if not addonTable.Constants.IsEra then
       self.equipmentSetInfo = cache
       Baganator.API.RequestItemButtonsRefresh()
     end
+    self.bankScan = false
   end
 end
 
