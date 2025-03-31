@@ -123,8 +123,10 @@ if not addonTable.Constants.IsEra then
               local tooltipInfo
               if addonTable.Constants.IsRetail then
                 tooltipInfo = C_TooltipInfo.GetBagItem(location.bagID, location.slotIndex)
+              elseif location.bagID == Syndicator.Constants.AllBankIndexes[1] then
+                tooltipInfo = Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetInventoryItem("player", BankButtonIDToInvSlotID(location.slotIndex)) end)
               else
-                tooltipInfo = Syndicator.Utilities.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(location.bagID, location.slotIndex) end)
+                tooltipInfo = Syndicator.Search.DumpClassicTooltip(function(tooltip) tooltip:SetBagItem(location.bagID, location.slotIndex) end)
               end
               for _, line in ipairs(tooltipInfo.lines) do
                 local match = line.leftText:match(EQUIPMENT_SETS_PATTERN)
@@ -156,7 +158,7 @@ if not addonTable.Constants.IsEra then
         if self.bankScan then
           for bankIndex, bag in ipairs(characterData.bank) do
             for slotIndex, slot in ipairs(bag) do
-              local location = {bagID = Syndicator.Constants.AllBankIndexes[bagIndex], slotIndex = slotIndex}
+              local location = {bagID = Syndicator.Constants.AllBankIndexes[bankIndex], slotIndex = slotIndex}
               ProcessSlot(slot, location)
             end
           end
