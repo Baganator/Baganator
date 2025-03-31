@@ -45,7 +45,20 @@ if not addonTable.Constants.IsEra then
     local oldSetInfo = CopyTable(self.equipmentSetInfo)
 
     local cache = {}
+    local waiting = 0
+    local loopComplete = false
     self.equipmentSetNames = {}
+    local namesRef = self.equipmentSetNames -- Skip if another callback was triggered
+
+    local function Finish()
+      if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+        print("equipment set tracking took", debugprofilestop() - start)
+      end
+      if namesRef == self.equipmentSetNames and not tCompare(oldSetInfo, cache, 15) then
+        self.equipmentSetInfo = cache
+        Baganator.API.RequestItemButtonsRefresh()
+      end
+    end
 
     for _, setID in ipairs(C_EquipmentSet.GetEquipmentSetIDs()) do
       local name, iconTexture = C_EquipmentSet.GetEquipmentSetInfo(setID)
@@ -104,7 +117,9 @@ if not addonTable.Constants.IsEra then
         local function ProcessSlot(slot, location)
           if matchingItemIDs[slot.itemID] and C_Item.DoesItemExist(location) then
             local guid = C_Item.GetItemGUID(location)
+            waiting = waiting + 1
             addonTable.Utilities.LoadItemData(slot.itemID, function()
+              waiting = waiting - 1
               local tooltipInfo
               if addonTable.Constants.IsRetail then
                 tooltipInfo = C_TooltipInfo.GetBagItem(location.bagID, location.slotIndex)
@@ -124,6 +139,9 @@ if not addonTable.Constants.IsEra then
                     end
                   end
                 end
+              end
+              if loopComplete and waiting == 0 then
+                Finish()
               end
             end)
           end
@@ -145,14 +163,12 @@ if not addonTable.Constants.IsEra then
         end
       end
     end
-    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
-      print("equipment set tracking took", debugprofilestop() - start)
-    end
-    if not tCompare(oldSetInfo, cache, 15) then
-      self.equipmentSetInfo = cache
-      Baganator.API.RequestItemButtonsRefresh()
-    end
     self.bankScan = false
+
+    if waiting == 0 then
+      Finish()
+    end
+    loopComplete = true
   end
 end
 
