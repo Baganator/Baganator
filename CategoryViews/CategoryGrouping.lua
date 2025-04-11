@@ -288,7 +288,13 @@ do
   for i = 1, #subTypes, 2 do
     local root = subTypes[i]
     local child = subTypes[i+1]
-    local childLabel = C_Item.GetItemSubClassInfo(subTypes[i], subTypes[i+1])
+    local childLabel
+    if addonTable.Constants.IsEra then
+      childLabel = addonTable.Locales["GROUPING_ERA_" .. root .. "_" .. child]
+    end
+    if not childLabel then
+      childLabel = C_Item.GetItemSubClassInfo(subTypes[i], subTypes[i+1])
+    end
     if childLabel then
       table.insert(groupings["type"], childLabel)
       groupingsToLabels["type"][root .. "_" ..  child] = childLabel
@@ -301,7 +307,9 @@ do
     end
 
     if not item.classID then
-      if item.itemID == Syndicator.Constants.BattlePetCageID then
+      if Syndicator.Search.GetClassSubClass then
+        Syndicator.Search.GetClassSubClass(item)
+      elseif item.itemID == Syndicator.Constants.BattlePetCageID then
         local petID = item.itemLink:match("battlepet:(%d+)")
         local itemName, _, petType = C_PetJournal.GetPetInfoBySpeciesID(tonumber(petID))
         item.classID = Enum.ItemClass.Battlepet

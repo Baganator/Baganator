@@ -111,13 +111,13 @@ function addonTable.Sorting.AddSortKeys(list)
   for index, item in ipairs(list) do
     if item.itemLink then
       setmetatable(item, itemMetatable)
-      local linkToCheck = item.itemLink
-      if not linkToCheck:match("item:") then
-        linkToCheck = "item:" .. item.itemID
-      end
 
       item.priority = PriorityMap[item.itemID] and 1 or 1000
-      item.classID, item.subClassID = select(6, C_Item.GetItemInfoInstant(linkToCheck))
+      if Syndicator.Search.GetClassSubClass then
+        Syndicator.Search.GetClassSubClass(item)
+      else
+        item.classID, item.subClassID = select(6, C_Item.GetItemInfoInstant(item.itemID))
+      end
       item.invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID)
       item.index = index
       if item.itemID == addonTable.Constants.BattlePetCageID then
