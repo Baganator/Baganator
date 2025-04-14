@@ -117,6 +117,7 @@ CategoryViews\CategoryFilter.lua
 CategoryViews\CategoryGrouping.lua
 CategoryViews\CategorySort.lua
 CategoryViews\ItemsPreparation.lua
+CategoryViews\SpecialisedSplitting.lua
 CategoryViews\Components.lua
 CategoryViews\Components.xml
 CategoryViews\BankViewCharacterView.lua

@@ -209,3 +209,11 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:ClearNewItemTimeout(bagID,
     end
   end
 end
+
+function BaganatorItemViewCommonNewItemsTrackingMixin:MarkNewItemTimeout(bagID, slotID, guid)
+  self.recentTimeout[guid] = {time = GetTime(), bagID = bagID, slotID = slotID}
+  if not self.recentByContainerTimeout[bagID] then
+    self.recentByContainerTimeout[bagID] = {}
+  end
+  self.recentByContainerTimeout[bagID][slotID] = guid
+end

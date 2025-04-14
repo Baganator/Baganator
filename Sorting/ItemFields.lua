@@ -230,3 +230,7 @@ end
 keysMapping["sortedInvSlotID"] = function(self)
   return sortedMap.invSlotID[self.invSlotID] or (self.invSlotID + 200)
 end
+
+keysMapping["specialSplitting"] = function(self)
+  return ""
+end

@@ -211,7 +211,7 @@ local function IsDifferentCachedData(data1, data2)
 end
 
 function addonTable.ItemViewCommon.Utilities.GetCategoryDataKey(data)
-  return data ~= nil and (tostring(data.keyLink) .. tostring(data.isBound) .. tostring(data.itemCount or 1) .. "_" .. tostring(data.quality) .. "_" .. tostring(data.bagType)) or ""
+  return data ~= nil and (tostring(data.keyLink) .. tostring(data.isBound) .. tostring(data.itemCount or 1) .. "_" .. tostring(data.quality) .. "_" .. tostring(data.bagType)) .. "_" .. tostring(data.specialSplitting) or ""
 end
 
 function addonTable.ItemViewCommon.Utilities.GetCategoryDataKeyNoCount(data)

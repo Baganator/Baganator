@@ -29,6 +29,7 @@ local allSortKeys = {
     "invertedItemID",
     "invertedItemCount",
     "itemLink",
+    "specialSplitting",
   },
   ["type"] = {
     "priority",
@@ -43,6 +44,7 @@ local allSortKeys = {
     "invertedItemID",
     "invertedItemCount",
     "itemLink",
+    "specialSplitting",
   },
   ["name"] = {
     "priority",
@@ -57,6 +59,7 @@ local allSortKeys = {
     "invertedItemID",
     "invertedItemCount",
     "itemLink",
+    "specialSplitting",
   },
   ["item-level"] = {
     "priority",
@@ -72,6 +75,7 @@ local allSortKeys = {
     "invertedItemID",
     "invertedItemCount",
     "itemLink",
+    "specialSplitting",
   },
   ["expansion"] = {
     "invertedExpansion",
@@ -85,6 +89,7 @@ local allSortKeys = {
     "invertedItemID",
     "invertedItemCount",
     "itemLink",
+    "specialSplitting",
   },
 }
 

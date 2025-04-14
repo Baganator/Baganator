@@ -467,6 +467,11 @@ else
   local cachedCharges = {}
 
   function addonTable.Utilities.IsAuctionable(details)
+    if not C_Item.IsItemDataCachedByID(details.itemID) then
+      C_Item.RequestLoadItemDataByID(details.itemID)
+      return nil
+    end
+
     local result = false
 
     local currentDurability, maxDurability
