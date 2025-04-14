@@ -425,6 +425,36 @@ function addonTable.Utilities.AddButtons(allButtons, lastButton, parent, spacing
   return buttonsWidth
 end
 
+do
+  local possibleChargePatterns
+  if addonTable.Constants.IsRetail then
+    possibleChargePatterns = {
+      "^" .. ITEM_SPELL_CHARGES_NONE .. "$",
+      "^" .. ITEM_SPELL_CHARGES:gsub("%%d", "%%d+") .. "$",
+    }
+
+  else
+    possibleChargePatterns = {
+      "^" .. ITEM_SPELL_CHARGES_NONE .. "$",
+    }
+
+    for _, part in ipairs({ strsplit(":", (ITEM_SPELL_CHARGES:match("|4([^;]*);"))) }) do
+      table.insert(possibleChargePatterns, "^" .. (ITEM_SPELL_CHARGES:gsub("%%d", "%%d%+"):gsub("|4[^;]*;", part)) .. "$")
+    end
+  end
+
+  function addonTable.Utilities.GetChargesLine(tooltipInfo)
+    for _, line in ipairs(tooltipInfo.lines) do
+      for _, p in ipairs(possibleChargePatterns) do
+        if line.leftText:match(p) then
+          return line.leftText
+        end
+      end
+    end
+    return nil
+  end
+end
+
 if addonTable.Constants.IsRetail or IsUsingLegacyAuctionClient and not IsUsingLegacyAuctionClient() then
   function addonTable.Utilities.IsAuctionable(details)
     if not C_Item.IsItemDataCachedByID(details.itemID) then
@@ -435,20 +465,6 @@ if addonTable.Constants.IsRetail or IsUsingLegacyAuctionClient and not IsUsingLe
   end
 else
   local cachedCharges = {}
-  local fontString = UIParent:CreateFontString(nil, nil, "GameFontNormal")
-  local function DetermineCharges(tooltipInfo)
-    for _, line in ipairs(tooltipInfo.lines) do
-      local num = line.leftText:match("%d+")
-      if num then
-        local start = debugprofilestop()
-        fontString:SetText(ITEM_SPELL_CHARGES:format(num))
-        if fontString:GetText() == line.leftText then
-          return fontString:GetText()
-        end
-      end
-    end
-    return ""
-  end
 
   function addonTable.Utilities.IsAuctionable(details)
     local result = false
@@ -475,13 +491,13 @@ else
       end
 
       if not cachedCharges[details.itemID] then
-        cachedCharges[details.itemID] = DetermineCharges(Syndicator.Search.DumpClassicTooltip(function(t) t:SetItemByID(details.itemID) end))
+        cachedCharges[details.itemID] = addonTable.Utilities.GetChargesLine(Syndicator.Search.DumpClassicTooltip(function(t) t:SetItemByID(details.itemID) end)) or ""
       end
 
       local cached = cachedCharges[details.itemID]
       if cached ~= "" then
         result = false
-        for _, line in ipairs(details.tooltipInfoSpell) do
+        for _, line in ipairs(details.tooltipInfoSpell.lines) do
           if line.leftText == cached then
             result = true
             break
