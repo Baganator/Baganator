@@ -62,7 +62,7 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
     end
     if settingName == addonTable.Config.Options.BANK_ONLY_VIEW_SHOW_BAG_SLOTS and self:IsVisible() then
       self.BagSlots:Update(self.lastCharacter, self.isLive)
-      self:OnFinished()
+      self:OnFinished(true)
       self:GetParent():OnTabFinished()
     end
   end)
@@ -252,12 +252,12 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   end
 end
 
-function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(character, isLive)
+function BaganatorItemViewCommonBankViewCharacterViewMixin:OnFinished(forceResize)
   if self.BankMissingHint:IsShown() then
     return
   end
 
-  if self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+  if self.refreshState[addonTable.Constants.RefreshReason.Layout] or forceResize then
     local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
 
     local buttonPadding = 5
