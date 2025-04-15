@@ -30,6 +30,10 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:ApplySplitting(everythi
   self.everything = everything
   self.callback = callback
 
+  if not Syndicator.Search.GetTooltipInfoSpell then
+    self.callback()
+  end
+
   self.queued = {}
 
   for index, info in ipairs(everything) do
@@ -109,6 +113,7 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:Process()
       self:Process()
     end)
   else
+    self.oldGUIDCache = {}
     self:SetScript("OnUpdate", nil)
     self.callback()
   end
