@@ -400,7 +400,8 @@ function BaganatorCurrencyPanelMixin:SetupRow(row, details)
         end
       end)
       row:SetScript("OnClick", function()
-        if IsModifiedClick("CHATLINK") and ChatEdit_InsertLink(C_CurrencyInfo.GetCurrencyLink(details.currencyID, 1)) then
+        local GetCurrencyLink = C_CurrencyInfo.GetCurrencyLink or GetCurrencyLink
+        if IsModifiedClick("CHATLINK") and ChatEdit_InsertLink(GetCurrencyLink(details.currencyID, 1)) then
           return
         end
         if details.isLive and IsShiftKeyDown() then

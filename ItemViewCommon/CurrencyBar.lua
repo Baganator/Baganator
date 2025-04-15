@@ -118,8 +118,9 @@ local function ShowCurrencies(self, character)
           GameTooltip:SetCurrencyByID(details.currencyID)
         end)
         fontString.button:SetScript("OnMouseDown", function(self)
+        local GetCurrencyLink = C_CurrencyInfo.GetCurrencyLink or GetCurrencyLink
           if IsModifiedClick("CHATLINK") then
-            ChatEdit_InsertLink(C_CurrencyInfo.GetCurrencyLink(details.currencyID, count))
+            ChatEdit_InsertLink(GetCurrencyLink(details.currencyID, count))
           end
         end)
       else
