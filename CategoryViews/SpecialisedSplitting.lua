@@ -58,7 +58,9 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:ApplySplitting(everythi
 end
 
 function BaganatorCategoryViewsSpecialisedSplittingMixin:Process()
-  for index, splitType in pairs(self.queued) do
+  local keys = GetKeysArray(self.queued)
+  for _, index in ipairs(keys) do
+    local splitType = self.queued[index]
     if addonTable.CheckTimeout() then
       self:SetScript("OnUpdate", function()
         addonTable.ReportEntry()
@@ -102,6 +104,7 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:Process()
           info.keyNoGUID = info.keyNoGUID .. "_" .. info.specialSplitting
           info.keyGUID = info.keyGUID .. "_" .. info.specialSplitting
         end
+        info.tooltipInfoSpell = nil
         self.queued[index] = nil
       end
     end
