@@ -115,6 +115,9 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:Process()
   else
     self.oldGUIDCache = {}
     self:SetScript("OnUpdate", nil)
+    if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
+      addonTable.Utilities.DebugOutput("splitting took", debugprofilestop() - self.start)
+    end
     self.callback()
   end
 end
