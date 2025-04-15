@@ -4,6 +4,8 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("UNIT_SPELLCAST_STOP")
 frame:SetScript("OnEvent", function(self, eventName, unit, castID, spellID)
   if spellID == 1804 or spellID == 312890 then -- rogue lockpick or mechgnome racial
-    Baganator.API.RequestItemButtonsRefresh()
+    C_Timer.After(0, function()
+      Baganator.API.RequestItemButtonsRefresh()
+    end)
   end
 end)
