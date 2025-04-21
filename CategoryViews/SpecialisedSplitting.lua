@@ -46,7 +46,7 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:ApplySplitting(everythi
         info.keyGUID = info.keyGUID .. "_" .. info.specialSplitting
       elseif info.hasLoot and not info.isBound and info.classID == Enum.ItemClass.Miscellaneous and info.subClassID == 0 then
         self.queued[index] = QueueReason.Lockbox
-      elseif info.classID == Enum.ItemClass.Consumable then
+      elseif info.classID == Enum.ItemClass.Consumable or (addonTable.Constants.IsEra and info.classID == Enum.ItemClass.Weapon) then
         self.queued[index] = QueueReason.ConsumableCharges
       else
         skip[info.itemID] = true
