@@ -4,7 +4,20 @@ local QueueReason = {
   Lockbox = 1,
   ConsumableCharges = 2,
 }
-local skip = {}
+
+local itemsToSkip = {}
+local chargedItemSpells = {}
+
+local monitor = CreateFrame("Frame")
+monitor:RegisterEvent("UNIT_SPELLCAST_STOP")
+monitor:SetScript("OnEvent", function(self, eventName, unit, castID, spellID)
+  if unit == "player" and chargedItemSpells[spellID] then
+    C_Timer.After(0.25, function()
+      Baganator.API.RequestItemButtonsRefresh()
+    end)
+  end
+end)
+
 BaganatorCategoryViewsSpecialisedSplittingMixin = {}
 
 function BaganatorCategoryViewsSpecialisedSplittingMixin:OnLoad()
@@ -37,7 +50,7 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:ApplySplitting(everythi
   self.queued = {}
 
   for index, info in ipairs(everything) do
-    if not skip[info.itemID] and info.itemID ~= nil and info.itemLocation and C_Item.DoesItemExist(info.itemLocation) then
+    if not itemsToSkip[info.itemID] and info.itemID ~= nil and info.itemLocation and C_Item.DoesItemExist(info.itemLocation) then
       Syndicator.Search.GetClassSubClass(info)
       if self.guidCache[info.guid] then
         info.specialSplitting = self.guidCache[info.guid]
@@ -49,7 +62,7 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:ApplySplitting(everythi
       elseif info.classID == Enum.ItemClass.Consumable or (addonTable.Constants.IsEra and info.classID == Enum.ItemClass.Weapon) then
         self.queued[index] = QueueReason.ConsumableCharges
       else
-        skip[info.itemID] = true
+        itemsToSkip[info.itemID] = true
       end
     end
   end
@@ -71,7 +84,7 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:Process()
 
     local info = self.everything[index]
 
-    if skip[info.itemID] then
+    if itemsToSkip[info.itemID] then
       self.queued[index] = nil
     else
       Syndicator.Search.GetTooltipInfoSpell(info)
@@ -90,9 +103,13 @@ function BaganatorCategoryViewsSpecialisedSplittingMixin:Process()
         elseif splitType == QueueReason.ConsumableCharges then
           local chargeText = addonTable.Utilities.GetChargesLine(info.tooltipInfoSpell)
           if chargeText == nil then
-            skip[info.itemID] = true
+            itemsToSkip[info.itemID] = true
           else
             info.specialSplitting = tonumber((chargeText:match("%d+") or 0))
+            local _, spellID = C_Item.GetItemSpell(info.itemID)
+            if spellID then
+              chargedItemSpells[spellID] = true
+            end
           end
         end
         if info.specialSplitting then
