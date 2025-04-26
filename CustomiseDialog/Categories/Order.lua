@@ -85,6 +85,8 @@ local function PopulateCategoryOrder(container)
 end
 
 local function GetCategoryContainer(parent, pickupCallback)
+  local selectedValue, selectedIndex = "", -1
+
   local container = CreateFrame("Frame", nil, parent)
   local inset = CreateFrame("Frame", nil, container, "InsetFrameTemplate")
   inset:SetPoint("TOPLEFT")
@@ -93,6 +95,20 @@ local function GetCategoryContainer(parent, pickupCallback)
   container.ScrollBox = CreateFrame("Frame", nil, container, "WowScrollBoxList")
   container.ScrollBox:SetPoint("TOPLEFT", 1, -3)
   container.ScrollBox:SetPoint("BOTTOMRIGHT", -15, 3)
+
+  local function UpdateSelected(value, index)
+    selectedValue, selectedIndex = value, index
+    for _, f in ipairs(container.ScrollBox:GetFrames()) do
+      f.selectedTexture:SetShown(f.value == selectedValue and (f.value ~= addonTable.CategoryViews.Constants.DividerName or f.indexValue == selectedIndex))
+    end
+  end
+  addonTable.CallbackRegistry:RegisterCallback("ResetCategoryEditor", function()
+    UpdateSelected("", -1)
+  end)
+
+  container:SetScript("OnHide", function()
+    UpdateSelected("", -1)
+  end)
   local scrollView = CreateScrollBoxListLinearView()
   scrollView:SetElementExtentCalculator(function(index, elementData)
     if elementData.value ~= addonTable.CategoryViews.Constants.SectionEnd then
@@ -105,8 +121,13 @@ local function GetCategoryContainer(parent, pickupCallback)
     if not frame.initialized then
       frame.initialized = true
       frame:SetNormalFontObject(GameFontHighlight)
-      frame:SetHighlightAtlas("auctionhouse-ui-row-highlight")
+      frame:SetHighlightAtlas("Options_List_Hover")
+      frame.selectedTexture = frame:CreateTexture(nil, "ARTWORK")
+      frame.selectedTexture:SetAllPoints(true)
+      frame.selectedTexture:Hide()
+      frame.selectedTexture:SetAtlas("Options_List_Active")
       frame:SetScript("OnClick", function(self, button)
+        UpdateSelected(self.value, self.indexValue)
         if self.value:match("^_") then
           addonTable.CallbackRegistry:TriggerEvent("EditCategorySection", (self.value:match("^_(.*)")))
         elseif self.value == "default_auto_recents" then
@@ -147,6 +168,7 @@ local function GetCategoryContainer(parent, pickupCallback)
     end
     frame.indexValue = container.ScrollBox:GetDataProvider():FindIndex(elementData)
     frame.value = elementData.value
+    frame.selectedTexture:SetShown(frame.value == selectedValue and (frame.value ~= addonTable.CategoryViews.Constants.DividerName or frame.indexValue == selectedIndex))
     frame:SetText(elementData.label)
     frame:GetFontString():SetPoint("RIGHT", -8, 0)
     frame:GetFontString():SetPoint("LEFT", 40, 0)

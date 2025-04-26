@@ -1091,6 +1091,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     editor.Return = function()
       categoriesEditor:Disable()
       ShowEditor("EditCategory")
+      addonTable.CallbackRegistry:TriggerEvent("ResetCategoryEditor")
     end
   end
 
