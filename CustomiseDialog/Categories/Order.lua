@@ -102,6 +102,9 @@ local function GetCategoryContainer(parent, pickupCallback)
       f.selectedTexture:SetShown(f.value == selectedValue and (f.value ~= addonTable.CategoryViews.Constants.DividerName or f.indexValue == selectedIndex))
     end
   end
+  addonTable.CallbackRegistry:RegisterCallback("SetSelectedCategory", function(_, categoryName)
+    UpdateSelected(categoryName, -1)
+  end)
   addonTable.CallbackRegistry:RegisterCallback("ResetCategoryEditor", function()
     UpdateSelected("", -1)
   end)

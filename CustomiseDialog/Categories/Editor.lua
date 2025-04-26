@@ -249,6 +249,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     if next(refreshState) ~= nil then
       addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
     end
+    if isNew then
+      addonTable.CallbackRegistry:TriggerEvent("SetSelectedCategory", self.currentCategory)
+    end
     operationInProgress = false
   end
 

@@ -32,6 +32,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
 
     local sections = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
+    local isNew = false
 
     local refreshState = {}
     if sections[self.currentSection] then
@@ -40,6 +41,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
       end
       sections[self.currentSection].name = self.SectionName:GetText()
     else
+      isNew = true
       self.currentSection = tostring(1)
       while sections[self.currentSection] do
         self.currentSection = tostring(tonumber(self.currentSection) + 1)
@@ -65,6 +67,9 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
 
     if next(refreshState) ~= nil then
       addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
+    end
+    if isNew then
+      addonTable.CallbackRegistry:TriggerEvent("SetSelectedCategory", "_" .. self.currentSection)
     end
   end
 
