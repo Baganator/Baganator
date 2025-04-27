@@ -272,6 +272,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     if value == "" then
       self.currentCategory = "-1"
       self.CategoryName:SetText(BAGANATOR_L_NEW_CATEGORY)
+      self.CategoryName:Enable()
       self.CategorySearch:SetText("")
       self.CategorySearch:Enable()
       self.PrioritySlider:SetValue(0)
