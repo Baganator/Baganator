@@ -6,6 +6,7 @@ local always = {
   "name",
   "item-level",
   "combine_stacks_only",
+  "manual",
 }
 function addonTable.Sorting.IsModeAvailable(mode)
   return tIndexOf(always, mode) ~= nil or

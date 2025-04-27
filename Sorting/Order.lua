@@ -91,6 +91,8 @@ local allSortKeys = {
     "itemLink",
     "specialSplitting",
   },
+  ["manual"] = {
+  }
 }
 
 -- Remove expansion sort criteria on classic, as there isn't much expansion
