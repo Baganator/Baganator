@@ -438,11 +438,11 @@ do
       "^" .. ITEM_SPELL_CHARGES_NONE .. "$",
     }
 
-    local escapeSequence = ITEM_SPELL_CHARGES:match("|4([^;]*);")
+    local escapeSequence = ITEM_SPELL_CHARGES:match("\1244([^;]*);")
 
     if escapeSequence then
       for _, part in ipairs({ strsplit(":", escapeSequence) }) do
-        table.insert(possibleChargePatterns, "^" .. (ITEM_SPELL_CHARGES:gsub("%%d", "%%d%+"):gsub("|4[^;]*;", part)) .. "$")
+        table.insert(possibleChargePatterns, "^" .. (ITEM_SPELL_CHARGES:gsub("%%d", "%%d%+"):gsub("\1244[^;]*;", part)) .. "$")
       end
     else
       table.insert(possibleChargePatterns, "^" .. ITEM_SPELL_CHARGES .. "$")
