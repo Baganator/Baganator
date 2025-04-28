@@ -15,7 +15,7 @@ jobs:
   build:
     strategy:
       matrix:
-        type: [retail, classic, wrath, cata]
+        type: [retail, classic, wrath, cata, mists]
 
     runs-on: ubuntu-latest
     steps:
