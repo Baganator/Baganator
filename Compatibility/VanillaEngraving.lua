@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 -- Needed to keep rune information updated for equipment sets and item button
 -- icons
 if C_Engraving and C_Engraving.IsEngravingEnabled() then

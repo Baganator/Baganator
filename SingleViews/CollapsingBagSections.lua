@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 function addonTable.SingleViews.GetCollapsingBagDetails(character, section, indexes, slotsCount)
   local characterInfo = Syndicator.API.GetCharacter(character)
   if characterInfo.containerInfo == nil or characterInfo.containerInfo[section] == nil then

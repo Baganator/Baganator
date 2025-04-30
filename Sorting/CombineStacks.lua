@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 local itemIDToStackSize = {}
 
 local function DoMovement(stacks)

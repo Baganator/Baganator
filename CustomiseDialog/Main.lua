@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local IsRetailCheck = function()
   return addonTable.Constants.IsRetail
@@ -14,11 +15,11 @@ local GENERAL_OPTIONS = {
 local LAYOUT_OPTIONS = {
   {
     type = "dropdown",
-    text = BAGANATOR_L_BAG_VIEW_TYPE,
+    text = addonTable.Locales.BAG_VIEW_TYPE,
     option = "bag_view_type",
     entries = {
-      BAGANATOR_L_SINGLE_BAG,
-      BAGANATOR_L_CATEGORY_GROUPS,
+      addonTable.Locales.SINGLE_BAG,
+      addonTable.Locales.CATEGORY_GROUPS,
     },
     values = {
       "single",
@@ -27,11 +28,11 @@ local LAYOUT_OPTIONS = {
   },
   {
     type = "dropdown",
-    text = BAGANATOR_L_BANK_VIEW_TYPE,
+    text = addonTable.Locales.BANK_VIEW_TYPE,
     option = "bank_view_type",
     entries = {
-      BAGANATOR_L_SINGLE_BAG,
-      BAGANATOR_L_CATEGORY_GROUPS,
+      addonTable.Locales.SINGLE_BAG,
+      addonTable.Locales.CATEGORY_GROUPS,
     },
     values = {
       "single",
@@ -41,11 +42,11 @@ local LAYOUT_OPTIONS = {
   { type = "spacing" },
   {
     type = "dropdown",
-    text = BAGANATOR_L_SHOW_BUTTONS,
+    text = addonTable.Locales.SHOW_BUTTONS,
     option = "show_buttons_on_alt",
     entries = {
-      BAGANATOR_L_ALWAYS,
-      BAGANATOR_L_WHEN_HOLDING_ALT,
+      addonTable.Locales.ALWAYS,
+      addonTable.Locales.WHEN_HOLDING_ALT,
     },
     values = {
       false,
@@ -58,7 +59,7 @@ local LAYOUT_OPTIONS = {
     max = 24,
     lowText = "1",
     highText = "24",
-    text = BAGANATOR_L_BAG_COLUMNS,
+    text = addonTable.Locales.BAG_COLUMNS,
     option = "bag_view_width",
   },
   {
@@ -67,7 +68,7 @@ local LAYOUT_OPTIONS = {
     max = 42,
     lowText = "1",
     highText = "42",
-    text = BAGANATOR_L_BANK_COLUMNS,
+    text = addonTable.Locales.BANK_COLUMNS,
     option = "bank_view_width",
   },
   {
@@ -76,7 +77,7 @@ local LAYOUT_OPTIONS = {
     max = 42,
     lowText = "1",
     highText = "42",
-    text = BAGANATOR_L_WARBAND_BANK_COLUMNS,
+    text = addonTable.Locales.WARBAND_BANK_COLUMNS,
     option = "warband_bank_view_width",
     check = function() return Syndicator.Constants.WarbandBankActive end,
   },
@@ -86,18 +87,18 @@ local LAYOUT_OPTIONS = {
     max = 42,
     lowText = "1",
     highText = "42",
-    text = BAGANATOR_L_GUILD_BANK_COLUMNS,
+    text = addonTable.Locales.GUILD_BANK_COLUMNS,
     option = "guild_view_width",
     check = NotIsEraCheck,
   },
   { type = "spacing" },
   {
     type = "dropdown",
-    text = BAGANATOR_L_BLANK_SPACE,
+    text = addonTable.Locales.BLANK_SPACE,
     option = "bag_empty_space_at_top",
     entries = {
-      BAGANATOR_L_AT_THE_BOTTOM,
-      BAGANATOR_L_AT_THE_TOP,
+      addonTable.Locales.AT_THE_BOTTOM,
+      addonTable.Locales.AT_THE_TOP,
     },
     values = {
       false,
@@ -106,17 +107,17 @@ local LAYOUT_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SEARCH_BOX,
+    text = addonTable.Locales.SEARCH_BOX,
     option = "show_search_box",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_RECENT_CHARACTER_TABS,
+    text = addonTable.Locales.RECENT_CHARACTER_TABS,
     option = "show_recents_tabs_main_view",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_REDUCE_UI_SPACING,
+    text = addonTable.Locales.REDUCE_UI_SPACING,
     option = "reduce_spacing",
   },
   { type = "spacing" },
@@ -127,25 +128,25 @@ local LAYOUT_OPTIONS = {
     scale = 100,
     lowText = "0%",
     highText = "200%",
-    text = BAGANATOR_L_CATEGORY_SPACING,
+    text = addonTable.Locales.CATEGORY_SPACING,
     option = "category_horizontal_spacing_2",
-    valuePattern = BAGANATOR_L_PERCENTAGE_PATTERN,
+    valuePattern = addonTable.Locales.PERCENTAGE_PATTERN,
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_GROUP_IDENTICAL_ITEMS,
-    rightText = BAGANATOR_L_BRACKETS_CATEGORY_VIEW_ONLY,
+    text = addonTable.Locales.GROUP_IDENTICAL_ITEMS,
+    rightText = addonTable.Locales.BRACKETS_CATEGORY_VIEW_ONLY,
     option = "category_item_grouping",
   },
   { type = "spacing" },
   {
     type = "checkbox",
-    text = BAGANATOR_L_LOCK_WINDOWS,
+    text = addonTable.Locales.LOCK_WINDOWS,
     option = "lock_frames",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_CHANGE_WINDOW_ANCHORS,
+    text = addonTable.Locales.CHANGE_WINDOW_ANCHORS,
     option = "setting_anchors",
   },
 }
@@ -153,33 +154,33 @@ local LAYOUT_OPTIONS = {
 local ICON_OPTIONS = {
   {
     type = "checkbox",
-    text = BAGANATOR_L_ITEM_QUALITY_TEXT_COLORS,
+    text = addonTable.Locales.ITEM_QUALITY_TEXT_COLORS,
     option = "icon_text_quality_colors",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_GREY_JUNK_ITEMS,
+    text = addonTable.Locales.GREY_JUNK_ITEMS,
     option = "icon_grey_junk",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_MARK_UNUSABLE_ITEMS_IN_RED,
+    text = addonTable.Locales.MARK_UNUSABLE_ITEMS_IN_RED,
     option = "icon_mark_unusable",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_FADE_ITEMS_NOT_MATCHING_SITUATION,
+    text = addonTable.Locales.FADE_ITEMS_NOT_MATCHING_SITUATION,
     option = "icon_context_fading",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_FLASH_DUPLICATE_ITEMS,
-    rightText = BAGANATOR_L_ALT_CLICK,
+    text = addonTable.Locales.FLASH_DUPLICATE_ITEMS,
+    rightText = addonTable.Locales.ALT_CLICK,
     option = "icon_flash_similar_alt",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_HIDE_BOE_STATUS_ON_COMMON_2,
+    text = addonTable.Locales.HIDE_BOE_STATUS_ON_COMMON_2,
     option = "hide_boe_on_common",
   },
   { type = "spacing" },
@@ -189,8 +190,8 @@ local ICON_OPTIONS = {
     max = 70,
     lowText = "10",
     highText = "70",
-    text = BAGANATOR_L_ICON_SIZE,
-    valuePattern = BAGANATOR_L_PIXEL_PATTERN,
+    text = addonTable.Locales.ICON_SIZE,
+    valuePattern = addonTable.Locales.PIXEL_PATTERN,
     option = "bag_icon_size",
   },
   {
@@ -199,21 +200,21 @@ local ICON_OPTIONS = {
     max = 40,
     lowText = "5",
     highText = "40",
-    text = BAGANATOR_L_ICON_TEXT_FONT_SIZE,
-    valuePattern = BAGANATOR_L_PIXEL_PATTERN,
+    text = addonTable.Locales.ICON_TEXT_FONT_SIZE,
+    valuePattern = addonTable.Locales.PIXEL_PATTERN,
     option = "icon_text_font_size",
   },
   { type = "spacing" },
   {
     type = "header",
-    text = BAGANATOR_L_ICON_CORNERS,
+    text = addonTable.Locales.ICON_CORNERS,
     level = 2,
   },
 }
 local OPEN_CLOSE_OPTIONS = {
   {
     type = "checkbox",
-    text = BAGANATOR_L_BANK,
+    text = addonTable.Locales.BANK,
     option = "auto_open.bank",
   },
   {
@@ -229,92 +230,92 @@ local OPEN_CLOSE_OPTIONS = {
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_CRAFTING_WINDOW,
+    text = addonTable.Locales.CRAFTING_WINDOW,
     option = "auto_open.tradeskill",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_AUCTION_HOUSE,
+    text = addonTable.Locales.AUCTION_HOUSE,
     option = "auto_open.auction_house",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_VOID_STORAGE,
+    text = addonTable.Locales.VOID_STORAGE,
     option = "auto_open.void_storage",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_MAIL,
+    text = addonTable.Locales.MAIL,
     option = "auto_open.mail",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_VENDOR,
+    text = addonTable.Locales.VENDOR,
     option = "auto_open.merchant",
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_ITEM_UPGRADE,
+    text = addonTable.Locales.ITEM_UPGRADE,
     option = "auto_open.item_upgrade",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_CATALYST,
+    text = addonTable.Locales.CATALYST,
     option = "auto_open.item_interaction",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SOCKET_INTERFACE,
+    text = addonTable.Locales.SOCKET_INTERFACE,
     option = "auto_open.sockets",
     check = NotIsEraCheck,
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SCRAPPING_MACHINE,
+    text = addonTable.Locales.SCRAPPING_MACHINE,
     option = "auto_open.scrapping_machine",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_FORGE_OF_BONDS,
+    text = addonTable.Locales.FORGE_OF_BONDS,
     option = "auto_open.forge_of_bonds",
     check = IsRetailCheck,
   },
   {
     type = "checkbox",
-    text = BAGANATOR_L_CHARACTER_PANEL,
+    text = addonTable.Locales.CHARACTER_PANEL,
     option = "auto_open.character_panel",
   },
 }
 local SORTING_OPTIONS = {
   {
     type = "checkbox",
-    text = BAGANATOR_L_SHOW_SORT_BUTTON,
+    text = addonTable.Locales.SHOW_SORT_BUTTON,
     option = "show_sort_button_2",
   },
   { type = "spacing" },
   {
     type = "checkbox",
-    text = BAGANATOR_L_SORT_ON_OPEN,
+    text = addonTable.Locales.SORT_ON_OPEN,
     option = "auto_sort_on_open",
   },
   { type = "spacing" },
   { type = "spacing" },
   {
     type = "checkbox",
-    text = BAGANATOR_L_REVERSE_GROUPS_SORT_ORDER,
+    text = addonTable.Locales.REVERSE_GROUPS_SORT_ORDER,
     option = "reverse_groups_sort_order",
   },
   {
     type = "dropdown",
-    text = BAGANATOR_L_ARRANGE_ITEMS,
+    text = addonTable.Locales.ARRANGE_ITEMS,
     option = "sort_start_at_bottom",
     entries = {
-      BAGANATOR_L_FROM_THE_TOP,
-      BAGANATOR_L_FROM_THE_BOTTOM,
+      addonTable.Locales.FROM_THE_TOP,
+      addonTable.Locales.FROM_THE_BOTTOM,
     },
     values = {
       false,
@@ -324,11 +325,11 @@ local SORTING_OPTIONS = {
   { type = "spacing" },
   {
     type = "dropdown",
-    text = BAGANATOR_L_IGNORED_SLOTS,
+    text = addonTable.Locales.IGNORED_SLOTS,
     option = "sort_ignore_slots_at_end",
     entries = {
-      BAGANATOR_L_FROM_THE_TOP,
-      BAGANATOR_L_FROM_THE_BOTTOM,
+      addonTable.Locales.FROM_THE_TOP,
+      addonTable.Locales.FROM_THE_BOTTOM,
     },
     values = {
       false,
@@ -341,7 +342,7 @@ local SORTING_OPTIONS = {
     max = 128,
     lowText = "0",
     highText = "128",
-    text = BAGANATOR_L_IGNORED_BAG_SLOTS,
+    text = addonTable.Locales.IGNORED_BAG_SLOTS,
     option = "sort_ignore_slots_count_2",
   },
   {
@@ -350,12 +351,9 @@ local SORTING_OPTIONS = {
     max = 500,
     lowText = "0",
     highText = "500",
-    text = BAGANATOR_L_IGNORED_BANK_SLOTS,
+    text = addonTable.Locales.IGNORED_BANK_SLOTS,
     option = "sort_ignore_bank_slots_count",
   },
-}
-
-local CATEGORIES_OPTIONS = {
 }
 
 table.sort(OPEN_CLOSE_OPTIONS, function(a, b)
@@ -452,7 +450,7 @@ function BaganatorCustomiseDialogMixin:OnLoad()
   self.Inset:Hide()
   self:SetScript("OnMouseWheel", function() end)
 
-  self:SetTitle(BAGANATOR_L_CUSTOMISE_BAGANATOR)
+  self:SetTitle(addonTable.Locales.CUSTOMISE_BAGANATOR)
 
   self.Tabs = {}
   self.Views = {}
@@ -498,13 +496,13 @@ end
 
 function BaganatorCustomiseDialogMixin:SetupGeneral()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_GENERAL)
+  tab:SetText(addonTable.Locales.GENERAL)
 
   local frame = GetWrapperFrame(self)
 
   local infoInset = CreateFrame("Frame", nil, frame, "InsetFrameTemplate")
 
-  local GENERAL_OPTIONS = CopyTable(GENERAL_OPTIONS)
+  local options = CopyTable(GENERAL_OPTIONS)
 
   do
     infoInset:SetPoint("TOP")
@@ -519,16 +517,16 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     logo:SetPoint("LEFT", 8, 0)
 
     local name = infoInset:CreateFontString(nil, "ARTWORK", "GameFontHighlightHuge")
-    name:SetText(BAGANATOR_L_BAGANATOR)
+    name:SetText(addonTable.Locales.BAGANATOR)
     name:SetPoint("TOPLEFT", logo, "TOPRIGHT", 10, 0)
 
     local credit = infoInset:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-    credit:SetText(BAGANATOR_L_BY_PLUSMOUSE)
+    credit:SetText(addonTable.Locales.BY_PLUSMOUSE)
     credit:SetPoint("BOTTOMLEFT", name, "BOTTOMRIGHT", 5, 0)
 
     local discordLinkDialog = "Baganator_General_Settings_Discord_Dialog"
     StaticPopupDialogs[discordLinkDialog] = {
-      text = BAGANATOR_L_CTRL_C_TO_COPY,
+      text = addonTable.Locales.CTRL_C_TO_COPY,
       button1 = DONE,
       hasEditBox = 1,
       OnShow = function(self)
@@ -544,7 +542,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       hideOnEscape = 1,
     }
     local discordButton = CreateFrame("Button", nil, infoInset, "UIPanelDynamicResizeButtonTemplate")
-    discordButton:SetText(BAGANATOR_L_JOIN_THE_DISCORD)
+    discordButton:SetText(addonTable.Locales.JOIN_THE_DISCORD)
     DynamicResizeButton_Resize(discordButton)
     discordButton:SetPoint("BOTTOMLEFT", logo, "BOTTOMRIGHT", 8, 0)
     discordButton:SetScript("OnClick", function()
@@ -553,12 +551,12 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     addonTable.Skins.AddFrame("Button", discordButton)
     local discordText = infoInset:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     discordText:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
-    discordText:SetText(BAGANATOR_L_DISCORD_DESCRIPTION)
+    discordText:SetText(addonTable.Locales.DISCORD_DESCRIPTION)
   end
 
   do
     local junkPlugins = {
-      {label = BAGANATOR_L_POOR_QUALITY, id = "poor_quality"},
+      {label = addonTable.Locales.POOR_QUALITY, id = "poor_quality"},
     }
     for id, pluginDetails in pairs(addonTable.API.JunkPlugins) do
       table.insert(junkPlugins, {
@@ -571,7 +569,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     end)
     local dropdown = {
       type = "dropdown",
-      text = BAGANATOR_L_JUNK_DETECTION_2,
+      text = addonTable.Locales.JUNK_DETECTION_2,
       option = "junk_plugin",
       entries = {},
       values = {},
@@ -584,12 +582,12 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       addonTable.Config.ResetOne("junk_plugin")
     end
 
-    table.insert(GENERAL_OPTIONS, dropdown)
+    table.insert(options, dropdown)
   end
 
   do
     local upgradePlugins = {
-      {label = BAGANATOR_L_NONE, id = "none"},
+      {label = addonTable.Locales.NONE, id = "none"},
     }
     for id, pluginDetails in pairs(addonTable.API.UpgradePlugins) do
       table.insert(upgradePlugins, {
@@ -602,7 +600,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     end)
     local dropdown = {
       type = "dropdown",
-      text = BAGANATOR_L_UPGRADE_DETECTION,
+      text = addonTable.Locales.UPGRADE_DETECTION,
       option = "upgrade_plugin",
       entries = {},
       values = {},
@@ -615,7 +613,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       addonTable.Config.ResetOne("upgrade_plugin")
     end
 
-    table.insert(GENERAL_OPTIONS, dropdown)
+    table.insert(options, dropdown)
   end
 
   local allFrames = {infoInset}
@@ -655,17 +653,17 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     local tipsRows = {
       MakeTipsRow({
         header = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\Search.png", 64, 64, 13, 13, 0, 1, 0, 1) .. "  " .. SEARCH,
-        text = BAGANATOR_L_TIPS_SEARCH,
+        text = addonTable.Locales.TIPS_SEARCH,
       }, {
-        header = BAGANATOR_L_PLUGINS,
-        text = BAGANATOR_L_TIPS_PLUGINS,
+        header = addonTable.Locales.PLUGINS,
+        text = addonTable.Locales.TIPS_PLUGINS,
       }),
       MakeTipsRow({
-        header = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\Transfer.png", 64, 64, 13, 13, 0, 1, 0, 1) .. " " .. BAGANATOR_L_TRANSFER,
-        text = BAGANATOR_L_TIPS_TRANSFER,
+        header = CreateTextureMarkup("Interface\\AddOns\\Baganator\\Assets\\Transfer.png", 64, 64, 13, 13, 0, 1, 0, 1) .. " " .. addonTable.Locales.TRANSFER,
+        text = addonTable.Locales.TIPS_TRANSFER,
       }, {
-        header = BAGANATOR_L_THEMES,
-        text = BAGANATOR_L_TIPS_THEMES,
+        header = addonTable.Locales.THEMES,
+        text = addonTable.Locales.TIPS_THEMES,
       }),
     }
     for _, row in ipairs(tipsRows) do
@@ -683,7 +681,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
   do
     local DONATE_OPTIONS = {{
       type = "header",
-      text = BAGANATOR_L_DEVELOPMENT_IS_TIME_CONSUMING,
+      text = addonTable.Locales.DEVELOPMENT_IS_TIME_CONSUMING,
       level = 2,
     }}
     local optionFrames = GenerateFrames(DONATE_OPTIONS, frame)
@@ -697,12 +695,12 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     donateFrame:SetHeight(40)
     local text = donateFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     text:SetPoint("RIGHT", donateFrame, "CENTER", -50, 0)
-    text:SetText(BAGANATOR_L_DONATE)
+    text:SetText(addonTable.Locales.DONATE)
     text:SetJustifyH("RIGHT")
 
     local donateLinkDialog = "Baganator_General_Settings_Donate_Dialog"
     StaticPopupDialogs[donateLinkDialog] = {
-      text = BAGANATOR_L_CTRL_C_TO_COPY,
+      text = addonTable.Locales.CTRL_C_TO_COPY,
       button1 = DONE,
       hasEditBox = 1,
       OnShow = function(self)
@@ -719,7 +717,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     }
 
     local button = CreateFrame("Button", nil, donateFrame, "UIPanelDynamicResizeButtonTemplate")
-    button:SetText(BAGANATOR_L_LINK)
+    button:SetText(addonTable.Locales.LINK)
     DynamicResizeButton_Resize(button)
     button:SetPoint("LEFT", donateFrame, "CENTER", -35, 0)
     button:SetScript("OnClick", function()
@@ -730,7 +728,7 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
   end
 
   do
-    local optionFrames = GenerateFrames(GENERAL_OPTIONS, frame)
+    local optionFrames = GenerateFrames(options, frame)
     optionFrames[1]:SetPoint("TOP", allFrames[#allFrames], "BOTTOM", 0, -60)
 
     tAppendAll(allFrames, optionFrames)
@@ -744,21 +742,21 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     tooltipButtonFrame:SetHeight(40)
     local text = tooltipButtonFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
     text:SetPoint("RIGHT", tooltipButtonFrame, "CENTER", -50, 0)
-    text:SetText(BAGANATOR_L_TOOLTIP_SETTINGS)
+    text:SetText(addonTable.Locales.TOOLTIP_SETTINGS)
     text:SetJustifyH("RIGHT")
     local button = CreateFrame("Button", nil, tooltipButtonFrame, "UIPanelDynamicResizeButtonTemplate")
-    button:SetText(BAGANATOR_L_OPEN_SYNDICATOR)
+    button:SetText(addonTable.Locales.OPEN_SYNDICATOR)
     DynamicResizeButton_Resize(button)
     button:SetPoint("LEFT", tooltipButtonFrame, "CENTER", -35, 0)
     button:SetScript("OnClick", function()
-      Settings.OpenToCategory(SYNDICATOR_L_SYNDICATOR)
+      Settings.OpenToCategory(Syndicator.Locales.SYNDICATOR)
     end)
     addonTable.Skins.AddFrame("Button", button)
     table.insert(allFrames, tooltipButtonFrame)
   end
 
   frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
+    for _, frame in ipairs(allFrames) do
       if frame.SetValue then
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
@@ -770,7 +768,7 @@ end
 
 function BaganatorCustomiseDialogMixin:SetupIcon()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_ICONS)
+  tab:SetText(addonTable.Locales.ICONS)
 
   local frame = GetWrapperFrame(self)
 
@@ -791,7 +789,7 @@ function BaganatorCustomiseDialogMixin:SetupIcon()
   addonTable.Skins.AddFrame("ItemButton", itemButton)
 
   frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
+    for _, frame in ipairs(allFrames) do
       if frame.SetValue then
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
@@ -803,14 +801,14 @@ end
 
 function BaganatorCustomiseDialogMixin:SetupOpenClose()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_AUTO_OPEN)
+  tab:SetText(addonTable.Locales.AUTO_OPEN)
 
   local frame = GetWrapperFrame(self)
 
   local allFrames = GenerateFrames(OPEN_CLOSE_OPTIONS, frame)
 
   frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
+    for _, frame in ipairs(allFrames) do
       if frame.SetValue then
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
@@ -822,7 +820,7 @@ end
 
 function BaganatorCustomiseDialogMixin:SetupSorting()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_SORTING)
+  tab:SetText(addonTable.Locales.SORTING)
 
   local options = CopyTable(SORTING_OPTIONS)
 
@@ -830,15 +828,15 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
   do
     local commonModes = {
-      {"type", BAGANATOR_L_ITEM_TYPE},
-      {"name", BAGANATOR_L_ITEM_NAME},
-      {"quality", BAGANATOR_L_ITEM_QUALITY},
-      {"item-level", BAGANATOR_L_ITEM_LEVEL},
-      {"expansion", BAGANATOR_L_EXPANSION},
+      {"type", addonTable.Locales.ITEM_TYPE},
+      {"name", addonTable.Locales.ITEM_NAME},
+      {"quality", addonTable.Locales.ITEM_QUALITY},
+      {"item-level", addonTable.Locales.ITEM_LEVEL},
+      {"expansion", addonTable.Locales.EXPANSION},
     }
 
     local rawModes = {
-      {"combine_stacks_only", BAGANATOR_L_COMBINE_STACKS_ONLY},
+      {"combine_stacks_only", addonTable.Locales.COMBINE_STACKS_ONLY},
     }
 
     for id, details in pairs(addonTable.API.ExternalContainerSorts) do
@@ -846,14 +844,14 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
     end
     tAppendAll(rawModes, commonModes)
 
-    table.insert(commonModes, {"manual", BAGANATOR_L_MANUAL})
+    table.insert(commonModes, {"manual", addonTable.Locales.MANUAL})
 
     table.sort(commonModes, function(a, b) return a[2] < b[2] end)
     table.sort(rawModes, function(a, b) return a[2] < b[2] end)
 
     local category = {
       type = "dropdown",
-      text = BAGANATOR_L_CATEGORY_SORT_METHOD,
+      text = addonTable.Locales.CATEGORY_SORT_METHOD,
       option = "category_sort_method",
       entries = {},
       values = {},
@@ -861,7 +859,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
 
     local raw = {
       type = "dropdown",
-      text = BAGANATOR_L_SORT_METHOD_2,
+      text = addonTable.Locales.SORT_METHOD_2,
       option = "sort_method",
       entries = {},
       values = {},
@@ -896,7 +894,7 @@ function BaganatorCustomiseDialogMixin:SetupSorting()
   local allFrames = GenerateFrames(options, frame)
 
   frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
+    for _, frame in ipairs(allFrames) do
       if frame.SetValue then
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
@@ -908,14 +906,14 @@ end
 
 function BaganatorCustomiseDialogMixin:SetupLayout()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_LAYOUT)
+  tab:SetText(addonTable.Locales.LAYOUT)
 
   local frame = GetWrapperFrame(self)
 
   local allFrames = GenerateFrames(LAYOUT_OPTIONS, frame)
 
   local function UpdateValues()
-    for index, frame in ipairs(allFrames) do
+    for _, frame in ipairs(allFrames) do
       if frame.SetValue then
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
@@ -932,10 +930,10 @@ function BaganatorCustomiseDialogMixin:SetupLayout()
     end
   end)
 
-  local _, resetAnchor = FindInTableIf(allFrames, function(f) return f.text == BAGANATOR_L_LOCK_WINDOWS end)
+  local _, resetAnchor = FindInTableIf(allFrames, function(f) return f.text == addonTable.Locales.LOCK_WINDOWS end)
   frame.ResetFramePositions = CreateFrame("Button", nil, frame, "UIPanelDynamicResizeButtonTemplate")
   frame.ResetFramePositions:SetPoint("LEFT", resetAnchor, "CENTER", 55, 0)
-  frame.ResetFramePositions:SetText(BAGANATOR_L_RESET_POSITIONS)
+  frame.ResetFramePositions:SetText(addonTable.Locales.RESET_POSITIONS)
   DynamicResizeButton_Resize(frame.ResetFramePositions)
   frame.ResetFramePositions:SetScript("OnClick", function()
     addonTable.CallbackRegistry:TriggerEvent("ResetFramePositions")
@@ -952,7 +950,7 @@ end
 
 function BaganatorCustomiseDialogMixin:SetupTheme()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_THEME)
+  tab:SetText(addonTable.Locales.THEME)
 
   local chooseSkinValues = {}
   for key in pairs(addonTable.Skins.availableSkins) do
@@ -968,7 +966,7 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
 
   table.insert(options, {
     type = "dropdown",
-    text = BAGANATOR_L_THEME,
+    text = addonTable.Locales.THEME,
     option = "current_skin",
     entries = chooseSkinEntries,
     values = chooseSkinValues,
@@ -987,7 +985,7 @@ function BaganatorCustomiseDialogMixin:SetupTheme()
   local allFrames = GenerateFrames(options, frame)
 
   frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
+    for _, frame in ipairs(allFrames) do
       if frame.SetValue then
         frame:SetValue(addonTable.Config.Get(frame.option))
       end
@@ -1006,7 +1004,7 @@ end
 
 function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
   local tab = GetTab(self)
-  tab:SetText(BAGANATOR_L_CATEGORIES)
+  tab:SetText(addonTable.Locales.CATEGORIES)
 
   local frame = GetWrapperFrame(self)
 
@@ -1014,12 +1012,12 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local showAddButtons, editorHeader = unpack(GenerateFrames({{
     type = "dropdown",
-    text = BAGANATOR_L_SHOW_ADD_BUTTONS,
+    text = addonTable.Locales.SHOW_ADD_BUTTONS,
     option = "add_to_category_buttons_2",
     entries = {
-      BAGANATOR_L_DRAGGING,
-      BAGANATOR_L_DRAGGING_THEN_ALT,
-      BAGANATOR_L_NEVER,
+      addonTable.Locales.DRAGGING,
+      addonTable.Locales.DRAGGING_THEN_ALT,
+      addonTable.Locales.NEVER,
     },
     values = {
       "drag",
@@ -1028,7 +1026,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     }
   }, {
     type = "header",
-    text = BAGANATOR_L_EDIT,
+    text = addonTable.Locales.EDIT,
     level = 2,
   }}, frame))
   table.insert(allFrames, showAddButtons)
@@ -1105,7 +1103,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
 
   local enableDialog = "BaganatorCategoryEnableDialog"
   StaticPopupDialogs[enableDialog] = {
-    text = BAGANATOR_L_ENABLE_CATEGORY_MODE_WARNING,
+    text = addonTable.Locales.ENABLE_CATEGORY_MODE_WARNING,
     button1 = ENABLE,
     button2 = CANCEL,
     OnAccept = function()
@@ -1135,7 +1133,7 @@ function BaganatorCustomiseDialogMixin:SetupCategoriesOptions()
     addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, prevTooltips.keywords)
   end)
   frame:SetScript("OnShow", function()
-    for index, frame in ipairs(allFrames) do
+    for _, frame in ipairs(allFrames) do
       if frame.SetValue then
         frame:SetValue(addonTable.Config.Get(frame.option))
       end

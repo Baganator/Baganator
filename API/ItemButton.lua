@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 local iconSettings = {}
 
 local IsEquipment = Syndicator and Syndicator.Utilities.IsEquipment
@@ -60,7 +61,7 @@ local function textInit(itemButton)
   return text
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_ITEM_LEVEL, "item_level", function(ItemLevel, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.ITEM_LEVEL, "item_level", function(ItemLevel, details)
   if HasItemLevel(details) and not (C_Item.IsCosmeticItem and C_Item.IsCosmeticItem(details.itemLink)) then
     if not details.itemLevel then
       if details.itemLocation and C_Item.DoesItemExist(details.itemLocation) then
@@ -126,9 +127,9 @@ local function IsBindOnEquip(details)
   return false
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_EQUIP, "boe", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.BIND_ON_EQUIP, "boe", function(BindingText, details)
   if IsBindOnEquip(details) then
-    BindingText:SetText(BAGANATOR_L_BOE)
+    BindingText:SetText(addonTable.Locales.BOE)
     if iconSettings.useQualityColors then
       local color = qualityColors[details.quality]
       BindingText:SetTextColor(color.r, color.g, color.b)
@@ -183,9 +184,9 @@ local function IsWarboundUntilEquipped(details)
   return false
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_ACCOUNT, "boa", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.BIND_ON_ACCOUNT, "boa", function(BindingText, details)
   if IsBindOnAccount(details) then
-    BindingText:SetText(BAGANATOR_L_BOA)
+    BindingText:SetText(addonTable.Locales.BOA)
     if iconSettings.useQualityColors then
       local color = qualityColors[details.quality]
       BindingText:SetTextColor(color.r, color.g, color.b)
@@ -217,9 +218,9 @@ local function IsBindOnUse(details)
   return false
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BIND_ON_USE, "bou", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.BIND_ON_USE, "bou", function(BindingText, details)
   if IsBindOnUse(details) then
-    BindingText:SetText(BAGANATOR_L_BOU)
+    BindingText:SetText(addonTable.Locales.BOU)
     if iconSettings.useQualityColors then
       local color = qualityColors[details.quality]
       BindingText:SetTextColor(color.r, color.g, color.b)
@@ -250,9 +251,9 @@ local function IsTradeableLoot(details)
   return false
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_TRADEABLE_LOOT, "tl", function(BindingText, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.TRADEABLE_LOOT, "tl", function(BindingText, details)
   if IsTradeableLoot(details) then
-    BindingText:SetText(BAGANATOR_L_TL)
+    BindingText:SetText(addonTable.Locales.TL)
     if iconSettings.useQualityColors then
       local color = qualityColors[details.quality]
       BindingText:SetTextColor(color.r, color.g, color.b)
@@ -264,14 +265,14 @@ Baganator.API.RegisterCornerWidget(BAGANATOR_L_TRADEABLE_LOOT, "tl", function(Bi
   return false
 end, textInit)
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_QUANTITY, "quantity", function(_, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.QUANTITY, "quantity", function(_, details)
   return details.itemCount > 1
 end, function(itemButton)
   itemButton.Count.sizeFont = true
   return itemButton.Count
 end, nil, true)
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_JUNK, "junk", function(JunkIcon, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.JUNK, "junk", function(_, details)
   return details.isJunk == true
 end,
 function(itemButton)
@@ -282,7 +283,7 @@ function(itemButton)
 end, nil, true)
 
 local function RegisterExpansionWidget()
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_EXPANSION, "expansion", function(Expansion, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.EXPANSION, "expansion", function(Expansion, details)
     details.expacID = details.expacID or Syndicator.Search.GetExpansion(details)
     local xpacText = expansionIDToText[details.expacID]
     Expansion:SetText(xpacText or "")
@@ -295,7 +296,7 @@ elseif Syndicator and Syndicator.Search.GetExpansion then
   addonTable.Utilities.OnAddonLoaded("ItemVersion", RegisterExpansionWidget)
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_EQUIPMENT_SET, "equipment_set", function(EquipmentSet, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.EQUIPMENT_SET, "equipment_set", function(_, details)
   return details.setInfo ~= nil
 end, function(itemButton)
   local EquipmentSet = itemButton:CreateTexture(nil, "ARTWORK")
@@ -304,7 +305,7 @@ end, function(itemButton)
   return EquipmentSet
 end, nil, true)
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_EQUIPMENT_SET_ICON, "equipment_set_icon", function(EquipmentSetIcon, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.EQUIPMENT_SET_ICON, "equipment_set_icon", function(EquipmentSetIcon, details)
   EquipmentSetIcon:SetTexture(details.setInfo and details.setInfo[1].iconTexture or nil)
   return details.setInfo ~= nil and details.setInfo[1].iconTexture ~= nil
 end, function(itemButton)
@@ -318,7 +319,7 @@ addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
     local classID, subClassID = select(6, C_Item.GetItemInfoInstant(itemID))
     return classID == Enum.ItemClass.Battlepet or classID == Enum.ItemClass.Miscellaneous and subClassID == Enum.ItemMiscellaneousSubclass.CompanionPet
   end
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_CAN_I_MOG_IT, "can_i_mog_it", function(CIMIOverlay, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.CAN_I_MOG_IT, "can_i_mog_it", function(CIMIOverlay, details)
     local function CIMI_Update(self)
       if not self or not self:GetParent() then return end
       if not CIMI_CheckOverlayIconEnabled(self) then
@@ -366,7 +367,7 @@ addonTable.Utilities.OnAddonLoaded("BattlePetBreedID", function()
     return
   end
 
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_BREEDID, "battle_pet_breed_id", function(Breed, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.BATTLE_PET_BREEDID, "battle_pet_breed_id", function(Breed, details)
     if not details.itemLink:find("battlepet", nil, true) then
       return false
     end
@@ -386,7 +387,7 @@ addonTable.Utilities.OnAddonLoaded("BattlePetBreedID", function()
 end)
 
 if addonTable.Constants.IsRetail then
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_BATTLE_PET_LEVEL, "battle_pet_level", function(Level, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.BATTLE_PET_LEVEL, "battle_pet_level", function(Level, details)
     if details.itemID ~= Syndicator.Constants.BattlePetCageID then
       return false
     end
@@ -403,7 +404,7 @@ if addonTable.Constants.IsRetail then
 end
 
 if C_Engraving and C_Engraving.IsEngravingEnabled() then
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_ENGRAVED_RUNE, "engraved_rune", function(RuneTexture, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.ENGRAVED_RUNE, "engraved_rune", function(RuneTexture, details)
     if details.engravingInfo then
       RuneTexture:SetTexture(details.engravingInfo.iconTexture)
       return true
@@ -416,19 +417,27 @@ if C_Engraving and C_Engraving.IsEngravingEnabled() then
     texture.padding = 0
     return texture
   end, {corner = "top_right", priority = 1})
+
+  local frame = CreateFrame("Frame")
+  frame:RegisterEvent("ENGRAVING_MODE_CHANGED")
+  frame:RegisterEvent("RUNE_UPDATED")
+  frame:SetScript("OnEvent", function()
+    if Baganator.API.IsCornerWidgetActive("engraved_rune") then
+      Baganator.API.RequestItemButtonsRefresh()
+    end
+  end)
 end
 
 if addonTable.Constants.IsRetail then
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_KEYSTONE_LEVEL, "keystone_level", function(KeystoneText, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.KEYSTONE_LEVEL, "keystone_level", function(KeystoneText, details)
     local level = details.itemLink:match("keystone:[^:]*:[^:]*:(%d+)")
     if not level then
       return false
     end
-    local color = C_ChallengeMode.GetKeystoneLevelRarityColor(tonumber(level))
 
     KeystoneText:SetText(level)
     if iconSettings.useQualityColors then
-      local color = qualityColors[details.quality]
+      local color = C_ChallengeMode.GetKeystoneLevelRarityColor(tonumber(level))
       KeystoneText:SetTextColor(color.r, color.g, color.b)
     else
       KeystoneText:SetTextColor(1,1,1)
@@ -436,9 +445,9 @@ if addonTable.Constants.IsRetail then
     return true
   end, textInit, {corner = "top_left", priority = 3})
 
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_WARBOUND_ONLY, "warbound_only", function(BindingText, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.WARBOUND_ONLY, "warbound_only", function(BindingText, details)
     if IsWarboundOnly(details) then
-      BindingText:SetText(BAGANATOR_L_W)
+      BindingText:SetText(addonTable.Locales.W)
       if iconSettings.useQualityColors then
         local color = qualityColors[details.quality]
         BindingText:SetTextColor(color.r, color.g, color.b)
@@ -450,9 +459,9 @@ if addonTable.Constants.IsRetail then
     return false
   end, textInit)
 
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_WARBOUND_UNTIL_EQUIPPED, "wue", function(BindingText, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.WARBOUND_UNTIL_EQUIPPED, "wue", function(BindingText, details)
     if IsWarboundUntilEquipped(details) then
-      BindingText:SetText(BAGANATOR_L_WUE)
+      BindingText:SetText(addonTable.Locales.WUE)
       if iconSettings.useQualityColors then
         local color = qualityColors[details.quality]
         BindingText:SetTextColor(color.r, color.g, color.b)
@@ -465,7 +474,7 @@ if addonTable.Constants.IsRetail then
   end, textInit)
 end
 
-Baganator.API.RegisterCornerWidget(BAGANATOR_L_BAG_TYPE_CATEGORIES, "bag_type", function(Type, details)
+Baganator.API.RegisterCornerWidget(addonTable.Locales.BAG_TYPE_CATEGORIES, "bag_type", function(Type, details)
   local info = addonTable.Constants.ContainerKeyToInfo[details.bagType]
   if info then
     Type:SetDesaturated(true)

@@ -65,7 +65,6 @@ ItemViewCommon\Search.lua
 ItemViewCommon\Search.xml
 ItemViewCommon\ItemButton.lua
 ItemViewCommon\ItemButton.xml
-ItemViewCommon\ItemButtonDataEvents.lua
 ItemViewCommon\Pools.lua
 ItemViewCommon\ContainerSlots.lua
 ItemViewCommon\ContainerSlots.xml

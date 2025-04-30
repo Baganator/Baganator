@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 -- Assumes C_Item.DoesItemExist(location) is true
 function addonTable.ItemViewCommon.GetEquipmentSetInfo(location, itemLink)

@@ -1,8 +1,7 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 addonTable.ItemButtonUtil = {}
-
-local equipmentSetBorder = CreateColor(198/255, 166/255, 0/255)
 
 local itemCallbacks = {}
 local iconSettings = {}
@@ -18,8 +17,8 @@ do
         addonTable.ReportEntry()
         local queue = widgetsQueued
         widgetsQueued = {}
-        for _, callback in ipairs(queue) do
-          callback()
+        for _, queuedCallback in ipairs(queue) do
+          queuedCallback()
         end
         if #widgetsQueued == 0 then
           RetryWidgets:SetScript("OnUpdate", nil)
@@ -133,7 +132,6 @@ function addonTable.ItemButtonUtil.UpdateSettings()
     end
     if #callbacks > 0 then
       local function Callback(itemButton)
-        local toShow = nil
         local queued = false
         local timeoutStatus = not addonTable.CheckTimeout()
 
@@ -153,9 +151,9 @@ function addonTable.ItemButtonUtil.UpdateSettings()
                     -- Hide any widgets shown immediately because the widget
                     -- wasn't available
                     for i = 1, #callbacks do
-                      local widget = itemButton.cornerPlugins[plugins[i]]
-                      if widget then
-                        widget:Hide()
+                      local cornerWidget = itemButton.cornerPlugins[plugins[i]]
+                      if cornerWidget then
+                        cornerWidget:Hide()
                       end
                     end
                     Callback(itemButton)
@@ -186,7 +184,7 @@ local function GetInfo(self, cacheData, earlyCallback, finalCallback)
 
   self.BGR.earlyCallback()
 
-  for plugin, widget in pairs(self.cornerPlugins) do
+  for _, widget in pairs(self.cornerPlugins) do
     widget:Hide()
   end
 
@@ -228,13 +226,6 @@ end
 -- Called to reset searched state, widgets, and tooltip data cache
 function addonTable.ItemButtonUtil.ResetCache(self, cacheData)
   GetInfo(self, cacheData, self.BGR.earlyCallback, self.BGR.finalCallback)
-end
-
-local function SetStaticInfo(self)
-  if iconSettings.equipmentSetBorder and self.BGR.setInfo then
-    self.IconBorder:Show()
-    self.IconBorder:SetVertexColor(equipmentSetBorder.r, equipmentSetBorder.g, equipmentSetBorder.b)
-  end
 end
 
 local function SearchCheck(self, text)
@@ -329,20 +320,20 @@ local function FlashItemButton(self)
     self.BaganatorFlashAnim = self:CreateAnimationGroup()
     self.BaganatorFlashAnim:SetLooping("REPEAT")
     self.BaganatorFlashAnim:SetToFinalAlpha(false)
-    local alpha = self.BaganatorFlashAnim:CreateAnimation("Alpha", nil, nil)
-    alpha:SetDuration(0.3)
-    alpha:SetOrder(1)
-    alpha:SetFromAlpha(1)
-    alpha:SetToAlpha(0)
-    alpha:SetSmoothing("IN_OUT")
-    alpha:SetTarget(flash)
-    local alpha = self.BaganatorFlashAnim:CreateAnimation("Alpha", nil, nil)
-    alpha:SetDuration(0.3)
-    alpha:SetOrder(2)
-    alpha:SetFromAlpha(0)
-    alpha:SetToAlpha(1)
-    alpha:SetSmoothing("IN_OUT")
-    alpha:SetTarget(flash)
+    local alpha1 = self.BaganatorFlashAnim:CreateAnimation("Alpha", nil, nil)
+    alpha1:SetDuration(0.3)
+    alpha1:SetOrder(1)
+    alpha1:SetFromAlpha(1)
+    alpha1:SetToAlpha(0)
+    alpha1:SetSmoothing("IN_OUT")
+    alpha1:SetTarget(flash)
+    local alpha2 = self.BaganatorFlashAnim:CreateAnimation("Alpha", nil, nil)
+    alpha2:SetDuration(0.3)
+    alpha2:SetOrder(2)
+    alpha2:SetFromAlpha(0)
+    alpha2:SetToAlpha(1)
+    alpha2:SetSmoothing("IN_OUT")
+    alpha2:SetTarget(flash)
     self:HookScript("OnHide", function()
       self.BaganatorFlashAnim:Stop()
     end)
@@ -504,7 +495,7 @@ function BaganatorRetailCachedItemButtonMixin:SetItemFiltered(text)
   SetWidgetsAlpha(self, result)
 end
 
-function BaganatorRetailCachedItemButtonMixin:OnClick(button)
+function BaganatorRetailCachedItemButtonMixin:OnClick()
   if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(self.BGR.itemLink)
   elseif IsModifiedClick("DRESSUP") then
@@ -581,7 +572,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:MyOnLoad()
   end
   hooksecurefunc(self, "UpdateItemContextOverlay", self.PostUpdateItemContextOverlay)
 
-  self:HookScript("OnEnter", function(self)
+  self:HookScript("OnEnter", function()
     local bagID, slotID = self:GetParent():GetID(), self:GetID()
     addonTable.NewItems:ClearNewItem(bagID, slotID)
   end)
@@ -669,7 +660,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   local readable = info and info.isReadable;
   local itemLink = info and info.hyperlink;
   local noValue = info and info.hasNoValue;
-  local itemID = info and info.itemID;
+  --local itemID = info and info.itemID;
   local isBound = info and info.isBound;
 
   ClearItemButtonOverlay(self);
@@ -827,7 +818,7 @@ function BaganatorRetailLiveGuildItemButtonMixin:OnClick(button)
 
   if ( IsModifiedClick("SPLITSTACK") ) then
     if ( not CursorHasItem() ) then
-      local texture, count, locked = GetGuildBankItemInfo(self.tabIndex, self:GetID())
+      local _, count, locked = GetGuildBankItemInfo(self.tabIndex, self:GetID())
       if ( not locked and count and count > 1) then
         StackSplitFrame:OpenStackSplitFrame(count, self, "BOTTOMLEFT", "TOPLEFT")
       end
@@ -876,10 +867,6 @@ function BaganatorRetailLiveGuildItemButtonMixin:OnHide()
   end
 end
 
-function BaganatorRetailLiveGuildItemButtonMixin:OnReceiveDrag()
-  PickupGuildBankItem(self.tabIndex, self:GetID())
-end
-
 function BaganatorRetailLiveGuildItemButtonMixin:UpdateTextures()
   ApplyItemDetailSettings(self)
 end
@@ -887,9 +874,9 @@ end
 function BaganatorRetailLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIndex)
   self.tabIndex = tabIndex
 
-  local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
+  local texture, itemCount, locked, _, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
   if cacheData.itemLink == nil then
-    texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
+    texture, itemCount, locked, _, quality = nil, nil, nil, nil, nil
   end
   texture = cacheData.iconTexture or texture
   itemCount = cacheData.itemCount
@@ -998,7 +985,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemFiltered(text)
   SetWidgetsAlpha(self, result)
 end
 
-function BaganatorClassicCachedItemButtonMixin:OnClick(button)
+function BaganatorClassicCachedItemButtonMixin:OnClick()
   if IsModifiedClick("CHATLINK") then
     ChatEdit_InsertLink(self.BGR.itemLink)
   elseif IsModifiedClick("DRESSUP") then
@@ -1161,7 +1148,6 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   local locked = info and info.isLocked;
   local quality = cacheData.quality or (info and info.quality);
   local readable = info and info.isReadable;
-  local isFiltered = info and info.isFiltered;
   local noValue = info and info.hasNoValue;
   local itemID = info and info.itemID;
 
@@ -1303,7 +1289,7 @@ function BaganatorClassicLiveGuildItemButtonMixin:OnClick(button)
 
   if ( IsModifiedClick("SPLITSTACK") ) then
     if ( not CursorHasItem() ) then
-      local texture, count, locked = GetGuildBankItemInfo(self.tabIndex, self:GetID())
+      local _, count, locked = GetGuildBankItemInfo(self.tabIndex, self:GetID())
       if ( not locked and count and count > 1) then
         OpenStackSplitFrame(count, self, "BOTTOMLEFT", "TOPLEFT")
       end
@@ -1352,10 +1338,10 @@ end
 function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabIndex)
   self.tabIndex = tabIndex
 
-  local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
+  local texture, itemCount, locked, _, quality = GetGuildBankItemInfo(tabIndex, self:GetID());
 
   if cacheData.itemLink == nil then
-    texture, itemCount, locked, isFiltered, quality = nil, nil, nil, nil, nil
+    texture, itemCount, locked, _, quality = nil, nil, nil, nil, nil
   end
   texture = cacheData.iconTexture or texture
   itemCount = cacheData.itemCount

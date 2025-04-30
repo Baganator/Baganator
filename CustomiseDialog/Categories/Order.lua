@@ -1,7 +1,8 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 local exportDialog = "Baganator_Export_Dialog"
 StaticPopupDialogs[exportDialog] = {
-  text = BAGANATOR_L_CTRL_C_TO_COPY,
+  text = addonTable.Locales.CTRL_C_TO_COPY,
   button1 = DONE,
   hasEditBox = 1,
   OnShow = function(self, data)
@@ -68,7 +69,7 @@ local function PopulateCategoryOrder(container)
         if sectionDetails.color then
           color = CreateColorFromRGBHexString(sectionDetails.color)
         end
-        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. color:WrapTextInColorCode((_G["BAGANATOR_L_SECTION_" .. sectionDetails.name] or sectionDetails.name))
+        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. color:WrapTextInColorCode((_G["addonTable.Locales.SECTION_" .. sectionDetails.name] or sectionDetails.name))
       end
       table.insert(dataProviderElements, {value = source, label = name})
       table.insert(elements, source)
@@ -154,7 +155,7 @@ local function GetCategoryContainer(parent, pickupCallback)
       button:SetAlpha(0.8)
       button:SetScript("OnEnter", function()
         GameTooltip:SetOwner(button, "ANCHOR_RIGHT", -16, 0)
-        GameTooltip:SetText(BAGANATOR_L_MOVE)
+        GameTooltip:SetText(addonTable.Locales.MOVE)
         GameTooltip:Show()
         button:SetAlpha(0.4)
       end)
@@ -236,13 +237,13 @@ local function SetCategoriesToDropDown(dropdown, ignore)
     tAppendAll(options, defaultOptions)
 
     table.insert(options, 1, {
-      value = "", label = NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CREATE_NEW_CATEGORY)
+      value = "", label = NORMAL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.CREATE_NEW_CATEGORY)
     })
     table.insert(options, 2, {
-      value = "_", label = NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CREATE_NEW_SECTION)
+      value = "_", label = NORMAL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.CREATE_NEW_SECTION)
     })
     table.insert(options, 3, {
-      value = addonTable.CategoryViews.Constants.DividerName, label = NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_CREATE_NEW_DIVIDER)
+      value = addonTable.CategoryViews.Constants.DividerName, label = NORMAL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.CREATE_NEW_DIVIDER)
     })
 
     for _, opt in ipairs(options) do
@@ -410,7 +411,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   categoryOrder = GetCategoryContainer(container, Pickup)
   categoryOrder:SetPoint("TOPLEFT", 0, -40)
 
-  dropdown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
+  dropdown:SetText(addonTable.Locales.INSERT_OR_CREATE)
 
   dropdown.OnEntryClicked = function(_, option)
     if option.value == "_" then
@@ -424,7 +425,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
     end
   end
   draggable:SetScript("OnHide", function()
-    dropdown:SetText(BAGANATOR_L_INSERT_OR_CREATE)
+    dropdown:SetText(addonTable.Locales.INSERT_OR_CREATE)
     local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
     for _, source in ipairs(addonTable.CategoryViews.Constants.ProtectedCategories) do
       if tIndexOf(displayOrder, source) == nil then
@@ -452,7 +453,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   local exportButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
   exportButton:SetPoint("RIGHT", container, -17, 0)
   exportButton:SetPoint("BOTTOM", container)
-  exportButton:SetText(BAGANATOR_L_EXPORT)
+  exportButton:SetText(addonTable.Locales.EXPORT)
   DynamicResizeButton_Resize(exportButton)
   exportButton:SetScript("OnClick", function()
     StaticPopup_Show(exportDialog, nil, nil, addonTable.CustomiseDialog.CategoriesExport())
@@ -462,13 +463,12 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   local importButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
   importButton:SetPoint("LEFT", categoryOrder, 0, 0)
   importButton:SetPoint("BOTTOM", container)
-  importButton:SetText(BAGANATOR_L_IMPORT)
+  importButton:SetText(addonTable.Locales.IMPORT)
   DynamicResizeButton_Resize(importButton)
   importButton:SetScript("OnClick", function()
     addonTable.CustomiseDialog.ShowCategoriesImportDialog(function(text)
       addonTable.CustomiseDialog.CategoriesImport(text)
     end)
-    StaticPopup_Show(importDialog)
   end)
   addonTable.Skins.AddFrame("Button", importButton)
 

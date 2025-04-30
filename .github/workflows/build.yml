@@ -10,6 +10,8 @@ on:
     paths-ignore:
     - ".github/**"
     - "README.md"
+    - ".luarc.json"
+    - "annotations.lua"
 
 jobs:
   build:

@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 function addonTable.Utilities.Message(text)
   print(LINK_FONT_COLOR:WrapTextInColorCode("Baganator") .. ": " .. text)
 end
@@ -7,7 +8,7 @@ do
   local callbacksPending = {}
   local frame = CreateFrame("Frame")
   frame:RegisterEvent("ADDON_LOADED")
-  frame:SetScript("OnEvent", function(self, eventName, addonName)
+  frame:SetScript("OnEvent", function(_, _, addonName)
     if callbacksPending[addonName] then
       for _, cb in ipairs(callbacksPending[addonName]) do
         xpcall(cb, CallErrorHandler)

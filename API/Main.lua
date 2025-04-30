@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 function Baganator.API.GetInventoryInfo(itemLink, sameConnectedRealm, sameFaction)
   return Syndicator.API.GetInventoryInfo(itemLink, sameConnectedRealm, sameFaction)

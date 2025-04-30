@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 function addonTable.Utilities.GetAllCharacters(searchText)
   searchText = searchText and searchText:lower() or ""
@@ -79,7 +80,7 @@ end
 function addonTable.Utilities.GetRandomSearchesText()
   local term = addonTable.Constants.SampleSearchTerms[random(#addonTable.Constants.SampleSearchTerms)]
 
-  return BAGANATOR_L_SEARCH_TRY_X:format(term)
+  return addonTable.Locales.SEARCH_TRY_X:format(term)
 end
 
 function addonTable.Utilities.AddBagSortManager(parent)
@@ -97,7 +98,7 @@ function addonTable.Utilities.AddBagSortManager(parent)
     if status == addonTable.Constants.SortStatus.Complete then
       completeFunc()
     elseif status == addonTable.Constants.SortStatus.WaitingMove then
-      Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function(_, character, updatedBags)
+      Syndicator.CallbackRegistry:RegisterCallback("BagCacheUpdate",  function()
         self:Cancel()
         retryFunc()
       end, self)
@@ -170,7 +171,7 @@ function addonTable.Utilities.AddBagTransferManager(parent)
       self:SetScript("OnUpdate", retryFunc)
     end
   end
-  parent.transferManager:SetScript("OnHide", function(self)
+  parent.transferManager:SetScript("OnHide", function()
     addonTable.CallbackRegistry:TriggerEvent("TransferCancel")
   end)
 end
@@ -231,7 +232,7 @@ function addonTable.Utilities.AddGeneralDropSlot(parent, getData, bagIndexes)
   local function UpdateVisibility()
     cursorChanged = true
     if parent.isLive then
-      local cursorType, itemID = GetCursorInfo()
+      local cursorType = GetCursorInfo()
       parent.backgroundButton:SetShown(cursorType == "item")
       parent.backgroundButton:SetFrameLevel(parent.ScrollBox:GetFrameLevel() + 1)
     else
@@ -316,7 +317,7 @@ end
 
 function addonTable.Utilities.GetExternalSortMethodName()
   local sortsDetails = addonTable.API.ExternalContainerSorts[addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)]
-  return sortsDetails and BAGANATOR_L_USING_X:format(sortsDetails.label)
+  return sortsDetails and addonTable.Locales.USING_X:format(sortsDetails.label)
 end
 
 function addonTable.Utilities.GetBagType(bagID, itemID)
@@ -381,7 +382,7 @@ addonTable.Utilities.MasqueRegistration = function() end
 
 if LibStub then
   -- Establish a reference to Masque.
-  local Masque, MSQ_Version = LibStub("Masque", true)
+  local Masque = LibStub("Masque", true)
   if Masque ~= nil then
     -- Retrieve a reference to a new or existing group.
     local masqueGroup = Masque:Group("Baganator", "Bag")

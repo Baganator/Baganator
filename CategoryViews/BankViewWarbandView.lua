@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 BaganatorCategoryViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
 
 function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
@@ -111,7 +112,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   end
 
   local warbandData = Syndicator.API.GetWarband(1)
-  local bagData, bagTypes, bagIndexes = {}, {}
+  local bagData, bagTypes, bagIndexes = {}, {}, nil
   local bagWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
   if self.currentTab > 0 then
     table.insert(bagData, warbandData.bank[tabIndex].slots)

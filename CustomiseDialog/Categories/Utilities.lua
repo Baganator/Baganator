@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
   local colorSwatch
@@ -37,7 +38,7 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
         Save()
         colorSwatch.currentColor = cancelColor
         colorSwatch.pendingColor = nil
-      end,
+      end
       colorPickerFrameMonitor:SetScript("OnUpdate", colorPickerFrameMonitor.OnUpdate)
       ColorPickerFrame:SetupColorPickerAndShow(info);
     else
@@ -53,10 +54,10 @@ function addonTable.CustomiseDialog.GetColorSwatch(parent, label, Save)
   end)
   colorSwatch:HookScript("OnEnter", function()
     GameTooltip:SetOwner(colorSwatch, "ANCHOR_TOP")
-    GameTooltip:SetText(BAGANATOR_L_CHANGE_COLOR)
+    GameTooltip:SetText(addonTable.Locales.CHANGE_COLOR)
     local c = colorSwatch.currentColor
     if c.r ~= 1 or c.g ~= 1 or c.b ~= 1 then
-      GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_RIGHT_CLICK_TO_RESET))
+      GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.RIGHT_CLICK_TO_RESET))
     end
     GameTooltip:Show()
   end)

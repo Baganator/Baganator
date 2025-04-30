@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 function addonTable.Transfers.AddToMail(toMove)
   if InCombatLockdown() then -- Transfers may not work during combat due to Blizzard restrictions
     return

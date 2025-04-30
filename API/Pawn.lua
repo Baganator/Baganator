@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 if not Syndicator then
   return
 end
@@ -29,9 +30,11 @@ addonTable.Utilities.OnAddonLoaded("Pawn", function()
   end
 
   -- Level up
-  local frame = CreateFrame("Frame")
-  frame:RegisterEvent("PLAYER_LEVEL_UP")
-  frame:SetScript("OnEvent", PostRefresh)
+  do
+    local frame = CreateFrame("Frame")
+    frame:RegisterEvent("PLAYER_LEVEL_UP")
+    frame:SetScript("OnEvent", PostRefresh)
+  end
 
   -- Spec change
   hooksecurefunc("PawnInvalidateBestItems", PostRefresh)
@@ -87,7 +90,7 @@ addonTable.Utilities.OnAddonLoaded("Pawn", function()
     end
   end
 
-  Baganator.API.RegisterCornerWidget(BAGANATOR_L_PAWN, "pawn", function(Arrow, details)
+  Baganator.API.RegisterCornerWidget(addonTable.Locales.PAWN, "pawn", function(_, details)
     return addonTable.API.ShouldPawnShow(details.itemLink) and GetPawnUpgradeStatus(details.itemLink)
   end, function(itemButton)
     local Arrow = itemButton:CreateTexture(nil, "OVERLAY")

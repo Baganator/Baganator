@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 addonTable.CallbackRegistry:RegisterCallback("NewItemsAcquired", function(_, items)
   local ticker

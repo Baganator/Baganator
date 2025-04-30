@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 -- Translate from a base item info to get information hidden behind further API
 -- calls

@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 local function MigrateFormat()
   if addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MIGRATION) == 0 then
     local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)

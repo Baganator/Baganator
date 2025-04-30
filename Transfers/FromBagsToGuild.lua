@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 local IsBagSlotLocked = addonTable.Transfers.IsContainerItemLocked
 
 local function GetSwap(source, targets, stackLimit)
@@ -45,7 +46,7 @@ function addonTable.Transfers.FromBagsToGuild(toMove, guildTargets)
     UIErrorsFrame:AddMessage(ERR_GUILD_BANK_BOUND_ITEM, 1.0, 0.1, 0.1, 1.0)
   end
 
-  local locked, moved = false, false
+  local locked, moved, infoPending = false, false, false
   -- Move items if possible
   for _, item in ipairs(toMove) do
     local stackLimit = C_Item.GetItemMaxStackSizeByID(item.itemID)
@@ -75,7 +76,7 @@ function addonTable.Transfers.FromBagsToGuild(toMove, guildTargets)
     return addonTable.Constants.SortStatus.WaitingItemData, modes
   else
     if #toMove > 0 then
-      UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
+      UIErrorsFrame:AddMessage(addonTable.Locales.CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
     end
     return addonTable.Constants.SortStatus.Complete, modes
   end

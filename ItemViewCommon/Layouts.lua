@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local MasqueRegistration = addonTable.Utilities.MasqueRegistration
 
@@ -51,7 +52,7 @@ local function AddKeywords(self)
   local tooltip = self.BGR.itemLink:match("battlepet:") and BattlePetTooltip or GameTooltip
 
   tooltip:AddLine(" ")
-  tooltip:AddLine(BAGANATOR_L_HELP_SEARCH_KEYWORDS)
+  tooltip:AddLine(addonTable.Locales.HELP_SEARCH_KEYWORDS)
 
   local groups = addonTable.Help.GetKeywordGroups()
 
@@ -84,7 +85,7 @@ local function AddCategories(self)
   local tooltip = self.BGR.itemLink:match("battlepet:") and BattlePetTooltip or GameTooltip
 
   tooltip:AddLine(" ")
-  tooltip:AddLine(BAGANATOR_L_CATEGORIES)
+  tooltip:AddLine(addonTable.Locales.CATEGORIES)
 
   local data = CopyTable(self.BGR, 1)
   local itemKey = addonTable.CategoryViews.Utilities.GetAddedItemData(self.BGR.itemID, self.BGR.itemLink)
@@ -97,7 +98,7 @@ local function AddCategories(self)
   for _, details in ipairs(composed.details) do
     if details.attachedItems and details.attachedItems[itemKey] then
       tooltip:AddLine(WHITE_FONT_COLOR:WrapTextInColorCode(
-        BAGANATOR_L_ATTACHED_DIRECTLY_TO_X:format(GREEN_FONT_COLOR:WrapTextInColorCode("**" .. details.label .. "**"))
+        addonTable.Locales.ATTACHED_DIRECTLY_TO_X:format(GREEN_FONT_COLOR:WrapTextInColorCode("**" .. details.label .. "**"))
       ))
       tooltip:Show()
       return

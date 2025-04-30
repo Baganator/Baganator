@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 -- Check source can be contained in target when its available
 local function CheckFromTo(bagChecks, source, target)
   return not bagChecks.checks[target.bagID] or bagChecks.checks[target.bagID](source)
@@ -11,7 +12,7 @@ local function GetSwap(bagChecks, source, targets, stackLimit)
     return nil, true
   end
 
-  local matchIndex = false, nil
+  local matchIndex = false
   for index, item in ipairs(targets) do
     matchIndex = matchIndex or (item.itemID == source.itemID and item.itemCount < stackLimit) and index
     if item.itemID == nil or (item.itemID == source.itemID and item.itemCount + source.itemCount <= stackLimit) then
@@ -79,7 +80,7 @@ function addonTable.Transfers.FromBagsToBags(toMove, bagIDs, targets)
     return addonTable.Constants.SortStatus.WaitingItemData
   else
     if #toMove > 0 then
-      UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
+      UIErrorsFrame:AddMessage(addonTable.Locales.CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
     end
     return addonTable.Constants.SortStatus.Complete
   end

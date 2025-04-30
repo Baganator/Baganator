@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 -- Used to delay vendoring the next set of items until they'll probably succeed
 local waitingOnMoney = 0
@@ -32,7 +33,7 @@ function addonTable.Transfers.VendorItems(toSell)
     end
   end
   if sold == 0 then
-    UIErrorsFrame:AddMessage(BAGANATOR_L_THE_MERCHANT_DOESNT_WANT_ANY_OF_THOSE_ITEMS, 1.0, 0.1, 0.1, 1.0)
+    UIErrorsFrame:AddMessage(addonTable.Locales.THE_MERCHANT_DOESNT_WANT_ANY_OF_THOSE_ITEMS, 1.0, 0.1, 0.1, 1.0)
   end
 
   waitingOnMoney = sold

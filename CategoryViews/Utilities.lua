@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 addonTable.CategoryViews.Utilities = {}
 
 -- Gets a table describing an item to be used in custom category's list of added

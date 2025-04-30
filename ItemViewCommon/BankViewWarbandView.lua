@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local function AddBankTabSettingsToTooltip(tooltip, depositFlags)
   -- Copied Blizzard function
@@ -93,12 +94,12 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   self.purchaseButton:RegisterForClicks("AnyUp", "AnyDown")
   self.purchaseButton:SetScript("OnEnter", function()
     GameTooltip:SetOwner(self.purchaseButton, "ANCHOR_RIGHT")
-    GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_BUY_WARBAND_BANK_TAB))
+    GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.BUY_WARBAND_BANK_TAB))
     local cost = C_Bank.FetchNextPurchasableBankTabCost(Enum.BankType.Account)
     if cost > GetMoney() then
-      GameTooltip:AddLine(BAGANATOR_L_COST_X:format(RED_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(cost, true))))
+      GameTooltip:AddLine(addonTable.Locales.COST_X:format(RED_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(cost, true))))
     else
-      GameTooltip:AddLine(BAGANATOR_L_COST_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(cost, true))))
+      GameTooltip:AddLine(addonTable.Locales.COST_X:format(WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(cost, true))))
     end
     GameTooltip:Show()
   end)
@@ -363,7 +364,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
     tabButton:SetScale(tabScale)
     tabButton:SetScript("OnEnter", function()
       GameTooltip:SetOwner(tabButton, "ANCHOR_RIGHT")
-      GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_EVERYTHING))
+      GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.EVERYTHING))
       GameTooltip:Show()
     end)
     tabButton:SetScript("OnLeave", function()
@@ -394,7 +395,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:UpdateTabs()
       GameTooltip:SetText(tabInfo.name)
       AddBankTabSettingsToTooltip(GameTooltip, tabInfo.depositFlags)
       if self.isLive then
-        GameTooltip:AddLine(BAGANATOR_L_RIGHT_CLICK_FOR_SETTINGS, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
+        GameTooltip:AddLine(addonTable.Locales.RIGHT_CLICK_FOR_SETTINGS, GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b)
       end
       GameTooltip:Show()
       addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[Syndicator.Constants.AllWarbandIndexes[index]] = true})
@@ -498,13 +499,13 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   if self.BankMissingHint:IsShown() then
     if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) then
-      self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_NOT_PURCHASED_HINT)
+      self.BankMissingHint:SetText(addonTable.Locales.WARBAND_BANK_NOT_PURCHASED_HINT)
     elseif self.isLive and not C_PlayerInfo.HasAccountInventoryLock() then
       self.BankMissingHint:SetText(ACCOUNT_BANK_LOCKED_PROMPT)
     elseif self.isLive then
-      self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_TEMPORARILY_DISABLED_HINT)
+      self.BankMissingHint:SetText(addonTable.Locales.WARBAND_BANK_TEMPORARILY_DISABLED_HINT)
     else
-      self.BankMissingHint:SetText(BAGANATOR_L_WARBAND_BANK_DATA_MISSING_HINT)
+      self.BankMissingHint:SetText(addonTable.Locales.WARBAND_BANK_DATA_MISSING_HINT)
     end
   end
 
@@ -619,5 +620,5 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:WithdrawMoney()
     return;
   end
 
-  StaticPopup_Show("BANK_MONEY_WITHDRAW", textArg1, textArg2, { bankType = Enum.BankType.Account });
+  StaticPopup_Show("BANK_MONEY_WITHDRAW", nil, nil, { bankType = Enum.BankType.Account });
 end

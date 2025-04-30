@@ -1,6 +1,7 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
-local B, C, L, DB
+local B, _, _, DB
 
 local function ConvertTags(tags)
   local res = {}
@@ -11,9 +12,9 @@ local function ConvertTags(tags)
 end
 
 local icons = {}
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("UI_SCALE_CHANGED")
-frame:SetScript("OnEvent", function()
+local scaleMonitor = CreateFrame("Frame")
+scaleMonitor:RegisterEvent("UI_SCALE_CHANGED")
+scaleMonitor:SetScript("OnEvent", function()
   C_Timer.After(0, function()
     for _, frame in ipairs(icons) do
       local c1, c2, c3, c4 = frame.bg:GetBackdropBorderColor()
@@ -103,12 +104,6 @@ local skinners = {
       frame.NineSlice:SetAlpha(0)
     end
   end,
-  CornerWidget = function(frame, tags)
-    if frame:IsObjectType("FontString") and BAGANATOR_ELVUI_USE_BAG_FONT then
-      frame:FontTemplate(LSM:Fetch('font', E.db.bags.countFont), BAGANATOR_CONFIG["icon_text_font_size"], E.db.bags.countFontOutline)
-    end
-
-  end,
   CategoryLabel = function(button)
     button:GetFontString():SetTextColor(DB.r, DB.g, DB.b)
   end,
@@ -148,5 +143,5 @@ local function LoadSkin()
 end
 
 if addonTable.Skins.IsAddOnLoading("NDui") then
-  addonTable.Skins.RegisterSkin(BAGANATOR_L_NDUI, "ndui", LoadSkin, SkinFrame, SetConstants, {}, true)
+  addonTable.Skins.RegisterSkin(addonTable.Locales.NDUI, "ndui", LoadSkin, SkinFrame, SetConstants, {}, true)
 end

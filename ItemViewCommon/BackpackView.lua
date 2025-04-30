@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local classicTabObjectCounter = 0
 
@@ -118,7 +119,7 @@ function BaganatorItemViewCommonBackpackViewMixin:OnLoad()
 
   self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
   StaticPopupDialogs[self.confirmTransferAllDialogName] = {
-    text = BAGANATOR_L_CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG,
+    text = addonTable.Locales.CONFIRM_TRANSFER_ALL_ITEMS_FROM_BAG,
     button1 = YES,
     button2 = NO,
     OnAccept = function()
@@ -299,7 +300,7 @@ function BaganatorItemViewCommonBackpackViewMixin:SetupTabs()
     return
   end
 
-  self:FillRecents(characters)
+  self:FillRecents()
 
   self.tabsSetup = self.liveCharacter ~= nil
 end
@@ -324,7 +325,7 @@ function BaganatorItemViewCommonBackpackViewMixin:UpdateForCharacter(character, 
     self:SetTitle("")
     return
   else
-    self:SetTitle(BAGANATOR_L_XS_BAGS:format(characterData.details.character))
+    self:SetTitle(addonTable.Locales.XS_BAGS:format(characterData.details.character))
   end
 
   self:SetupTabs()

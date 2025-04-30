@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 -- See comment in Sorting/ItemFields.lua.
 -- Values generated are cached across the current sort iteration.

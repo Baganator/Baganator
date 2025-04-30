@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local function GetShowState(data)
   if data.details.show then
@@ -69,14 +70,14 @@ function addonTable.ShowGoldSummaryRealm(anchor, point)
     end
   end
 
-  GameTooltip:AddDoubleLine(BAGANATOR_L_REALM_WIDE_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
+  GameTooltip:AddDoubleLine(addonTable.Locales.REALM_WIDE_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
   for _, line in ipairs(lines) do
     GameTooltip:AddDoubleLine(line.left, line.right, nil, nil, nil, 1, 1, 1)
   end
 
   GameTooltip_AddBlankLineToTooltip(GameTooltip)
-  GameTooltip:AddLine(BAGANATOR_L_HOLD_SHIFT_TO_SHOW_ACCOUNT_TOTAL, 0, 1, 0)
+  GameTooltip:AddLine(addonTable.Locales.HOLD_SHIFT_TO_SHOW_ACCOUNT_TOTAL, 0, 1, 0)
   GameTooltip:Show()
 end
 
@@ -85,14 +86,14 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
 
   local lines = {}
   local function AddRealm(realmName, realmCount, realmTotal)
-    table.insert(lines, {left = BAGANATOR_L_REALM_X_X_X:format(realmName, realmCount), right = addonTable.Utilities.GetMoneyString(realmTotal, true)})
+    table.insert(lines, {left = addonTable.Locales.REALM_X_X_X:format(realmName, realmCount), right = addonTable.Utilities.GetMoneyString(realmTotal, true)})
   end
   local function AddGuild(guildName, guildRealmNormalized, guildTotal)
     table.insert(lines, {left = TRANSMOGRIFY_FONT_COLOR:WrapTextInColorCode(guildName) .. "-" .. guildRealmNormalized, right = addonTable.Utilities.GetMoneyString(guildTotal, true)})
   end
   local function AddWarband(warband)
     if warband > 0 then
-      table.insert(lines, {left = PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_WARBAND), right = addonTable.Utilities.GetMoneyString(warband, true)})
+      table.insert(lines, {left = PASSIVE_SPELL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.WARBAND), right = addonTable.Utilities.GetMoneyString(warband, true)})
       table.insert(lines, {left = " ", right = ""})
     end
   end
@@ -142,7 +143,7 @@ function addonTable.ShowGoldSummaryAccount(anchor, point)
     end
   end
 
-  GameTooltip:AddDoubleLine(BAGANATOR_L_ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
+  GameTooltip:AddDoubleLine(addonTable.Locales.ACCOUNT_GOLD_X:format(""), WHITE_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(total, true)))
   GameTooltip:AddLine(" ")
 
   for _, line in ipairs(lines) do

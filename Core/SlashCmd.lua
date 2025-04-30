@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 addonTable.SlashCmd = {}
 
 function addonTable.SlashCmd.Initialize()
@@ -84,7 +85,7 @@ function addonTable.SlashCmd.RemoveUnusedCategories()
   end
   addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
   addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
-  addonTable.Utilities.Message(BAGANATOR_L_REMOVED_UNUSED_CATEGORIES)
+  addonTable.Utilities.Message(addonTable.Locales.REMOVED_UNUSED_CATEGORIES)
 end
 
 function addonTable.SlashCmd.Search(text)
@@ -94,12 +95,12 @@ end
 
 function addonTable.SlashCmd.Keywords()
   addonTable.Config.Set(addonTable.Config.Options.DEBUG_KEYWORDS, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS))
-  addonTable.Utilities.Message(BAGANATOR_L_KEYWORDS_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS) and BAGANATOR_L_ENABLED or BAGANATOR_L_DISABLED))
+  addonTable.Utilities.Message(addonTable.Locales.KEYWORDS_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_KEYWORDS) and addonTable.Locales.ENABLED or addonTable.Locales.DISABLED))
 end
 
 function addonTable.SlashCmd.Categories()
   addonTable.Config.Set(addonTable.Config.Options.DEBUG_CATEGORIES, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES))
-  addonTable.Utilities.Message(BAGANATOR_L_CATEGORIES_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES) and BAGANATOR_L_ENABLED or BAGANATOR_L_DISABLED))
+  addonTable.Utilities.Message(addonTable.Locales.CATEGORIES_IN_TOOLTIPS_X:format(addonTable.Config.Get(addonTable.Config.Options.DEBUG_CATEGORIES) and addonTable.Locales.ENABLED or addonTable.Locales.DISABLED))
 end
 
 function addonTable.SlashCmd.CustomiseUI()
@@ -115,27 +116,27 @@ local COMMANDS = {
   ["config"] = addonTable.SlashCmd.Config,
   ["timers"] = addonTable.SlashCmd.Timers,
   ["reset"] = addonTable.SlashCmd.Reset,
-  [BAGANATOR_L_SLASH_RESET] = addonTable.SlashCmd.Reset,
+  [addonTable.Locales.SLASH_RESET] = addonTable.SlashCmd.Reset,
   ["resetcategories"] = addonTable.SlashCmd.ResetCategories,
-  [BAGANATOR_L_SLASH_RESETCATEGORIES] = addonTable.SlashCmd.ResetCategories,
+  [addonTable.Locales.SLASH_RESETCATEGORIES] = addonTable.SlashCmd.ResetCategories,
   ["removeunusedcategories"] = addonTable.SlashCmd.RemoveUnusedCategories,
-  [BAGANATOR_L_SLASH_REMOVEUNUSEDCATEGORIES] = addonTable.SlashCmd.RemoveUnusedCategories,
+  [addonTable.Locales.SLASH_REMOVEUNUSEDCATEGORIES] = addonTable.SlashCmd.RemoveUnusedCategories,
   [""] = addonTable.SlashCmd.CustomiseUI,
   ["search"] = addonTable.SlashCmd.Search,
-  [BAGANATOR_L_SLASH_SEARCH] = addonTable.SlashCmd.Search,
+  [addonTable.Locales.SLASH_SEARCH] = addonTable.SlashCmd.Search,
   ["keywords"] = addonTable.SlashCmd.Keywords,
-  [BAGANATOR_L_SLASH_KEYWORDS] = addonTable.SlashCmd.Keywords,
+  [addonTable.Locales.SLASH_KEYWORDS] = addonTable.SlashCmd.Keywords,
   ["categories"] = addonTable.SlashCmd.Categories,
-  [BAGANATOR_L_SLASH_CATEGORIES] = addonTable.SlashCmd.Categories,
+  [addonTable.Locales.SLASH_CATEGORIES] = addonTable.SlashCmd.Categories,
 }
 local HELP = {
-  {"", BAGANATOR_L_SLASH_HELP},
-  {BAGANATOR_L_SLASH_KEYWORDS, BAGANATOR_L_SLASH_KEYWORDS_HELP},
-  {BAGANATOR_L_SLASH_CATEGORIES, BAGANATOR_L_SLASH_CATEGORIES_HELP},
-  {BAGANATOR_L_SLASH_SEARCH_EXTENDED, BAGANATOR_L_SLASH_SEARCH_HELP},
-  {BAGANATOR_L_SLASH_REMOVEUNUSEDCATEGORIES, BAGANATOR_L_SLASH_REMOVEUNUSEDCATEGORIES_HELP},
-  {BAGANATOR_L_SLASH_RESET, BAGANATOR_L_SLASH_RESET_HELP},
-  {BAGANATOR_L_SLASH_RESETCATEGORIES, BAGANATOR_L_SLASH_RESETCATEGORIES_HELP},
+  {"", addonTable.Locales.SLASH_HELP},
+  {addonTable.Locales.SLASH_KEYWORDS, addonTable.Locales.SLASH_KEYWORDS_HELP},
+  {addonTable.Locales.SLASH_CATEGORIES, addonTable.Locales.SLASH_CATEGORIES_HELP},
+  {addonTable.Locales.SLASH_SEARCH_EXTENDED, addonTable.Locales.SLASH_SEARCH_HELP},
+  {addonTable.Locales.SLASH_REMOVEUNUSEDCATEGORIES, addonTable.Locales.SLASH_REMOVEUNUSEDCATEGORIES_HELP},
+  {addonTable.Locales.SLASH_RESET, addonTable.Locales.SLASH_RESET_HELP},
+  {addonTable.Locales.SLASH_RESETCATEGORIES, addonTable.Locales.SLASH_RESETCATEGORIES_HELP},
 }
 
 function addonTable.SlashCmd.Handler(input)
@@ -147,7 +148,7 @@ function addonTable.SlashCmd.Handler(input)
     COMMANDS[root](unpack(split))
   else
     if root ~= "help" and root ~= "h" then
-      addonTable.Utilities.Message(BAGANATOR_L_SLASH_UNKNOWN_COMMAND:format(root))
+      addonTable.Utilities.Message(addonTable.Locales.SLASH_UNKNOWN_COMMAND:format(root))
     end
 
     for _, entry in ipairs(HELP) do

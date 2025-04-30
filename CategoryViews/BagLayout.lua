@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local Refresh = addonTable.Constants.RefreshReason
 
@@ -225,11 +226,11 @@ function addonTable.CategoryViews.BagLayoutMixin:Display(bagWidth, bagIndexes, b
       end
       if container.isLive and self.showAddButtons and not details.auto then
         if container.addToCategoryMode ~= details.source then
-          table.insert(entries, {isDummy = true, label = BAGANATOR_L_ADD_TO_CATEGORY, dummyType = "add"})
+          table.insert(entries, {isDummy = true, label = addonTable.Locales.ADD_TO_CATEGORY, dummyType = "add"})
           self.dummyAdded = true
         else
           if container.addedToFromCategory then
-            table.insert(entries, {isDummy = true, label = BAGANATOR_L_REMOVE_FROM_CATEGORY, dummyType = "remove"})
+            table.insert(entries, {isDummy = true, label = addonTable.Locales.REMOVE_FROM_CATEGORY, dummyType = "remove"})
             self.dummyAdded = true
           end
         end

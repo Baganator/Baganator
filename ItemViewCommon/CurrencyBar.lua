@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 BaganatorCurrencyWidgetMixin = {}
 
 function addonTable.ItemViewCommon.GetTrackedItemCount(itemID, character)
@@ -30,7 +31,7 @@ function BaganatorCurrencyWidgetMixin:OnLoad()
 
   self.cacheBackpackCurrenciesNeeded = true
 
-  local function Update(_, character)
+  local function Update(_, _)
     if self.lastCharacter then
       self:UpdateCurrencies(self.lastCharacter)
       self:UpdateCurrencyTextPositions(self.allowedWidth, self.nextRowWidth)
@@ -113,12 +114,12 @@ local function ShowCurrencies(self, character)
 
       if GameTooltip.SetCurrencyByID then
         -- Show retail currency tooltip
-        fontString.button:SetScript("OnEnter", function(self)
-          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        fontString.button:SetScript("OnEnter", function()
+          GameTooltip:SetOwner(fontString, "ANCHOR_RIGHT")
           GameTooltip:SetCurrencyByID(details.currencyID)
         end)
-        fontString.button:SetScript("OnMouseDown", function(self)
-        local GetCurrencyLink = C_CurrencyInfo.GetCurrencyLink or GetCurrencyLink
+        fontString.button:SetScript("OnMouseDown", function()
+          local GetCurrencyLink = C_CurrencyInfo.GetCurrencyLink or GetCurrencyLink
           if IsModifiedClick("CHATLINK") then
             ChatEdit_InsertLink(GetCurrencyLink(details.currencyID, count))
           end
@@ -126,8 +127,8 @@ local function ShowCurrencies(self, character)
       else
         -- SetCurrencyByID doesn't exist on classic, but we want to show the
         -- other characters info via the tooltip anyway
-        fontString.button:SetScript("OnEnter", function(self)
-          GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        fontString.button:SetScript("OnEnter", function()
+          GameTooltip:SetOwner(fontString, "ANCHOR_RIGHT")
           Syndicator.Tooltips.AddCurrencyLines(GameTooltip, details.currencyID)
         end)
       end
@@ -141,12 +142,12 @@ local function ShowCurrencies(self, character)
       currencyText = currencyText .. " " .. CreateTextureMarkup(select(5, C_Item.GetItemInfoInstant(details.itemID)), 14, 14, 12, 12, 0.08, 0.96, 0.08, 0.96)
       fontString:SetText(currencyText)
 
-      fontString.button:SetScript("OnEnter", function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+      fontString.button:SetScript("OnEnter", function()
+        GameTooltip:SetOwner(fontString, "ANCHOR_RIGHT")
         GameTooltip:SetItemByID(details.itemID)
       end)
     end
-    fontString.button:SetScript("OnLeave", function(self)
+    fontString.button:SetScript("OnLeave", function()
       GameTooltip:Hide()
     end)
     table.insert(self.activeCurrencyTexts, fontString)

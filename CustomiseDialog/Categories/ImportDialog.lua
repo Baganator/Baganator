@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local dialogsBySkin = {}
 
@@ -23,7 +24,7 @@ function addonTable.CustomiseDialog.ShowCategoriesImportDialog(callback)
     dialog:SetSize(500, 110)
 
     local text = dialog:CreateFontString(nil, nil, "GameFontHighlight")
-    text:SetText(BAGANATOR_L_PASTE_YOUR_IMPORT_STRING_HERE)
+    text:SetText(addonTable.Locales.PASTE_YOUR_IMPORT_STRING_HERE)
     text:SetPoint("TOP", 0, -20)
 
     local buffer, bufferIndex, pasteTimestamp
@@ -61,7 +62,7 @@ function addonTable.CustomiseDialog.ShowCategoriesImportDialog(callback)
     editBox:SetPoint("CENTER")
 
     local acceptButton = CreateFrame("Button", nil, dialog, "UIPanelDynamicResizeButtonTemplate")
-    acceptButton:SetText(BAGANATOR_L_IMPORT)
+    acceptButton:SetText(addonTable.Locales.IMPORT)
     DynamicResizeButton_Resize(acceptButton)
     local cancelButton = CreateFrame("Button", nil, dialog, "UIPanelDynamicResizeButtonTemplate")
     cancelButton:SetText(CANCEL)

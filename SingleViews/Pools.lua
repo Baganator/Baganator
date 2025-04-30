@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 function addonTable.SingleViews.GetCollapsingBagSectionsPool(self)
   return CreateObjectPool(function(pool)
     local details = {

@@ -1,22 +1,20 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 Baganator = {API = { Constants = {} }}
-Mixin(addonTable, {
-  Core = {},
-  Utilities = {},
-  InventoryTracking = {},
-  Search = {},
-  ItemViewCommon = {
-    Utilities = {}
-  },
-  ViewManagement = {},
-  SingleViews = {},
-  CategoryViews = {},
-  CustomiseDialog = {},
-  API = {
-  },
-  Sorting = {},
-  Transfers = {},
-  Help = {},
-  Skins = {},
-  Compatibility = {},
-})
+addonTable.Core = {}
+addonTable.Utilities = {}
+addonTable.InventoryTracking = {}
+addonTable.Search = {}
+addonTable.ItemViewCommon = {
+  Utilities = {}
+}
+addonTable.ViewManagement = {}
+addonTable.SingleViews = {}
+addonTable.CategoryViews = {}
+addonTable.CustomiseDialog = {}
+addonTable.API = {}
+addonTable.Sorting = {}
+addonTable.Transfers = {}
+addonTable.Help = {}
+addonTable.Skins = {}
+addonTable.Compatibility = {}

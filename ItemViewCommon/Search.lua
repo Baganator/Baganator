@@ -1,13 +1,14 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 if not Syndicator then
   return
 end
 
 local CONTAINER_TYPE_TO_MESSAGE = {
-  equipped = BAGANATOR_L_THAT_ITEM_IS_EQUIPPED,
-  auctions = BAGANATOR_L_THAT_ITEM_IS_LISTED_ON_THE_AUCTION_HOUSE,
-  mail = BAGANATOR_L_THAT_ITEM_IS_IN_A_MAILBOX,
-  void = BAGANATOR_L_THAT_ITEM_IS_IN_VOID_STORAGE,
+  equipped = addonTable.Locales.THAT_ITEM_IS_EQUIPPED,
+  auctions = addonTable.Locales.THAT_ITEM_IS_LISTED_ON_THE_AUCTION_HOUSE,
+  mail = addonTable.Locales.THAT_ITEM_IS_IN_A_MAILBOX,
+  void = addonTable.Locales.THAT_ITEM_IS_IN_VOID_STORAGE,
 }
 
 local dialogName = "Baganator_InventoryItemInX"
@@ -182,7 +183,7 @@ end
 
 local saveDialog = "Baganator_Save_Search_Dialog"
 StaticPopupDialogs[saveDialog] = {
-  text = BAGANATOR_L_CHOOSE_A_LABEL_FOR_THIS_SEARCH,
+  text = addonTable.Locales.CHOOSE_A_LABEL_FOR_THIS_SEARCH,
   button1 = ACCEPT,
   button2 = CANCEL,
   hasEditBox = 1,
@@ -232,12 +233,12 @@ function BaganatorSearchWidgetMixin:OpenSavedSearches()
       rootDescription:CreateDivider()
     end
     if self.SearchBox:GetText() == "" then
-      local text = rootDescription:CreateTitle(GRAY_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SAVE_SEARCH))
+      local text = rootDescription:CreateTitle(GRAY_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SAVE_SEARCH))
       text:SetTooltip(function(tooltip)
-        tooltip:AddLine(BAGANATOR_L_NOTHING_TO_SAVE)
+        tooltip:AddLine(addonTable.Locales.NOTHING_TO_SAVE)
       end)
     else
-      local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(BAGANATOR_L_SAVE_SEARCH), function()
+      local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SAVE_SEARCH), function()
         StaticPopup_Show(saveDialog, nil, nil, self.SearchBox:GetText())
       end)
     end

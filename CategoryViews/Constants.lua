@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 if not Syndicator then
   return
 end
@@ -83,7 +84,7 @@ if addonTable.Constants.IsEra then
     {
       key = "key",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Key),
-      search = "#" .. (SYNDICATOR_L_KEYWORD_KEY or SYNDICATOR_L_KEYWORD_KEYRING),
+      search = "#" .. (Syndicator.Locales.KEYWORD_KEY or Syndicator.Locales.KEYWORD_KEYRING),
       priorityOffset = -35,
     },
   }
@@ -123,7 +124,7 @@ elseif addonTable.Constants.IsClassic then -- Cata
     {
       key = "battlepet",
       name = TOOLTIP_BATTLE_PET,
-      search = "#" .. SYNDICATOR_L_KEYWORD_BATTLE_PET,
+      search = "#" .. Syndicator.Locales.KEYWORD_BATTLE_PET,
       priorityOffset = -60,
     },
   }
@@ -155,20 +156,20 @@ else -- retail
   addonTable.CategoryViews.Constants.DefaultCategories = {
     {
       key = "keystone",
-      name = BAGANATOR_L_CATEGORY_KEYSTONE,
-      search = "#" .. SYNDICATOR_L_KEYWORD_KEYSTONE,
+      name = addonTable.Locales.CATEGORY_KEYSTONE,
+      search = "#" .. Syndicator.Locales.KEYWORD_KEYSTONE,
       priorityOffset = -40,
     },
     {
       key = "potion",
-      name = BAGANATOR_L_CATEGORY_POTION,
-      search = "#" .. SYNDICATOR_L_KEYWORD_POTION,
+      name = addonTable.Locales.CATEGORY_POTION,
+      search = "#" .. Syndicator.Locales.KEYWORD_POTION,
       priorityOffset = -40,
     },
     {
       key = "food",
-      name = BAGANATOR_L_CATEGORY_FOOD,
-      search = "#" .. SYNDICATOR_L_KEYWORD_FOOD,
+      name = addonTable.Locales.CATEGORY_FOOD,
+      search = "#" .. Syndicator.Locales.KEYWORD_FOOD,
       priorityOffset = -40,
     },
     {
@@ -200,7 +201,7 @@ else -- retail
     {
       key = "battlepet",
       name = C_Item.GetItemClassInfo(Enum.ItemClass.Battlepet),
-      search = "#" .. SYNDICATOR_L_KEYWORD_BATTLE_PET,
+      search = "#" .. Syndicator.Locales.KEYWORD_BATTLE_PET,
       priorityOffset = -60,
     },
     {
@@ -215,8 +216,8 @@ end
 tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
   {
     key = "hearthstone",
-    name = BAGANATOR_L_CATEGORY_HEARTHSTONE,
-    search = BAGANATOR_L_CATEGORY_HEARTHSTONE:lower(),
+    name = addonTable.Locales.CATEGORY_HEARTHSTONE,
+    search = addonTable.Locales.CATEGORY_HEARTHSTONE:lower(),
     priorityOffset = -10,
   },
   {
@@ -227,12 +228,12 @@ tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
   {
     key = "reagent",
     name = C_Item.GetItemClassInfo(Enum.ItemClass.Reagent),
-    search = "#" .. SYNDICATOR_L_KEYWORD_REAGENT,
+    search = "#" .. Syndicator.Locales.KEYWORD_REAGENT,
     priorityOffset = -50,
   },
   {
     key = "auto_equipment_sets",
-    name = BAGANATOR_L_CATEGORY_EQUIPMENT_SETS_AUTO,
+    name = addonTable.Locales.CATEGORY_EQUIPMENT_SETS_AUTO,
     auto = "equipment_sets",
     priorityOffset = -10,
   },
@@ -244,11 +245,11 @@ tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
   {
     key = "armor",
     name = C_Item.GetItemClassInfo(Enum.ItemClass.Armor),
-    search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&#" .. SYNDICATOR_L_KEYWORD_GEAR,
+    search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Armor):lower() .. "&#" .. Syndicator.Locales.KEYWORD_GEAR,
   },
   {
     key = "container",
-    name = BAGANATOR_L_CATEGORY_BAG,
+    name = addonTable.Locales.CATEGORY_BAG,
     search = "#" .. C_Item.GetItemClassInfo(Enum.ItemClass.Container):lower(),
   },
   {
@@ -274,32 +275,32 @@ tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
   },
   {
     key = "other",
-    name = BAGANATOR_L_CATEGORY_OTHER,
+    name = addonTable.Locales.CATEGORY_OTHER,
     search = "",
     priorityOffset = -90,
   },
   {
     key = "junk",
-    name = BAGANATOR_L_CATEGORY_JUNK,
-    search = "#" .. SYNDICATOR_L_KEYWORD_JUNK,
+    name = addonTable.Locales.CATEGORY_JUNK,
+    search = "#" .. Syndicator.Locales.KEYWORD_JUNK,
     priorityOffset = -15,
   },
 
   {
     key = "auto_inventory_slots",
-    name = BAGANATOR_L_CATEGORY_INVENTORY_SLOTS_AUTO,
+    name = addonTable.Locales.CATEGORY_INVENTORY_SLOTS_AUTO,
     auto = "inventory_slots",
     priorityOffset = -40,
   },
   {
     key = "auto_recents",
-    name = BAGANATOR_L_CATEGORY_RECENT_AUTO,
+    name = addonTable.Locales.CATEGORY_RECENT_AUTO,
     auto = "recents",
     priorityOffset = 10000,
   },
   {
     key = "special_empty",
-    name = BAGANATOR_L_EMPTY,
+    name = addonTable.Locales.EMPTY,
     emptySlots = true,
   },
 })
@@ -336,7 +337,7 @@ end
 addonTable.Utilities.OnAddonLoaded("TradeSkillMaster", function()
   local spec = {
     source = "default_auto_tradeskillmaster",
-    name = BAGANATOR_L_CATEGORY_TRADESKILLMASTER_AUTO,
+    name = addonTable.Locales.CATEGORY_TRADESKILLMASTER_AUTO,
     auto = "tradeskillmaster",
     priorityOffset = -15,
   }

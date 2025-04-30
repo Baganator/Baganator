@@ -1,6 +1,7 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
-local E, L, V, P, G
+local E
 local S
 local B
 local LSM
@@ -14,9 +15,9 @@ local function ConvertTags(tags)
 end
 
 local icons = {}
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("UI_SCALE_CHANGED")
-frame:SetScript("OnEvent", function()
+local scaleMonitor = CreateFrame("Frame")
+scaleMonitor:RegisterEvent("UI_SCALE_CHANGED")
+scaleMonitor:SetScript("OnEvent", function()
   C_Timer.After(0, function()
     for _, frame in ipairs(icons) do
       local c1, c2, c3 = frame.backdrop:GetBackdropBorderColor()
@@ -134,7 +135,7 @@ local skinners = {
       S:HandleInsetFrame(frame)
     end
   end,
-  CornerWidget = function(frame, tags)
+  CornerWidget = function(frame)
     if frame:IsObjectType("FontString") and addonTable.Config.Get("skins.elvui.use_bag_font") then
       frame:FontTemplate(LSM:Fetch('font', E.db.bags.countFont), 14, E.db.bags.countFontOutline)
     end
@@ -167,7 +168,7 @@ local function SetConstants()
 end
 
 local function LoadSkin()
-  E, L, V, P, G = unpack(ElvUI)
+  E = unpack(ElvUI)
   S = E:GetModule("Skins")
   B = E:GetModule('Bags')
   LSM = E.Libs.LSM
@@ -188,12 +189,12 @@ local function LoadSkin()
 end
 
 if addonTable.Skins.IsAddOnLoading("ElvUI") then
-  addonTable.Skins.RegisterSkin(BAGANATOR_L_ELVUI, "elvui", LoadSkin, SkinFrame, SetConstants, {
+  addonTable.Skins.RegisterSkin(addonTable.Locales.ELVUI, "elvui", LoadSkin, SkinFrame, SetConstants, {
     {
       type = "checkbox",
-      text = BAGANATOR_L_USE_EXPRESSWAY_FONT_ON_ITEMS,
+      text = addonTable.Locales.USE_EXPRESSWAY_FONT_ON_ITEMS,
       option = "use_bag_font",
-      rightText = BAGANATOR_L_RELOAD_REQUIRED,
+      rightText = addonTable.Locales.RELOAD_REQUIRED,
       default = false,
     },
   }, true)

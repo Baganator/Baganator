@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 function addonTable.Help.GetKeywordGroups()
   local searchTerms = Syndicator.API.GetSearchKeywords()
   local groupsList = {}
@@ -17,10 +18,12 @@ function addonTable.Help.GetKeywordGroups()
   return groups
 end
 
+local frame
+
 function addonTable.Help.ShowSearchDialog()
-  if Baganator_SearchHelpFrame then
-    Baganator_SearchHelpFrame:SetShown(not Baganator_SearchHelpFrame:IsShown())
-    Baganator_SearchHelpFrame:Raise()
+  if frame then
+    frame:SetShown(not frame:IsShown())
+    frame:Raise()
     return
   end
 
@@ -33,7 +36,7 @@ function addonTable.Help.ShowSearchDialog()
     end
   end
 
-  local frame = CreateFrame("Frame", "Baganator_SearchHelpFrame", UIParent, "ButtonFrameTemplate")
+  frame = CreateFrame("Frame", "Baganator_SearchHelpFrame", UIParent, "ButtonFrameTemplate")
   ButtonFrameTemplate_HidePortrait(frame)
   ButtonFrameTemplate_HideButtonBar(frame)
   frame.Inset:Hide()
@@ -55,7 +58,7 @@ function addonTable.Help.ShowSearchDialog()
     frame:SetUserPlaced(false)
   end)
 
-  frame:SetTitle(BAGANATOR_L_HELP_COLON_SEARCH)
+  frame:SetTitle(addonTable.Locales.HELP_COLON_SEARCH)
   frame:SetSize(430, 500)
 
   frame.ScrollBox = CreateFrame("Frame", nil, frame, "WowScrollBox")
@@ -71,16 +74,16 @@ function addonTable.Help.ShowSearchDialog()
   frame.ScrollBox:SetPoint("BOTTOM", 0, 5)
 
   local lines = {
-    { type = "header", text = BAGANATOR_L_HELP_SEARCH_OPERATORS},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_OPERATORS_LINE_1_V2},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_OPERATORS_LINE_2_V2},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_OPERATORS_LINE_3},
-    { type = "header", text = BAGANATOR_L_HELP_SEARCH_ITEM_LEVEL},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_ITEM_LEVEL_LINE_1},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_ITEM_LEVEL_LINE_2},
-    { type = "header", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS_LINE_1},
-    { type = "content", text = BAGANATOR_L_HELP_SEARCH_KEYWORDS_LINE_2},
+    { type = "header", text = addonTable.Locales.HELP_SEARCH_OPERATORS},
+    { type = "content", text = addonTable.Locales.HELP_SEARCH_OPERATORS_LINE_1_V2},
+    { type = "content", text = addonTable.Locales.HELP_SEARCH_OPERATORS_LINE_2_V2},
+    { type = "content", text = addonTable.Locales.HELP_SEARCH_OPERATORS_LINE_3},
+    { type = "header", text = addonTable.Locales.HELP_SEARCH_ITEM_LEVEL},
+    { type = "content", text = addonTable.Locales.HELP_SEARCH_ITEM_LEVEL_LINE_1},
+    { type = "content", text = addonTable.Locales.HELP_SEARCH_ITEM_LEVEL_LINE_2},
+    { type = "header", text = addonTable.Locales.HELP_SEARCH_KEYWORDS},
+    { type = "content", text = addonTable.Locales.HELP_SEARCH_KEYWORDS_LINE_1},
+    { type = "content", text = addonTable.Locales.HELP_SEARCH_KEYWORDS_LINE_2},
   }
   for _, key in ipairs(addonTable.Constants.KeywordGroupOrder) do
     if groups[key] then

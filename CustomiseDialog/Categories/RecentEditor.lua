@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 function addonTable.CustomiseDialog.GetCategoriesRecentEditor(parent)
   local holder = CreateFrame("Frame", nil, parent)
@@ -6,11 +7,11 @@ function addonTable.CustomiseDialog.GetCategoriesRecentEditor(parent)
   holder:SetSize(300, 150)
 
   local valueMapping = {0, 15, 30, 60, 60 * 5, 60 * 10, 60 * 20, 60 * 40, 60 * 60, -1}
-  local labelMapping = {BAGANATOR_L_IMMEDIATE, "15s", "30s", "1m", "5m", "10m", "20m", "40m", "60m", BAGANATOR_L_FOREVER}
+  local labelMapping = {addonTable.Locales.IMMEDIATE, "15s", "30s", "1m", "5m", "10m", "20m", "40m", "60m", addonTable.Locales.FOREVER}
 
   local slider = CreateFrame("Frame", nil, holder, "BaganatorCustomSliderTemplate")
   slider:Init({
-    text = BAGANATOR_L_RECENT_TIMER,
+    text = addonTable.Locales.RECENT_TIMER,
     min = 1,
     max = #valueMapping,
     valueToText = labelMapping,
@@ -23,7 +24,7 @@ function addonTable.CustomiseDialog.GetCategoriesRecentEditor(parent)
   slider:SetPoint("TOP", 0, -10)
 
   local text = holder:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-  text:SetText(BAGANATOR_L_RECENT_HEADER_CLICK_MESSAGE)
+  text:SetText(addonTable.Locales.RECENT_HEADER_CLICK_MESSAGE)
   text:SetPoint("TOPLEFT", 0, -80)
   text:SetPoint("TOPRIGHT", 0, -80)
 

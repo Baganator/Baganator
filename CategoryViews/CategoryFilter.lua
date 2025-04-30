@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local errorDialog = "Baganator_Categories_Search_Error"
 StaticPopupDialogs[errorDialog] = {
@@ -117,7 +118,7 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(composed, every
       else
         items = "unknown failure"
       end
-      StaticPopupDialogs[errorDialog].text = BAGANATOR_L_CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
+      StaticPopupDialogs[errorDialog].text = addonTable.Locales.CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
       StaticPopup_Show(errorDialog)
     end)
   end

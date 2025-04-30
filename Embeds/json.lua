@@ -22,7 +22,8 @@
 -- SOFTWARE.
 --
 
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local json = { _version = "0.1.2" }
 addonTable.json = json

@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 local swapTracker = CreateFrame("Frame")
 
@@ -14,7 +15,6 @@ function ApplyCursor(targetInventorySlot, associatedTargetBag)
   -- dropped on.
   if bagID == associatedTargetBag then
     ClearCursor()
-    local bagID, slotID = location:GetBagAndSlot()
     C_Container.PickupContainerItem(bagID, slotID)
     -- The first bag, the backpack will never be replaced, so using this slot is
     -- fine.
@@ -100,7 +100,7 @@ local function ShowBagSlotTooltip(self)
   end, HighlightMonitor)
 end
 
-local function HideBagSlotTooltip(self)
+local function HideBagSlotTooltip()
   addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
   GameTooltip:Hide()
   addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", HighlightMonitor)
@@ -163,7 +163,7 @@ function BaganatorRetailBagSlotButtonMixin:OnEnter()
 end
 
 function BaganatorRetailBagSlotButtonMixin:OnLeave()
-  HideBagSlotTooltip(self)
+  HideBagSlotTooltip()
 end
 
 BaganatorClassicBagSlotButtonMixin = {}
@@ -220,7 +220,7 @@ function BaganatorClassicBagSlotButtonMixin:OnEnter()
 end
 
 function BaganatorClassicBagSlotButtonMixin:OnLeave()
-  HideBagSlotTooltip(self)
+  HideBagSlotTooltip()
 end
 
 -- BANK
@@ -233,7 +233,7 @@ StaticPopupDialogs["Baganator.ConfirmBuyBankSlot"] = {
   text = CONFIRM_BUY_BANK_SLOT,
   button1 = YES,
   button2 = NO,
-  OnAccept = function(self)
+  OnAccept = function()
     PurchaseSlot()
   end,
   OnShow = function(self)
@@ -276,7 +276,7 @@ local function ShowBankSlotTooltip(self)
   end, HighlightMonitor)
 end
 
-local function HideBankSlotTooltip(self)
+local function HideBankSlotTooltip()
   addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
   GameTooltip:Hide()
   addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", HighlightMonitor)
@@ -350,7 +350,7 @@ function BaganatorRetailBankButtonMixin:OnEnter()
 end
 
 function BaganatorRetailBankButtonMixin:OnLeave()
-  HideBankSlotTooltip(self)
+  HideBankSlotTooltip()
 end
 
 BaganatorClassicBankButtonMixin = {}
@@ -413,7 +413,7 @@ function BaganatorClassicBankButtonMixin:OnEnter()
 end
 
 function BaganatorClassicBankButtonMixin:OnLeave()
-  HideBankSlotTooltip(self)
+  HideBankSlotTooltip()
 end
 
 BaganatorBagSlotsContainerMixin = {}
@@ -497,10 +497,10 @@ function BaganatorBagSlotsContainerMixin:OnLoad()
     bb.isBag = true
     table.insert(self.cachedBagSlots, bb)
     bb:SetID(bagIndexes[index + 1])
-    bb:HookScript("OnEnter", function(self)
-      addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[self:GetID()] = true})
+    bb:HookScript("OnEnter", function()
+      addonTable.CallbackRegistry:TriggerEvent("HighlightBagItems", {[bb:GetID()] = true})
     end)
-    bb:HookScript("OnLeave", function(self)
+    bb:HookScript("OnLeave", function()
       addonTable.CallbackRegistry:TriggerEvent("ClearHighlightBag")
     end)
     if #self.cachedBagSlots == 1 then
@@ -522,23 +522,23 @@ function BaganatorBagSlotsContainerMixin:Update(character, isLive)
   end
 
   local anyShown = false
-  local show = isLive and addonTable.Config.Get(self.config)
+  local showLive = isLive and addonTable.Config.Get(self.config)
   for _, bb in ipairs(self.liveBagSlots) do
-    anyShown = show
+    anyShown = showLive
     -- Show live bag slots if viewing live bags/bank
-    bb:SetShown(show)
+    bb:SetShown(showLive)
   end
 
   -- Show cached bag slots when viewing cached bags for other characters
   local containerInfo = Syndicator.API.GetCharacter(character).containerInfo
   if not isLive and containerInfo and containerInfo[self.mode] then
-    local show = addonTable.Config.Get(self.config)
+    local showCached = addonTable.Config.Get(self.config)
     for index, bb in ipairs(self.cachedBagSlots) do
-      anyShown = show
+      anyShown = showCached
       local details = CopyTable(containerInfo[self.mode][index] or {})
       details.itemCount = addonTable.Utilities.CountEmptySlots(Syndicator.API.GetCharacter(character)[self.mode][index + 1])
       bb:SetItemDetails(details)
-      bb:SetShown(show)
+      bb:SetShown(showCached)
     end
   else
     for _, bb in ipairs(self.cachedBagSlots) do

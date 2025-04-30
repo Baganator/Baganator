@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 local IsGuildSlotLocked = addonTable.Transfers.IsGuildItemLocked
 
 local function CheckFromTo(bagChecks, source, target)
@@ -43,7 +44,7 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
 
   local tabsThatWork = {}
   for i = 1, GetNumGuildBankTabs() do
-    local _, _, _, canDeposit, _, remainingWithdrawals = GetGuildBankTabInfo(i)
+    local _, _, _, _, _, remainingWithdrawals = GetGuildBankTabInfo(i)
     if remainingWithdrawals == -1 or remainingWithdrawals > 0 then
       tabsThatWork[i] = true
     end
@@ -51,7 +52,7 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
 
   toMove = tFilter(toMove, function(item) return tabsThatWork[item.tabIndex] end, true)
   if #toMove == 0 then
-    UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_WITHDRAW_ANY_MORE_ITEMS_FROM_THE_GUILD_BACK, 1.0, 0.1, 0.1, 1.0)
+    UIErrorsFrame:AddMessage(addonTable.Locales.CANNOT_WITHDRAW_ANY_MORE_ITEMS_FROM_THE_GUILD_BANK, 1.0, 0.1, 0.1, 1.0)
     return addonTable.Constants.SortStatus.Complete
   end
 
@@ -60,7 +61,7 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
   -- Prioritise special bags
   bagTargets = addonTable.Transfers.SortChecksFirst(bagChecks, bagTargets)
 
-  local locked, moved = false, false
+  local locked, moved, infoPending = false, false, false
   -- Move items if possible
   for _, item in ipairs(toMove) do
     local stackLimit = C_Item.GetItemMaxStackSizeByID(item.itemID)
@@ -89,7 +90,7 @@ function addonTable.Transfers.FromGuildToBags(toMove, bagIDs, bagTargets)
     return addonTable.Constants.SortStatus.WaitingItemData, modes
   else
     if #toMove > 0 then
-      UIErrorsFrame:AddMessage(BAGANATOR_L_CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
+      UIErrorsFrame:AddMessage(addonTable.Locales.CANNOT_MOVE_ITEMS_AS_NO_SPACE_LEFT, 1.0, 0.1, 0.1, 1.0)
     end
     return addonTable.Constants.SortStatus.Complete, modes
   end

@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 function addonTable.ShowWelcome()
   local frame = CreateFrame("Frame", "Baganator_WelcomeFrame", UIParent, "ButtonFrameTemplate")
   ButtonFrameTemplate_HidePortrait(frame)
@@ -11,41 +12,41 @@ function addonTable.ShowWelcome()
 
   frame:SetSize(550, 180)
 
-  frame:SetTitle(BAGANATOR_L_WELCOME_TO_BAGANATOR)
+  frame:SetTitle(addonTable.Locales.WELCOME_TO_BAGANATOR)
 
   local welcomeText = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-  welcomeText:SetText(BAGANATOR_L_WELCOME_DESCRIPTION)
+  welcomeText:SetText(addonTable.Locales.WELCOME_DESCRIPTION)
   welcomeText:SetPoint("LEFT")
   welcomeText:SetPoint("RIGHT")
   welcomeText:SetPoint("TOP", 0, -40)
 
   local singleBagHeader = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
-  singleBagHeader:SetText(BAGANATOR_L_SINGLE_BAG)
+  singleBagHeader:SetText(addonTable.Locales.SINGLE_BAG)
   singleBagHeader:SetPoint("LEFT", 20, 0)
   singleBagHeader:SetPoint("RIGHT", frame, "CENTER", -10, 0)
   singleBagHeader:SetPoint("TOP", 0, -70)
 
   local singleBagText = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-  singleBagText:SetText(BAGANATOR_L_SINGLE_BAG_DESCRIPTION_2)
+  singleBagText:SetText(addonTable.Locales.SINGLE_BAG_DESCRIPTION_2)
   singleBagText:SetPoint("LEFT", singleBagHeader)
   singleBagText:SetPoint("RIGHT", singleBagHeader)
   singleBagText:SetPoint("TOP", singleBagHeader, "BOTTOM", 0, -10)
 
   local categoryGroupsHeader = frame:CreateFontString(nil, "ARTWORK", "GameFontNormalMed2")
-  categoryGroupsHeader:SetText(BAGANATOR_L_CATEGORY_GROUPS)
+  categoryGroupsHeader:SetText(addonTable.Locales.CATEGORY_GROUPS)
   categoryGroupsHeader:SetPoint("RIGHT", -20, 0)
   categoryGroupsHeader:SetPoint("LEFT", frame, "CENTER", 10, 0)
   categoryGroupsHeader:SetPoint("TOP", 0, -70)
 
   local categoryGroupsText = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
-  categoryGroupsText:SetText(BAGANATOR_L_CATEGORY_GROUPS_DESCRIPTION)
+  categoryGroupsText:SetText(addonTable.Locales.CATEGORY_GROUPS_DESCRIPTION)
   categoryGroupsText:SetPoint("LEFT", categoryGroupsHeader)
   categoryGroupsText:SetPoint("RIGHT", categoryGroupsHeader)
   categoryGroupsText:SetPoint("TOP", categoryGroupsHeader, "BOTTOM", 0, -10)
 
   local function MakeChooseButton(value)
     local button = CreateFrame("Button", nil, frame, "UIPanelDynamicResizeButtonTemplate")
-    button:SetText(BAGANATOR_L_CHOOSE)
+    button:SetText(addonTable.Locales.CHOOSE)
     DynamicResizeButton_Resize(button)
     button:SetScript("OnClick", function()
       addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, value)

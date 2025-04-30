@@ -1,4 +1,5 @@
-local _, addonTable = ...
+---@class addonTableBaganator
+local addonTable = select(2, ...)
 
 addonTable.BagTransfers = {}
 local activationCallbacks = {}
@@ -30,7 +31,6 @@ do
     "BANKFRAME_CLOSED",
   })
   BankCheck:SetScript("OnEvent", function(_, event)
-    warbandPrevEmptySlots = nil
     isBankOpen = event == "BANKFRAME_OPENED"
     CallActivationCallbacks()
   end)
@@ -66,7 +66,7 @@ if Syndicator and Syndicator.Constants.WarbandBankActive then
       else
         local bagsData = {}
         local indexes = Syndicator.Constants.AllWarbandIndexes
-        for i, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
+        for _, tab in ipairs(Syndicator.API.GetWarband(1).bank) do
           table.insert(bagsData, tab.slots)
         end
         bankSlots = addonTable.Transfers.GetBagsSlots(bagsData, indexes)
@@ -107,7 +107,7 @@ else
 end
 
 RegisterBagTransfer(
-  function(button)
+  function()
     if not isBankOpen then
       return false
     end
@@ -115,14 +115,14 @@ RegisterBagTransfer(
     return bankFrame.Character:IsShown() or (bankFrame.Warband and bankFrame.Warband:IsShown() and not bankFrame.Warband.isLocked)
   end,
   TransferToBank,
-  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT
+  true, addonTable.Locales.TRANSFER_MAIN_VIEW_BANK_TOOLTIP_TEXT
 )
 
 addonTable.CallbackRegistry:RegisterCallback("BankViewChanged", function()
   CallActivationCallbacks()
 end)
 
-local function TransferToMail(matches, characterName, callback)
+local function TransferToMail(matches, _, callback)
   local status = addonTable.Transfers.AddToMail(matches)
   callback(status)
 end
@@ -136,10 +136,10 @@ end)
 RegisterBagTransfer(
   function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.MailInfo) and sendMailShowing end,
   TransferToMail,
-  false, BAGANATOR_L_TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT
+  false, addonTable.Locales.TRANSFER_MAIN_VIEW_MAIL_TOOLTIP_TEXT
 )
 
-local function AddToScrapper(matches, characterName, callback)
+local function AddToScrapper(matches, _, callback)
   local waiting = #matches
   local loopFinished = false
 
@@ -168,7 +168,7 @@ end
 RegisterBagTransfer(
   function() return C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.ScrappingMachine) end,
   AddToScrapper,
-  false, BAGANATOR_L_TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT
+  false, addonTable.Locales.TRANSFER_MAIN_VIEW_SCRAPPER_TOOLTIP_TEXT
 )
 
 RegisterBagTransfer(
@@ -177,7 +177,7 @@ RegisterBagTransfer(
     local status = addonTable.Transfers.VendorItems(matches)
     callback(status)
   end,
-  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_VENDOR_TOOLTIP_TEXT
+  true, addonTable.Locales.TRANSFER_MAIN_VIEW_VENDOR_TOOLTIP_TEXT
 )
 
 RegisterBagTransfer(
@@ -186,7 +186,7 @@ RegisterBagTransfer(
     local status = addonTable.Transfers.AddToTrade(matches)
     callback(status)
   end,
-  false, BAGANATOR_L_TRANSFER_MAIN_VIEW_TRADE_TOOLTIP_TEXT
+  false, addonTable.Locales.TRANSFER_MAIN_VIEW_TRADE_TOOLTIP_TEXT
 )
 
 RegisterBagTransfer(
@@ -198,7 +198,7 @@ RegisterBagTransfer(
     local status, modes = addonTable.Transfers.FromBagsToGuild(matches, guildSlots)
     callback(status, modes)
   end,
-  true, BAGANATOR_L_TRANSFER_MAIN_VIEW_GUILD_TOOLTIP_TEXT
+  true, addonTable.Locales.TRANSFER_MAIN_VIEW_GUILD_TOOLTIP_TEXT
 )
 
 if Syndicator then
