@@ -170,7 +170,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       })
       local sectionDetails = sections[sectionID]
       local sectionName = sectionDetails.name
-      local label = _G["addonTable.Locales.SECTION_" .. sectionName] or sectionName
+      local label = addonTable.Locales["SECTION_" .. sectionName] or sectionName
       table.insert(currentSection, sectionID)
       table.insert(allDetails, {
         type = "section",

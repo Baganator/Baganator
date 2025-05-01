@@ -101,7 +101,7 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
     else
       self.currentSection = value
       local sectionDetails = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTIONS)[value]
-      self.SectionName:SetText(_G["addonTable.Locales.SECTION_" .. sectionDetails.name] or sectionDetails.name)
+      self.SectionName:SetText(addonTable.Locales["SECTION_" .. sectionDetails.name] or sectionDetails.name)
 
       if sectionDetails.color then
         self.SectionColorSwatch.currentColor = CreateColorFromRGBAHexString(sectionDetails.color .. "ff")

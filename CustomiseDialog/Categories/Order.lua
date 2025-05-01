@@ -69,7 +69,7 @@ local function PopulateCategoryOrder(container)
         if sectionDetails.color then
           color = CreateColorFromRGBHexString(sectionDetails.color)
         end
-        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. color:WrapTextInColorCode((_G["addonTable.Locales.SECTION_" .. sectionDetails.name] or sectionDetails.name))
+        name = indent .. CreateAtlasMarkup(folderMarker) .. " " .. color:WrapTextInColorCode(addonTable.Locales["SECTION_" .. sectionDetails.name] or sectionDetails.name)
       end
       table.insert(dataProviderElements, {value = source, label = name})
       table.insert(elements, source)
