@@ -2,6 +2,7 @@ ignore:
   - README.md
   - tmp
   - scripts
+  - annotations.lua
 plain-copy:
   - Core
   - CustomiseDialog
