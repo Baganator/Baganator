@@ -217,7 +217,7 @@ tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
   {
     key = "hearthstone",
     name = addonTable.Locales.CATEGORY_HEARTHSTONE,
-    search = addonTable.Locales.CATEGORY_HEARTHSTONE:lower(),
+    search = addonTable.Locales.CATEGORY_HEARTHSTONE:lower() .. "&#" .. ITEM_UNIQUE:lower() .. "&#" .. ITEM_SOULBOUND:lower(),
     priorityOffset = -10,
   },
   {
