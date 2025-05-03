@@ -151,6 +151,7 @@ function BaganatorCategoryViewBackpackViewMixin:UpdateForCharacter(character, is
   self.isGrouping = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING) and (not self.splitStacksDueToTransfer or not self.isLive)
   if self.isGrouping ~= oldIsGrouping then
     self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
+    self.searchToApply = true
   end
 
   if self.addToCategoryMode and C_Cursor.GetCursorItem() == nil then
