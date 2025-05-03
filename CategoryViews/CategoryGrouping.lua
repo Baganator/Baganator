@@ -360,12 +360,11 @@ do
 
   groupings["track"] = {}
   groupingsToLabels["track"] = {}
-  groupingGetters["track"] = function(item)
+  groupingGetters["track"] = function()
     return true
   end
 
   if addonTable.Constants.IsRetail then
-    local upgradeTrackGroupings = {}
     groupingsToLabels["track"] = {}
     local items = {
       explorer = "|cff0070dd|Hitem:144144::::::::80:268::54:9:6652:8812:11945:7756:10392:10395:12090:10034:10254:1:28:2462:::::|h[Whirling Dervish Choker]|h|r",
@@ -379,7 +378,6 @@ do
       "myth", "hero", "champion", "veteran", "adventurer", "explorer",
     }
     local labelToKey = {}
-    local labelPattern = ITEM_UPGRADE_TOOLTIP_FORMAT_STRING:gsub("%%s", "(.-)"):gsub("%%d", ".-")
     local pending = 0
     local loopFinished = false
     local function OnFinished()
@@ -399,14 +397,11 @@ do
         assert(itemID, "Broken item for upgrade track")
         addonTable.Utilities.LoadItemData(itemID, function()
           pending = pending - 1
-          local tooltipData = C_TooltipInfo.GetHyperlink(itemLink)
-          for _, line in ipairs(tooltipData.lines) do
-            local label = line.leftText:match(labelPattern)
-            if label then
-              groupingsToLabels["track"][key] = label
-              labelToKey[label] = key
-              break
-            end
+          local info = C_Item.GetItemUpgradeInfo(itemLink)
+          local label = info and info.trackString
+          if label then
+            groupingsToLabels["track"][key] = label
+            labelToKey[label] = key
           end
           if loopFinished and pending == 0 then
             OnFinished()
@@ -424,20 +419,14 @@ do
         return true
       end
 
-      local tooltipInfo = item.tooltipInfoSpell or item.tooltipInfo
-      if not tooltipInfo and C_Item.IsItemDataCachedByID(item.itemID) then
-        item.tooltipInfo = C_TooltipInfo.GetHyperlink(item.itemLink) or {lines={}}
-        tooltipInfo = item.tooltipInfo
-      end
-      if not tooltipInfo then
+      if not C_Item.IsItemDataCachedByID(item.itemID) then
+        C_Item.RequestLoadItemData(item.itemID)
         return false
       end
-      for _, line in ipairs(tooltipInfo.lines) do
-        local label = line.leftText:match(labelPattern)
-        if label then
-          item.track = labelToKey[label]
-          break
-        end
+      local info = C_Item.GetItemUpgradeInfo(item.itemLink)
+      local label = info and info.trackString
+      if label then
+        item.track = labelToKey[label]
       end
       return true
     end
