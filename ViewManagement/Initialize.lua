@@ -194,7 +194,9 @@ local function SetupBackpackView(frameGroup)
       backpackView = allBackpackViews[GetViewType("bag")]
       addonTable.CallbackRegistry:TriggerEvent("BackpackFrameChanged", backpackView)
     else
-      allBackpackViews[GetViewType("bag")]:Hide()
+      for _, oldView in pairs(allBackpackViews) do
+        oldView:Hide()
+      end
     end
   end)
 
@@ -304,13 +306,15 @@ local function SetupBankView(frameGroup)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.BANK_VIEW_TYPE then
-      bankView:Hide()
-      FrameUtil.UnregisterFrameForEvents(bankView, {
-        "BANKFRAME_OPENED",
-        "BANKFRAME_CLOSED",
-      })
-      bankView = allBankViews[GetViewType("bank")] or bankView
+      for _, oldView in pairs(allBankViews) do
+        oldView:Hide()
+        FrameUtil.UnregisterFrameForEvents(oldView, {
+          "BANKFRAME_OPENED",
+          "BANKFRAME_CLOSED",
+        })
+      end
       if frameGroup == currentFrameGroup then
+        bankView = allBankViews[GetViewType("bank")] or bankView
         FrameUtil.RegisterFrameForEvents(bankView, {
           "BANKFRAME_OPENED",
           "BANKFRAME_CLOSED",
@@ -329,12 +333,13 @@ local function SetupBankView(frameGroup)
         "BANKFRAME_CLOSED",
       })
     else
-      local oldView = allBankViews[GetViewType("bank")]
-      oldView:Hide()
-      FrameUtil.UnregisterFrameForEvents(oldView, {
-        "BANKFRAME_OPENED",
-        "BANKFRAME_CLOSED",
-      })
+      for _, oldView in pairs(allBankViews) do
+        oldView:Hide()
+        FrameUtil.UnregisterFrameForEvents(oldView, {
+          "BANKFRAME_OPENED",
+          "BANKFRAME_CLOSED",
+        })
+      end
     end
   end)
 end

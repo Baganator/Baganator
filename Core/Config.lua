@@ -134,37 +134,27 @@ function addonTable.Config.IsValidOption(name)
   return false
 end
 
-function addonTable.Config.Create(constant, name, defaultValue)
-  addonTable.Config.Options[constant] = name
-
-  addonTable.Config.Defaults[addonTable.Config.Options[constant]] = defaultValue
-
-  if BAGANATOR_CONFIG ~= nil and BAGANATOR_CONFIG[name] == nil then
-    BAGANATOR_CONFIG[name] = defaultValue
-  end
-end
-
 local function RawSet(name, value)
   local tree = {strsplit(".", name)}
-  if BAGANATOR_CONFIG == nil then
-    error("JOURNALATOR_CONFIG not initialized")
+  if addonTable.Config.CurrentProfile == nil then
+    error("BAGANATOR_CONFIG not initialized")
   elseif not addonTable.Config.IsValidOption(tree[1]) then
     error("Invalid option '" .. name .. "'")
   elseif #tree == 1 then
     local oldValue
     if addonTable.Config.IsCharacterSpecific[name] then
       local characterName = Syndicator.API.GetCurrentCharacter()
-      oldValue = BAGANATOR_CONFIG[name][characterName]
-      BAGANATOR_CONFIG[name][characterName] = value
+      oldValue = BAGANATOR_CONFIG.CharacterSpecific[name][characterName]
+      BAGANATOR_CONFIG.CharacterSpecific[name][characterName] = value
     else
-      oldValue = BAGANATOR_CONFIG[name]
-      BAGANATOR_CONFIG[name] = value
+      oldValue = addonTable.Config.CurrentProfile[name]
+      addonTable.Config.CurrentProfile[name] = value
     end
     if value ~= oldValue then
       return true
     end
   else
-    local root = BAGANATOR_CONFIG
+    local root = addonTable.Config.CurrentProfile
     for i = 1, #tree - 1 do
       root = root[tree[i]]
       if type(root) ~= "table" then
@@ -215,16 +205,23 @@ function addonTable.Config.MultiSet(nameValueMap)
   end
 end
 
+local addedInstalledNestedToList = {}
+local installedNested = {}
+
 function addonTable.Config.Install(name, defaultValue)
   if BAGANATOR_CONFIG == nil then
     error("BAGANATOR_CONFIG not initialized")
   elseif name:find("%.") == nil then
-    if BAGANATOR_CONFIG[name] == nil then
-      BAGANATOR_CONFIG[name] = defaultValue
+    if addonTable.Config.CurrentProfile[name] == nil then
+      addonTable.Config.CurrentProfile[name] = defaultValue
     end
   else
+    if not addedInstalledNestedToList[name] then
+      addedInstalledNestedToList[name] = true
+      table.insert(installedNested, name)
+    end
     local tree = {strsplit(".", name)}
-    local root = BAGANATOR_CONFIG
+    local root = addonTable.Config.CurrentProfile
     for i = 1, #tree - 1 do
       if not root[tree[i]] then
         root[tree[i]] = {}
@@ -250,12 +247,26 @@ function addonTable.Config.ResetOne(name)
 end
 
 function addonTable.Config.Reset()
-  BAGANATOR_CONFIG = {}
+  BAGANATOR_CONFIG = {
+    Profiles = {
+      DEFAULT = {},
+    },
+    CharacterSpecific = {},
+    Version = 1,
+  }
+  addonTable.Config.InitializeData()
+end
+
+local function ImportDefaultsToProfile()
   for option, value in pairs(addonTable.Config.Defaults) do
-    if addonTable.Config.IsCharacterSpecific[option] then
-      BAGANATOR_CONFIG[option] = {}
-    else
-      BAGANATOR_CONFIG[option] = value
+    if addonTable.Config.IsCharacterSpecific[option] and BAGANATOR_CONFIG.CharacterSpecific[option] == nil then
+      BAGANATOR_CONFIG.CharacterSpecific[option] = {}
+    elseif addonTable.Config.CurrentProfile[option] == nil then
+      if type(value) == "table" then
+        addonTable.Config.CurrentProfile[option] = CopyTable(value)
+      else
+        addonTable.Config.CurrentProfile[option] = value
+      end
     end
   end
 end
@@ -263,39 +274,99 @@ end
 function addonTable.Config.InitializeData()
   if BAGANATOR_CONFIG == nil then
     addonTable.Config.Reset()
+    return
+  end
+
+  if BAGANATOR_CONFIG.Profiles == nil then
+    BAGANATOR_CONFIG = {
+      Profiles = {
+        DEFAULT = BAGANATOR_CONFIG,
+      },
+      CharacterSpecific = {},
+      Version = 1,
+    }
+  end
+
+  if BAGANATOR_CONFIG.Profiles.DEFAULT == nil then
+    BAGANATOR_CONFIG.Profiles.DEFAULT = {}
+  end
+  if BAGANATOR_CONFIG.Profiles[BAGANATOR_CURRENT_PROFILE] == nil then
+    BAGANATOR_CURRENT_PROFILE = "DEFAULT"
+  end
+
+  addonTable.Config.CurrentProfile = BAGANATOR_CONFIG.Profiles[BAGANATOR_CURRENT_PROFILE]
+  ImportDefaultsToProfile()
+end
+
+function addonTable.Config.GetProfileNames()
+  return GetKeysArray(BAGANATOR_CONFIG.Profiles)
+end
+
+function addonTable.Config.MakeProfile(newProfileName, clone)
+  assert(tIndexOf(addonTable.Config.GetProfileNames(), newProfileName) == nil, "Existing Profile")
+  if clone then
+    BAGANATOR_CONFIG.Profiles[newProfileName] = CopyTable(addonTable.Config.CurrentProfile)
   else
-    for option, value in pairs(addonTable.Config.Defaults) do
-      if BAGANATOR_CONFIG[option] == nil then
-        if addonTable.Config.IsCharacterSpecific[option] then
-          BAGANATOR_CONFIG[option] = {}
-        else
-          BAGANATOR_CONFIG[option] = value
-        end
-      end
+    BAGANATOR_CONFIG.Profiles[newProfileName] = {}
+  end
+  addonTable.Config.ChangeProfile(newProfileName)
+end
+
+function addonTable.Config.DeleteProfile(profileName)
+  assert(profileName ~= "DEFAULT" and profileName ~= BAGANATOR_CURRENT_PROFILE)
+
+  BAGANATOR_CONFIG.Profiles[profileName] = nil
+end
+
+function addonTable.Config.ChangeProfile(newProfileName)
+  assert(tIndexOf(addonTable.Config.GetProfileNames(), newProfileName) ~= nil, "Invalid Profile")
+
+  local changedOptions = {}
+  local refreshState = {}
+  local newProfile = BAGANATOR_CONFIG.Profiles[newProfileName]
+
+  for name, value in pairs(addonTable.Config.CurrentProfile) do
+    if value ~= newProfile[name] then
+      table.insert(changedOptions, name)
+      Mixin(refreshState, addonTable.Config.RefreshType[name] or {})
     end
   end
+
+  tAppendAll(changedOptions, installedNested)
+
+  addonTable.Config.CurrentProfile = newProfile
+  BAGANATOR_CURRENT_PROFILE = newProfileName
+
+  ImportDefaultsToProfile()
+
+  addonTable.Core.MigrateSettings()
+
+  for _, name in ipairs(changedOptions) do
+    addonTable.CallbackRegistry:TriggerEvent("SettingChanged", name)
+  end
+  addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
 end
 
 -- characterName is optional, only use if need a character specific setting for
 -- a character other than the current one.
 function addonTable.Config.Get(name, characterName)
   -- This is ONLY if a config is asked for before variables are loaded
-  if BAGANATOR_CONFIG == nil then
+  if addonTable.Config.CurrentProfile == nil then
     return addonTable.Config.Defaults[name]
   elseif name:find("%.") == nil then
     if addonTable.Config.IsCharacterSpecific[name] then
-      local value = BAGANATOR_CONFIG[name][characterName or Syndicator.API.GetCurrentCharacter()]
+      local value = BAGANATOR_CONFIG.CharacterSpecific[name][characterName or Syndicator.API.GetCurrentCharacter()]
       if value == nil then
         return addonTable.Config.Defaults[name]
       else
         return value
       end
     else
-      return BAGANATOR_CONFIG[name]
+      return addonTable.Config.CurrentProfile[name]
     end
   else
     local tree = {strsplit(".", name)}
-    local root = BAGANATOR_CONFIG
+    local root = addonTable.Config.CurrentProfile
     for i = 1, #tree do
       root = root[tree[i]]
       if root == nil then

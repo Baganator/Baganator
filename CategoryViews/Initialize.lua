@@ -220,18 +220,12 @@ local function SetupAddRemoveItems()
   end)
 end
 
-function addonTable.CategoryViews.Initialize()
+function addonTable.CategoryViews.SetupData()
   MigrateFormat()
 
   SetupCategories()
+end
 
-  addonTable.CallbackRegistry:RegisterCallback("ResetCategoryOrder", function()
-    -- Avoid the settings changed event firing
-    table.wipe(addonTable.Config.Get(addonTable.Config.Options.AUTOMATIC_CATEGORIES_ADDED))
-    table.wipe(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER))
-
-    SetupCategories()
-  end)
-
+function addonTable.CategoryViews.Initialize()
   SetupAddRemoveItems()
 end

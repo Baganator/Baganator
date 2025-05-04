@@ -47,7 +47,7 @@ do
     end
   end
 
-  addonTable.Utilities.OnAddonLoaded("Baganator", function()
+  function addonTable.API.ApplyJunkPluginsInitial()
     addonLoaded = true
 
     for id in pairs(addonTable.API.JunkPlugins) do
@@ -57,7 +57,7 @@ do
     if next(addonTable.API.JunkPlugins) then
       ReportPluginAdded()
     end
-  end)
+  end
 
   -- callback - function(bagID, slotID, itemID, itemLink) returns nil/true/false
   --  Returning true indicates this item is junk and should show a junk coin
@@ -111,7 +111,7 @@ do
     end
   end
 
-  addonTable.Utilities.OnAddonLoaded("Baganator", function()
+  function addonTable.API.ApplyUpgradePluginsInitial()
     addonLoaded = true
 
     for id in pairs(addonTable.API.UpgradePlugins) do
@@ -121,7 +121,7 @@ do
     if next(addonTable.API.UpgradePlugins) then
       ReportPluginAdded()
     end
-  end)
+  end
 
   -- callback - function(itemLink) returns nil/true/false
   --  Returning true indicates this item is an upgrade
@@ -192,7 +192,7 @@ do
     end
   end
 
-  addonTable.Utilities.OnAddonLoaded("Baganator", function()
+  function addonTable.API.ApplyCornerPluginsInitial()
     addonLoaded = true
 
     for _, entry in ipairs(autoAddQueue) do
@@ -200,7 +200,7 @@ do
     end
 
     ReportPluginAdded()
-  end)
+  end
 
   -- label: User facing text string describing this corner option.
   -- id: unique value to be used internally for the settings

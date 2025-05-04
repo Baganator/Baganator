@@ -403,6 +403,12 @@ L["USE_EXPRESSWAY_FONT_ON_ITEMS"] = "Use EXPRESSWAY font on items"
 L["RELOAD_REQUIRED"] = "Reload required"
 L["THEME"] = "Theme"
 
+L["ENTER_PROFILE_NAME"] = "Enter Profile Name:"
+L["PROFILES"] = "Profiles"
+L["NEW_PROFILE_CLONE"] = "New Profile (clone current)"
+L["NEW_PROFILE_BLANK"] = "New Profile (blank)"
+L["CONFIRM_DELETE_PROFILE_X"] = "Are you sure you want to delete profile \"%s\"?"
+
 L["SAVED_SEARCHES"] = "Saved Searches"
 L["SAVE_SEARCH"] = "Save Search"
 L["CHOOSE_A_LABEL_FOR_THIS_SEARCH"] = "Choose a label for this search"

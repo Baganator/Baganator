@@ -7,12 +7,19 @@ addonTable.Skins.allFrames = {}
 
 local currentSkinner = function() end
 
-function addonTable.Skins.Initialize()
-  local autoEnabled = nil
+function addonTable.Skins.InstallOptions()
   for key, skin in pairs(addonTable.Skins.availableSkins) do
     for _, opt in ipairs(skin.options) do
       addonTable.Config.Install("skins." .. key .. "." .. opt.option, opt.default)
     end
+  end
+end
+
+function addonTable.Skins.Initialize()
+  addonTable.Skins.InstallOptions()
+
+  local autoEnabled = nil
+  for key, skin in pairs(addonTable.Skins.availableSkins) do
     if skin.autoEnable and not addonTable.Config.Get(addonTable.Config.Options.DISABLED_SKINS)[key] then
       autoEnabled = key
     end
@@ -48,7 +55,7 @@ function addonTable.Skins.Initialize()
         end
       end
       local bagsShown = addonTable.ViewManagement.GetBackpackFrame():IsShown()
-      local lastCharacter, isLive = addonTable.ViewManagement.GetBackpackFrame().lastCharacter, addonTable.ViewManagement.GetBackpackFrame().isLive
+      local lastCharacter = addonTable.ViewManagement.GetBackpackFrame().lastCharacter
       currentSkin = addonTable.Skins.availableSkins[addonTable.Config.Get(addonTable.Config.Options.CURRENT_SKIN)]
       currentSkinner = currentSkin.skinner
       currentSkin.constants()

@@ -50,7 +50,6 @@ addonTable.Constants.Events = {
 
   -- Category view only events
   "CategoryItemDropped",
-  "ResetCategoryOrder",
   "CategoryAddItemStart",
   "CategoryAddItemEnd",
 

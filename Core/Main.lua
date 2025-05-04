@@ -27,6 +27,29 @@ StaticPopupDialogs[syndicatorInstallDialog] = {
   hideOnEscape = 1,
 }
 
+function addonTable.Core.MigrateSettings()
+  if addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE) ~= "unset" then
+    addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
+    addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
+    addonTable.Config.Set(addonTable.Config.Options.GLOBAL_VIEW_TYPE, "unset")
+  end
+  if not addonTable.Config.Get(addonTable.Config.Options.MIGRATED_SORT_METHOD) then
+    local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
+    if sortMethod ~= "combine_stacks_only" and not addonTable.API.ExternalContainerSorts[sortMethod] then
+      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SORT_METHOD, sortMethod)
+    end
+    addonTable.Config.Set(addonTable.Config.Options.MIGRATED_SORT_METHOD, true)
+  end
+
+  addonTable.CategoryViews.SetupData()
+
+  addonTable.Skins.InstallOptions()
+
+  addonTable.API.ApplyJunkPluginsInitial()
+  addonTable.API.ApplyUpgradePluginsInitial()
+  addonTable.API.ApplyCornerPluginsInitial()
+end
+
 addonTable.Utilities.OnAddonLoaded("Baganator", function()
   if not C_AddOns.IsAddOnLoaded("Syndicator") then
     if C_AddOns.DoesAddOnExist("Syndicator") then
@@ -59,7 +82,6 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
   addonTable.Skins.Initialize()
 
   if addonTable.Config.Get(addonTable.Config.Options.SEEN_WELCOME) < 1 then
-    addonTable.Config.Set(addonTable.Config.Options.SEEN_WELCOME, 1)
     local frame = CreateFrame("Frame")
     frame:RegisterEvent("PLAYER_ENTERING_WORLD")
     frame:SetScript("OnEvent", function()
@@ -73,18 +95,7 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
     end)
   end
 
-  if addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE) ~= "unset" then
-    addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
-    addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
-    addonTable.Config.Set(addonTable.Config.Options.GLOBAL_VIEW_TYPE, "unset")
-  end
-  if not addonTable.Config.Get(addonTable.Config.Options.MIGRATED_SORT_METHOD) then
-    local sortMethod = addonTable.Config.Get(addonTable.Config.Options.SORT_METHOD)
-    if sortMethod ~= "combine_stacks_only" and not addonTable.API.ExternalContainerSorts[sortMethod] then
-      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SORT_METHOD, sortMethod)
-    end
-    addonTable.Config.Set(addonTable.Config.Options.MIGRATED_SORT_METHOD, true)
-  end
+  addonTable.Core.MigrateSettings()
 
   addonTable.Core.RunAnalytics()
 end)

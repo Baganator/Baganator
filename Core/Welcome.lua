@@ -1,7 +1,16 @@
 ---@class addonTableBaganator
 local addonTable = select(2, ...)
+local frame
+
 function addonTable.ShowWelcome()
-  local frame = CreateFrame("Frame", "Baganator_WelcomeFrame", UIParent, "ButtonFrameTemplate")
+  addonTable.Config.Set(addonTable.Config.Options.SEEN_WELCOME, 1)
+  if frame then
+    frame:Show()
+    return
+  end
+
+  frame = CreateFrame("Frame", "Baganator_WelcomeFrame", UIParent, "ButtonFrameTemplate")
+  frame:Hide()
   ButtonFrameTemplate_HidePortrait(frame)
   ButtonFrameTemplate_HideButtonBar(frame)
   frame.Inset:Hide()
@@ -63,10 +72,25 @@ function addonTable.ShowWelcome()
   chooseCategories:SetPoint("CENTER", categoryGroupsHeader)
   chooseCategories:SetPoint("BOTTOM", 0, 25)
 
-  addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "category")
-  local categoryBag = addonTable.ViewManagement.GetBackpackFrame()
-  addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "single")
-  local singleBag = addonTable.ViewManagement.GetBackpackFrame()
+  local categoryBag, singleBag
+
+  frame:SetScript("OnShow", function ()
+    addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "category")
+    categoryBag = addonTable.ViewManagement.GetBackpackFrame()
+    addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, "single")
+    singleBag = addonTable.ViewManagement.GetBackpackFrame()
+
+    categoryBag:ClearAllPoints()
+    categoryBag:SetPoint("LEFT", frame, "RIGHT", 20, 0)
+    categoryBag:Show()
+    categoryBag:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
+    singleBag:ClearAllPoints()
+    singleBag:SetPoint("RIGHT", frame, "LEFT", -20, 0)
+    singleBag:Show()
+    singleBag:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
+
+    frame:Raise()
+  end)
 
   frame:SetScript("OnHide", function()
     singleBag:Hide()
@@ -75,14 +99,5 @@ function addonTable.ShowWelcome()
     addonTable.CallbackRegistry:TriggerEvent("BagShow")
   end)
 
-  categoryBag:ClearAllPoints()
-  categoryBag:SetPoint("LEFT", frame, "RIGHT", 20, 0)
-  categoryBag:Show()
-  categoryBag:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
-  singleBag:ClearAllPoints()
-  singleBag:SetPoint("RIGHT", frame, "LEFT", -20, 0)
-  singleBag:Show()
-  singleBag:UpdateForCharacter(Syndicator.API.GetCurrentCharacter(), true)
-
-  frame:Raise()
+  frame:Show()
 end

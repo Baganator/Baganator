@@ -56,6 +56,8 @@ WagoAnalytics = {}
 ---@return boolean
 IsAddOnLoaded = function(name) end
 
+BAGANATOR_CURRENT_PROFILE = "some profile name"
+
 --ItemViewCommon
 CloseBankFrame = function() end
 CUSTOM_CLASS_COLORS = {}

@@ -245,6 +245,7 @@ function addonTable.CustomiseDialog.GetBasicDropdown(parent)
     dropdown:GenerateMenu()
     -- don't need to do anything as dropdown's onshow handles this
   end
+  frame.Label = label
   frame.DropDown = dropdown
   frame:SetHeight(40)
   addonTable.Skins.AddFrame("Dropdown", frame.DropDown)
