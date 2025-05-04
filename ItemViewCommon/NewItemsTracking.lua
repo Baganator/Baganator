@@ -5,7 +5,6 @@ BaganatorItemViewCommonNewItemsTrackingMixin = {}
 function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
   self:RegisterEvent("BANKFRAME_OPENED")
   self:RegisterEvent("BANKFRAME_CLOSED")
-  self:RegisterEvent("BAG_NEW_ITEMS_UPDATED")
 
   self.firstStart = true
   self.startupCooldown = false
@@ -74,7 +73,6 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
         self.startupCooldown = true
         -- Cooldown for further "first start" events to fire on login
         C_Timer.After(5, function()
-          self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
           self.firstStart = false
         end)
       end
@@ -105,9 +103,6 @@ end
 function BaganatorItemViewCommonNewItemsTrackingMixin:OnEvent(eventName)
   if eventName == "BANKFRAME_OPENED" or eventName == "BANKFRAME_CLOSED" then
     self.bankOpen = eventName == "BANKFRAME_OPENED"
-  elseif eventName == "BAG_NEW_ITEMS_UPDATED" then
-    self:UnregisterEvent("BAG_NEW_ITEMS_UPDATED")
-    self.firstStart = false
   end
 end
 
