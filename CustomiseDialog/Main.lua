@@ -844,6 +844,13 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
     end
   end)
 
+  profileDropdown.DropDown:SetEnabled(not InCombatLockdown())
+  frame:RegisterEvent("PLAYER_REGEN_DISABLED")
+  frame:RegisterEvent("PLAYER_REGEN_ENABLED")
+  frame:SetScript("OnEvent", function(_, eventName)
+    profileDropdown.DropDown:SetEnabled(eventName == "PLAYER_REGEN_ENABLED")
+  end)
+
   table.insert(self.lowestFrames, allFrames[#allFrames])
 end
 
