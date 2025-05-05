@@ -114,12 +114,12 @@ function addonTable.Core.RunAnalytics()
     end
 
     local nonDefault = false
-    for _, count in pairs(BAGANATOR_CONFIG[addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT]) do
+    for _, count in pairs(BAGANATOR_CONFIG.CharacterSpecific[addonTable.Config.Options.SORT_IGNORE_BAG_SLOTS_COUNT]) do
       if count ~= 0 then
         nonDefault = true
       end
     end
-    for _, count in pairs(BAGANATOR_CONFIG[addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT]) do
+    for _, count in pairs(BAGANATOR_CONFIG.CharacterSpecific[addonTable.Config.Options.SORT_IGNORE_BANK_SLOTS_COUNT]) do
       if count ~= 0 then
         nonDefault = true
       end
