@@ -137,6 +137,7 @@ GetGuildBankTransaction = function(tab, index) end
 -- Skins
 ElvUI = {}
 NDui = {}
+AuroraClassic = {}
 GW2_ADDON = {}
 UNIT_NAME_FONT = {}
 
