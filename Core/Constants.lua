@@ -97,82 +97,80 @@ addonTable.Constants.SortStatus = {
   WaitingItemData = 3,
 }
 
-if not Syndicator then
-  return
-end
+if Syndicator then
+  addonTable.Constants.KeywordGroupOrder = Syndicator.Search.Constants.KeywordGroupOrder or {
+  -- Stored here temporarily, true list is in Syndicator now
+    Syndicator.Locales.GROUP_ITEM_TYPE,
+    Syndicator.Locales.GROUP_ITEM_DETAIL,
+    Syndicator.Locales.GROUP_QUALITY,
 
-addonTable.Constants.KeywordGroupOrder = Syndicator.Search.Constants.KeywordGroupOrder or {
--- Stored here temporarily, true list is in Syndicator now
-  Syndicator.Locales.GROUP_ITEM_TYPE,
-  Syndicator.Locales.GROUP_ITEM_DETAIL,
-  Syndicator.Locales.GROUP_QUALITY,
+    Syndicator.Locales.GROUP_SLOT,
+    Syndicator.Locales.GROUP_WEAPON_TYPE,
+    Syndicator.Locales.GROUP_ARMOR_TYPE,
+    Syndicator.Locales.GROUP_STAT,
+    Syndicator.Locales.GROUP_SOCKET,
 
-  Syndicator.Locales.GROUP_SLOT,
-  Syndicator.Locales.GROUP_WEAPON_TYPE,
-  Syndicator.Locales.GROUP_ARMOR_TYPE,
-  Syndicator.Locales.GROUP_STAT,
-  Syndicator.Locales.GROUP_SOCKET,
+    Syndicator.Locales.GROUP_TRADE_GOODS,
+    Syndicator.Locales.GROUP_RECIPE,
+    Syndicator.Locales.GROUP_GLYPH,
+    Syndicator.Locales.GROUP_CONSUMABLE,
 
-  Syndicator.Locales.GROUP_TRADE_GOODS,
-  Syndicator.Locales.GROUP_RECIPE,
-  Syndicator.Locales.GROUP_GLYPH,
-  Syndicator.Locales.GROUP_CONSUMABLE,
-
-  Syndicator.Locales.GROUP_EXPANSION,
-  Syndicator.Locales.GROUP_BATTLE_PET,
-}
-
-if Syndicator.Constants.WarbandBankActive then
-  -- Note constant values are taken from Blizzard code
-  addonTable.Constants.BlizzardBankTabConstants = {
-    Character = 1,
-    Warband = 3,
+    Syndicator.Locales.GROUP_EXPANSION,
+    Syndicator.Locales.GROUP_BATTLE_PET,
   }
-end
 
-addonTable.Constants.SampleSearchTerms = {
-  "<400",
-  Syndicator.Locales.KEYWORD_BOE,
-  INVTYPE_SHOULDER:lower(),
-  INVTYPE_TRINKET:lower(),
-  Syndicator.Locales.KEYWORD_FOOD .. "|" ..  Syndicator.Locales.KEYWORD_POTION,
-  Syndicator.Locales.KEYWORD_EQUIPMENT,
-  Syndicator.Locales.KEYWORD_USE,
-  Syndicator.Locales.KEYWORD_OPEN,
-  Syndicator.Locales.KEYWORD_GEAR,
-  Syndicator.Locales.KEYWORD_SOULBOUND,
-  "~" .. Syndicator.Locales.KEYWORD_EQUIPMENT,
-  "200-300",
-  Syndicator.Locales.KEYWORD_GEAR .. "&" .. Syndicator.Locales.KEYWORD_SOULBOUND .. "&" .. Syndicator.Locales.KEYWORD_JUNK,
-  ITEM_QUALITY3_DESC:lower(),
-  ITEM_QUALITY2_DESC:lower(),
-  Syndicator.Locales.KEYWORD_BOA,
-  Syndicator.Locales.KEYWORD_AXE,
-  Syndicator.Locales.KEYWORD_SWORD,
-  MOUNT:lower(),
-  Syndicator.Locales.KEYWORD_TRADEABLE_LOOT,
-  Syndicator.Locales.KEYWORD_SET,
-  "~" .. Syndicator.Locales.KEYWORD_SET .. "&" .. Syndicator.Locales.KEYWORD_GEAR,
-}
-if not addonTable.Constants.IsEra then
-  local socketSearchTerms = {
-    Syndicator.Locales.KEYWORD_SOCKET,
-    EMPTY_SOCKET_BLUE:lower(),
+  if Syndicator.Constants.WarbandBankActive then
+    -- Note constant values are taken from Blizzard code
+    addonTable.Constants.BlizzardBankTabConstants = {
+      Character = 1,
+      Warband = 3,
+    }
+  end
+
+  addonTable.Constants.SampleSearchTerms = {
+    "<400",
+    Syndicator.Locales.KEYWORD_BOE,
+    INVTYPE_SHOULDER:lower(),
+    INVTYPE_TRINKET:lower(),
+    Syndicator.Locales.KEYWORD_FOOD .. "|" ..  Syndicator.Locales.KEYWORD_POTION,
+    Syndicator.Locales.KEYWORD_EQUIPMENT,
+    Syndicator.Locales.KEYWORD_USE,
+    Syndicator.Locales.KEYWORD_OPEN,
+    Syndicator.Locales.KEYWORD_GEAR,
+    Syndicator.Locales.KEYWORD_SOULBOUND,
+    "~" .. Syndicator.Locales.KEYWORD_EQUIPMENT,
+    "200-300",
+    Syndicator.Locales.KEYWORD_GEAR .. "&" .. Syndicator.Locales.KEYWORD_SOULBOUND .. "&" .. Syndicator.Locales.KEYWORD_JUNK,
+    ITEM_QUALITY3_DESC:lower(),
+    ITEM_QUALITY2_DESC:lower(),
+    Syndicator.Locales.KEYWORD_BOA,
+    Syndicator.Locales.KEYWORD_AXE,
+    Syndicator.Locales.KEYWORD_SWORD,
+    MOUNT:lower(),
+    Syndicator.Locales.KEYWORD_TRADEABLE_LOOT,
+    Syndicator.Locales.KEYWORD_SET,
+    "~" .. Syndicator.Locales.KEYWORD_SET .. "&" .. Syndicator.Locales.KEYWORD_GEAR,
   }
-  tAppendAll(addonTable.Constants.SampleSearchTerms, socketSearchTerms)
-end
-if addonTable.Constants.IsRetail then
-  local retailSearchTerms = {
-    "dragonflight",
-    Syndicator.Locales.KEYWORD_BOE .. "&" .. "dragonflight",
-    Syndicator.Locales.KEYWORD_PET,
-    Syndicator.Locales.KEYWORD_EQUIPMENT .. "&" .. "classic",
-    Syndicator.Locales.KEYWORD_COSMETIC,
-    Syndicator.Locales.KEYWORD_REAGENT,
-    Syndicator.Locales.KEYWORD_MANUSCRIPT,
-    TOY:lower(),
-  }
-  tAppendAll(addonTable.Constants.SampleSearchTerms, retailSearchTerms)
+  if not addonTable.Constants.IsEra then
+    local socketSearchTerms = {
+      Syndicator.Locales.KEYWORD_SOCKET,
+      EMPTY_SOCKET_BLUE:lower(),
+    }
+    tAppendAll(addonTable.Constants.SampleSearchTerms, socketSearchTerms)
+  end
+  if addonTable.Constants.IsRetail then
+    local retailSearchTerms = {
+      "dragonflight",
+      Syndicator.Locales.KEYWORD_BOE .. "&" .. "dragonflight",
+      Syndicator.Locales.KEYWORD_PET,
+      Syndicator.Locales.KEYWORD_EQUIPMENT .. "&" .. "classic",
+      Syndicator.Locales.KEYWORD_COSMETIC,
+      Syndicator.Locales.KEYWORD_REAGENT,
+      Syndicator.Locales.KEYWORD_MANUSCRIPT,
+      TOY:lower(),
+    }
+    tAppendAll(addonTable.Constants.SampleSearchTerms, retailSearchTerms)
+  end
 end
 
 addonTable.Constants.KeyItemFamily = 256

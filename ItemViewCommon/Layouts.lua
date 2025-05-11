@@ -30,7 +30,7 @@ local function RegisterHighlightSimilarItems(self)
 end
 
 -- Supplied by Syndicator
-local LibBattlePetTooltipLine = LibStub("LibBattlePetTooltipLine-1-0")
+local LibBattlePetTooltipLine = LibStub("LibBattlePetTooltipLine-1-0", true)
 -- Used to ease adding to battle pet tooltip which doesn't have AddDoubleLine
 local function AddDoubleLine(tooltip, left, right, ...)
   if tooltip.AddDoubleLine then
