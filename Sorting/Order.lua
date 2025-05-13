@@ -126,7 +126,10 @@ function addonTable.Sorting.AddSortKeys(list)
       else
         item.classID, item.subClassID = select(6, C_Item.GetItemInfoInstant(item.itemID))
       end
-      item.invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID)
+      if item.classID == nil then -- Fallback for broken items
+        item.classID, item.subClassID = -1, -1
+      end
+      item.invSlotID = C_Item.GetItemInventoryTypeByID(item.itemID) or -1
       item.index = index
       if item.itemID == addonTable.Constants.BattlePetCageID then
         local speciesID = tonumber(item.itemLink:match("battlepet:(%d+)"))
