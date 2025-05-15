@@ -66,7 +66,7 @@ function addonTable.SlashCmd.ResetCategories()
   addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_GROUP_EMPTY_SLOTS)
   addonTable.Config.ResetOne(addonTable.Config.Options.RECENT_TIMEOUT)
   addonTable.Config.ResetOne(addonTable.Config.Options.CATEGORY_DEFAULT_IMPORT)
-  ReloadUI()
+  addonTable.Core.MigrateSettings()
 end
 
 function addonTable.SlashCmd.RemoveUnusedCategories()
@@ -109,6 +109,15 @@ end
 
 function addonTable.SlashCmd.Timers()
   addonTable.Config.Set(addonTable.Config.Options.DEBUG_TIMERS, not addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS))
+  addonTable.Utilities.Message("Performance timers: " .. (addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) and "Enabled" or "Disabled"))
+end
+
+function addonTable.SlashCmd.SwapLayouts()
+  local currentBags = addonTable.Config.Get(addonTable.Config.Options.BAG_VIEW_TYPE)
+  local currentBank = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_TYPE)
+
+  addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, currentBags == "category" and "single" or "category")
+  addonTable.Config.Set(addonTable.Config.Options.BANK_VIEW_TYPE, currentBank == "category" and "single" or "category")
 end
 
 local COMMANDS = {
@@ -128,11 +137,14 @@ local COMMANDS = {
   [addonTable.Locales.SLASH_KEYWORDS] = addonTable.SlashCmd.Keywords,
   ["categories"] = addonTable.SlashCmd.Categories,
   [addonTable.Locales.SLASH_CATEGORIES] = addonTable.SlashCmd.Categories,
+  ["swap"] = addonTable.SlashCmd.SwapLayouts,
+  [addonTable.Locales.SLASH_SWAP] = addonTable.SlashCmd.SwapLayouts,
 }
 local HELP = {
   {"", addonTable.Locales.SLASH_HELP},
   {addonTable.Locales.SLASH_KEYWORDS, addonTable.Locales.SLASH_KEYWORDS_HELP},
   {addonTable.Locales.SLASH_CATEGORIES, addonTable.Locales.SLASH_CATEGORIES_HELP},
+  {addonTable.Locales.SLASH_SWAP, addonTable.Locales.SLASH_SWAP_HELP},
   {addonTable.Locales.SLASH_SEARCH_EXTENDED, addonTable.Locales.SLASH_SEARCH_HELP},
   {addonTable.Locales.SLASH_REMOVEUNUSEDCATEGORIES, addonTable.Locales.SLASH_REMOVEUNUSEDCATEGORIES_HELP},
   {addonTable.Locales.SLASH_RESET, addonTable.Locales.SLASH_RESET_HELP},
