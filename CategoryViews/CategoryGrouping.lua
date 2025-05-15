@@ -420,7 +420,7 @@ do
       end
 
       if not C_Item.IsItemDataCachedByID(item.itemID) then
-        C_Item.RequestLoadItemData(item.itemID)
+        C_Item.RequestLoadItemDataByID(item.itemID)
         return false
       end
       local info = C_Item.GetItemUpgradeInfo(item.itemLink)
