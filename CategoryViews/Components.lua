@@ -112,6 +112,7 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
             else
               local sectionSource = entry:match("^_(.*)")
               if sectionSource then
+                level = level + 1
                 sectionToggled[sectionSource] = sectionToggled[self.source]
               end
             end
