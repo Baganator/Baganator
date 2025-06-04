@@ -96,6 +96,27 @@ function addonTable.CategoryViews.GetSectionButtonPool(parent)
       if button == "LeftButton" then
         local sectionToggled = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED)
         sectionToggled[self.source] = not sectionToggled[self.source]
+        if IsShiftKeyDown() then -- Expand/collapse all children if Shift+Clicked
+          local displayOrder = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER)
+          local level = 0
+          for i = tIndexOf(displayOrder, "_" .. self.source) + 1, #displayOrder do
+            local entry = displayOrder[i]
+            if not entry then
+              break
+            end
+            if entry == addonTable.CategoryViews.Constants.SectionEnd then
+              level = level - 1
+              if level < 0 then
+                break
+              end
+            else
+              local sectionSource = entry:match("^_(.*)")
+              if sectionSource then
+                sectionToggled[sectionSource] = sectionToggled[self.source]
+              end
+            end
+          end
+        end
         addonTable.Config.Set(addonTable.Config.Options.CATEGORY_SECTION_TOGGLED, CopyTable(sectionToggled))
       elseif button == "RightButton" then
         local tree = CopyTable(self.section)
