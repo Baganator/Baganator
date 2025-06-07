@@ -456,7 +456,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   exportButton:SetText(addonTable.Locales.EXPORT)
   DynamicResizeButton_Resize(exportButton)
   exportButton:SetScript("OnClick", function()
-    StaticPopup_Show(exportDialog, nil, nil, addonTable.CustomiseDialog.CategoriesExport())
+    StaticPopup_Show(exportDialog, nil, nil, (addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n")))
   end)
   addonTable.Skins.AddFrame("Button", exportButton)
 
