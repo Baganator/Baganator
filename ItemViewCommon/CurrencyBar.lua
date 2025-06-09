@@ -139,7 +139,8 @@ local function ShowCurrencies(self, character)
       if strlenutf8(currencyText) > 5 then
         currencyText = AbbreviateNumbers(count)
       end
-      currencyText = currencyText .. " " .. CreateTextureMarkup(select(5, C_Item.GetItemInfoInstant(details.itemID)), 14, 14, 12, 12, 0.08, 0.96, 0.08, 0.96)
+      local _, _, _, _, icon = C_Item.GetItemInfoInstant(details.itemID)
+      currencyText = currencyText .. " " .. CreateTextureMarkup(icon, 14, 14, 12, 12, 0.08, 0.96, 0.08, 0.96)
       fontString:SetText(currencyText)
 
       fontString.button:SetScript("OnEnter", function()

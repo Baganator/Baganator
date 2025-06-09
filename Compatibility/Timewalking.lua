@@ -10,7 +10,7 @@ local timewalking = {
 }
 
 frame:SetScript("OnEvent", function()
-  local instanceDifficulty = select(3, GetInstanceInfo())
+  local _, _, instanceDifficulty = GetInstanceInfo()
   if instanceDifficulty ~= prevInstanceDifficulty and timewalking[prevInstanceDifficulty] or timewalking[instanceDifficulty] then
     Baganator.API.RequestItemButtonsRefresh()
   end

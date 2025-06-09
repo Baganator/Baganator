@@ -124,7 +124,8 @@ function addonTable.Sorting.AddSortKeys(list)
       if Syndicator.Search.GetClassSubClass then
         Syndicator.Search.GetClassSubClass(item)
       else
-        item.classID, item.subClassID = select(6, C_Item.GetItemInfoInstant(item.itemID))
+        local _
+        _, _, _, _, _, item.classID, item.subClassID = C_Item.GetItemInfoInstant(item.itemID)
       end
       if item.classID == nil then -- Fallback for broken items
         item.classID, item.subClassID = -1, -1

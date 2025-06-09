@@ -321,9 +321,9 @@ function addonTable.Utilities.GetExternalSortMethodName()
 end
 
 function addonTable.Utilities.GetBagType(bagID, itemID)
-  local classID, subClassID
+  local _, classID, subClassID
   if itemID then
-    classID, subClassID = select(6, C_Item.GetItemInfoInstant(itemID))
+    _, _, _, _, _, classID, subClassID = C_Item.GetItemInfoInstant(itemID)
   end
   local iconDetails = addonTable.Constants.ContainerKeyToInfo[subClassID]
   if classID ~= nil and classID == Enum.ItemClass.Quiver then

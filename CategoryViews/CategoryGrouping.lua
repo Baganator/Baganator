@@ -316,7 +316,7 @@ do
         item.classID = Enum.ItemClass.Battlepet
         item.subClassID = petType - 1
       else
-        local classID, subClassID = select(6, C_Item.GetItemInfoInstant(item.itemID))
+        local _, _, _, _, _, classID, subClassID = C_Item.GetItemInfoInstant(item.itemID)
         item.classID = classID
         item.subClassID = subClassID
       end
@@ -354,7 +354,8 @@ do
     if item.slot then
       return true
     end
-    item.slot = (select(4, C_Item.GetItemInfoInstant(item.itemID))) or "NONE"
+    local _, _, _, slot = C_Item.GetItemInfoInstant(item.itemID)
+    item.slot = slot or "NONE"
     return true
   end
 

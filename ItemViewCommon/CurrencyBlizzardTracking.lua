@@ -19,7 +19,7 @@ local function ApplyBlizzard()
         currencyID = currencyInfo.currencyTypesID
       end
     elseif GetBackpackCurrencyInfo then
-      _, currencyID = select(3, GetBackpackCurrencyInfo(i))
+      _, _, _, currencyID = GetBackpackCurrencyInfo(i)
     end
     if currencyID and existingCurrencies[currencyID] then
       table.insert(backpackCurrencies, currencyID)

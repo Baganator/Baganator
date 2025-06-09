@@ -224,7 +224,8 @@ function BaganatorCurrencyPanelMixin:UpdateCurrencies()
       elseif details.itemID then
         local itemName = C_Item.GetItemNameByID(details.itemID) or " "
         if itemName:lower():match(search) and not self.isWarbandOnly then
-          table.insert(items, {type = "item", name = itemName, itemID = details.itemID, amount = addonTable.ItemViewCommon.GetTrackedItemCount(details.itemID, self.selectedCharacter), icon = select(5, C_Item.GetItemInfoInstant(details.itemID)), isLive = isLive})
+          local _, _, _, _, icon = C_Item.GetItemInfoInstant(details.itemID)
+          table.insert(items, {type = "item", name = itemName, itemID = details.itemID, amount = addonTable.ItemViewCommon.GetTrackedItemCount(details.itemID, self.selectedCharacter), icon = icon, isLive = isLive})
         end
       end
     end
