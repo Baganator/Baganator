@@ -289,6 +289,7 @@ function addonTable.Utilities.AddScrollBar(self)
   ScrollUtil.AddManagedScrollBarVisibilityBehavior(self.ScrollBox, self.ScrollBar)
   self.ScrollChild:SetScript("OnSizeChanged", nil)
   self.ScrollBox:SetScript("OnSizeChanged", nil)
+  self.ScrollBox:SetPanExtent(100)
 
   function self:UpdateScroll(ySaved, scale)
     local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
