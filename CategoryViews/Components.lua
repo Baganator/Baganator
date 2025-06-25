@@ -35,6 +35,7 @@ function BaganatorCategoryViewsCategoryButtonMixin:OnEnter()
       if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.Merchant) then
         GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.RIGHT_CLICK_TO_VENDOR_6))
         GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SHIFT_CLICK_TO_VENDOR_ALL))
+        SetCursor("Interface/Cursor/Buy.blp");
       else
         GameTooltip:AddLine(GREEN_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.RIGHT_CLICK_TO_TRANSFER))
       end
@@ -45,6 +46,7 @@ end
 
 function BaganatorCategoryViewsCategoryButtonMixin:OnLeave()
   GameTooltip:Hide()
+  SetCursor(nil);
 end
 
 function addonTable.CategoryViews.GetSectionButtonPool(parent)
