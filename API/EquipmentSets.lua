@@ -367,7 +367,7 @@ addonTable.Utilities.OnAddonLoaded("Outfitter", function()
     local result = {}
     for _, name in ipairs(setNames) do
       local outfit = Outfitter_FindOutfitByName(name)
-      if outfit:OutfitUsesItem(itemInfo) then
+      if outfit and outfit:OutfitUsesItem(itemInfo) then
         table.insert(result, {
           name = name,
           iconTexture = outfit:GetIcon(),
