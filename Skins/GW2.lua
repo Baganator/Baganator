@@ -11,7 +11,7 @@ local function ConvertTags(tags)
 end
 
 local function AddHeader(frame, texture)
-  (frame.GwStripTextures or frame.StripTextures)(frame)
+  frame:GwStripTextures()
   GW.CreateFrameHeaderWithBody(frame, frame:GetTitleText(), texture, {})
   frame.gwHeader:ClearAllPoints()
   frame.gwHeader:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0, -25)
@@ -196,7 +196,7 @@ local skinners = {
     elseif tags.guildBank then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/GuildMicroButton-Up")
     elseif tags.allCharacters then
-      SetupIconButton(button, addonTable.Constants.IsEra and "Interface/AddOns/Baganator/Assets/All_Characters.png" or "Interface/AddOns/GW2_UI/textures/icons/microicons/LFDMicroButton-Up")
+      SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/LFDMicroButton-Up")
     elseif tags.customise then
       SetupIconButton(button, "Interface/AddOns/GW2_UI/textures/icons/microicons/MainMenuMicroButton-Up")
     elseif tags.bagSlots then
@@ -213,7 +213,7 @@ local skinners = {
     end
   end,
   Button = function(frame)
-    (frame.GwSkinButton or frame.SkinButton)(frame, false, true, false, false, false, false)
+    frame:GwSkinButton(false, true, false, false, false, false)
   end,
   ButtonFrame = function(frame, tags)
     frame:SetFrameStrata("HIGH")
@@ -263,8 +263,8 @@ local skinners = {
     if GW.HandleTabs then
       GW.HandleTabs(frame, false)
     else
-      (frame.GwStripTextures or frame.StripTextures)(frame)
-      ;(frame.GwSkinButton or frame.SkinButton)(frame, false, true, false, false, false, false)
+      frame:GwStripTextures()
+      frame:GwSkinButton(false, true, false, false, false, false)
       if Baganator.Constants.IsRetail then
         -- Work around GW2 bug on retail where the hover texture doesn't hide
         -- properly
@@ -284,8 +284,8 @@ local skinners = {
     if GW.HandleTabs then
       GW.HandleTabs(frame, true)
     else
-      (frame.GwStripTextures or frame.StripTextures)(frame)
-      ;(frame.GwSkinButton or frame.SkinButton)(frame, false, true, false, false, false, false)
+      frame:GwStripTextures()
+      frame:GwSkinButton(false, true, false, false, false, false)
       if Baganator.Constants.IsRetail then
         -- Work around GW2 bug on retail where the hover texture doesn't hide
         -- properly
@@ -305,12 +305,12 @@ local skinners = {
     GW.HandleTrimScrollBar(frame)
   end,
   CheckBox = function(frame)
-    (frame.GwSkinCheckButton or frame.SkinCheckButton)(frame)
+    frame:GwSkinCheckButton()
     frame:SetPoint("TOP", 0, -12)
     frame:SetSize(15, 15)
   end,
   Slider = function(frame)
-    (frame.GwSkinSliderFrame or frame.SkinSliderFrame)(frame)
+    frame:GwSkinSliderFrame()
     frame:GetThumbTexture():SetSize(16, 16)
     frame.tex:SetDrawLayer("ARTWORK")
     frame.tex:SetPoint("TOPLEFT", 0, 2)
@@ -318,7 +318,7 @@ local skinners = {
   end,
   InsetFrame = function(frame)
     frame.Bg:Hide()
-    ;(frame.GwStripTextures or frame.StripTextures)(frame)
+    frame:GwStripTextures()
     if frame.NineSlice then
       frame.NineSlice:Hide()
     end
@@ -357,11 +357,11 @@ local skinners = {
     button:SetHitRectInsets(-5, 0, 0, 0)
   end,
   Dialog = function(frame)
-    (frame.GwStripTextures or frame.StripTextures)(frame)
+    frame:GwStripTextures()
     if frame.NineSlice then
       frame.NineSlice:Hide()
     end
-    ;(frame.GwCreateBackdrop or frame.CreateBackdrop)(frame)
+    frame:GwCreateBackdrop()
     local tex = frame:CreateTexture(nil, "BACKGROUND")
     tex:SetAllPoints(frame)
     tex:SetTexture("Interface/AddOns/GW2_UI/textures/party/manage-group-bg")
@@ -377,23 +377,13 @@ local function SkinFrame(details)
 end
 
 local function DisableGW2Defaults()
-  if GW.SetSetting then
-    GW.SetSetting("BAG_SHOW_EQUIPMENT_SET_NAME",  false)
-    GW.SetSetting("BAG_ITEM_JUNK_ICON_SHOW",  false)
-    GW.SetSetting("BAG_ITEM_UPGRADE_ICON_SHOW",  false)
-    -- overwrites border from baganator to always show something at least white
-    GW.SetSetting("BAG_ITEM_QUALITY_BORDER_SHOW",  true)
-    GW.SetSetting("BAG_PROFESSION_BAG_COLOR",  false)
-    GW.SetSetting("BAG_SHOW_ILVL",  false)
-  else
-    GW.settings.BAG_SHOW_EQUIPMENT_SET_NAME =  false
-    GW.settings.BAG_ITEM_JUNK_ICON_SHOW =  false
-    GW.settings.BAG_ITEM_UPGRADE_ICON_SHOW =  false
-    -- needs to be on otherwise hides border used in Baganator
-    GW.settings.BAG_ITEM_QUALITY_BORDER_SHOW =  true
-    GW.settings.BAG_PROFESSION_BAG_COLOR =  false
-    GW.settings.BAG_SHOW_ILVL =  false
-  end
+  GW.settings.BAG_SHOW_EQUIPMENT_SET_NAME =  false
+  GW.settings.BAG_ITEM_JUNK_ICON_SHOW =  false
+  GW.settings.BAG_ITEM_UPGRADE_ICON_SHOW =  false
+  -- needs to be on otherwise hides border used in Baganator
+  GW.settings.BAG_ITEM_QUALITY_BORDER_SHOW =  true
+  GW.settings.BAG_PROFESSION_BAG_COLOR =  false
+  GW.settings.BAG_SHOW_ILVL =  false
 end
 
 local function HideBagButtons()

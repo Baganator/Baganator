@@ -940,7 +940,7 @@ local function ApplyQualityBorderClassic(self, quality)
     self.IconBorder:SetVertexColor(color.r, color.g, color.b, 1)
     self.IconBorder:Show()
   else
-    self.IconBorder:SetVertexColor(1, 1, 1, 0)
+    self.IconBorder:SetVertexColor(1, 1, 1, 1)
     self.IconBorder:Hide()
   end
 end
