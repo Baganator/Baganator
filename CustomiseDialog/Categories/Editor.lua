@@ -402,6 +402,9 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.CATEGORY_SEARCH_EDIT_MODE then
       ApplySearchMode()
+    elseif settingName == addonTable.Config.Options.CATEGORY_DISPLAY_ORDER then
+      addonTable.CallbackRegistry:TriggerEvent("SetSelectedCategory", nil)
+      self:OnHide()
     end
   end)
 
