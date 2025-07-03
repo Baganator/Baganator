@@ -211,6 +211,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:DoSort(isReverse)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:OnShow()
+  self.TabSettingsMenu:Hide()
   self.transferState = {}
 end
 
@@ -313,7 +314,11 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForT
     end
 
     if self.TabSettingsMenu:IsShown() then
-      self.TabSettingsMenu:OnNewBankTabSelected(bagID)
+      if bagID ~= nil then
+        self.TabSettingsMenu:OnNewBankTabSelected(bagID)
+      else
+        self.TabSettingsMenu:Hide()
+      end
     end
   end
 end
