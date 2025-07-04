@@ -434,14 +434,16 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     local oldIndex = tIndexOf(displayOrder, self.currentCategory)
     if oldIndex then
       table.remove(displayOrder, oldIndex)
-      addonTable.Config.Set(addonTable.Config.Options.CATEGORY_DISPLAY_ORDER, CopyTable(displayOrder))
     end
 
     if customCategories[self.currentCategory] then
       customCategories[self.currentCategory] = nil
       categoryMods[self.currentCategory] = nil
-      addonTable.Config.Set(addonTable.Config.Options.CUSTOM_CATEGORIES, CopyTable(customCategories))
     end
+    addonTable.Config.MultiSet({
+      [addonTable.Config.Options.CATEGORY_DISPLAY_ORDER] = CopyTable(displayOrder),
+      [addonTable.Config.Options.CUSTOM_CATEGORIES] = CopyTable(customCategories),
+    })
 
     self:OnHide()
   end)
