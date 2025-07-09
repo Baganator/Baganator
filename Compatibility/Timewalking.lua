@@ -7,6 +7,7 @@ local prevInstanceDifficulty
 local timewalking = {
   [24] = true, -- dungeon
   [33] = true, -- raid
+  [232] = true, -- dastardly duos
 }
 
 frame:SetScript("OnEvent", function()
@@ -17,4 +18,3 @@ frame:SetScript("OnEvent", function()
   prevInstanceDifficulty = instanceDifficulty
 end)
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
-
