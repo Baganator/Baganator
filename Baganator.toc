@@ -166,3 +166,4 @@ Compatibility\Lockpicking.lua
 Compatibility\Refunds.lua
 Compatibility\Contexts.lua
 Compatibility\Timewalking.lua
+Compatibility\AuctionValue.lua
