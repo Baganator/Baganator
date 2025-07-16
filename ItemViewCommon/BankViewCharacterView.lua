@@ -48,7 +48,6 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
   end)
 
   Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
-    self.tabsSetup = false
     if self.lastCharacter == character then
       self.lastCharacter = self.liveCharacter
     end

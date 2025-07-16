@@ -1,7 +1,7 @@
 <Ui>
   <Frame name="BaganatorSingleViewBankViewTemplate" virtual="true" inherits="BaganatorItemViewCommonBankViewTemplate">
     <KeyValues>
-      <KeyValue key="characterTemplate" value="BaganatorSingleViewBankViewCharacterViewTemplate"/>
+      <KeyValue key="characterTemplate" value="BaganatorSingleViewBankViewCharacterTabsViewTemplate"/>
       <KeyValue key="warbandTemplate" value="BaganatorSingleViewBankViewWarbandViewTemplate"/>
     </KeyValues>
   </Frame>

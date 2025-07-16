@@ -1,0 +1,30 @@
+<Ui>
+  <Frame name="BaganatorSingleViewBankViewCharacterTabsViewTemplate" virtual="true" mixin="BaganatorSingleViewBankViewCharacterTabsViewMixin" inherits="BaganatorItemViewCommonBankViewCharacterTabsViewTemplate">
+    <Frames>
+      <Frame parentKey="Container">
+        <Frames>
+          <Frame parentKey="BankTabLive" inherits="BaganatorLiveWarbandLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT" x="13" y="-50"/>
+            </Anchors>
+          </Frame>
+          <Frame parentKey="BankTabCached" inherits="BaganatorCachedWarbandLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT" x="13" y="-50"/>
+            </Anchors>
+          </Frame>
+          <Frame parentKey="BankUnifiedLive" inherits="BaganatorLiveBagLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT" x="13" y="-50"/>
+            </Anchors>
+          </Frame>
+          <Frame parentKey="BankUnifiedCached" inherits="BaganatorCachedBagLayoutTemplate">
+            <Anchors>
+              <Anchor point="TOPLEFT" x="13" y="-50"/>
+            </Anchors>
+          </Frame>
+        </Frames>
+      </Frame>
+    </Frames>
+  </Frame>
+</Ui>

@@ -1369,16 +1369,14 @@ function BaganatorLiveWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
   self.initialized = true
 end
 
-function BaganatorLiveWarbandLayoutMixin:MarkTabsPending(updatedWaiting)
-  self.refreshState[addonTable.Constants.RefreshReason.ItemData] = updatedWaiting.bags[self.prevState.bagID] == true
+function BaganatorLiveWarbandLayoutMixin:MarkTabsPending(section, updatedWaiting)
+  self.refreshState[addonTable.Constants.RefreshReason.ItemData] = updatedWaiting[section][self.prevState.bagID] == true
 end
 
-function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
+function BaganatorLiveWarbandLayoutMixin:ShowTab(bankData, tabIndex, indexes, rowWidth)
   local start = debugprofilestop()
 
-  local warbandData = Syndicator.API.GetWarband(1).bank
-
-  if #warbandData == 0 then
+  if #bankData == 0 then
     return
   end
 
@@ -1388,7 +1386,7 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("rebuild")
     end
-    self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
+    self:RebuildLayout(#bankData[tabIndex].slots, rowWidth)
     self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
   elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsColumns(self, rowWidth)
@@ -1401,7 +1399,7 @@ function BaganatorLiveWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
   if self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] or self.prevState.tabIndex ~= tabIndex then
     local bagID = indexes[tabIndex]
     self.indexFrame:SetID(bagID)
-    for index, cacheData in ipairs(warbandData[tabIndex].slots) do
+    for index, cacheData in ipairs(bankData[tabIndex].slots) do
       local button = self.buttons[index]
       if IsDifferentCachedData(button.BGR, cacheData) then
         button:SetItemDetails(cacheData)
@@ -1471,12 +1469,10 @@ function BaganatorCachedWarbandLayoutMixin:RebuildLayout(tabSize, rowWidth)
   self.initialized = true
 end
 
-function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
+function BaganatorCachedWarbandLayoutMixin:ShowTab(bankData, tabIndex, indexes, rowWidth)
   local start = debugprofilestop()
 
-  local warbandData = Syndicator.API.GetWarband(1).bank
-
-  if #warbandData == 0 then
+  if #bankData == 0 then
     return
   end
 
@@ -1486,7 +1482,7 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     if addonTable.Config.Get(addonTable.Config.Options.DEBUG_TIMERS) then
       addonTable.Utilities.DebugOutput("rebuild")
     end
-    self:RebuildLayout(#warbandData[tabIndex].slots, rowWidth)
+    self:RebuildLayout(#bankData[tabIndex].slots, rowWidth)
   elseif self.refreshState[addonTable.Constants.RefreshReason.Flow] or rowWidth ~= self.oldRowWidth then
     FlowButtonsColumns(self, rowWidth)
   end
@@ -1495,7 +1491,7 @@ function BaganatorCachedWarbandLayoutMixin:ShowTab(tabIndex, indexes, rowWidth)
     UpdateTextures(self)
   end
 
-  for index, cacheData in ipairs(warbandData[tabIndex].slots) do
+  for index, cacheData in ipairs(bankData[tabIndex].slots) do
     local button = self.buttons[index]
     button:SetItemDetails(cacheData)
   end
