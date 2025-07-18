@@ -234,11 +234,6 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   self:SetupBlizzardFramesForTab()
 
   if self.BankMissingHint:IsShown() then
-    if characterData.bankTabs and #characterData.bankTabs > 0 then
-      self:GetParent():ToggleCharacterMode()
-      return
-    end
-
     local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
     self:SetSize(
       math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,

@@ -18,15 +18,15 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
 
   self.Tabs = {}
 
-  self.CharacterBags = CreateFrame("Frame", nil, self, self.characterTemplate)
-  self.CharacterBags:SetPoint("TOPLEFT")
   if self.characterTabsTemplate and Syndicator.Constants.CharacterBankTabsActive then
-    self.CharacterTabs = CreateFrame("Frame", nil, self, self.characterTemplate)
-    self.CharacterTabs:SetPoint("TOPLEFT")
+    self.Character = CreateFrame("Frame", nil, self, self.characterTabsTemplate)
+    self.Character:SetPoint("TOPLEFT")
+  else
+    self.Character = CreateFrame("Frame", nil, self, self.characterTemplate)
+    self.Character:SetPoint("TOPLEFT")
   end
   self:InitializeWarband(self.warbandTemplate)
 
-  self.Character = self.CharacterTabs or self.CharacterBags
   self.currentTab = self.Character
   if addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB) == addonTable.Constants.BankTabType.Warband then
     self:SetTab(addonTable.Constants.BankTabType.Warband)
@@ -97,16 +97,6 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
     self.Tabs[1]:SetPoint("BOTTOM", 0, -30)
     PanelTemplates_SetNumTabs(self, #self.Tabs)
   end
-end
-
-function BaganatorItemViewCommonBankViewMixin:ToggleCharacterMode()
-  self.Character:Hide()
-  if self.Character == self.CharacterBags and self.CharacterTabs then
-    self.Character = self.CharacterTabs
-  elseif self.CharacterBags then
-    self.Character = self.CharacterBags
-  end
-  self:UpdateView()
 end
 
 function BaganatorItemViewCommonBankViewMixin:UpdateTransferButton()

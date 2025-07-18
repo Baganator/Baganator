@@ -87,6 +87,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnLoad()
   end)
 
   addonTable.CallbackRegistry:RegisterCallback("CharacterSelect", function(_, character)
+    self.updateTabs = true
     if character ~= self.lastCharacter then
       self.refreshState[addonTable.Constants.RefreshReason.ItemData] = true
       self.refreshState[addonTable.Constants.RefreshReason.Layout] = true
@@ -363,6 +364,10 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:UpdateTabs()
 
   local characterData = Syndicator.API.GetCharacter(self.lastCharacter)
 
+  if not characterData.bankTabs then
+    return
+  end
+
   local lastTab = nil
   local tabs = {}
 
@@ -519,7 +524,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:ShowTab(character
     self:GetParent():SetTitle(addonTable.Locales.XS_BANK:format(characterData.details.character))
   end
 
-  local characterBank = characterData.bankTabs[self.currentTab ~= 0 and self.currentTab or 1]
+  local characterBank = characterData.bankTabs and characterData.bankTabs[self.currentTab ~= 0 and self.currentTab or 1]
 
   local isBankData = characterBank and #characterBank.slots ~= 0
   self.BankMissingHint:SetShown(not isBankData)
@@ -548,11 +553,6 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:ShowTab(character
   end
 
   if self.BankMissingHint:IsShown() then
-    if characterData.bank and #characterData.bank > 0 then
-      self:GetParent():ToggleCharacterMode()
-      return
-    end
-
     -- Ensure bank missing hint has enough space to display
     local minWidth = self.BankMissingHint:GetWidth()
     local maxHeight = 30
