@@ -463,33 +463,10 @@ local function HideDefaultBank()
     end
   end
 
+  BankFrame:SetParent(hidden)
+  BankFrame:SetScript("OnShow", nil)
   BankFrame:SetScript("OnHide", nil)
   BankFrame:SetScript("OnEvent", nil)
-
-  if Syndicator.Constants.CharacterBankTabsActive then
-    BankFrame:HookScript("OnShow", function()
-      BankFrame:SetParent(hidden)
-      BankFrame:SetScript("OnShow", nil)
-    end)
-
-    CreateFrame("Button", "BaganatorSecureBankPurchaseButton", UIParent, "SecureActionButtonTemplate")
-    BaganatorSecureBankPurchaseButton:RegisterForClicks("AnyUp", "AnyDown")
-    BaganatorSecureBankPurchaseButton:SetAttribute("type", "click")
-    BaganatorSecureBankPurchaseButton:SetAttribute("clickbutton", (AccountBankPanel or BankPanel).PurchasePrompt.TabCostFrame.PurchaseButton)
-
-    CreateFrame("Button", "BaganatorSecureBankCharacterButton", UIParent, "SecureActionButtonTemplate")
-    BaganatorSecureBankCharacterButton:RegisterForClicks("AnyUp", "AnyDown")
-    BaganatorSecureBankCharacterButton:SetAttribute("type", "click")
-    BaganatorSecureBankCharacterButton:SetAttribute("clickbutton", BankFrame.TabSystem.tabs[1])
-
-    CreateFrame("Button", "BaganatorSecureBankWarbandButton", UIParent, "SecureActionButtonTemplate")
-    BaganatorSecureBankWarbandButton:RegisterForClicks("AnyUp", "AnyDown")
-    BaganatorSecureBankWarbandButton:SetAttribute("type", "click")
-    BaganatorSecureBankWarbandButton:SetAttribute("clickbutton", BankFrame.TabSystem.tabs[2])
-  else
-    BankFrame:SetParent(hidden)
-    BankFrame:SetScript("OnShow", nil)
-  end
 end
 
 local function SetupCharacterSelect(frameGroup)

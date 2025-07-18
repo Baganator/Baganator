@@ -23,9 +23,8 @@ end
 BaganatorItemViewCommonBankViewCharacterTabsViewMixin = {}
 
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnLoad()
-  print("in")
   self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
-  self.currentTab = addonTable.Config.Get(addonTable.Config.Options.WARBAND_CURRENT_TAB)
+  self.currentTab = addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB)
   self.updateTabs = true
 
   addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
@@ -104,16 +103,14 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnLoad()
   self.searchMonitors = {}
   self.tabsSearchCache = {}
 
-  self.purchaseButton = CreateFrame("Button", nil, self, "BaganatorSecureRightSideTabButtonTemplate")
-  self.purchaseButton:SetAttribute("type", "click")
-  self.purchaseButton:SetAttribute("clickbutton", (AccountBankPanel or BankPanel).PurchasePrompt.TabCostFrame.PurchaseButton)
+  self.purchaseButton = CreateFrame("Button", nil, self, "BaganatorRightSideTabButtonTemplate,BankPanelPurchaseButtonScriptTemplate")
+  self.purchaseButton:SetAttribute("overrideBankType", Enum.BankType.Character)
   self.purchaseButton:HookScript("OnClick", function()
     PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
   end)
-  self.purchaseButton:RegisterForClicks("AnyUp", "AnyDown")
   self.purchaseButton:SetScript("OnEnter", function()
     GameTooltip:SetOwner(self.purchaseButton, "ANCHOR_RIGHT")
-    GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.BUY_WARBAND_BANK_TAB))
+    GameTooltip:SetText(LINK_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.BUY_CHARACTER_BANK_TAB))
     local cost = C_Bank.FetchNextPurchasableBankTabData(Enum.BankType.Account).tabCost
     if cost > GetMoney() then
       GameTooltip:AddLine(addonTable.Locales.COST_X:format(RED_FONT_COLOR:WrapTextInColorCode(addonTable.Utilities.GetMoneyString(cost, true))))
@@ -318,7 +315,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:SetupBlizzardFram
     -- Ensure right-clicking a bag item puts the item into this tab
     BankPanel.selectedTabID = bagID;
     BankPanel.bankType = Enum.BankType.Character;
-    --BankFrame.GetActiveBankType = function() return Enum.BankType.Character end
+    BankFrame.GetActiveBankType = function() return Enum.BankType.Character end
 
     -- Workaround so that the tab edit UI shows the details for the current tab
     self.TabSettingsMenu.GetBankFrame = function()
@@ -462,7 +459,7 @@ end
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:SetCurrentTab(index)
   addonTable.CallbackRegistry:TriggerEvent("TransferCancel")
   self.currentTab = index
-  addonTable.Config.Set(addonTable.Config.Options.WARBAND_CURRENT_TAB, self.currentTab)
+  addonTable.Config.Set(addonTable.Config.Options.BANK_CURRENT_TAB, self.currentTab)
 end
 
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:HighlightCurrentTab()

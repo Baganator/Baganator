@@ -87,9 +87,14 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:OnLoad()
   addonTable.Skins.AddFrame("Button", self.WithdrawMoneyButton)
   addonTable.Skins.AddFrame("Button", self.DepositMoneyButton)
 
-  self.purchaseButton = CreateFrame("Button", nil, self, "BaganatorSecureRightSideTabButtonTemplate")
-  self.purchaseButton:SetAttribute("type", "macro")
-  self.purchaseButton:SetAttribute("macrotext", "/click BaganatorSecureBankWarbandButton LeftButton 1\n/click BaganatorSecureBankPurchaseButton LeftButton 1")
+  if Syndicator.Constants.CharacterBankTabsActive then
+    self.purchaseButton = CreateFrame("Button", nil, self, "BaganatorRightSideTabButtonTemplate,BankPanelPurchaseButtonScriptTemplate")
+    self.purchaseButton:SetAttribute("overrideBankType", Enum.BankType.Account)
+  else
+    self.purchaseButton = CreateFrame("Button", nil, self, "BaganatorSecureRightSideTabButtonTemplate")
+    self.purchaseButton:SetAttribute("type", "click")
+    self.purchaseButton:SetAttribute("clickbutton", AccountBankPanel.PurchasePrompt.TabCostFrame.PurchaseButton)
+  end
   self.purchaseButton:HookScript("OnClick", function()
     PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
   end)
@@ -295,10 +300,6 @@ end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForTab()
   if self.isLive then
-
-    BankFrame.activeTabIndex = addonTable.Constants.BlizzardBankTabConstants.Warband
-    BankFrame.selectedTab = 1
-
     local tabInfo = Syndicator.API.GetWarband(1).bank[self.currentTab]
     local bagID = Syndicator.Constants.AllWarbandIndexes[self.currentTab];
 
@@ -306,7 +307,10 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForT
     (AccountBankPanel or BankPanel).selectedTabID = bagID;
     if Syndicator.Constants.CharacterBankTabsActive then
       BankFrame.BankPanel.bankType = Enum.BankType.Account;
-      --BankFrame.GetActiveBankType = function() return Enum.BankType.Account end
+      BankFrame.GetActiveBankType = function() return Enum.BankType.Account end
+    else
+      BankFrame.activeTabIndex = addonTable.Constants.BlizzardBankTabConstants.Warband
+      BankFrame.selectedTab = 1
     end
 
     -- Workaround so that the tab edit UI shows the details for the current tab
