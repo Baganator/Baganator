@@ -18,10 +18,15 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
 
   self.Tabs = {}
 
-  self.Character = CreateFrame("Frame", nil, self, self.characterTemplate)
-  self.Character:SetPoint("TOPLEFT")
+  self.CharacterBags = CreateFrame("Frame", nil, self, self.characterTemplate)
+  self.CharacterBags:SetPoint("TOPLEFT")
+  if self.characterTabsTemplate and Syndicator.Constants.CharacterBankTabsActive then
+    self.CharacterTabs = CreateFrame("Frame", nil, self, self.characterTemplate)
+    self.CharacterTabs:SetPoint("TOPLEFT")
+  end
   self:InitializeWarband(self.warbandTemplate)
 
+  self.Character = self.CharacterTabs or self.CharacterBags
   self.currentTab = self.Character
   if addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB) == addonTable.Constants.BankTabType.Warband then
     self:SetTab(addonTable.Constants.BankTabType.Warband)
@@ -94,6 +99,16 @@ function BaganatorItemViewCommonBankViewMixin:InitializeWarband(template)
   end
 end
 
+function BaganatorItemViewCommonBankViewMixin:ToggleCharacterMode()
+  self.Character:Hide()
+  if self.Character == self.CharacterBags and self.CharacterTabs then
+    self.Character = self.CharacterTabs
+  elseif self.CharacterBags then
+    self.Character = self.CharacterBags
+  end
+  self:UpdateView()
+end
+
 function BaganatorItemViewCommonBankViewMixin:UpdateTransferButton()
   if not self.currentTab.isLive or self.currentTab.isLocked then
     self.TransferButton:Hide()
@@ -133,7 +148,7 @@ function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
     self:Show()
     self.liveBankActive = true
     if self.hasCharacter then
-      self.Character:ResetToLive()
+      self.CharacterBags:ResetToLive()
       self:UpdateView()
     end
   elseif eventName == "BANKFRAME_CLOSED" then

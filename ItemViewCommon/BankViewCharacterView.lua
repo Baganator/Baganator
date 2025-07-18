@@ -222,8 +222,8 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
 
-  self.DepositIntoReagentsBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and IsReagentBankUnlocked())
-  self.BuyReagentBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and not IsReagentBankUnlocked())
+  self.DepositIntoReagentsBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and not Syndicator.Constants.CharacterBankTabsActive and IsReagentBankUnlocked())
+  self.BuyReagentBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and not Syndicator.Constants.CharacterBankTabsActive and not IsReagentBankUnlocked())
 
   if self.CurrencyWidget.lastCharacter ~= self.lastCharacter then
     self.CurrencyWidget:UpdateCurrencies(character)
@@ -234,6 +234,11 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
   self:SetupBlizzardFramesForTab()
 
   if self.BankMissingHint:IsShown() then
+    if characterData.bankTabs and #characterData.bankTabs > 0 then
+      self:GetParent():ToggleCharacterMode()
+      return
+    end
+
     local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
     self:SetSize(
       math.max(400, self.BankMissingHint:GetWidth()) + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset + 40,

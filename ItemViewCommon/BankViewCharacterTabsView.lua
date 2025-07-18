@@ -548,6 +548,11 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:ShowTab(character
   end
 
   if self.BankMissingHint:IsShown() then
+    if characterData.bank and #characterData.bank > 0 then
+      self:GetParent():ToggleCharacterMode()
+      return
+    end
+
     -- Ensure bank missing hint has enough space to display
     local minWidth = self.BankMissingHint:GetWidth()
     local maxHeight = 30
