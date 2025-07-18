@@ -327,6 +327,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForT
         end
       }
     end
+    self.TabSettingsMenu.GetBankPanel = self.TabSettingsMenu.GetBankFrame
 
     if self.TabSettingsMenu:IsShown() then
       if bagID ~= nil then

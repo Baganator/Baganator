@@ -318,7 +318,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:SetupBlizzardFram
     BankFrame.GetActiveBankType = function() return Enum.BankType.Character end
 
     -- Workaround so that the tab edit UI shows the details for the current tab
-    self.TabSettingsMenu.GetBankFrame = function()
+    self.TabSettingsMenu.GetBankPanel = function()
       return {
         GetTabData = function(tabID)
           return {
