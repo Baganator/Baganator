@@ -87,6 +87,8 @@ ItemViewCommon\BackpackView.lua
 ItemViewCommon\BackpackView.xml
 ItemViewCommon\BankViewCharacterView.lua
 ItemViewCommon\BankViewCharacterView.xml
+ItemViewCommon\BankViewCharacterTabsView.lua
+ItemViewCommon\BankViewCharacterTabsView.xml
 ItemViewCommon\BankViewWarbandView.lua
 ItemViewCommon\BankViewWarbandView.xml
 ItemViewCommon\BankView.lua
@@ -100,6 +102,8 @@ ItemViewCommon\Initialize.lua
 SingleViews\Pools.lua
 SingleViews\BankViewCharacterView.lua
 SingleViews\BankViewCharacterView.xml
+SingleViews\BankViewCharacterTabsView.lua
+SingleViews\BankViewCharacterTabsView.xml
 SingleViews\BankViewWarbandView.lua
 SingleViews\BankViewWarbandView.xml
 SingleViews\BankView.xml
@@ -123,6 +127,8 @@ CategoryViews\Components.lua
 CategoryViews\Components.xml
 CategoryViews\BankViewCharacterView.lua
 CategoryViews\BankViewCharacterView.xml
+CategoryViews\BankViewCharacterTabsView.lua
+CategoryViews\BankViewCharacterTabsView.xml
 CategoryViews\BankViewWarbandView.lua
 CategoryViews\BankViewWarbandView.xml
 CategoryViews\BankView.xml
