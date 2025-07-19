@@ -83,5 +83,9 @@ function BaganatorSingleViewBankViewCharacterTabsViewMixin:ShowTab(character, ta
 
   self:OnFinished()
 
+  if self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - self.buttonsWidth - 5, self.Container:GetWidth())
+  end
+
   self:GetParent():OnTabFinished()
 end

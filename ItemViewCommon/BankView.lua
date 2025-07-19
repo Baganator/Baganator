@@ -138,7 +138,7 @@ function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
     self:Show()
     self.liveBankActive = true
     if self.hasCharacter then
-      self.CharacterBags:ResetToLive()
+      self.Character:ResetToLive()
       self:UpdateView()
     end
   elseif eventName == "BANKFRAME_CLOSED" then

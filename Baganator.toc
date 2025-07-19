@@ -127,6 +127,8 @@ CategoryViews\Components.lua
 CategoryViews\Components.xml
 CategoryViews\BankViewCharacterView.lua
 CategoryViews\BankViewCharacterView.xml
+CategoryViews\BankViewCharacterTabsView.lua
+CategoryViews\BankViewCharacterTabsView.xml
 CategoryViews\BankViewWarbandView.lua
 CategoryViews\BankViewWarbandView.xml
 CategoryViews\BankView.xml

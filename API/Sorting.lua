@@ -7,9 +7,11 @@ if addonTable.Constants.IsRetail then
       C_Container.SortBags()
     elseif containerType == Baganator.API.Constants.ContainerType.CharacterBank then
       C_Container.SortBankBags()
-      C_Timer.After(1, function()
-        C_Container.SortReagentBankBags()
-      end)
+      if not Syndicator.Constants.CharacterBankTabsActive then
+        C_Timer.After(1, function()
+          C_Container.SortReagentBankBags()
+        end)
+      end
     elseif containerType == Baganator.API.Constants.ContainerType.WarbandBank then
       C_Container.SortAccountBankBags()
     end

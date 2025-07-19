@@ -1,9 +1,9 @@
 ---@class addonTableBaganator
 local addonTable = select(2, ...)
-BaganatorCategoryViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
+BaganatorCategoryViewBankViewCharacterTabsViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewCharacterTabsViewMixin)
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
-  BaganatorItemViewCommonBankViewWarbandViewMixin.OnLoad(self)
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:OnLoad()
+  BaganatorItemViewCommonBankViewCharacterTabsViewMixin.OnLoad(self)
 
   self.Container.Layouts = {}
   self.LiveLayouts = {}
@@ -26,7 +26,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnLoad()
   end)
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:OnEvent(eventName, ...)
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:OnEvent(eventName, ...)
   if eventName == "CURSOR_CHANGED" and self.addToCategoryMode and not C_Cursor.GetCursorItem() then
     self.addToCategoryMode = nil
     if self:IsVisible() then
@@ -41,15 +41,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:OnEvent(eventName, ...)
   end
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:GetSearchMatches()
-  local matches = {}
-  for _, layouts in ipairs(self.LiveLayouts) do
-    tAppendAll(matches, layouts.SearchMonitor:GetMatches())
-  end
-  return matches
-end
-
-function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(sourceKey)
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:TransferCategory(sourceKey)
   if not self.isLive then
     return
   end
@@ -57,7 +49,7 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:TransferCategory(sourceKe
   self:RemoveSearchMatches(function() return self.layoutsBySourceKey[sourceKey] and self.layoutsBySourceKey[sourceKey].SearchMonitor:GetMatches() or {} end)
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:TransferSection(tree)
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:TransferSection(tree)
   if not self.isLive then
     return
   end
@@ -83,22 +75,47 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:TransferSection(tree)
   end)
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:GetActiveLayouts()
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:GetActiveLayouts()
   return self.activeLayouts
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:NotifyBagUpdate(updatedBags)
-  --self.LayoutManager:NotifyBagUpdate(updatedBags.bags)
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:GetSearchMatches()
+  local matches = {}
+  for _, layouts in ipairs(self.LiveLayouts) do
+    tAppendAll(matches, layouts.SearchMonitor:GetMatches())
+  end
+  return matches
 end
 
-function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
-  BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
-
-  if self.BankMissingHint:IsShown() then
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:ApplySearch(text)
+  if not self:IsVisible() then
     return
   end
 
+  for _, layout in ipairs(self.Container.Layouts) do
+    if layout:IsVisible() then
+      layout:ApplySearch(text)
+    end
+  end
+end
+
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:NotifyBagUpdate(updatedBags)
+  --self.LayoutManager:NotifyBagUpdate(updatedBags.bank)
+end
+
+function BaganatorCategoryViewBankViewCharacterTabsViewMixin:ShowTab(character, tabIndex, isLive)
+  BaganatorItemViewCommonBankViewCharacterTabsViewMixin.ShowTab(self, character, tabIndex, isLive)
+
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
+
+  if self.BankMissingHint:IsShown() then
+    self.LayoutManager:ClearVisuals()
+    return
+  end
+
+  local buttonPadding = 0
+
+  local lastButton
 
   self.isGrouping = not self.isLive and addonTable.Config.Get(addonTable.Config.Options.CATEGORY_ITEM_GROUPING)
   self.splitStacksDueToTransfer = self.isLive
@@ -107,20 +124,21 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     self.addToCategoryMode = false
   end
 
-  local warbandData = Syndicator.API.GetWarband(1)
-  local bagData, bagTypes, bagIndexes = {}, {}, nil
-  local bagWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
+  local characterData = Syndicator.API.GetCharacter(character)
+  local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bank", Syndicator.Constants.AllBankIndexes)
+  local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
+  local bagData = {}
   if self.currentTab > 0 then
-    table.insert(bagData, warbandData.bank[tabIndex].slots)
+    table.insert(bagData, characterData.bankTabs[tabIndex].slots)
     table.insert(bagTypes, 0)
-    bagIndexes = {Syndicator.Constants.AllWarbandIndexes[tabIndex]}
+    bagIndexes = {Syndicator.Constants.AllBankIndexes[tabIndex]}
   else
-    for _, tab in ipairs(warbandData.bank) do
+    for _, tab in ipairs(characterData.bankTabs) do
       table.insert(bagData, tab.slots)
       table.insert(bagTypes, 0)
     end
     bagWidth = bagWidth * 2
-    bagIndexes = Syndicator.Constants.AllWarbandIndexes
+    bagIndexes = Syndicator.Constants.AllBankIndexes
   end
   self.LayoutManager:Layout(bagData, bagWidth, bagTypes, bagIndexes, sideSpacing, topSpacing, function(maxWidth, maxHeight)
     self.Container:SetSize(
@@ -128,6 +146,8 @@ function BaganatorCategoryViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
       maxHeight
     )
     self:OnFinished()
+
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - self.buttonsWidth - 5, self.Container:GetWidth())
 
     local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
     if self.searchToApply then

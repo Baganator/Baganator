@@ -343,9 +343,6 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:SetupBlizzardFram
   end
 end
 
-function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:UpdateCurrencies()
-end
-
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:UpdateTabs()
   if not self.updateTabs and (not self.purchaseTabAdded or self.isLive) then
     return
@@ -540,13 +537,29 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:ShowTab(character
 
   self:GetParent().AllButtons = {}
   tAppendAll(self:GetParent().AllButtons, self:GetParent().AllFixedButtons)
-  --tAppendAll(self:GetParent().AllButtons, self.LiveButtons)
+  tAppendAll(self:GetParent().AllButtons, self.LiveButtons)
+  tAppendAll(self:GetParent().AllButtons, self.TopButtons)
 
   local sideSpacing, topSpacing = addonTable.Utilities.GetSpacing()
 
   self:UpdateTabs()
   self:SetupBlizzardFramesForTab()
   self:HighlightCurrentTab()
+
+  self.DepositReagentsButton:SetShown(self.isLive)
+  if self.isLive then
+    self.buttonsWidth = self.DepositReagentsButton:GetWidth() + 10
+    table.insert(self:GetParent().AllButtons, self.DepositIntoReagentsBankButton)
+    self.DepositReagentsButton:ClearAllPoints()
+    self.DepositReagentsButton:SetPoint("LEFT", self, addonTable.Constants.ButtonFrameOffset + sideSpacing - 2, 0)
+    self.DepositReagentsButton:SetPoint("BOTTOM", self, 0, 6)
+  else
+    self.buttonsWidth = 0
+  end
+
+  if self.CurrencyWidget.lastCharacter ~= self.lastCharacter then
+    self.CurrencyWidget:UpdateCurrencies(character)
+  end
 
   for _, tab in ipairs(self.Tabs) do
     tab:Show()
@@ -566,6 +579,8 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:ShowTab(character
       80 + topSpacing / 2
     )
 
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.BankMissingHint:GetWidth())
+
     addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
     self:GetParent():OnTabFinished()
@@ -579,16 +594,11 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnFinished(charac
 
   local sideSpacing, topSpacing, searchSpacing = addonTable.Utilities.GetSpacing()
 
-  local buttonPadding = 0
-  if self.isLive then
-    buttonPadding = buttonPadding + 26
-  end
-
   self:SetSize(10, 10)
   local externalVerticalSpacing = self:GetParent().Tabs[1] and self:GetParent().Tabs[1]:IsShown() and (self:GetParent():GetBottom() - self:GetParent().Tabs[1]:GetBottom() + 5) or 0
   local tabHeight = #self.Tabs * (self.Tabs[1]:GetHeight() + 12) * self.Tabs[1]:GetScale() + 20 * self.Tabs[1]:GetScale()
   local screenHeightSpace = UIParent:GetHeight() / self:GetParent():GetScale() - externalVerticalSpacing
-  local spaceOccupied = self.Container:GetHeight() + 50 + searchSpacing + topSpacing / 2 + buttonPadding
+  local spaceOccupied = self.Container:GetHeight() + 50 + searchSpacing + topSpacing / 2
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
@@ -597,5 +607,5 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnFinished(charac
 
   self.Container:SetHeight(math.max(self.Container:GetHeight(), self:GetHeight() - spaceOccupied + self.Container:GetHeight()))
 
-  self:UpdateScroll(50 + searchSpacing + topSpacing * 1/4 + buttonPadding + externalVerticalSpacing, self:GetParent():GetScale())
+  self:UpdateScroll(50 + searchSpacing + topSpacing * 1/4 + externalVerticalSpacing, self:GetParent():GetScale())
 end
