@@ -18,8 +18,13 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
 
   self.Tabs = {}
 
-  self.Character = CreateFrame("Frame", nil, self, self.characterTemplate)
-  self.Character:SetPoint("TOPLEFT")
+  if self.characterTabsTemplate and Syndicator.Constants.CharacterBankTabsActive then
+    self.Character = CreateFrame("Frame", nil, self, self.characterTabsTemplate)
+    self.Character:SetPoint("TOPLEFT")
+  else
+    self.Character = CreateFrame("Frame", nil, self, self.characterTemplate)
+    self.Character:SetPoint("TOPLEFT")
+  end
   self:InitializeWarband(self.warbandTemplate)
 
   self.currentTab = self.Character

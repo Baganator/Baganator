@@ -6,8 +6,8 @@ StaticPopupDialogs[exportDialog] = {
   button1 = DONE,
   hasEditBox = 1,
   OnShow = function(self, data)
-    self.editBox:SetText(data)
-    self.editBox:HighlightText()
+    (self.editBox or self.EditBox):SetText(data);
+    (self.editBox or self.EditBox):HighlightText();
   end,
   EditBoxOnEnterPressed = function(self)
     self:GetParent():Hide()
@@ -456,7 +456,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   exportButton:SetText(addonTable.Locales.EXPORT)
   DynamicResizeButton_Resize(exportButton)
   exportButton:SetScript("OnClick", function()
-    StaticPopup_Show(exportDialog, nil, nil, (addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n"):gsub("|K", "||K"):gsub("|k", "||k")))
+    StaticPopup_Show(exportDialog, nil, nil, (addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n")))
   end)
   addonTable.Skins.AddFrame("Button", exportButton)
 

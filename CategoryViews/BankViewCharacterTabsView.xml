@@ -1,0 +1,10 @@
+<Ui>
+  <Frame name="BaganatorCategoryViewBankViewCharacterTabsViewTemplate" virtual="true" mixin="BaganatorCategoryViewBankViewCharacterTabsViewMixin" inherits="BaganatorItemViewCommonBankViewCharacterTabsViewTemplate">
+    <Scripts>
+      <OnEvent method="OnEvent"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="Container"/>
+    </Frames>
+  </Frame>
+</Ui>

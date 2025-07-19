@@ -458,12 +458,14 @@ end
 local function HideDefaultBank()
   -- 7 to 13 are bank bags
   for i = 7, 13 do
-    _G["ContainerFrame" .. i]:SetParent(hidden)
+    if _G["ContainerFrame" .. i] then
+      _G["ContainerFrame" .. i]:SetParent(hidden)
+    end
   end
 
   BankFrame:SetParent(hidden)
-  BankFrame:SetScript("OnHide", nil)
   BankFrame:SetScript("OnShow", nil)
+  BankFrame:SetScript("OnHide", nil)
   BankFrame:SetScript("OnEvent", nil)
 end
 

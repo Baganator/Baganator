@@ -1,0 +1,45 @@
+<Ui>
+  <Frame name="BaganatorItemViewCommonBankViewCharacterTabsViewTemplate" virtual="true" mixin="BaganatorItemViewCommonBankViewCharacterTabsViewMixin">
+    <Scripts>
+      <OnLoad method="OnLoad"/>
+      <OnShow method="OnShow"/>
+    </Scripts>
+    <Frames>
+      <Frame parentKey="TabSettingsMenu" inherits="BankPanelTabSettingsMenuTemplate" clampedToScreen="true" hidden="true">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPRIGHT" x="40" y="5"/>
+        </Anchors>
+      </Frame>
+
+      <Button parentKey="ToggleAllCharacters" inherits="BaganatorAllCharactersButtonTemplate" frameLevel="700" parentArray="TopButtons">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent" x="5" y="-1"/>
+        </Anchors>
+      </Button>
+
+      <Frame parentKey="CurrencyWidget" inherits="BaganatorCurrencyWidgetTemplate"/>
+
+      <Button parentKey="DepositReagentsButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_DEPOSIT_REAGENTS" parentArray="LiveButtons">
+        <Scripts>
+          <OnClick>
+            C_Bank.AutoDepositItemsIntoBank(Enum.BankType.Character)
+          </OnClick>
+        </Scripts>
+      </Button>
+    </Frames>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <FontString parentKey="BankMissingHint" inherits="GameFontHighlight" text="BAGANATOR_L_BANK_DATA_MISSING_HINT">
+          <Anchors>
+            <Anchor point="LEFT" x="20"/>
+          </Anchors>
+        </FontString>
+        <FontString parentKey="Money" inherits="GameFontHighlight" enableMouse="true">
+          <Anchors>
+            <Anchor point="BOTTOMRIGHT" x="-10" y="10"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Frame>
+</Ui>

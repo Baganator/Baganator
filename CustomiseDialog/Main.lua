@@ -530,8 +530,8 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       button1 = DONE,
       hasEditBox = 1,
       OnShow = function(self)
-        self.editBox:SetText("https://discord.gg/TtSN6DxSky")
-        self.editBox:HighlightText()
+        (self.editBox or self.EditBox):SetText("https://discord.gg/TtSN6DxSky");
+        (self.editBox or self.EditBox):HighlightText();
       end,
       EditBoxOnEnterPressed = function(self)
         self:GetParent():Hide()
@@ -704,8 +704,8 @@ function BaganatorCustomiseDialogMixin:SetupGeneral()
       button1 = DONE,
       hasEditBox = 1,
       OnShow = function(self)
-        self.editBox:SetText("https://linktr.ee/plusmouse")
-        self.editBox:HighlightText()
+        (self.editBox or self.EditBox):SetText("https://linktr.ee/plusmouse");
+        (self.editBox or self.EditBox):HighlightText()
       end,
       EditBoxOnEnterPressed = function(self)
         self:GetParent():Hide()

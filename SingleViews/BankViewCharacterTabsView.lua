@@ -1,8 +1,8 @@
 ---@class addonTableBaganator
 local addonTable = select(2, ...)
-BaganatorSingleViewBankViewWarbandViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewWarbandViewMixin)
+BaganatorSingleViewBankViewCharacterTabsViewMixin = CreateFromMixins(BaganatorItemViewCommonBankViewCharacterTabsViewMixin)
 
-function BaganatorSingleViewBankViewWarbandViewMixin:GetSearchMatches()
+function BaganatorSingleViewBankViewCharacterTabsViewMixin:GetSearchMatches()
   if self.Container.BankTabLive:IsShown() then
     return self.Container.BankTabLive.SearchMonitor:GetMatches()
   else
@@ -10,13 +10,13 @@ function BaganatorSingleViewBankViewWarbandViewMixin:GetSearchMatches()
   end
 end
 
-function BaganatorSingleViewBankViewWarbandViewMixin:NotifyBagUpdate(updatedBags)
-  self.Container.BankTabLive:MarkTabsPending("bags", updatedBags)
-  self.Container.BankUnifiedLive:MarkBagsPending("bags", updatedBags)
+function BaganatorSingleViewBankViewCharacterTabsViewMixin:NotifyBagUpdate(updatedBags)
+  self.Container.BankTabLive:MarkTabsPending("bank", updatedBags)
+  self.Container.BankUnifiedLive:MarkBagsPending("bank", updatedBags)
 end
 
-function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
-  BaganatorItemViewCommonBankViewWarbandViewMixin.ShowTab(self, tabIndex, isLive)
+function BaganatorSingleViewBankViewCharacterTabsViewMixin:ShowTab(character, tabIndex, isLive)
+  BaganatorItemViewCommonBankViewCharacterTabsViewMixin.ShowTab(self, character, tabIndex, isLive)
 
   if self.BankMissingHint:IsShown() then
     return
@@ -28,7 +28,7 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   self.Container.BankUnifiedLive:SetShown(self.isLive and self.currentTab == 0)
   self.Container.BankUnifiedCached:SetShown(not self.isLive and self.currentTab == 0)
 
-  local bankWidth = addonTable.Config.Get(addonTable.Config.Options.WARBAND_BANK_VIEW_WIDTH)
+  local bankWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
 
   local refresh = self.refreshState[addonTable.Constants.RefreshReason.ItemData] or self.refreshState[addonTable.Constants.RefreshReason.ItemWidgets] or self.refreshState[addonTable.Constants.RefreshReason.ItemTextures] or self.refreshState[addonTable.Constants.RefreshReason.Flow] or self.refreshState[addonTable.Constants.RefreshReason.Layout]
 
@@ -42,7 +42,7 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     end
 
     if refresh then
-      activeBank:ShowTab(Syndicator.API.GetWarband(1).bank, self.currentTab, Syndicator.Constants.AllWarbandIndexes, bankWidth)
+      activeBank:ShowTab(Syndicator.API.GetCharacter(character).bankTabs, self.currentTab, Syndicator.Constants.AllBankIndexes, bankWidth)
     end
   else
     if self.Container.BankUnifiedLive:IsShown() then
@@ -52,13 +52,13 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
     end
 
     if refresh then
-      local warbandData = Syndicator.API.GetWarband(1)
+      local characterData = Syndicator.API.GetCharacter(self.lastCharacter)
       local bagData = {}
-      for _, tab in ipairs(warbandData.bank) do
+      for _, tab in ipairs(characterData.bankTabs) do
         table.insert(bagData, tab.slots)
       end
 
-      activeBank:ShowBags(bagData, 1, Syndicator.Constants.AllWarbandIndexes, nil, bankWidth * 2)
+      activeBank:ShowBags(bagData, 1, Syndicator.Constants.AllBankIndexes, nil, bankWidth * 2)
     end
   end
 
@@ -82,6 +82,10 @@ function BaganatorSingleViewBankViewWarbandViewMixin:ShowTab(tabIndex, isLive)
   addonTable.CallbackRegistry:TriggerEvent("ViewComplete")
 
   self:OnFinished()
+
+  if self.refreshState[addonTable.Constants.RefreshReason.Layout] then
+    self.CurrencyWidget:UpdateCurrencyTextPositions(self.Container:GetWidth() - self.buttonsWidth - 5, self.Container:GetWidth())
+  end
 
   self:GetParent():OnTabFinished()
 end

@@ -48,7 +48,6 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:OnLoad()
   end)
 
   Syndicator.CallbackRegistry:RegisterCallback("CharacterDeleted", function(_, character)
-    self.tabsSetup = false
     if self.lastCharacter == character then
       self.lastCharacter = self.liveCharacter
     end
@@ -223,8 +222,8 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:UpdateForCharacter(ch
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
 
-  self.DepositIntoReagentsBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and IsReagentBankUnlocked())
-  self.BuyReagentBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and not IsReagentBankUnlocked())
+  self.DepositIntoReagentsBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and not Syndicator.Constants.CharacterBankTabsActive and IsReagentBankUnlocked())
+  self.BuyReagentBankButton:SetShown(self.isLive and addonTable.Constants.IsRetail and not Syndicator.Constants.CharacterBankTabsActive and not IsReagentBankUnlocked())
 
   if self.CurrencyWidget.lastCharacter ~= self.lastCharacter then
     self.CurrencyWidget:UpdateCurrencies(character)

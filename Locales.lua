@@ -227,8 +227,10 @@ L["RIGHT_CLICK_FOR_SETTINGS"] = "<Right-click for settings>"
 L["COST_X"] = "Cost: %s"
 
 L["BUY_WARBAND_BANK_TAB"] = "Buy Warband Bank Tab?"
+L["BUY_CHARACTER_BANK_TAB"] = "Buy Character Bank Tab?"
 L["DEPOSIT_WARBOUND"] = "Deposit Warbound Items"
 L["INCLUDE_REAGENTS"] = "Include Reagents"
+L["DEPOSIT_REAGENTS"] = "Deposit Reagents"
 L["EVERYTHING"] = "Everything"
 
 L["SEARCH_EVERYWHERE"] = "Search Everywhere"

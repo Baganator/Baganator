@@ -2,6 +2,7 @@
   <Frame name="BaganatorCategoryViewBankViewTemplate" virtual="true" inherits="BaganatorItemViewCommonBankViewTemplate">
     <KeyValues>
       <KeyValue key="characterTemplate" value="BaganatorCategoryViewBankViewCharacterViewTemplate"/>
+      <KeyValue key="characterTabsTemplate" value="BaganatorCategoryViewBankViewCharacterTabsViewTemplate"/>
       <KeyValue key="warbandTemplate" value="BaganatorCategoryViewBankViewWarbandViewTemplate"/>
     </KeyValues>
   </Frame>
