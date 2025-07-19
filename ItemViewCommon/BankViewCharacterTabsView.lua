@@ -325,7 +325,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:SetupBlizzardFram
             icon = tabInfo.iconTexture,
             name = tabInfo.name,
             depositFlags = tabInfo.depositFlags,
-            bankType = Enum.BankType.Account,
+            bankType = Enum.BankType.Character,
           }
         end
       }
