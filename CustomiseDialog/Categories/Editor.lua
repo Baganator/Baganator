@@ -419,7 +419,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       return
     end
 
-    StaticPopup_Show("Baganator_Export_Dialog", nil, nil, (addonTable.CustomiseDialog.SingleCategoryExport(self.currentCategory):gsub("|n", "||n")))
+    StaticPopup_Show("Baganator_Export_Dialog", nil, nil, (addonTable.CustomiseDialog.SingleCategoryExport(self.currentCategory):gsub("|n", "||n"):gsub("|K", "||K"):gsub("|k", "||k")))
   end)
 
   self.DeleteButton:SetScript("OnClick", function()
