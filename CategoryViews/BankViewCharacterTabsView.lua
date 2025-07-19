@@ -87,18 +87,6 @@ function BaganatorCategoryViewBankViewCharacterTabsViewMixin:GetSearchMatches()
   return matches
 end
 
-function BaganatorCategoryViewBankViewCharacterTabsViewMixin:ApplySearch(text)
-  if not self:IsVisible() then
-    return
-  end
-
-  for _, layout in ipairs(self.Container.Layouts) do
-    if layout:IsVisible() then
-      layout:ApplySearch(text)
-    end
-  end
-end
-
 function BaganatorCategoryViewBankViewCharacterTabsViewMixin:NotifyBagUpdate(updatedBags)
   --self.LayoutManager:NotifyBagUpdate(updatedBags.bank)
 end
