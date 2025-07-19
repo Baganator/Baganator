@@ -178,15 +178,15 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:ApplyTabButtonSea
   local characterData = Syndicator.API.GetCharacter(self.liveCharacter)
 
   for index, tab in ipairs(characterData.bankTabs) do
-    if not self.tabsSearchCache[1] then
-      self.tabsSearchCache[1] = {}
+    if not self.tabsSearchCache[self.liveCharacter] then
+      self.tabsSearchCache[self.liveCharacter] = {}
     end
 
-    if self.tabsSearchCache[1][index] == nil then
-      self.tabsSearchCache[1][index] = Syndicator.Search.GetBaseInfoFromList(tab.slots)
+    if self.tabsSearchCache[self.liveCharacter][index] == nil then
+      self.tabsSearchCache[self.liveCharacter][index] = Syndicator.Search.GetBaseInfoFromList(tab.slots)
     end
 
-    self.searchMonitors[index]:StartSearch(self.tabsSearchCache[1][index], text, function(matches)
+    self.searchMonitors[index]:StartSearch(self.tabsSearchCache[self.liveCharacter][index], text, function(matches)
       if #matches > 0 then
         self.Tabs[index + 1].Icon:SetAlpha(1)
       else
