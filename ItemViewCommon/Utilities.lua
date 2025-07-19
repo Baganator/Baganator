@@ -333,7 +333,7 @@ function addonTable.Utilities.GetBagType(bagID, itemID)
     return subClassID
   elseif addonTable.Constants.IsRetail and bagID == Enum.BagIndex.ReagentBag then
     return "reagentBag"
-  elseif addonTable.Constants.IsRetail and bagID == Enum.BagIndex.Reagentbank then
+  elseif addonTable.Constants.IsRetail and bagID == Enum.BagIndex.Reagentbank and not Syndicator.Constants.CharacterBankTabsActive then
     return "reagentBag"
   elseif bagID == Enum.BagIndex.Keyring then
     return "keyring"
