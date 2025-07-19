@@ -70,6 +70,17 @@ local LAYOUT_OPTIONS = {
     highText = "42",
     text = addonTable.Locales.BANK_COLUMNS,
     option = "bank_view_width",
+    check = function() return not Syndicator.Constants.CharacterBankTabsActive or not addonTable.Constants.IsRetail end,
+  },
+  {
+    type = "slider",
+    min = 1,
+    max = 42,
+    lowText = "1",
+    highText = "42",
+    text = addonTable.Locales.BANK_COLUMNS,
+    option = "character_bank_view_width",
+    check = function() return Syndicator.Constants.CharacterBankTabsActive and addonTable.Constants.IsRetail end,
   },
   {
     type = "slider",

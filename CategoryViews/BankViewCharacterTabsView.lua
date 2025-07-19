@@ -126,7 +126,7 @@ function BaganatorCategoryViewBankViewCharacterTabsViewMixin:ShowTab(character, 
 
   local characterData = Syndicator.API.GetCharacter(character)
   local bagTypes = addonTable.CategoryViews.Utilities.GetBagTypes(characterData, "bank", Syndicator.Constants.AllBankIndexes)
-  local bagWidth = addonTable.Config.Get(addonTable.Config.Options.BANK_VIEW_WIDTH)
+  local bagWidth = addonTable.Config.Get(addonTable.Config.Options.CHARACTER_BANK_VIEW_WIDTH)
   local bagData = {}
   if self.currentTab > 0 then
     table.insert(bagData, characterData.bankTabs[tabIndex].slots)

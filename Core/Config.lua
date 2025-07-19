@@ -11,6 +11,7 @@ local settings = {
   SEEN_WELCOME = {key = "seen_welcome", default = 0},
   BAG_VIEW_WIDTH = {key = "bag_view_width", default = 12, refresh = {Refresh.Layout}, zone = {Zone.Bags}},
   BANK_VIEW_WIDTH = {key = "bank_view_width", default = addonTable.Constants.IsRetail and 24 or 18, refresh = {Refresh.Layout}, zone = {Zone.CharacterBank}},
+  CHARACTER_BANK_VIEW_WIDTH = {key = "character_bank_view_width", default = 14, refresh = {Refresh.Layout}, zone = {Zone.CharacterBank}},
   WARBAND_BANK_VIEW_WIDTH = {key = "warband_bank_view_width", default = 14, refresh = {Refresh.Layout}, zone = {Zone.WarbandBank}},
   GUILD_VIEW_WIDTH = {key = "guild_view_width", default = 14, refresh = {Refresh.Layout}, zone = {Zone.GuildBank}},
   BAG_ICON_SIZE = {key = "bag_icon_size", default = 37, refresh = {Refresh.Layout, Refresh.Flow}},
