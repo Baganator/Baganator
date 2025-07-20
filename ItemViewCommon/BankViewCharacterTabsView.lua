@@ -124,6 +124,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnLoad()
     GameTooltip:Hide()
   end)
   addonTable.Skins.AddFrame("SideTabButton", self.purchaseButton)
+  addonTable.Skins.AddFrame("Button", self.DepositReagentsButton)
 end
 
 local function GetUnifiedSortData()

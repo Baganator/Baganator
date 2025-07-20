@@ -223,9 +223,11 @@ local skinners = {
       frame.BagSlots:SetPoint("LEFT", frame:GetTitleText(), "RIGHT")
       SkinContainerFrame(frame, frame.TopButtons, frame.AllFixedButtons)
     elseif tags.bank then
-      frame.Character.BagSlots:ClearAllPoints()
-      frame.Character.BagSlots:SetPoint("BOTTOM", frame, "TOP", 0, 8)
-      frame.Character.BagSlots:SetPoint("LEFT", frame:GetTitleText(), "RIGHT")
+      if frame.Character.BagSlots then
+        frame.Character.BagSlots:ClearAllPoints()
+        frame.Character.BagSlots:SetPoint("BOTTOM", frame, "TOP", 0, 8)
+        frame.Character.BagSlots:SetPoint("LEFT", frame:GetTitleText(), "RIGHT")
+      end
       SkinContainerFrame(frame, frame.Character.TopButtons, frame.AllFixedButtons)
     elseif tags.guild then
       frame.LogsFrame:SetFrameStrata("DIALOG")
