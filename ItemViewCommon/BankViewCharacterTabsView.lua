@@ -599,7 +599,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnFinished(charac
   local externalVerticalSpacing = self:GetParent().Tabs[1] and self:GetParent().Tabs[1]:IsShown() and (self:GetParent():GetBottom() - self:GetParent().Tabs[1]:GetBottom() + 5) or 0
   local tabHeight = #self.Tabs * (self.Tabs[1]:GetHeight() + 12) * self.Tabs[1]:GetScale() + 20 * self.Tabs[1]:GetScale()
   local screenHeightSpace = UIParent:GetHeight() / self:GetParent():GetScale() - externalVerticalSpacing
-  local spaceOccupied = self.Container:GetHeight() + 50 + searchSpacing + topSpacing / 2 + buttonPadding
+  local spaceOccupied = self.Container:GetHeight() + 50 + searchSpacing + topSpacing / 2 + buttonPadding + self.CurrencyWidget:GetExtraHeight()
 
   self:SetSize(
     self.Container:GetWidth() + sideSpacing * 2 + addonTable.Constants.ButtonFrameOffset - 2,
@@ -608,5 +608,5 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnFinished(charac
 
   self.Container:SetHeight(math.max(self.Container:GetHeight(), self:GetHeight() - spaceOccupied + self.Container:GetHeight()))
 
-  self:UpdateScroll(50 + searchSpacing + topSpacing * 1/4 + externalVerticalSpacing + buttonPadding, self:GetParent():GetScale())
+  self:UpdateScroll(50 + searchSpacing + topSpacing * 1/4 + externalVerticalSpacing + buttonPadding + self.CurrencyWidget:GetExtraHeight(), self:GetParent():GetScale())
 end
