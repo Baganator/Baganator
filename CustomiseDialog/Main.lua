@@ -194,6 +194,11 @@ local ICON_OPTIONS = {
     text = addonTable.Locales.HIDE_BOE_STATUS_ON_COMMON_2,
     option = "hide_boe_on_common",
   },
+  {
+    type = "checkbox",
+    text = addonTable.Locales.NEW_ITEMS_FLASHING_ANIMATION,
+    option = "new_items_flashing",
+  },
   { type = "spacing" },
   {
     type = "slider",

@@ -55,6 +55,7 @@ local settings = {
   ICON_EQUIPMENT_SET_BORDER = {key = "icon_equipment_set_border", default = true, refresh = {Refresh.ItemWidgets}},
   ICON_FLASH_SIMILAR_ALT = {key = "icon_flash_similar_alt", default = false},
   ICON_CONTEXT_FADING = {key = "icon_context_fading", default = true, refresh = {Refresh.ItemWidgets}},
+  NEW_ITEMS_FLASHING = {key = "new_items_flashing", default = true},
 
   JUNK_PLUGIN = {key = "junk_plugin", default = "poor_quality", refresh = {Refresh.Searches, Refresh.ItemWidgets}},
   JUNK_PLUGINS_IGNORED = {key = "junk_plugin_ignored", default = {}},

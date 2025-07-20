@@ -363,7 +363,7 @@ end
 
 local function ApplyNewItemAnimation(self, quality)
   -- Modified code from Blizzard for classic
-  local isNewItem = addonTable.NewItems:IsNewItem(self:GetParent():GetID(), self:GetID());
+  local isNewItem = addonTable.NewItems:IsNewItem(self:GetParent():GetID(), self:GetID()) and addonTable.Config.Get(addonTable.Config.Options.NEW_ITEMS_FLASHING);
 
   local newItemTexture = self.NewItemTexture;
   local battlepayItemTexture = self.BattlepayItemTexture;
