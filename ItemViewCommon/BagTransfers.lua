@@ -42,9 +42,9 @@ if Syndicator and Syndicator.Constants.WarbandBankActive then
 
   TransferToBank = function(matches, characterName, callback)
     local bankSlots
-    if BankFrame:GetActiveBankType() == Enum.BankType.Character then
+    if addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB) == addonTable.Constants.BankTabType.Character then
       if Syndicator.Constants.CharacterBankTabsActive then
-        local tabIndex = addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB)
+        local tabIndex = addonTable.Config.Get(addonTable.Config.Options.CHARACTER_BANK_CURRENT_TAB)
         if tabIndex > 0 then
           local bagsData = {Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bankTabs[tabIndex].slots}
           local indexes = {Syndicator.Constants.AllBankIndexes[tabIndex]}
@@ -60,7 +60,7 @@ if Syndicator and Syndicator.Constants.WarbandBankActive then
       else
         bankSlots = addonTable.Transfers.GetBagsSlots(Syndicator.API.GetCharacter(characterName).bank, Syndicator.Constants.AllBankIndexes)
       end
-    elseif BankFrame:GetActiveBankType() == Enum.BankType.Account then
+    elseif addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB) == addonTable.Constants.BankTabType.Warband then
       local oldCount = #matches
       local missing = 0
       matches = tFilter(matches, function(m)

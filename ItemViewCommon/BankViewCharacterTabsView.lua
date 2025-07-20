@@ -24,7 +24,7 @@ BaganatorItemViewCommonBankViewCharacterTabsViewMixin = {}
 
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:OnLoad()
   self.tabsPool = addonTable.ItemViewCommon.GetSideTabButtonPool(self)
-  self.currentTab = addonTable.Config.Get(addonTable.Config.Options.BANK_CURRENT_TAB)
+  self.currentTab = addonTable.Config.Get(addonTable.Config.Options.CHARACTER_BANK_CURRENT_TAB)
   self.updateTabs = true
 
   addonTable.Utilities.AddBagSortManager(self) -- self.sortManager
@@ -459,7 +459,7 @@ end
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:SetCurrentTab(index)
   addonTable.CallbackRegistry:TriggerEvent("TransferCancel")
   self.currentTab = index
-  addonTable.Config.Set(addonTable.Config.Options.BANK_CURRENT_TAB, self.currentTab)
+  addonTable.Config.Set(addonTable.Config.Options.CHARACTER_BANK_CURRENT_TAB, self.currentTab)
 end
 
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:HighlightCurrentTab()

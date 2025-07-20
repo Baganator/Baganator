@@ -36,6 +36,7 @@ local settings = {
   SHOW_SEARCH_BOX = {key = "show_search_box", default = true, refresh = {Refresh.Layout}},
 
   BANK_CURRENT_TAB = {key = "bank_current_tab", default = 1},
+  CHARACTER_BANK_CURRENT_TAB = {key = "character_bank_current_tab", default = 1},
   WARBAND_CURRENT_TAB = {key = "warband_current_tab", default = 1},
   GUILD_CURRENT_TAB = {key = "guild_current_tab", default = 1},
 
