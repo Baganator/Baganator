@@ -306,7 +306,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:SetupBlizzardFramesForT
     -- Ensure right-clicking a bag item puts the item into this bank
     (AccountBankPanel or BankPanel).selectedTabID = bagID;
     if Syndicator.Constants.CharacterBankTabsActive then
-      -- XXX: Fix swapping types here
+      BankFrame.BankPanel.bankType = Enum.BankType.Account
     else
       BankFrame.activeTabIndex = addonTable.Constants.BlizzardBankTabConstants.Warband
       BankFrame.selectedTab = 1

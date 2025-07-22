@@ -148,6 +148,10 @@ function BaganatorItemViewCommonBankViewMixin:OnEvent(eventName)
 end
 
 function BaganatorItemViewCommonBankViewMixin:OnShow()
+  if Syndicator.Constants.CharacterBankTabsActive then
+    BankFrame.BankPanel:Show()
+  end
+
   if Syndicator.Constants.WarbandBankActive then
     if C_PlayerInteractionManager.IsInteractingWithNpcOfType(Enum.PlayerInteractionType.AccountBanker) then
       self:SetTab(2)
@@ -178,6 +182,10 @@ function BaganatorItemViewCommonBankViewMixin:OnHide()
     C_Bank.CloseBankFrame()
   else
     CloseBankFrame()
+  end
+
+  if Syndicator.Constants.CharacterBankTabsActive then
+    BankFrame.BankPanel:Hide()
   end
 
   addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", "")

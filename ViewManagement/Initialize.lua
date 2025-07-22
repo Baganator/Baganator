@@ -464,9 +464,9 @@ local function HideDefaultBank()
   end
 
   BankFrame:SetParent(hidden)
-  BankFrame:SetScript("OnShow", nil)
   BankFrame:SetScript("OnHide", nil)
   BankFrame:SetScript("OnEvent", nil)
+  BankFrame:SetScript("OnShow", nil)
 end
 
 local function SetupCharacterSelect(frameGroup)
