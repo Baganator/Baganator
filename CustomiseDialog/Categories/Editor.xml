@@ -1,6 +1,6 @@
 <Ui>
   <Frame name="BaganatorCustomiseDialogCategoriesEditorTemplate" virtual="true" mixin="BaganatorCustomiseDialogCategoriesEditorMixin">
-    <Size x="300" y="590"/>
+    <Size x="300" y="620"/>
     <Scripts>
       <OnLoad method="OnLoad"/>
       <OnHide method="OnHide"/>
@@ -20,6 +20,11 @@
         <FontString inherits="GameFontHighlight" parentKey="GroupLabel" text="BAGANATOR_L_GROUP_BY" parentArray="ChangeAlpha">
           <Anchors>
             <Anchor point="TOPLEFT" x="15" y="-105"/>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontHighlight" parentKey="GroupLabel" text="BAGANATOR_L_SHOW_IN" parentArray="ChangeAlpha">
+          <Anchors>
+            <Anchor point="TOPLEFT" x="15" y="-160"/>
           </Anchors>
         </FontString>
       </Layer>

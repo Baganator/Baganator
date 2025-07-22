@@ -27,14 +27,23 @@ function addonTable.CustomiseDialog.SingleCategoryExport(name)
       end
     end
   end
+  local hideIn = {}
+  if mods and mods.hideIn then
+    for key, val in pairs(mods.hideIn) do
+      if val then
+        table.insert(hideIn, key)
+      end
+    end
+  end
   table.insert(export.modifications, {
     source = name,
     items = #items > 0 and items or nil,
     pets = #pets > 0 and pets or nil,
-    group = mods and mods.group,
-    color = mods and mods.color,
+    group = mods.group,
+    color = mods.color,
     showGroupPrefix = mods.showGroupPrefix,
     priority = mods.priority,
+    hideIn = #hideIn > 0 and hideIn or nil,
   })
 
   return addonTable.json.encode(export)
@@ -70,6 +79,14 @@ function addonTable.CustomiseDialog.CategoriesExport()
         end
       end
     end
+    local hideIn = {}
+    if mods and mods.hideIn then
+      for key, val in pairs(mods.hideIn) do
+        if val then
+          table.insert(hideIn, key)
+        end
+      end
+    end
     table.insert(export.modifications, {
       source = key,
       items = #items > 0 and items or nil,
@@ -78,6 +95,7 @@ function addonTable.CustomiseDialog.CategoriesExport()
       color = mods and mods.color,
       showGroupPrefix = mods.showGroupPrefix,
       priority = mods.priority,
+      hideIn = hideIn,
     })
   end
   for source, isHidden in pairs(addonTable.Config.Get("category_hidden")) do
@@ -191,6 +209,21 @@ local function ImportCategories(import)
       end
       newMods.color = c.color
     end
+    if c.hideIn then
+      if type(c.hideIn) ~= "table" then
+        addonTable.Utilities.Message(addonTable.Locales.INVALID_CATEGORY_IMPORT_FORMAT)
+        return
+      end
+      local hideIn = {}
+      for _, key in ipairs(c.hideIn) do
+        if key ~= "backpack" and key ~= "character_bank" and key ~= "warband_bank" then
+          addonTable.Utilities.Message(addonTable.Locales.INVALID_CATEGORY_IMPORT_FORMAT)
+          return
+        end
+        hideIn[key] = true
+      end
+      newMods.hideIn = hideIn
+    end
     categoryMods[c.source or c.name] = newMods
   end
 
@@ -216,6 +249,10 @@ function addonTable.CustomiseDialog.CategoriesImport(input)
     return
   end
   local customCategories, categoryMods, seenItems = ImportCategories(import)
+
+  if not customCategories then
+    return
+  end
 
   local sourceMap = {}
   local reverseMap = {}

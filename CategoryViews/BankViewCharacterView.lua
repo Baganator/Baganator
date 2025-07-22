@@ -12,6 +12,7 @@ function BaganatorCategoryViewBankViewCharacterViewMixin:OnLoad()
   self.LayoutManager = CreateFrame("Frame", nil, self)
   Mixin(self.LayoutManager, addonTable.CategoryViews.BagLayoutMixin)
   self.LayoutManager:OnLoad()
+  self.location = "character_bank"
 
   self:RegisterEvent("CURSOR_CHANGED")
   self:RegisterEvent("MODIFIER_STATE_CHANGED")

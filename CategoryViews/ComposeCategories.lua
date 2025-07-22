@@ -140,7 +140,7 @@ end
 
 -- Organise category data ready for display, including removing duplicate
 -- searches with priority determining which gets kept.
-function addonTable.CategoryViews.ComposeCategories(everything)
+function addonTable.CategoryViews.ComposeCategories(everything, location)
   local allDetails = {}
 
   local customCategories = addonTable.Config.Get(addonTable.Config.Options.CUSTOM_CATEGORIES)
@@ -184,16 +184,18 @@ function addonTable.CategoryViews.ComposeCategories(everything)
 
     local mods = categoryMods[source]
     local group, groupPrefix, attachedItems
+    local shouldShow = true
     if mods then
       if mods.addedItems and next(mods.addedItems) then
         attachedItems = mods.addedItems
       end
       group = mods.group
       groupPrefix = mods.showGroupPrefix
+      shouldShow = mods.hideIn == nil or not mods.hideIn[location]
     end
 
     local category = addonTable.CategoryViews.Constants.SourceToCategory[source]
-    if category then
+    if category and shouldShow then
       if category.auto then
         local autoDetails = GetAuto(category, everything)
         local currentTree = {}
@@ -274,7 +276,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
       end
     end
     category = customCategories[source]
-    if category then
+    if category and shouldShow then
       local search = category.search:lower()
       if search == "" then
         search = "________" .. (#allDetails + 1)
@@ -300,7 +302,7 @@ function addonTable.CategoryViews.ComposeCategories(everything)
     if a.priority == b.priority then
       return a.index < b.index
     else
-      return a.priority > b. priority
+      return a.priority > b.priority
     end
   end)
 

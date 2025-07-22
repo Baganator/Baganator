@@ -173,6 +173,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.ChangeSearchModeButton:Enable()
       self.CategoryColorSwatch.currentColor = CreateColor(1, 1, 1)
       self.CategoryColorSwatch:SetColorRGB(self.CategoryColorSwatch.currentColor:GetRGBA())
+      self.LocationsDropDown:GenerateMenu()
       operationInProgress = false
       Save()
       return
@@ -206,6 +207,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       self.Blocker:Show()
       self.ExportButton:Disable()
     end
+    self.LocationsDropDown:GenerateMenu()
     self.HiddenCheckBox:SetChecked(addonTable.Config.Get(addonTable.Config.Options.CATEGORY_HIDDEN)[value])
 
     local categoryMods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)
@@ -246,14 +248,14 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   end)
 
   local hiddenCheckBoxWrapper = GetCheckBox(self)
-  hiddenCheckBoxWrapper:SetPoint("TOP", 0, -200)
+  hiddenCheckBoxWrapper:SetPoint("TOP", 0, -250)
   self.HiddenCheckBox = hiddenCheckBoxWrapper.checkBox
   self.HiddenCheckBox:SetText(addonTable.Locales.HIDDEN)
 
   table.insert(self.ChangeAlpha, self.HiddenCheckBox)
 
   local prefixCheckBoxWrapper = GetCheckBox(self)
-  prefixCheckBoxWrapper:SetPoint("TOP", 0, -240)
+  prefixCheckBoxWrapper:SetPoint("TOP", 0, -285)
   self.PrefixCheckBox = prefixCheckBoxWrapper.checkBox
   self.PrefixCheckBox:SetText(addonTable.Locales.SHOW_NAME_PREFIX)
 
@@ -275,7 +277,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   })
   self.PrioritySlider:SetPoint("LEFT")
   self.PrioritySlider:SetPoint("RIGHT")
-  self.PrioritySlider:SetPoint("TOP", 0, -160)
+  self.PrioritySlider:SetPoint("TOP", 0, -210)
   self.PrioritySlider:SetValue(0)
   table.insert(self.ChangeAlpha, self.PrioritySlider)
 
@@ -313,6 +315,50 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.GroupDropDown:SetPoint("LEFT", 15, 0)
   self.GroupDropDown:SetPoint("RIGHT", -10, 0)
   table.insert(self.ChangeAlpha, self.GroupDropDown)
+
+  self.LocationsDropDown = CreateFrame("DropdownButton", nil, self, "WowStyle1DropdownTemplate")
+  self.LocationsDropDown:SetupMenu(function(_, rootDescription)
+    local labels = {
+      addonTable.Locales.BACKPACK,
+      addonTable.Locales.CHARACTER_BANK,
+      addonTable.Locales.WARBAND_BANK,
+    }
+    local values = {
+      "backpack",
+      "character_bank",
+      "warband_bank",
+    }
+    if not Syndicator.Constants.WarbandBankActive then
+      table.remove(labels)
+      table.remove(values)
+    end
+
+    for i, l in ipairs(labels) do
+      rootDescription:CreateCheckbox(labels[i], function()
+        local mods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)[self.currentCategory]
+        return not mods or not mods.hideIn or mods.hideIn[values[i]] ~= true
+      end, function()
+        local mods = addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)[self.currentCategory]
+        if not mods then
+          mods = {}
+          addonTable.Config.Get(addonTable.Config.Options.CATEGORY_MODIFICATIONS)[self.currentCategory] = mods
+        end
+        if not mods.hideIn then
+          mods.hideIn = {}
+        end
+        mods.hideIn[values[i]] = not mods.hideIn[values[i]]
+        local refreshState = {
+          [addonTable.Constants.RefreshReason.Searches] = true,
+          [addonTable.Constants.RefreshReason.Layout] = true,
+        }
+        addonTable.CallbackRegistry:TriggerEvent("RefreshStateChange", refreshState)
+      end)
+    end
+  end)
+  self.LocationsDropDown:SetPoint("TOP", 0, -175)
+  self.LocationsDropDown:SetPoint("LEFT", 15, 0)
+  self.LocationsDropDown:SetPoint("RIGHT", -10, 0)
+  table.insert(self.ChangeAlpha, self.LocationsDropDown)
 
   self.Blocker = CreateFrame("Frame", nil, self)
   self.Blocker:EnableMouse(true)
@@ -412,7 +458,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.PrefixCheckBox:SetScript("OnClick", Save)
 
   self.ItemsEditor = self:MakeItemsEditor()
-  self.ItemsEditor:SetPoint("TOP", 0, -290)
+  self.ItemsEditor:SetPoint("TOP", 0, -330)
 
   self.ExportButton:SetScript("OnClick", function()
     if self.currentCategory == "-1" then

@@ -592,7 +592,8 @@ function addonTable.CategoryViews.BagLayoutMixin:Layout(allBags, bagWidth, bagTy
 
   if refreshState[Refresh.ItemData] or refreshState[Refresh.Searches] then
     table.insert(calls, function()
-      self.state.composed = addonTable.CategoryViews.ComposeCategories(self.state.everything)
+      local container = self:GetParent()
+      self.state.composed = addonTable.CategoryViews.ComposeCategories(self.state.everything, container.location)
       Next()
     end)
   end
