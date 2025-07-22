@@ -352,6 +352,10 @@ L["ENABLE_CATEGORY_MODE_WARNING"] = "You need to enable category view if you wan
 L["SHOW_NAME_PREFIX"] = "Show name prefix"
 L["RAW_MODE"] = "Raw Mode"
 L["VISUAL_MODE"] = "Visual Mode"
+L["SHOW_IN"] = "Show in"
+L["BACKPACK"] = "Backpack"
+L["CHARACTER_BANK"] = "Character Bank"
+L["WARBAND_BANK"] = "Warband Bank"
 
 L["HELP_COLON_SEARCH"] = "Help: Search"
 L["HELP"] = "Help"
