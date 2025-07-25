@@ -146,8 +146,10 @@ function addonTable.ItemButtonUtil.UpdateSettings()
             if show == nil then
               local BGR = itemButton.BGR
               if not queued then
-                QueueWidget(function()
-                  if itemButton.BGR == BGR then
+                local function queueFunc()
+                  -- Ensure the item button's state is still the same
+                  -- IsShown ensures the item hasn't been returned to the pool
+                  if itemButton.BGR == BGR and itemButton:IsShown() then
                     -- Hide any widgets shown immediately because the widget
                     -- wasn't available
                     for i = 1, #callbacks do
@@ -156,9 +158,14 @@ function addonTable.ItemButtonUtil.UpdateSettings()
                         cornerWidget:Hide()
                       end
                     end
-                    Callback(itemButton)
+                    if itemButton.BGR.guid and itemButton.BGR.guid ~= C_Item.GetItemGUID(itemButton.BGR.itemLocation) then
+                      QueueWidget(queueFunc)
+                    else
+                      Callback(itemButton)
+                    end
                   end
-                end)
+                end
+                QueueWidget(queueFunc)
                 queued = true
               end
             elseif show then
@@ -695,7 +702,8 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     self.BGR.tooltipGetter = function() return C_TooltipInfo.GetBagItem(self:GetBagID(), self:GetID()) end
     local itemLocation = {bagID = self:GetParent():GetID(), slotIndex = self:GetID()}
     if C_Item.DoesItemExist(itemLocation) then
-      self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
+      self.BGR.guid = C_Item.GetItemGUID(itemLocation)
+      self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.guid, self.BGR.itemLink)
       self.BGR.itemLocation = itemLocation
     end
 
@@ -1188,7 +1196,8 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
     end
     local itemLocation = {bagID = self:GetParent():GetID(), slotIndex = self:GetID()}
     if C_Item.DoesItemExist(itemLocation) then
-      self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.itemLink)
+      self.BGR.guid = C_Item.GetItemGUID(itemLocation)
+      self.BGR.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(itemLocation, self.BGR.guid, self.BGR.itemLink)
       self.BGR.itemLocation = itemLocation
     end
 

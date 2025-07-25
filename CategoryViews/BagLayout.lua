@@ -64,9 +64,9 @@ local function Prearrange(isLive, bagID, bag, bagType, isGrouping)
       info.isJunkGetter = junkPlugin and function() local _, result = pcall(junkPlugin, bagID, slotIndex, info.itemID, info.itemLink); return result == true end
       local location = {bagID = bagID, slotIndex = slotIndex}
       if info.itemID ~= nil and C_Item.DoesItemExist(location) then
-        info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.itemLink)
-        info.itemLocation = location
         info.guid = C_Item.GetItemGUID(location)
+        info.setInfo = addonTable.ItemViewCommon.GetEquipmentSetInfo(location, info.guid, info.itemLink)
+        info.itemLocation = location
         if info.setInfo then
           info.useGUID = true
         end

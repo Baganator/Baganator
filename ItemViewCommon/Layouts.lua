@@ -876,6 +876,9 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
         table.insert(toResetCache, {newButton, cacheData})
       elseif newButton.BGR then
         newButton.BGR.itemLocation = {bagID = cacheData.bagID, slotIndex = cacheData.slotID}
+        if C_Item.DoesItemExist(newButton.BGR.itemLocation) then
+          newButton.BGR.guid = C_Item.GetItemGUID(newButton.BGR.itemLocation)
+        end
       end
       if newButton.index ~= index then
         self.reflowRequired = true
