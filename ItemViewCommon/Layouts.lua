@@ -874,7 +874,7 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
       end
       if itemWidgetsRefresh then
         table.insert(toResetCache, {newButton, cacheData})
-      elseif newButton.BGR then
+      elseif newButton.BGR and not newButton.isDummy then
         newButton.BGR.itemLocation = {bagID = cacheData.bagID, slotIndex = cacheData.slotID}
         if C_Item.DoesItemExist(newButton.BGR.itemLocation) then
           newButton.BGR.guid = C_Item.GetItemGUID(newButton.BGR.itemLocation)
