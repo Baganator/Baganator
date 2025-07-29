@@ -915,9 +915,12 @@ function BaganatorLiveCategoryLayoutMixin:ShowGroup(cacheList, rowWidth, categor
       indexFrame:SetID(cacheData.bagID)
       self.indexFrames[cacheData.bagID] = indexFrame
     end
-    newButton:SetParent(self.indexFrames[cacheData.bagID] or self)
-    newButton:SetID(cacheData.slotID or 0)
     if not cacheData.isDummy then
+      if newButton:GetParent():GetID() ~= cacheData.bagID or newButton:GetID() ~= cacheData.slotID then
+        self.reflowRequired = true
+      end
+      newButton:SetParent(self.indexFrames[cacheData.bagID])
+      newButton:SetID(cacheData.slotID or 0)
       local itemLocation = {bagID = cacheData.bagID, slotIndex = cacheData.slotID}
       SetItemButtonDesaturated(newButton, (C_Item.DoesItemExist(itemLocation) and C_Item.IsLocked(itemLocation)) or (newButton.BGR and newButton.BGR.persistIconGrey))
     end

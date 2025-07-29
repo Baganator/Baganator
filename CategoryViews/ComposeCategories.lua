@@ -254,11 +254,11 @@ function addonTable.CategoryViews.ComposeCategories(everything, location)
           source = source,
           index = #allDetails + 1,
           section = section,
-          search = "________" .. (#allDetails + 1),
-          priority = 0,
+          search = category.search or "________" .. (#allDetails + 1),
+          priority = category.priorityOffset + priority,
           auto = true,
           emptySlots = true,
-          label = addonTable.Locales.EMPTY,
+          label = category.name,
         }
       else
         allDetails[#allDetails + 1] = {

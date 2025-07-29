@@ -303,6 +303,13 @@ tAppendAll(addonTable.CategoryViews.Constants.DefaultCategories, {
     name = addonTable.Locales.EMPTY,
     emptySlots = true,
   },
+  {
+    key = "remaining_slots",
+    name = addonTable.Locales.CATEGORY_REMAINING_SLOTS,
+    search = "",
+    priorityOffset = -90,
+    emptySlots = true,
+  },
 })
 
 addonTable.CategoryViews.Constants.SourceToCategory = {}
