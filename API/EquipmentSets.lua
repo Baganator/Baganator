@@ -241,7 +241,7 @@ if not addonTable.Constants.IsRetail then
       local characterData = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter())
       local function DoLocation(location, slotInfo)
         -- We check by inventory slot because some classic era trinkets are Trade Goods -> Devices
-        if slotInfo.itemLink and select(4, C_Item.GetItemInfoInstant(itemLink)) ~= "INVTYPE_NON_EQUIP_IGNORE" and C_Item.DoesItemExist(location) then
+        if slotInfo.itemLink and select(4, C_Item.GetItemInfoInstant(slotInfo.itemLink)) ~= "INVTYPE_NON_EQUIP_IGNORE" and C_Item.DoesItemExist(location) then
           local runeSuffix = ""
           if ItemRack.AppendRuneID then
             local info
