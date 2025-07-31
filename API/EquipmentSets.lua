@@ -236,7 +236,7 @@ if not addonTable.Constants.IsRetail then
       local missing = {}
       local itemIDToGUID = {}
       for key in pairs(equipmentSetInfo) do
-        missing[key] = true
+        missing[key] = (missing[key] or 0) + 1
       end
       local characterData = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter())
       local function DoLocation(location, slotInfo)
@@ -259,13 +259,15 @@ if not addonTable.Constants.IsRetail then
           local itemRackID = ItemRack.GetIRString(slotInfo.itemLink) .. runeSuffix
           local guid = C_Item.GetItemGUID(location)
           if missing[itemRackID] then
-            missing[itemRackID] = nil
+            missing[itemRackID] = missing[itemRackID] - 1
+            if missing[itemRackID] == 0 then
+              missing[itemRackID] = nil
+            end
             guidToItemRef[guid] = itemRackID
           else
           end
-          if itemIDToGUID[slotInfo.itemID] == nil then
-            itemIDToGUID[slotInfo.itemID] = guid
-          end
+          itemIDToGUID[slotInfo.itemID] = itemIDToGUID[slotInfo.itemID] or {}
+          table.insert(itemIDToGUID[slotInfo.itemID], guid)
         end
       end
       local function DoBag(bagID, bagData)
@@ -289,11 +291,15 @@ if not addonTable.Constants.IsRetail then
         end
       end
       if next(missing) then
-        for key in pairs(missing) do
+        for key, amount in pairs(missing) do
           local itemID = tonumber(key:match("^%-?%d+"))
-          local guid = itemIDToGUID[itemID]
-          if guid then
-            guidToItemRef[guid] = key
+          if itemIDToGUID[itemID] then
+            while amount > 0 and #itemIDToGUID[itemID] > 0 do
+              local guid = table.remove(itemIDToGUID[itemID])
+              if guid then
+                guidToItemRef[guid] = key
+              end
+            end
           end
         end
       end
