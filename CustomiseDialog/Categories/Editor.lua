@@ -710,8 +710,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeATTImportButton(conta
 
   addFromATTButton:SetScript("OnClick", function()
     local activePaths = {}
-    for key, frame in pairs(_G) do
-      local path = key:match("^AllTheThings%-Window%-(.*%>.*%d)$")
+    for key, frame in pairs(ATTC.Windows) do
+      local path = key:match("^.*%>.*$")
       if path and frame:IsVisible() then
         table.insert(activePaths, path)
       end
