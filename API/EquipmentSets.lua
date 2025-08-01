@@ -188,12 +188,17 @@ if not addonTable.Constants.IsRetail then
         if name:sub(1, 1) ~= "~" then
           table.insert(equipmentSetNames, name)
           local setInfo = {name = name, iconTexture = details.icon}
+          local seenRefs = {}
           for _, itemRef in pairs(details.equip) do
             if itemRef ~= 0 then
+              if seenRefs[itemRef] then -- Some sets use 2 trinkets/rings, this adds a special key for that
+                itemRef = ";" .. itemRef
+              end
               if not equipmentSetInfo[itemRef] then
                 equipmentSetInfo[itemRef] = {}
               end
               table.insert(equipmentSetInfo[itemRef], setInfo)
+              seenRefs[itemRef] = true
             end
           end
         end
@@ -236,7 +241,7 @@ if not addonTable.Constants.IsRetail then
       local missing = {}
       local itemIDToGUID = {}
       for key in pairs(equipmentSetInfo) do
-        missing[key] = (missing[key] or 0) + 1
+        missing[key] = true
       end
       local characterData = Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter())
       local function DoLocation(location, slotInfo)
@@ -259,12 +264,10 @@ if not addonTable.Constants.IsRetail then
           local itemRackID = ItemRack.GetIRString(slotInfo.itemLink) .. runeSuffix
           local guid = C_Item.GetItemGUID(location)
           if missing[itemRackID] then
-            missing[itemRackID] = missing[itemRackID] - 1
-            if missing[itemRackID] == 0 then
-              missing[itemRackID] = nil
-            end
+            missing[itemRackID] = nil
             guidToItemRef[guid] = itemRackID
-          else
+          elseif missing[";" .. itemRackID] then
+            guidToItemRef[guid] = ";" .. itemRackID
           end
           itemIDToGUID[slotInfo.itemID] = itemIDToGUID[slotInfo.itemID] or {}
           table.insert(itemIDToGUID[slotInfo.itemID], guid)
@@ -291,14 +294,12 @@ if not addonTable.Constants.IsRetail then
         end
       end
       if next(missing) then
-        for key, amount in pairs(missing) do
-          local itemID = tonumber(key:match("^%-?%d+"))
-          if itemIDToGUID[itemID] then
-            while amount > 0 and #itemIDToGUID[itemID] > 0 do
-              local guid = table.remove(itemIDToGUID[itemID])
-              if guid then
-                guidToItemRef[guid] = key
-              end
+        for key in pairs(missing) do
+          local itemID = tonumber((key:match("^;?%-?(%d+)")))
+          if itemIDToGUID[itemID] and #itemIDToGUID[itemID] > 0 then
+            local guid = table.remove(itemIDToGUID[itemID])
+            if guid then
+              guidToItemRef[guid] = key
             end
           end
         end
