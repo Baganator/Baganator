@@ -11,17 +11,7 @@ local CONTAINER_TYPE_TO_MESSAGE = {
   void = addonTable.Locales.THAT_ITEM_IS_IN_VOID_STORAGE,
 }
 
-local dialogName = "Baganator_InventoryItemInX"
-StaticPopupDialogs[dialogName] = {
-  text = "",
-  button1 = OKAY,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
 Syndicator.API.RegisterShowItemLocation(function(mode, entity, container, itemLink, searchText)
-  StaticPopup_Hide(dialogName)
-
   local self = {}
 
   addonTable.CallbackRegistry:RegisterCallback("ViewComplete", function()
@@ -41,8 +31,7 @@ Syndicator.API.RegisterShowItemLocation(function(mode, entity, container, itemLi
       addonTable.CallbackRegistry:TriggerEvent("BankShow", entity)
       addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", searchText)
     else
-      StaticPopupDialogs[dialogName].text = CONTAINER_TYPE_TO_MESSAGE[container]
-      StaticPopup_Show(dialogName)
+      addonTable.Dialogs.ShowAcknowledge(CONTAINER_TYPE_TO_MESSAGE[container])
       addonTable.CallbackRegistry:UnregisterCallback("ViewComplete", self)
       return
     end
@@ -181,29 +170,6 @@ local function SaveSearch(label, search)
   end
 end
 
-local saveDialog = "Baganator_Save_Search_Dialog"
-StaticPopupDialogs[saveDialog] = {
-  text = addonTable.Locales.CHOOSE_A_LABEL_FOR_THIS_SEARCH,
-  button1 = ACCEPT,
-  button2 = CANCEL,
-  hasEditBox = 1,
-  OnShow = function(self)
-    self.editBox:SetFocus()
-  end,
-  OnAccept = function(self)
-    SaveSearch(self.editBox:GetText(), self.data)
-  end,
-  EditBoxOnEnterPressed = function(self)
-    SaveSearch(self:GetText(), self:GetParent().data)
-    self:GetParent():Hide()
-  end,
-  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-  editBoxWidth = 230,
-  maxLetters = 0,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
 function BaganatorSearchWidgetMixin:OpenSavedSearches()
   MenuUtil.CreateContextMenu(self.SavedSearchesButton, function(menu, rootDescription)
     local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
@@ -239,7 +205,9 @@ function BaganatorSearchWidgetMixin:OpenSavedSearches()
       end)
     else
       local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SAVE_SEARCH), function()
-        StaticPopup_Show(saveDialog, nil, nil, self.SearchBox:GetText())
+        addonTable.Dialogs.ShowEditBox(addonTable.Locales.CHOOSE_A_LABEL_FOR_THIS_SEARCH, ACCEPT, CANCEL, function(name)
+          SaveSearch(name, self.SearchBox:GetText())
+        end)
       end)
     end
   end)

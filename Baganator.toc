@@ -36,6 +36,7 @@ Core\Utilities.lua
 Core\SlashCmd.lua
 Core\Welcome.lua
 Core\Analytics.lua
+Core\Dialogs.lua
 Core\Main.lua
 
 Skins\Utilities.lua

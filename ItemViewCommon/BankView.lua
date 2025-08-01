@@ -36,17 +36,6 @@ function BaganatorItemViewCommonBankViewMixin:OnLoad()
     self.hasCharacter = true
   end)
 
-  self.confirmTransferAllDialogName = "addonTable.ConfirmTransferAll_" .. self:GetName()
-  StaticPopupDialogs[self.confirmTransferAllDialogName] = {
-    text = addonTable.Locales.CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK,
-    button1 = YES,
-    button2 = NO,
-    OnAccept = function()
-      self.currentTab:RemoveSearchMatches(function() end)
-    end,
-    timeout = 0,
-    hideOnEscape = 1,
-  }
   self:UpdateTransferButton()
 
   addonTable.Skins.AddFrame("ButtonFrame", self, {"bank"})
@@ -248,7 +237,9 @@ end
 
 function BaganatorItemViewCommonBankViewMixin:Transfer()
   if self.SearchWidget.SearchBox:GetText() == "" then
-    StaticPopup_Show(self.confirmTransferAllDialogName)
+    addonTable.Dialogs.ShowConfirm(addonTable.Locales.CONFIRM_TRANSFER_ALL_ITEMS_FROM_BANK, YES, NO, function()
+      self.currentTab:RemoveSearchMatches(function() end)
+    end)
   else
     self.currentTab:RemoveSearchMatches()
   end

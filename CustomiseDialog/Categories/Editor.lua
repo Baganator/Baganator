@@ -465,7 +465,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       return
     end
 
-    StaticPopup_Show("Baganator_Export_Dialog", nil, nil, (addonTable.CustomiseDialog.SingleCategoryExport(self.currentCategory):gsub("|n", "||n")))
+    addonTable.Dialogs.ShowCopy(addonTable.CustomiseDialog.SingleCategoryExport(self.currentCategory):gsub("|n", "||n"))
   end)
 
   self.DeleteButton:SetScript("OnClick", function()
@@ -673,13 +673,6 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeItemsEditor()
 end
 
 function BaganatorCustomiseDialogCategoriesEditorMixin:MakeATTImportButton(container)
-  local completeDialog = "Baganator_ATT_Add_Items_Complete"
-  StaticPopupDialogs[completeDialog] = {
-    text = "",
-    button1 = DONE,
-    timeout = 0,
-    hideOnEscape = 1,
-  }
   local addFromATTButton = CreateFrame("Button", nil, container, "UIPanelDynamicResizeButtonTemplate")
   addonTable.Skins.AddFrame("Button", addFromATTButton)
   addFromATTButton:SetText(addonTable.Locales.ATT_ADDON)
@@ -761,8 +754,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:MakeATTImportButton(conta
     end
     addonTable.Config.Set(addonTable.Config.Options.CATEGORY_MODIFICATIONS, CopyTable(categoryMods))
 
-    StaticPopupDialogs[completeDialog].text = addonTable.Locales.ADD_FROM_ATT_POPUP_COMPLETE:format(#items, #activePaths)
-    StaticPopup_Show(completeDialog)
+    addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.ADD_FROM_ATT_POPUP_COMPLETE:format(#items, #activePaths))
   end)
 
   return addFromATTButton

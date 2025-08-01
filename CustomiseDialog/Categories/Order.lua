@@ -1,23 +1,5 @@
 ---@class addonTableBaganator
 local addonTable = select(2, ...)
-local exportDialog = "Baganator_Export_Dialog"
-StaticPopupDialogs[exportDialog] = {
-  text = addonTable.Locales.CTRL_C_TO_COPY,
-  button1 = DONE,
-  hasEditBox = 1,
-  OnShow = function(self, data)
-    (self.editBox or self.EditBox):SetText(data);
-    (self.editBox or self.EditBox):HighlightText();
-  end,
-  EditBoxOnEnterPressed = function(self)
-    self:GetParent():Hide()
-  end,
-  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-  editBoxWidth = 230,
-  maxLetters = 0,
-  timeout = 0,
-  hideOnEscape = 1,
-}
 
 local folderMarker
 if C_Texture.GetAtlasInfo("AnimCreate_Icon_Folder") then
@@ -456,7 +438,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   exportButton:SetText(addonTable.Locales.EXPORT)
   DynamicResizeButton_Resize(exportButton)
   exportButton:SetScript("OnClick", function()
-    StaticPopup_Show(exportDialog, nil, nil, (addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n")))
+    addonTable.Dialogs.ShowCopy(addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n"))
   end)
   addonTable.Skins.AddFrame("Button", exportButton)
 

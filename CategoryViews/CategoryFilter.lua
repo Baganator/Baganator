@@ -1,24 +1,6 @@
 ---@class addonTableBaganator
 local addonTable = select(2, ...)
 
-local errorDialog = "Baganator_Categories_Search_Error"
-StaticPopupDialogs[errorDialog] = {
-  text = "",
-  button1 = OKAY,
-  timeout = 0,
-  hideOnEscape = 1,
-  hasEditBox = 1,
-  OnShow = function(self)
-    (self.editBox or self.EditBox):SetText("https://discord.gg/TtSN6DxSky");
-    (self.editBox or self.EditBox):HighlightText();
-  end,
-  EditBoxOnEnterPressed = function(self)
-    self:GetParent():Hide()
-  end,
-  EditBoxOnEscapePressed = StaticPopup_StandardEditBoxOnEscapePressed,
-  editBoxWidth = 230,
-}
-
 BaganatorCategoryViewsCategoryFilterMixin = {}
 
 function BaganatorCategoryViewsCategoryFilterMixin:OnLoad()
@@ -118,8 +100,7 @@ function BaganatorCategoryViewsCategoryFilterMixin:ApplySearches(composed, every
       else
         items = "unknown failure"
       end
-      StaticPopupDialogs[errorDialog].text = addonTable.Locales.CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items)
-      StaticPopup_Show(errorDialog)
+      addonTable.Dialogs.ShowCopy(addonTable.Locales.CATEGORIES_FAILED_WARNING:format(self.searches[self.searchIndex] or "$$$", items))
     end)
   end
   self:DoSearch()

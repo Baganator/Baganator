@@ -6,27 +6,6 @@ addonTable.CallbackRegistry:GenerateCallbackEvents(addonTable.Constants.Events)
 
 Baganator.CallbackRegistry = addonTable.CallbackRegistry
 
-local syndicatorEnableDialog = "BaganatorSyndicatorRequiredInstalledDialog"
-StaticPopupDialogs[syndicatorEnableDialog] = {
-  text = addonTable.Locales.SYNDICATOR_ENABLE_MESSAGE,
-  button1 = ENABLE,
-  button2 = CANCEL,
-  OnAccept = function()
-    C_AddOns.EnableAddOn("Syndicator")
-    C_UI.Reload()
-  end,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
-local syndicatorInstallDialog = "BaganatorSyndicatorRequiredMissingDialog"
-StaticPopupDialogs[syndicatorInstallDialog] = {
-  text = addonTable.Locales.SYNDICATOR_INSTALL_MESSAGE,
-  button1 = OKAY,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
 function addonTable.Core.MigrateSettings()
   if addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE) ~= "unset" then
     addonTable.Config.Set(addonTable.Config.Options.BAG_VIEW_TYPE, addonTable.Config.Get(addonTable.Config.Options.GLOBAL_VIEW_TYPE))
@@ -54,11 +33,18 @@ addonTable.Utilities.OnAddonLoaded("Baganator", function()
   if not C_AddOns.IsAddOnLoaded("Syndicator") then
     if C_AddOns.DoesAddOnExist("Syndicator") then
       addonTable.Utilities.Message(addonTable.Locales.SYNDICATOR_ENABLE_MESSAGE)
-      StaticPopup_Show(syndicatorEnableDialog)
+      C_Timer.After(1, function()
+        addonTable.Dialogs.ShowConfirm(addonTable.Locales.SYNDICATOR_ENABLE_MESSAGE, ENABLE, CANCEL, function()
+          C_AddOns.EnableAddOn("Syndicator")
+          C_UI.Reload()
+        end)
+      end)
       error(addonTable.Locales.SYNDICATOR_ENABLE_MESSAGE)
     else
       addonTable.Utilities.Message(addonTable.Locales.SYNDICATOR_INSTALL_MESSAGE)
-      StaticPopup_Show(syndicatorInstallDialog)
+      C_Timer.After(1, function()
+        addonTable.Dialogs.ShowAcknowledge(addonTable.Locales.SYNDICATOR_INSTALL_MESSAGE)
+      end)
       error(addonTable.Locales.SYNDICATOR_INSTALL_MESSAGE)
     end
     return

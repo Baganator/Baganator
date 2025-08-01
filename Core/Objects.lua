@@ -18,3 +18,4 @@ addonTable.Transfers = {}
 addonTable.Help = {}
 addonTable.Skins = {}
 addonTable.Compatibility = {}
+addonTable.Dialogs = {}
