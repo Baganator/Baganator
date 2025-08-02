@@ -229,21 +229,6 @@ local function GetBankInventorySlot(button)
   return BankButtonIDToInvSlotID(button:GetID(), 1)
 end
 
-StaticPopupDialogs["Baganator.ConfirmBuyBankSlot"] = {
-  text = CONFIRM_BUY_BANK_SLOT,
-  button1 = YES,
-  button2 = NO,
-  OnAccept = function()
-    PurchaseSlot()
-  end,
-  OnShow = function(self)
-    MoneyFrame_Update(self.moneyFrame, GetBankSlotCost(GetNumBankSlots()))
-  end,
-  hasMoneyFrame = 1,
-  timeout = 0,
-  hideOnEscape = 1,
-}
-
 local function OnBankSlotClick(self, button)
   if button == "RightButton" then
     addonTable.ItemViewCommon.AddBlizzardBagContextMenu(Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
@@ -254,7 +239,9 @@ local function OnBankSlotClick(self, button)
       ApplyCursor(GetBankInventorySlot(self), Syndicator.Constants.AllBankIndexes[self:GetID() + 1])
     end
   else
-    StaticPopup_Show("Baganator.ConfirmBuyBankSlot")
+    addonTable.Dialogs.ShowMoney(CONFIRM_BUY_BANK_SLOT, GetBankSlotCost(GetNumBankSlots()), YES, NO, function()
+      PurchaseSlot()
+    end)
   end
 end
 

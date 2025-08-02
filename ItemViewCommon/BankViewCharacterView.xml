@@ -32,7 +32,7 @@
       <Button parentKey="BuyReagentBankButton" inherits="UIPanelDynamicResizeButtonTemplate" text="BAGANATOR_L_BUY_REAGENT_BANK" parentArray="LiveButtons">
         <Scripts>
           <OnClick>
-            StaticPopup_Show("CONFIRM_BUY_REAGENTBANK_TAB")
+            self:GetParent():BuyReagentBank()
           </OnClick>
         </Scripts>
       </Button>

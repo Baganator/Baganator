@@ -381,7 +381,9 @@ function BaganatorSingleViewGuildViewMixin:UpdateTabs(guildData)
     tabButton.Icon:SetAlpha(1)
     tabButton:SetScript("OnClick", function()
       PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
-      StaticPopup_Show("CONFIRM_BUY_GUILDBANK_TAB")
+      addonTable.Dialogs.ShowMoney(CONFIRM_BUY_GUILDBANK_TAB, GetGuildBankTabCost(), YES, NO, function()
+        BuyGuildBankTab();
+      end)
     end)
     if not lastTab then
       tabButton:SetPoint("TOPLEFT", self, "TOPRIGHT", 0, -20)
@@ -694,6 +696,18 @@ function BaganatorSingleViewGuildViewMixin:ToggleMoneyLogs()
   self.LogsFrame:SetTitle(addonTable.Locales.MONEY_LOGS)
   self.LogsFrame:ApplyMoney()
   QueryGuildBankLog(MAX_GUILDBANK_TABS + 1);
+end
+
+function BaganatorSingleViewGuildViewMixin:WithdrawMoney()
+  addonTable.Dialogs.ShowMoneyBox(GUILDBANK_WITHDRAW, ACCEPT, CANCEL, function(value)
+    WithdrawGuildBankMoney(value)
+  end)
+end
+
+function BaganatorSingleViewGuildViewMixin:DepositMoney()
+  addonTable.Dialogs.ShowMoneyBox(GUILDBANK_DEPOSIT, ACCEPT, CANCEL, function(value)
+    DepositGuildBankMoney(value)
+  end)
 end
 
 BaganatorGuildLogsTemplateMixin = {}

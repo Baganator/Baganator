@@ -170,7 +170,7 @@
         </Anchors>
         <Scripts>
           <OnClick>
-            GuildBankFrameDepositButtonMixin.OnClick(self, button, down)
+            self:GetParent():DepositMoney()
           </OnClick>
         </Scripts>
       </Button>
@@ -180,7 +180,7 @@
         </Anchors>
         <Scripts>
           <OnClick>
-            GuildBankFrameWithdrawButtonMixin.OnClick(self, button, down)
+            self:GetParent():WithdrawMoney()
           </OnClick>
         </Scripts>
       </Button>

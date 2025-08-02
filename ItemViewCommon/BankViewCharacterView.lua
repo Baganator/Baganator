@@ -95,6 +95,12 @@ function BaganatorItemViewCommonBankViewCharacterViewMixin:SetLiveCharacter(char
   self.liveCharacter = character
 end
 
+function BaganatorItemViewCommonBankViewCharacterViewMixin:BuyReagentBank(character)
+  addonTable.Dialogs.ShowMoney(CONFIRM_BUY_REAGNETBANK_TAB, GetReagentBankCost(), YES, NO, function()
+    BuyReagentBank();
+  end)
+end
+
 function BaganatorItemViewCommonBankViewCharacterViewMixin:DoSort(isReverse)
   local indexesToUse = {}
   for index in ipairs(Syndicator.Constants.AllBankIndexes) do

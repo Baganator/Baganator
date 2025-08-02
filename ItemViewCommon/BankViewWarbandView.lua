@@ -618,27 +618,15 @@ end
 function BaganatorItemViewCommonBankViewWarbandViewMixin:DepositMoney()
   PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
 
-  StaticPopup_Hide("BANK_MONEY_WITHDRAW");
-
-  local alreadyShown = StaticPopup_Visible("BANK_MONEY_DEPOSIT");
-  if alreadyShown then
-    StaticPopup_Hide("BANK_MONEY_DEPOSIT");
-    return;
-  end
-
-  StaticPopup_Show("BANK_MONEY_DEPOSIT", nil, nil, { bankType = Enum.BankType.Account });
+  addonTable.Dialogs.ShowMoneyBox(BANK_MONEY_DEPOSIT_PROMPT, ACCEPT, CANCEL, function(value)
+    C_Bank.DepositMoney(Enum.BankType.Account, value)
+  end)
 end
 
 function BaganatorItemViewCommonBankViewWarbandViewMixin:WithdrawMoney()
   PlaySound(SOUNDKIT.IG_MAINMENU_OPTION);
 
-  StaticPopup_Hide("BANK_MONEY_DEPOSIT");
-
-  local alreadyShown = StaticPopup_Visible("BANK_MONEY_WITHDRAW");
-  if alreadyShown then
-    StaticPopup_Hide("BANK_MONEY_WITHDRAW");
-    return;
-  end
-
-  StaticPopup_Show("BANK_MONEY_WITHDRAW", nil, nil, { bankType = Enum.BankType.Account });
+  addonTable.Dialogs.ShowMoneyBox(BANK_MONEY_WITHDRAW_PROMPT, ACCEPT, CANCEL, function(value)
+    C_Bank.WithdrawMoney(Enum.BankType.Account, value)
+  end)
 end
