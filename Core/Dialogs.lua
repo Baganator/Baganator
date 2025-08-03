@@ -106,6 +106,7 @@ function addonTable.Dialogs.ShowEditBox(text, acceptText, cancelText, confirmCal
   DynamicResizeButton_Resize(dialog.cancelButton)
   dialog.acceptButton:SetScript("OnClick", function() confirmCallback(dialog.editBox:GetText()); dialog:Hide() end)
   dialog.editBox:SetScript("OnEnterPressed", function() confirmCallback(dialog.editBox:GetText()); dialog:Hide() end)
+  dialog.editBox:SetText("")
 
   dialog:Show()
   dialog.editBox:SetFocus()
