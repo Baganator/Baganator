@@ -34,12 +34,13 @@ hidden:Hide()
 local skinners = {
   ItemButton = function(frame, tags)
     frame.bgrElvUISkin = true
-    if not tags.containerBag then
-      frame.SlotBackground:SetParent(hidden)
-    end
-    frame.SlotBackground:SetTexCoord(unpack(E.TexCoords))
     S:HandleItemButton(frame, true)
     S:HandleIconBorder(frame.IconBorder)
+    frame.SlotBackground:Show()
+    frame.SlotBackground:SetAllPoints()
+    frame.SlotBackground:SetParent(frame.backdrop)
+    frame.SlotBackground:SetDrawLayer("BACKGROUND", 7)
+    frame.SlotBackground:SetColorTexture(unpack(E.media.backdropcolor))
     hooksecurefunc(frame.IconBorder, "SetVertexColor", function(_, r, g, b, a)
       if a == 0 then
         frame.backdrop.forcedBorderColors = nil
