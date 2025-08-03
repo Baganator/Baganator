@@ -310,7 +310,6 @@ end
 
 local function AddClassicBackground(button)
   if not button.SlotBackground then
-    button.emptySlotFilepath = nil
     button.SlotBackground = button:CreateTexture(nil, "BACKGROUND", nil, -1)
     button.SlotBackground:SetAllPoints(button.icon)
     button.SlotBackground:SetTexture("Interface\\AddOns\\Baganator\\Assets\\classic-bag-slot")
@@ -966,7 +965,7 @@ end
 function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   GetInfo(self, details)
 
-  SetItemButtonTexture(self, details.iconTexture or self.emptySlotFilepath);
+  SetItemButtonTexture(self, details.iconTexture);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
   ApplyQualityBorderClassic(self, details.quality)
   SetItemButtonCount(self, details.itemCount);
@@ -1159,7 +1158,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   local noValue = info and info.hasNoValue;
   local itemID = info and info.itemID;
 
-  SetItemButtonTexture(self, texture or self.emptySlotFilepath);
+  SetItemButtonTexture(self, texture);
   SetItemButtonQuality(self, quality, itemID);
   ApplyQualityBorderClassic(self, quality)
   SetItemButtonCount(self, itemCount);
@@ -1356,7 +1355,7 @@ function BaganatorClassicLiveGuildItemButtonMixin:SetItemDetails(cacheData, tabI
   itemCount = cacheData.itemCount
   quality = cacheData.quality or quality
 
-  SetItemButtonTexture(self, texture or self.emptySlotFilepath);
+  SetItemButtonTexture(self, texture);
   SetItemButtonCount(self, itemCount);
   SetItemButtonDesaturated(self, locked);
   ApplyQualityBorderClassic(self, quality)
