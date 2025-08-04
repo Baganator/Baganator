@@ -2,7 +2,7 @@
 local addonTable = select(2, ...)
 
 function addonTable.Skins.IsAddOnLoading(name)
-  local character = UnitName("player")
+  local character = UnitGUID("player")
   if C_AddOns.GetAddOnEnableState(name, character) ~= Enum.AddOnEnableState.All then
     return false
   end
