@@ -107,7 +107,7 @@ addonTable.CategoryViews.BagLayoutMixin = {}
 function addonTable.CategoryViews.BagLayoutMixin:OnLoad()
   self.labelsPool = CreateFramePool("Button", self:GetParent().Container, "BaganatorCategoryViewsCategoryButtonTemplate")
   self.sectionButtonPool = addonTable.CategoryViews.GetSectionButtonPool(self:GetParent().Container)
-  self.dividerPool = CreateFramePool("Button", self:GetParent().Container, "BaganatorBagDividerTemplate")
+  self.dividerPool = CreateFramePool("Frame", self:GetParent().Container, "BaganatorBagDividerTemplate")
 
   self.notShown = {}
 
