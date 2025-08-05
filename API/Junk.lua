@@ -4,7 +4,7 @@ Baganator.API.RegisterJunkPlugin(NONE, "none", function()
   return false
 end)
 
-addonTable.Utilities.OnAddonLoaded("Peddler", function()
+--[[addonTable.Utilities.OnAddonLoaded("Peddler", function()
   if not PeddlerAPI then
     return
   end
@@ -14,7 +14,7 @@ addonTable.Utilities.OnAddonLoaded("Peddler", function()
 
     return uniqueItemID and PeddlerAPI.itemIsToBeSold(itemID, uniqueItemID, isSoulbound)
   end)
-end)
+end)]]
 
 addonTable.Utilities.OnAddonLoaded("SellJunk", function()
   Baganator.API.RegisterJunkPlugin(addonTable.Locales.SELLJUNK, "selljunk", function(bagID, slotID, _, itemLink)

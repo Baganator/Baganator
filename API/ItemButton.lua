@@ -314,7 +314,7 @@ end, function(itemButton)
   return EquipmentSetIcon
 end, nil, true)
 
-addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
+--[[addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
   local function IsPet(itemID)
     local classID, subClassID = select(6, C_Item.GetItemInfoInstant(itemID))
     return classID == Enum.ItemClass.Battlepet or classID == Enum.ItemClass.Miscellaneous and subClassID == Enum.ItemMiscellaneousSubclass.CompanionPet
@@ -360,7 +360,7 @@ addonTable.Utilities.OnAddonLoaded("CanIMogIt", function()
   RefreshFrame:SetScript("OnEvent", function()
     Callback()
   end)
-end)
+end)]]
 
 addonTable.Utilities.OnAddonLoaded("BattlePetBreedID", function()
   if not BPBID_Internal or not BPBID_Internal.CalculateBreedID or not BPBID_Internal.RetrieveBreedName then
