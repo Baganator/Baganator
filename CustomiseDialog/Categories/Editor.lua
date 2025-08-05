@@ -360,6 +360,8 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
   self.LocationsDropDown:SetPoint("RIGHT", -10, 0)
   table.insert(self.ChangeAlpha, self.LocationsDropDown)
 
+  addonTable.Skins.AddFrame("Dropdown", self.LocationsDropDown)
+
   self.Blocker = CreateFrame("Frame", nil, self)
   self.Blocker:EnableMouse(true)
   self.Blocker:SetScript("OnMouseWheel", function() end)
