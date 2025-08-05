@@ -37,25 +37,23 @@ addonTable.Utilities.OnAddonLoaded("Scrap", function()
   end)
 end)
 
-if addonTable.Constants.IsRetail then
-  addonTable.Utilities.OnAddonLoaded("Vendor", function()
-    Baganator.API.RegisterJunkPlugin(addonTable.Locales.VENDOR, "vendor", function(bagID, slotID, _, _)
-      return Vendor.EvaluateItem(bagID, slotID) ~= 0
-    end)
-
-    local extension = {
-      Addon = addonTable.Locales.BAGANATOR,
-      Source = addonTable.Locales.BAGANATOR,
-      Version = 1.0,
-      OnRuleUpdate = function()
-        Baganator.API.RequestItemButtonsRefresh()
-      end,
-    }
-    C_Timer.After(0, function()
-      Vendor.RegisterExtension(extension)
-    end)
+addonTable.Utilities.OnAddonLoaded("Vendor", function()
+  Baganator.API.RegisterJunkPlugin(addonTable.Locales.VENDOR, "vendor", function(bagID, slotID, _, _)
+    return Vendor.EvaluateItem(bagID, slotID) ~= 0
   end)
-end
+
+  local extension = {
+    Addon = addonTable.Locales.BAGANATOR,
+    Source = addonTable.Locales.BAGANATOR,
+    Version = 1.0,
+    OnRuleUpdate = function()
+      Baganator.API.RequestItemButtonsRefresh()
+    end,
+  }
+  C_Timer.After(0, function()
+    Vendor.RegisterExtension(extension)
+  end)
+end)
 
 addonTable.Utilities.OnAddonLoaded("Dejunk", function()
   if not DejunkApi or not DejunkApi.Events then
