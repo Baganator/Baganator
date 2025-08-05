@@ -104,6 +104,9 @@
     <Scripts>
       <OnLoad method="OnLoad"/>
     </Scripts>
+    <Attributes>
+      <Attribute name="nodeignore" type="boolean" value="true"/>
+    </Attributes>
     <Layers>
       <Layer level="BACKGROUND">
         <Texture parentKey="Divider">
