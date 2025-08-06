@@ -12,7 +12,7 @@ local groupingToLabel = {
 
 local disabledAlpha = 0.5
 
-local function GetCheckBox(self)
+function addonTable.CustomiseDialog.GetCategoryEditorCheckBox(self)
   local checkBoxWrapper = CreateFrame("Frame", nil, self)
   checkBoxWrapper:SetHeight(40)
   checkBoxWrapper:SetPoint("LEFT")
@@ -247,14 +247,14 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
     SetState(value)
   end)
 
-  local hiddenCheckBoxWrapper = GetCheckBox(self)
+  local hiddenCheckBoxWrapper = addonTable.CustomiseDialog.GetCategoryEditorCheckBox(self)
   hiddenCheckBoxWrapper:SetPoint("TOP", 0, -250)
   self.HiddenCheckBox = hiddenCheckBoxWrapper.checkBox
   self.HiddenCheckBox:SetText(addonTable.Locales.HIDDEN)
 
   table.insert(self.ChangeAlpha, self.HiddenCheckBox)
 
-  local prefixCheckBoxWrapper = GetCheckBox(self)
+  local prefixCheckBoxWrapper = addonTable.CustomiseDialog.GetCategoryEditorCheckBox(self)
   prefixCheckBoxWrapper:SetPoint("TOP", 0, -285)
   self.PrefixCheckBox = prefixCheckBoxWrapper.checkBox
   self.PrefixCheckBox:SetText(addonTable.Locales.SHOW_NAME_PREFIX)

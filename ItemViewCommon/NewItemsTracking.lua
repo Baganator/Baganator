@@ -9,10 +9,13 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
   self.firstStart = true
   self.startupCooldown = false
   self.timeout = addonTable.Config.Get(addonTable.Config.Options.RECENT_TIMEOUT)
+  self.includeOwned = addonTable.Config.Get(addonTable.Config.Options.RECENT_INCLUDE_OWNED)
 
   addonTable.CallbackRegistry:RegisterCallback("SettingChanged", function(_, settingName)
     if settingName == addonTable.Config.Options.RECENT_TIMEOUT then
       self.timeout = addonTable.Config.Get(addonTable.Config.Options.RECENT_TIMEOUT)
+    elseif settingName == addonTable.Config.Options.RECENT_INCLUDE_OWNED then
+      self.includeOwned = addonTable.Config.Get(addonTable.Config.Options.RECENT_INCLUDE_OWNED)
     end
   end)
 
@@ -55,7 +58,7 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
       end
     end
     self.guidsByContainer[bagID] = containerGuids
-    if self.bankOpen then -- Items from the character/warband bank never count as new
+    if self.bankOpen and not self.includeOwned then -- Items from the character/warband bank never count as new
       for _, guid in ipairs(containerGuids) do
         self.seenGUIDs[guid] = true
       end
@@ -89,6 +92,9 @@ function BaganatorItemViewCommonNewItemsTrackingMixin:OnLoad()
   end)
 
   Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function(_, character)
+    if self.includeOwned then
+      return
+    end
     local characterData = Syndicator.API.GetCharacter(character)
     for slot = 1, #characterData.equipped do
       local location = ItemLocation:CreateFromEquipmentSlot(slot - Syndicator.Constants.EquippedInventorySlotOffset)

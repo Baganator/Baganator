@@ -93,6 +93,7 @@ local settings = {
   CATEGORY_ITEM_GROUPING = {key = "category_item_grouping", default = true, refresh = {Refresh.ItemData}},
   CATEGORY_GROUP_EMPTY_SLOTS = {key = "category_group_empty_slots", default = true, refresh = {Refresh.Searches}},
   RECENT_TIMEOUT = {key = "recent_timeout", default = 15},
+  RECENT_INCLUDE_OWNED = {key = "recent_include_owned", default = false},
   ADD_TO_CATEGORY_BUTTONS = {key = "add_to_category_buttons_2", default = "drag"},
 
   SAVED_SEARCHES = {key = "saved_searches", default = {}},
