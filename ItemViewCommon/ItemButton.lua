@@ -713,11 +713,11 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   end, function()
     self.BGR.hasSpell = C_Item.GetItemSpell(self.BGR.itemID) ~= nil
     self:BGRUpdateCooldown()
-    self:BGRUpdateQuests()
     self:UpdateItemContextMatching();
     local doNotSuppressOverlays = false
     self:SetItemButtonQuality(quality, itemLink, doNotSuppressOverlays, isBound);
     ReparentOverlays(self)
+    self:BGRUpdateQuests()
   end)
 
   if not self.BGR.itemID then
