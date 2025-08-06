@@ -368,12 +368,12 @@ do
   if addonTable.Constants.IsRetail then
     groupingsToLabels["track"] = {}
     local items = {
-      explorer = "|cff0070dd|Hitem:144144::::::::80:268::54:9:6652:8812:11945:7756:10392:10395:12090:10034:10254:1:28:2462:::::|h[Whirling Dervish Choker]|h|r",
-      adventurer = "|cff0070dd|Hitem:215174::::::::71:259::66:5:10294:6652:11215:3259:10254:1:28:2462:::::|h[Concoction: Kiss of Death]|h|r",
-      veteran = "|cffa335ee|Hitem:223292::::::::80:268::14:4:10281:10377:1656:10255:1:28:2462:::::|h[Gem-Wadded Shoulderpads]|h|r",
-      champion = "|cffa335ee|Hitem:223306::::::::80:268::14:5:10377:10876:10270:3135:10255:1:28:2462:::::|h[Inflammable Forging Cinch]|h|r",
-      hero = "|cffa335ee|Hitem:219204::::::::80:104::124:4:10265:6652:3189:10255:1:28:2462:::::|h[Imperial Flarebolt]|h|r",
-      myth = "|cffa335ee|Hitem:228846::::::::80:268::6:1:3524:1:28:2981::::::::|h[Galvanic Graffiti Cuffs]|h|r",
+      explorer = "|cnIQ2:|Hitem:237894::::::::80:253::25:5:12265:6652:10394:10392:3171:1:28:2462:::::|h[Pendant of Arcane Havoc]|h|r",
+      adventurer = "|cnIQ3:|Hitem:221145::::::::80:66::2:1:3524:1:28:2720:::::|h[Shipwrecker's Bludgeon]|h|r",
+      veteran = "|cnIQ4:|Hitem:211028::::::::80:253::173:7:12282:6652:12921:11215:12239:3247:10255:1:28:2462:::::|h[Torchbearer's Bracers]|h|r",
+      champion = "|cnIQ4:|Hitem:237739::::::::80:268::3:1:3524:1:28:3228:::::|h[Obliteration Beamglaive]|h|r",
+      hero = "|cnIQ4:|Hitem:237739::::::::80:268::3:1:3524:1:28:3228:::::|h[Obliteration Beamglaive]|h|r",
+      myth = "|cnIQ4:|Hitem:237525::::::::80:268::6:1:3524:1:28:3230:::::|h[Irradiated Impurity Filter]|h|r",
     }
     local order = {
       "myth", "hero", "champion", "veteran", "adventurer", "explorer",
