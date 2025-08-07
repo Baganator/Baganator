@@ -512,7 +512,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   local warbandBank = Syndicator.API.GetWarband(1).bank[self.currentTab ~= 0 and self.currentTab or 1]
 
-  self.isLocked = self.isLive and not C_PlayerInfo.HasAccountInventoryLock()
+  self.isLocked = self.isLive and C_Bank.FetchBankLockedReason(Enum.BankType.Account) ~= nil
   local isWarbandData = warbandBank and #warbandBank.slots ~= 0 and not self.isLocked
   self.BankMissingHint:SetShown(not isWarbandData)
   self:GetParent().SearchWidget:SetShown(addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX) and isWarbandData)
@@ -520,7 +520,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   if self.BankMissingHint:IsShown() then
     if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) then
       self.BankMissingHint:SetText(addonTable.Locales.WARBAND_BANK_NOT_PURCHASED_HINT)
-    elseif self.isLive and not C_PlayerInfo.HasAccountInventoryLock() then
+    elseif self.isLive and self.isLocked then
       self.BankMissingHint:SetText(ACCOUNT_BANK_LOCKED_PROMPT)
     elseif self.isLive then
       self.BankMissingHint:SetText(addonTable.Locales.WARBAND_BANK_TEMPORARILY_DISABLED_HINT)
@@ -531,11 +531,11 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
 
-  self.IncludeReagentsCheckbox:SetShown(isWarbandData and self.isLive)
-  self.DepositItemsButton:SetShown(isWarbandData and self.isLive)
+  self.IncludeReagentsCheckbox:SetShown(self.isLive and not self.isLocked)
+  self.DepositItemsButton:SetShown(self.isLive and not self.isLocked)
 
-  self.DepositMoneyButton:SetShown(self.isLive and C_PlayerInfo.HasAccountInventoryLock())
-  self.WithdrawMoneyButton:SetShown(self.isLive and C_PlayerInfo.HasAccountInventoryLock())
+  self.DepositMoneyButton:SetShown(self.isLive and not self.isLocked)
+  self.WithdrawMoneyButton:SetShown(self.isLive and not self.isLocked)
 
   self:UpdateCurrencies()
 
@@ -564,7 +564,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
   self:HighlightCurrentTab()
 
   for _, tab in ipairs(self.Tabs) do
-    tab:SetShown(not self.isLive or C_PlayerInfo.HasAccountInventoryLock())
+    tab:SetShown(not self.isLive or not self.isLocked)
   end
 
   if self.BankMissingHint:IsShown() then
