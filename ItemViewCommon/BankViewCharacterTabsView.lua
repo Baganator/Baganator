@@ -265,7 +265,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:CombineStacksAndS
   end
 
   if addonTable.API.ExternalContainerSorts[sortMethod] then
-    addonTable.API.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.CharacterBank)
+    addonTable.API.ExternalContainerSorts[sortMethod].callback(isReverse, Baganator.API.Constants.ContainerType.CharacterBank, self.currentTab ~= 0 and self.currentTab or nil)
   elseif sortMethod == "combine_stacks_only" then
     self:CombineStacks(function() end)
   else

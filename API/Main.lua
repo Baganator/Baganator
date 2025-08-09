@@ -267,7 +267,7 @@ Baganator.API.Constants.ContainerType = {
 }
 
 -- Register a sort function for bags and bank.
--- callback: function(isReverse, containerType)
+-- callback: function(isReverse, containerType, tabIndex?)
 --  isReverse: boolean
 --  containerType: Baganator.API.Constants.ContainerType
 function Baganator.API.RegisterContainerSort(label, id, callback)
