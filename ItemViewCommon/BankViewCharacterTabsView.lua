@@ -318,7 +318,7 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:SetupBlizzardFram
     local bagID = Syndicator.Constants.AllBankIndexes[self.currentTab]
 
     -- Ensure right-clicking a bag item puts the item into this bank
-    BankFrame.BankPanel.bankType = Enum.BankType.Character
+    BankFrame.BankPanel:SetBankType(Enum.BankType.Character)
 
     -- Workaround so that the tab edit UI shows the details for the current tab
     self.TabSettingsMenu.GetBankPanel = function()
