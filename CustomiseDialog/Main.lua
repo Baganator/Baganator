@@ -357,7 +357,7 @@ local SORTING_OPTIONS = {
     min = 0,
     max = 128,
     lowText = "0",
-    highText = "128",
+    highText = "240",
     text = addonTable.Locales.IGNORED_BAG_SLOTS,
     option = "sort_ignore_slots_count_2",
   },
