@@ -355,7 +355,7 @@ local SORTING_OPTIONS = {
   {
     type = "slider",
     min = 0,
-    max = 128,
+    max = 240,
     lowText = "0",
     highText = "240",
     text = addonTable.Locales.IGNORED_BAG_SLOTS,
