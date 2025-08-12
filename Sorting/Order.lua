@@ -134,9 +134,11 @@ function addonTable.Sorting.AddSortKeys(list)
       item.index = index
       if item.itemID == addonTable.Constants.BattlePetCageID then
         local speciesID = tonumber(item.itemLink:match("battlepet:(%d+)"))
-        local petName, _, subClassID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+        local petName, _, petType = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
         item.itemName = petName
-        item.subClassID = subClassID
+        if not item.subClassID then
+          item.subClassID = petType - 1
+        end
       end
     end
   end
