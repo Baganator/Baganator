@@ -58,7 +58,7 @@ function BaganatorSingleViewBankViewCharacterTabsViewMixin:ShowTab(character, ta
         table.insert(bagData, tab.slots)
       end
 
-      activeBank:ShowBags(bagData, 1, Syndicator.Constants.AllBankIndexes, nil, bankWidth * 2)
+      activeBank:ShowBags(bagData, self.lastCharacter, Syndicator.Constants.AllBankIndexes, nil, bankWidth * 2)
     end
   end
 
