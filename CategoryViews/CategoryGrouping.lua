@@ -372,7 +372,7 @@ do
       adventurer = "|cnIQ3:|Hitem:221145::::::::80:66::2:1:3524:1:28:2720:::::|h[Shipwrecker's Bludgeon]|h|r",
       veteran = "|cnIQ4:|Hitem:211028::::::::80:253::173:7:12282:6652:12921:11215:12239:3247:10255:1:28:2462:::::|h[Torchbearer's Bracers]|h|r",
       champion = "|cnIQ4:|Hitem:237739::::::::80:268::3:1:3524:1:28:3228:::::|h[Obliteration Beamglaive]|h|r",
-      hero = "|cnIQ4:|Hitem:237739::::::::80:268::3:1:3524:1:28:3228:::::|h[Obliteration Beamglaive]|h|r",
+      hero = "|cnIQ4:|Hitem:237739::::::::80:268::5:1:3524:1:28:3229:::::|h[Obliteration Beamglaive]|h|r",
       myth = "|cnIQ4:|Hitem:237525::::::::80:268::6:1:3524:1:28:3230:::::|h[Irradiated Impurity Filter]|h|r",
     }
     local order = {
