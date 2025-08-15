@@ -133,14 +133,13 @@ function addonTable.ItemButtonUtil.UpdateSettings()
     if #callbacks > 0 then
       local function Callback(itemButton)
         local queued = false
-        local timeoutStatus = not addonTable.CheckTimeout()
 
         for index = 1, #callbacks do
           local cb = callbacks[index]
           local widget = itemButton.cornerPlugins[plugins[index]]
           if widget then
             local show
-            if timeoutStatus or fastStatus[index] then
+            if fastStatus[index] or not addonTable.CheckTimeout() then
               show = cb(widget, itemButton.BGR)
             end
             if show == nil then
@@ -150,6 +149,10 @@ function addonTable.ItemButtonUtil.UpdateSettings()
                   -- Ensure the item button's state is still the same
                   -- IsShown ensures the item hasn't been returned to the pool
                   if itemButton.BGR == BGR and itemButton:IsShown() then
+                    if addonTable.CheckTimeout() then
+                      QueueWidget(queueFunc)
+                      return
+                    end
                     -- Hide any widgets shown immediately because the widget
                     -- wasn't available
                     for i = 1, #callbacks do
@@ -158,17 +161,11 @@ function addonTable.ItemButtonUtil.UpdateSettings()
                         cornerWidget:Hide()
                       end
                     end
-                    if itemButton.BGR.guid then
-                      if C_Item.DoesItemExist(itemButton.BGR.itemLocation) and itemButton.BGR.guid ~= C_Item.GetItemGUID(itemButton.BGR.itemLocation) then
-                        QueueWidget(queueFunc)
-                      else
-                        itemButton.BGR.guid = nil
-                        itemButton.BGR.itemLocation = nil
-                        Callback(itemButton)
-                      end
-                    else
-                      Callback(itemButton)
+                    if itemButton.BGR.guid and (not C_Item.DoesItemExist(itemButton.BGR.itemLocation) or itemButton.BGR.guid ~= C_Item.GetItemGUID(itemButton.BGR.itemLocation)) then
+                      itemButton.BGR.guid = nil
+                      itemButton.BGR.itemLocation = nil
                     end
+                    Callback(itemButton)
                   end
                 end
                 QueueWidget(queueFunc)
