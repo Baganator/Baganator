@@ -38,6 +38,7 @@ L["BANK_DATA_MISSING_HINT"] = "Bank data missing. Visit a banker with %s to popu
 L["WARBAND_BANK_DATA_MISSING_HINT"] = "Warband Bank data missing. Visit a banker with any character to populate this view."
 L["WARBAND_BANK_TEMPORARILY_DISABLED_HINT"] = "Warband Bank temporarily disabled by Blizzard."
 L["WARBAND_BANK_NOT_PURCHASED_HINT"] = "Warband Bank space not purchased. Use the new tab button on the right to purchase"
+L["CHARACTER_BANK_NOT_PURCHASED_HINT"] = "Character Bank space not purchased. Use the new tab button on the right to purchase"
 L["GUILD_BANK_DATA_MISSING_HINT"] = "This guild bank hasn't been visited yet."
 L["GUILD_BANK_NO_TABS"] = "There are no tabs in this guild bank."
 L["CHARACTER"] = "Character"

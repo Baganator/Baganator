@@ -524,7 +524,7 @@ function BaganatorItemViewCommonBankViewWarbandViewMixin:ShowTab(tabIndex, isLiv
     if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Account) then
       self.BankMissingHint:SetText(addonTable.Locales.WARBAND_BANK_NOT_PURCHASED_HINT)
     elseif self.isLive and self.isLocked then
-      self.BankMissingHint:SetText(ACCOUNT_BANK_LOCKED_PROMPT)
+      self.BankMissingHint:SetText(BANK_LOCKED_REASON_BANK_DISABLED)
     elseif self.isLive then
       self.BankMissingHint:SetText(addonTable.Locales.WARBAND_BANK_TEMPORARILY_DISABLED_HINT)
     else

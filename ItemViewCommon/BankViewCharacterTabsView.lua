@@ -530,7 +530,13 @@ function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:ShowTab(character
   self:GetParent().SearchWidget:SetShown(addonTable.Config.Get(addonTable.Config.Options.SHOW_SEARCH_BOX) and isBankData)
 
   if self.BankMissingHint:IsShown() then
-    self.BankMissingHint:SetText(addonTable.Locales.BANK_DATA_MISSING_HINT:format(characterData.details.character))
+    if self.isLive and C_Bank.CanPurchaseBankTab(Enum.BankType.Character) then
+      self.BankMissingHint:SetText(addonTable.Locales.CHARACTER_BANK_NOT_PURCHASED_HINT)
+    elseif self.isLive and C_Bank.FetchBankLockedReason(Enum.BankType.Account) == Enum.BankLockedReason.BankDisabled then
+      self.BankMissingHint:SetText(BANK_LOCKED_REASON_BANK_DISABLED)
+    else
+      self.BankMissingHint:SetText(addonTable.Locales.BANK_DATA_MISSING_HINT:format(characterData.details.character))
+    end
   end
 
   local searchText = self:GetParent().SearchWidget.SearchBox:GetText()
