@@ -467,7 +467,7 @@ function BaganatorCustomiseDialogCategoriesEditorMixin:OnLoad()
       return
     end
 
-    addonTable.Dialogs.ShowCopy(addonTable.CustomiseDialog.SingleCategoryExport(self.currentCategory):gsub("|n", "||n"))
+    addonTable.Dialogs.ShowCopy(addonTable.CustomiseDialog.SingleCategoryExport(self.currentCategory):gsub("|n", "||n"):gsub("|([kK])", "||%1"))
   end)
 
   self.DeleteButton:SetScript("OnClick", function()

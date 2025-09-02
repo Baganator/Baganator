@@ -438,7 +438,7 @@ function addonTable.CustomiseDialog.GetCategoriesOrganiser(parent)
   exportButton:SetText(addonTable.Locales.EXPORT)
   DynamicResizeButton_Resize(exportButton)
   exportButton:SetScript("OnClick", function()
-    addonTable.Dialogs.ShowCopy(addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n"))
+    addonTable.Dialogs.ShowCopy(addonTable.CustomiseDialog.CategoriesExport():gsub("|n", "||n"):gsub("|([kK])", "||%1"))
   end)
   addonTable.Skins.AddFrame("Button", exportButton)
 
