@@ -9,9 +9,10 @@ function BaganatorCustomiseDialogCategoriesSectionEditorMixin:OnLoad()
 
     if sections[self.currentSection] then
       sections[self.currentSection] = nil
-      table.remove(displayOrder, tIndexOf(displayOrder, "_" .. self.currentSection))
+      local startIndex = tIndexOf(displayOrder, "_" .. self.currentSection)
+      table.remove(displayOrder, startIndex)
       local level = 0
-      for i = 1, #displayOrder do
+      for i = startIndex, #displayOrder do
         if displayOrder[i] == addonTable.CategoryViews.Constants.SectionEnd then
           if level == 0 then
             table.remove(displayOrder, i)
