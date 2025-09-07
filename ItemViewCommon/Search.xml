@@ -18,13 +18,8 @@
           </OnClick>
         </Scripts>
       </Button>
-      <Button parentKey="SavedSearchesButton" inherits="BaganatorSavedSearchesButtonTemplate">
-        <Scripts>
-          <OnClick>
-            self:GetParent():OpenSavedSearches()
-          </OnClick>
-        </Scripts>
-      </Button>
+      <DropdownButton parentKey="SavedSearchesButton" inherits="BaganatorSavedSearchesButtonTemplate">
+      </DropdownButton>
     </Frames>
   </Frame>
 </Ui>

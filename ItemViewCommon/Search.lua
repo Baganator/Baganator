@@ -56,6 +56,23 @@ Syndicator.API.RegisterShowItemLocation(function(mode, entity, container, itemLi
   end
 end)
 
+local function SaveSearch(label, search)
+  local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
+  local oldIndex = FindInTableIf(list, function(a) return a.label == label end)
+  if oldIndex then
+    list[oldIndex].search = search
+  else
+    table.insert(list, {label = label, search = search})
+    table.sort(list, function(a, b)
+      if a.label == b.label then
+        return a.search < b.search
+      else
+        return a.label < b.label
+      end
+    end)
+  end
+end
+
 BaganatorSearchWidgetMixin = {}
 
 function BaganatorSearchWidgetMixin:OnLoad()
@@ -101,6 +118,47 @@ function BaganatorSearchWidgetMixin:OnLoad()
 
   self.HelpButton:SetScript("OnClick", function()
     addonTable.Help.ShowSearchDialog()
+  end)
+
+  self.SavedSearchesButton:SetupMenu(function(menu, rootDescription)
+    local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
+    for _, details in ipairs(list) do
+      local button = rootDescription:CreateButton(details.label, function()
+        addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", details.search)
+      end)
+      button:AddInitializer(function(button, description, menu)
+        local delete = MenuTemplates.AttachAutoHideButton(button, "transmog-icon-remove")
+        delete:SetPoint("RIGHT")
+        delete:SetSize(16, 16)
+        delete.Texture:SetAtlas("transmog-icon-remove")
+        delete:SetScript("OnClick", function()
+          local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
+          local oldIndex = FindInTableIf(list, function(a) return a.label == details.label end)
+          if oldIndex then
+            table.remove(list, oldIndex)
+          end
+          menu:Close()
+        end)
+        MenuUtil.HookTooltipScripts(delete, function(tooltip)
+          GameTooltip_SetTitle(tooltip, DELETE);
+        end);
+      end)
+    end
+    if #list > 0 then
+      rootDescription:CreateDivider()
+    end
+    if self.SearchBox:GetText() == "" then
+      local text = rootDescription:CreateTitle(GRAY_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SAVE_SEARCH))
+      text:SetTooltip(function(tooltip)
+        tooltip:AddLine(addonTable.Locales.NOTHING_TO_SAVE)
+      end)
+    else
+      local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SAVE_SEARCH), function()
+        addonTable.Dialogs.ShowEditBox(addonTable.Locales.CHOOSE_A_LABEL_FOR_THIS_SEARCH, ACCEPT, CANCEL, function(name)
+          SaveSearch(name, self.SearchBox:GetText())
+        end)
+      end)
+    end
   end)
 
   addonTable.Skins.AddFrame("SearchBox", self.SearchBox)
@@ -151,64 +209,4 @@ function BaganatorSearchWidgetMixin:SetSpacing(sideSpacing)
     self.GlobalSearchButton:Hide()
     self.HelpButton:Hide()
   end
-end
-
-local function SaveSearch(label, search)
-  local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
-  local oldIndex = FindInTableIf(list, function(a) return a.label == label end)
-  if oldIndex then
-    list[oldIndex].search = search
-  else
-    table.insert(list, {label = label, search = search})
-    table.sort(list, function(a, b)
-      if a.label == b.label then
-        return a.search < b.search
-      else
-        return a.label < b.label
-      end
-    end)
-  end
-end
-
-function BaganatorSearchWidgetMixin:OpenSavedSearches()
-  MenuUtil.CreateContextMenu(self.SavedSearchesButton, function(menu, rootDescription)
-    local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
-    for _, details in ipairs(list) do
-      local button = rootDescription:CreateButton(details.label, function()
-        addonTable.CallbackRegistry:TriggerEvent("SearchTextChanged", details.search)
-      end)
-      button:AddInitializer(function(button, description, menu)
-        local delete = MenuTemplates.AttachAutoHideButton(button, "transmog-icon-remove")
-        delete:SetPoint("RIGHT")
-        delete:SetSize(16, 16)
-        delete.Texture:SetAtlas("transmog-icon-remove")
-        delete:SetScript("OnClick", function()
-          local list = addonTable.Config.Get(addonTable.Config.Options.SAVED_SEARCHES)
-          local oldIndex = FindInTableIf(list, function(a) return a.label == details.label end)
-          if oldIndex then
-            table.remove(list, oldIndex)
-          end
-          menu:Close()
-        end)
-        MenuUtil.HookTooltipScripts(delete, function(tooltip)
-          GameTooltip_SetTitle(tooltip, DELETE);
-        end);
-      end)
-    end
-    if #list > 0 then
-      rootDescription:CreateDivider()
-    end
-    if self.SearchBox:GetText() == "" then
-      local text = rootDescription:CreateTitle(GRAY_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SAVE_SEARCH))
-      text:SetTooltip(function(tooltip)
-        tooltip:AddLine(addonTable.Locales.NOTHING_TO_SAVE)
-      end)
-    else
-      local button = rootDescription:CreateButton(NORMAL_FONT_COLOR:WrapTextInColorCode(addonTable.Locales.SAVE_SEARCH), function()
-        addonTable.Dialogs.ShowEditBox(addonTable.Locales.CHOOSE_A_LABEL_FOR_THIS_SEARCH, ACCEPT, CANCEL, function(name)
-          SaveSearch(name, self.SearchBox:GetText())
-        end)
-      end)
-    end
-  end)
 end
