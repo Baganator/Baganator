@@ -281,28 +281,12 @@ end
 function BaganatorItemViewCommonBankViewCharacterTabsViewMixin:RemoveSearchMatches(getItems)
   local matches = (getItems and getItems()) or self:GetSearchMatches()
 
-  -- Limit to the first 5 items (avoids slots locking up)
-  local newMatches = {}
-  for i = 1, 5 do
-    table.insert(newMatches, matches[i])
-  end
-  matches = newMatches
-
   local bagSlots = addonTable.Transfers.GetBagsSlots(
     Syndicator.API.GetCharacter(Syndicator.API.GetCurrentCharacter()).bags,
     Syndicator.Constants.AllBagIndexes
   )
 
-  local status
-  local counts = addonTable.Transfers.CountByItemIDs(bagSlots)
-  -- Only move more items if the last set moved in, or the last transfer
-  -- completed.
-  if not self.transferState.counts or not tCompare(counts, self.transferState.counts, 2) then
-    self.transferState.counts = counts
-    status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, bagSlots)
-  else
-    status = addonTable.Constants.SortStatus.WaitingMove
-  end
+  local status = addonTable.Transfers.FromBagsToBags(matches, Syndicator.Constants.AllBagIndexes, bagSlots)
 
   self.transferManager:Apply(status, {"BagCacheUpdate"}, function()
     self:RemoveSearchMatches(getItems)
