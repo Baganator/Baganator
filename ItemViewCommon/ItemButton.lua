@@ -473,7 +473,7 @@ end
 function BaganatorRetailCachedItemButtonMixin:SetItemDetails(details)
   self:SetItemButtonTexture(details.iconTexture)
   self:SetItemButtonQuality(details.quality, details.itemLink, false, details.isBound)
-  self:SetItemButtonCount(details.itemCount)
+  SetItemButtonCount(self, details.itemCount, true) -- true results in abbreviating large numbers
   SetItemButtonDesaturated(self, false);
   ReparentOverlays(self)
 
@@ -679,7 +679,7 @@ function BaganatorRetailLiveContainerItemButtonMixin:SetItemDetails(cacheData)
 
   self:SetItemButtonQuality(quality, nil, true, isBound);
 
-  SetItemButtonCount(self, itemCount);
+  SetItemButtonCount(self, itemCount, true); -- true results in abbreviating large numbers
   SetItemButtonDesaturated(self, locked);
 
   self:UpdateExtended();
@@ -971,7 +971,7 @@ function BaganatorClassicCachedItemButtonMixin:SetItemDetails(details)
   SetItemButtonTexture(self, details.iconTexture);
   SetItemButtonQuality(self, details.quality); -- Doesn't do much
   ApplyQualityBorderClassic(self, details.quality)
-  SetItemButtonCount(self, details.itemCount);
+  SetItemButtonCount(self, details.itemCount, true);
   SetItemButtonDesaturated(self, false)
 end
 
@@ -1164,7 +1164,7 @@ function BaganatorClassicLiveContainerItemButtonMixin:SetItemDetails(cacheData)
   SetItemButtonTexture(self, texture);
   SetItemButtonQuality(self, quality, itemID);
   ApplyQualityBorderClassic(self, quality)
-  SetItemButtonCount(self, itemCount);
+  SetItemButtonCount(self, itemCount, true);
   SetItemButtonDesaturated(self, locked);
   _G[self:GetName() .. "Cooldown"]:Hide()
 
