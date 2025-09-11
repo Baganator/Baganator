@@ -236,6 +236,11 @@ if not addonTable.Constants.IsRetail then
       end
     end)
 
+    Syndicator.CallbackRegistry:RegisterCallback("EquippedCacheUpdate", function()
+      updatePending = true
+      Baganator.API.RequestItemButtonsRefresh()
+    end)
+
     local guidToItemRef = {}
     -- Elaborate routine to mimic ItemRack's selection of items that match the
     -- set. Checks exact matches first, then inexact by item ID.
