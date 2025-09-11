@@ -203,6 +203,11 @@ if not addonTable.Constants.IsRetail then
           end
         end
       end
+      for _, info in pairs(equipmentSetInfo) do
+        table.sort(info, function(a, b)
+          return a.name < b.name
+        end)
+      end
       table.sort(equipmentSetNames)
       updatePending = true
 
