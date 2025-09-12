@@ -278,9 +278,10 @@ if not addonTable.Constants.IsRetail then
             guidToItemRef[guid] = itemRackID
           elseif missing[";" .. itemRackID] then
             guidToItemRef[guid] = ";" .. itemRackID
+          else
+            itemIDToGUID[slotInfo.itemID] = itemIDToGUID[slotInfo.itemID] or {}
+            table.insert(itemIDToGUID[slotInfo.itemID], guid)
           end
-          itemIDToGUID[slotInfo.itemID] = itemIDToGUID[slotInfo.itemID] or {}
-          table.insert(itemIDToGUID[slotInfo.itemID], guid)
         end
       end
       local function DoBag(bagID, bagData)
@@ -308,7 +309,7 @@ if not addonTable.Constants.IsRetail then
         table.sort(keys, function(a, b)
           return equipmentSetInfo[a][1].name < equipmentSetInfo[b][1].name
         end)
-        for key in pairs(missing) do
+        for _, key in ipairs(keys) do
           local itemID = tonumber((key:match("^;?%-?(%d+)")))
           if itemIDToGUID[itemID] and #itemIDToGUID[itemID] > 0 then
             local guid = table.remove(itemIDToGUID[itemID])
