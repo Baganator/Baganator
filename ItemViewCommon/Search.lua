@@ -93,6 +93,9 @@ function BaganatorSearchWidgetMixin:OnLoad()
       self.SearchBox.Instructions:SetText(addonTable.Utilities.GetRandomSearchesText())
     end
   end)
+  self.SearchBox:HookScript("OnChar", function(_, key)
+      BagSearch_OnChar(self.SearchBox)
+  end)
   self.SearchBox:HookScript("OnKeyDown", function(_, key)
     if key == "LALT" or key == "RALT" or key == "ALT" then
       addonTable.CallbackRegistry:TriggerEvent("PropagateAlt")
