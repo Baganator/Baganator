@@ -344,6 +344,7 @@ end
 
 -- Anchor is relative to UIParent
 function addonTable.Utilities.ConvertAnchorToCorner(targetCorner, frame)
+  local _ = frame:GetRect() -- Force evaluation of the position of the frame
   if targetCorner == "TOPLEFT" then
     return "TOPLEFT", frame:GetLeft(), frame:GetTop() - UIParent:GetTop()/frame:GetScale()
   elseif targetCorner == "TOPRIGHT" then
